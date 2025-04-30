@@ -1,4 +1,8 @@
-<!-- ❗Errors in the form are set on line 60 -->
+<!--
+  Admin Email: admin@demo.com / Pass: admin
+  Client Email: client@demo.com / Pass: client 
+-->
+
 <script setup>
 import { VForm } from 'vuetify/components/VForm'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
@@ -28,15 +32,15 @@ const router = useRouter()
 const ability = useAbility()
 
 const errors = ref({
-  email: undefined,
+  username: undefined,
   password: undefined,
 })
 
 const refVForm = ref()
 
 const credentials = ref({
-  email: 'admin@demo.com',
-  password: 'admin',
+  username: '',
+  password: '',
 })
 
 const rememberMe = ref(false)
@@ -46,7 +50,7 @@ const login = async () => {
     const res = await $api('/auth/login', {
       method: 'POST',
       body: {
-        email: credentials.value.email,
+        user_name: credentials.value.username,
         password: credentials.value.password,
       },
       onResponseError({ response }) {
@@ -98,13 +102,7 @@ const onSubmit = () => {
         <div
           class="d-flex align-center justify-center w-100 h-100"
           style="padding-inline: 6.25rem;"
-        >
-          <VImg
-            max-width="613"
-            :src="authThemeImg"
-            class="auth-illustration mt-16 mb-2"
-          />
-        </div>
+        />
 
         <img
           class="auth-footer-mask"
@@ -128,41 +126,26 @@ const onSubmit = () => {
       >
         <VCardText>
           <h4 class="text-h4 mb-1">
-            Welcome to <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            خوش آمدید <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
           </h4>
-          <p class="mb-0">
-            Please sign-in to your account and start the adventure
-          </p>
         </VCardText>
-        <VCardText>
-          <VAlert
-            color="primary"
-            variant="tonal"
-          >
-            <p class="text-sm mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-            </p>
-            <p class="text-sm mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-            </p>
-          </VAlert>
-        </VCardText>
+
         <VCardText>
           <VForm
             ref="refVForm"
             @submit.prevent="onSubmit"
           >
             <VRow>
-              <!-- email -->
+              <!-- username -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="credentials.email"
-                  label="Email"
-                  placeholder="johndoe@email.com"
-                  type="email"
+                  v-model="credentials.username"
+                  label="نام کاربری"
+                  placeholder="کد پرسنلی"
+                  type="text"
                   autofocus
-                  :rules="[requiredValidator, emailValidator]"
-                  :error-messages="errors.email"
+                  :rules="[requiredValidator]"
+                  :error-messages="errors.username"
                 />
               </VCol>
 
@@ -170,7 +153,7 @@ const onSubmit = () => {
               <VCol cols="12">
                 <AppTextField
                   v-model="credentials.password"
-                  label="Password"
+                  label="رمز عبور"
                   placeholder="············"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
@@ -183,13 +166,13 @@ const onSubmit = () => {
                 <div class="d-flex align-center flex-wrap justify-space-between my-6">
                   <VCheckbox
                     v-model="rememberMe"
-                    label="Remember me"
+                    label="مرا به خاطر بسپار"
                   />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
                     :to="{ name: 'forgot-password' }"
                   >
-                    Forgot Password?
+                    رمز عبور خود را فراموش کرده‌اید؟
                   </RouterLink>
                 </div>
 
@@ -197,38 +180,8 @@ const onSubmit = () => {
                   block
                   type="submit"
                 >
-                  Login
+                  ورود
                 </VBtn>
-              </VCol>
-
-              <!-- create account -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <span>New on our platform?</span>
-                <RouterLink
-                  class="text-primary ms-1"
-                  :to="{ name: 'register' }"
-                >
-                  Create an account
-                </RouterLink>
-              </VCol>
-              <VCol
-                cols="12"
-                class="d-flex align-center"
-              >
-                <VDivider />
-                <span class="mx-4">or</span>
-                <VDivider />
-              </VCol>
-
-              <!-- auth providers -->
-              <VCol
-                cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
               </VCol>
             </VRow>
           </VForm>
