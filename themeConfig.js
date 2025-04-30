@@ -1,7 +1,7 @@
-import { breakpointsVuetifyV3 } from '@vueuse/core'
-import { VIcon } from 'vuetify/components/VIcon'
 import { defineThemeConfig } from '@core'
 import { Skins } from '@core/enums'
+import { breakpointsVuetifyV3 } from '@vueuse/core'
+import { VIcon } from 'vuetify/components/VIcon'
 
 // ❗ Logo SVG must be imported with ?raw suffix
 import logo from '@images/logo.svg?raw'
@@ -9,28 +9,33 @@ import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layo
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({
   app: {
-    title: 'vuexy',
+    title: '',
     logo: h('div', { innerHTML: logo, style: 'line-height:0; color: rgb(var(--v-global-theme-primary))' }),
     contentWidth: ContentWidth.Boxed,
     contentLayoutNav: AppContentLayoutNav.Vertical,
     overlayNavFromBreakpoint: breakpointsVuetifyV3.lg - 1, // 1 for matching with vuetify breakpoint. Docs: https://next.vuetifyjs.com/en/features/display-and-platform/
     i18n: {
       enable: true,
-      defaultLocale: 'en',
+      defaultLocale: 'fa',
       langConfig: [
+        // {
+        //   label: 'English',
+        //   i18nLang: 'en',
+        //   isRTL: false,
+        // },
+        // {
+        //   label: 'French',
+        //   i18nLang: 'fr',
+        //   isRTL: false,
+        // },
+        // {
+        //   label: 'Arabic',
+        //   i18nLang: 'ar',
+        //   isRTL: true,
+        // },
         {
-          label: 'English',
-          i18nLang: 'en',
-          isRTL: false,
-        },
-        {
-          label: 'French',
-          i18nLang: 'fr',
-          isRTL: false,
-        },
-        {
-          label: 'Arabic',
-          i18nLang: 'ar',
+          label: 'فارسی',
+          i18nLang: 'fa',
           isRTL: true,
         },
       ],
