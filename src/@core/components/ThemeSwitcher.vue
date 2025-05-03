@@ -26,7 +26,7 @@ watch(() => configStore.theme, () => {
       open-delay="1000"
       scroll-strategy="close"
     >
-      <span class="text-capitalize">{{ configStore.theme }}</span>
+      <span class="text-capitalize">{{ configStore.theme === "light" ? "روشن" : configStore.theme === "dark" ? "تاریک" : configStore.theme === "system" ? "سیستم" : configStore.theme }}</span>
     </VTooltip>
 
     <VMenu
@@ -48,7 +48,7 @@ watch(() => configStore.theme, () => {
           @click="() => { configStore.theme = name }"
         >
           <VListItemTitle class="text-capitalize">
-            {{ name }}
+            {{ name === "light" ? "روشن" : name === "dark" ? "تاریک" : name === "system" ? "سیستم" : name }}
           </VListItemTitle>
         </VListItem>
       </VList>
