@@ -8,6 +8,7 @@ export const redirects = [
     path: '/',
     name: 'index',
     redirect: to => {
+      // ***
       // TODO: Get type from backend
       // const userData = useCookie('userData')
       // const userRole = userData.value?.role
