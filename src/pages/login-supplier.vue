@@ -140,8 +140,8 @@ const onSubmit = () => {
               <VCol cols="12">
                 <AppTextField
                   v-model="credentials.username"
-                  label="نام کاربری"
-                  placeholder="کد پرسنلی"
+                  label="شماره تلفن همراه خود را وارد کرده و پس از کلیک بر روی دکمه ارسال، منتظر پیامک حاوی کد تأیید باشید"
+                  placeholder="مثلاً: 09123456789"
                   type="text"
                   autofocus
                   :rules="[requiredValidator]"
@@ -151,36 +151,11 @@ const onSubmit = () => {
 
               <!-- password -->
               <VCol cols="12">
-                <AppTextField
-                  v-model="credentials.password"
-                  label="رمز عبور"
-                  placeholder="············"
-                  :rules="[requiredValidator]"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  autocomplete="password"
-                  :error-messages="errors.password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                />
-
-                <div class="d-flex align-center flex-wrap justify-space-between my-6">
-                  <VCheckbox
-                    v-model="rememberMe"
-                    label="مرا به خاطر بسپار"
-                  />
-                  <RouterLink
-                    class="text-primary ms-2 mb-1"
-                    :to="{ name: 'forgot-password' }"
-                  >
-                    رمز عبور خود را فراموش کرده‌اید؟
-                  </RouterLink>
-                </div>
-
                 <VBtn
                   block
                   type="submit"
                 >
-                  ورود
+                  ارسال کد تأیید
                 </VBtn>
               </VCol>
             </VRow>
