@@ -32,7 +32,7 @@ const router = useRouter()
 const ability = useAbility()
 
 const errors = ref({
-  username: undefined,
+  user_name: undefined,
   password: undefined,
 })
 
@@ -145,7 +145,7 @@ const onSubmit = () => {
                   type="text"
                   autofocus
                   :rules="[requiredValidator]"
-                  :error-messages="errors.username"
+                  :error-messages="errors.user_name"
                 />
               </VCol>
 
@@ -170,7 +170,7 @@ const onSubmit = () => {
                   />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
-                    :to="{ name: 'forgot-password' }"
+                    :to="{ name: 'login' }"
                   >
                     رمز عبور خود را فراموش کرده‌اید؟
                   </RouterLink>
