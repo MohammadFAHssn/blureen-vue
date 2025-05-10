@@ -1,8 +1,8 @@
 export default [
-  { heading: 'Users Management' },
+  { heading: 'User Management' },
   {
-    title: 'User',
-    icon: { icon: 'tabler-user' },
+    title: 'Users',
+    icon: { icon: 'tabler-users' },
     children: [
       { title: 'List', to: 'apps-user-list' },
     ],

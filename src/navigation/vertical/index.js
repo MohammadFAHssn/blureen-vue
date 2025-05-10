@@ -1,4 +1,4 @@
 import home from './home'
-import users from './users'
+import userManagement from './userManagement'
 
-export default [...home, ...users]
+export default [...home, ...userManagement]
