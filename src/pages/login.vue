@@ -45,6 +45,8 @@ const credentials = ref({
 
 const rememberMe = ref(false)
 
+const IsThereAProblem = ref(false)
+
 const login = async () => {
   try {
     const res = await $api('/login', {
@@ -54,7 +56,11 @@ const login = async () => {
         password: credentials.value.password,
       },
       onResponseError({ response }) {
-        errors.value = response._data.errors
+        if (response._data.errors) {
+          errors.value = response._data.errors
+        } else {
+          IsThereAProblem.value = true
+        }
       },
     })
 
@@ -81,6 +87,16 @@ const onSubmit = () => {
 </script>
 
 <template>
+  <VSnackbar
+    v-model="IsThereAProblem"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    مشکلی پیش آمده است
+  </VSnackbar>
+
   <RouterLink to="/">
     <div class="auth-logo d-flex align-center gap-x-3">
       <VNodeRenderer :nodes="themeConfig.app.logo" />

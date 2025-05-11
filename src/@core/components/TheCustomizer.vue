@@ -79,17 +79,17 @@ const themeMode = computed(() => {
     {
       bgImage: 'tabler-sun',
       value: Theme.Light,
-      label: 'Light',
+      label: 'روشن',
     },
     {
       bgImage: 'tabler-moon-stars',
       value: Theme.Dark,
-      label: 'Dark',
+      label: 'تاریک',
     },
     {
       bgImage: 'tabler-device-desktop-analytics',
       value: Theme.System,
-      label: 'System',
+      label: 'سیستم',
     },
   ]
 })
@@ -99,12 +99,12 @@ const themeSkin = computed(() => {
     {
       bgImage: defaultSkin,
       value: Skins.Default,
-      label: 'Default',
+      label: 'پیش‌فرض',
     },
     {
       bgImage: borderSkin,
       value: Skins.Bordered,
-      label: 'Bordered',
+      label: 'مرزبندی',
     },
   ]
 })
@@ -284,10 +284,10 @@ const resetCustomizer = async () => {
       <div class="customizer-heading d-flex align-center justify-space-between">
         <div>
           <h6 class="text-h6">
-            Theme Customizer
+            شخصی‌سازی زمینه
           </h6>
           <p class="text-body-2 mb-0">
-            Customize & Preview in Real Time
+            سفارشی‌سازی و پیش‌نمایش درآن‌واحد
           </p>
         </div>
 
@@ -338,13 +338,13 @@ const resetCustomizer = async () => {
       >
         <!-- SECTION Theming -->
         <CustomizerSection
-          title="Theming"
+          title="طراحی زمینه"
           :divider="false"
         >
           <!-- 👉 Primary Color -->
           <div class="d-flex flex-column gap-2">
             <h6 class="text-h6">
-              Primary Color
+              رنگ‌های اصلی
             </h6>
 
             <div
@@ -416,7 +416,7 @@ const resetCustomizer = async () => {
           <!-- 👉 Theme -->
           <div class="d-flex flex-column gap-2">
             <h6 class="text-h6">
-              Theme
+              زمینه
             </h6>
 
             <CustomRadiosWithImage
@@ -448,7 +448,7 @@ const resetCustomizer = async () => {
           <!-- 👉 Skin -->
           <div class="d-flex flex-column gap-2">
             <h6 class="text-h6">
-              Skins
+              صفحات
             </h6>
 
             <CustomRadiosWithImage
