@@ -116,17 +116,17 @@ const layouts = computed(() => {
     {
       bgImage: defaultSkin,
       value: Layout.Vertical,
-      label: 'Vertical',
+      label: 'عمودی',
     },
     {
       bgImage: collapsed,
       value: Layout.Collapsed,
-      label: 'Collapsed',
+      label: 'عمودی پنهان',
     },
     {
       bgImage: horizontalLight,
       value: Layout.Horizontal,
-      label: 'Horizontal',
+      label: 'افقی',
     },
   ]
 })
@@ -487,11 +487,11 @@ const resetCustomizer = async () => {
         <!-- !SECTION -->
 
         <!-- SECTION LAYOUT -->
-        <CustomizerSection title="Layout">
+        <CustomizerSection title="چیدمان">
           <!-- 👉 Layouts -->
           <div class="d-flex flex-column gap-2">
             <h6 class="text-base font-weight-medium">
-              Layout
+              چیدمان
             </h6>
 
             <CustomRadiosWithImage
@@ -502,42 +502,6 @@ const resetCustomizer = async () => {
             >
               <template #label="item">
                 <span class="text-sm text-medium-emphasis">{{ item.label }}</span>
-              </template>
-            </CustomRadiosWithImage>
-          </div>
-
-          <!-- 👉 Content Width -->
-          <div class="d-flex flex-column gap-2">
-            <h6 class="text-base font-weight-medium">
-              Content
-            </h6>
-
-            <CustomRadiosWithImage
-              :key="configStore.appContentWidth"
-              v-model:selected-radio="configStore.appContentWidth"
-              :radio-content="contentWidth"
-              :grid-column="{ cols: '4' }"
-            >
-              <template #label="item">
-                <span class="text-sm text-medium-emphasis">{{ item.label }}</span>
-              </template>
-            </CustomRadiosWithImage>
-          </div>
-
-          <!-- 👉 Direction -->
-          <div class="d-flex flex-column gap-2">
-            <h6 class="text-base font-weight-medium">
-              Direction
-            </h6>
-
-            <CustomRadiosWithImage
-              :key="currentDir"
-              v-model:selected-radio="currentDir"
-              :radio-content="direction"
-              :grid-column="{ cols: '4' }"
-            >
-              <template #label="item">
-                <span class="text-sm text-medium-emphasis">{{ item?.label }}</span>
               </template>
             </CustomRadiosWithImage>
           </div>
