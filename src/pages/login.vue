@@ -46,8 +46,10 @@ const credentials = ref({
 const rememberMe = ref(false)
 
 const IsThereAProblem = ref(false)
+const IsItWaitingServerResponse = ref(false)
 
 const login = async () => {
+  IsItWaitingServerResponse.value = true
   try {
     const res = await $api('/login', {
       method: 'POST',
@@ -56,10 +58,15 @@ const login = async () => {
         password: credentials.value.password,
       },
       onResponseError({ response }) {
+        IsItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
         } else {
+          IsItWaitingServerResponse.value = false
           IsThereAProblem.value = true
+          setTimeout(() => {
+            IsThereAProblem.value = false
+          }, 2000)
         }
       },
     })
@@ -173,7 +180,7 @@ const onSubmit = () => {
                   placeholder="············"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  autocomplete="password"
+                  autocomplete="off"
                   :error-messages="errors.password"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -195,6 +202,8 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
+                  :loading="IsItWaitingServerResponse"  
+                  :disabled="IsItWaitingServerResponse"
                 >
                   ورود
                 </VBtn>
