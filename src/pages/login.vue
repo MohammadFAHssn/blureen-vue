@@ -4,8 +4,6 @@
 -->
 
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
@@ -15,6 +13,7 @@ import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { VForm } from 'vuetify/components/VForm'
 
 const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
@@ -32,7 +31,7 @@ const router = useRouter()
 const ability = useAbility()
 
 const errors = ref({
-  user_name: undefined,
+  username: undefined,
   password: undefined,
 })
 
@@ -54,7 +53,7 @@ const login = async () => {
     const res = await $api('/login', {
       method: 'POST',
       body: {
-        user_name: credentials.value.username,
+        username: credentials.value.username,
         password: credentials.value.password,
       },
       onResponseError({ response }) {
@@ -168,7 +167,7 @@ const onSubmit = () => {
                   type="text"
                   autofocus
                   :rules="[requiredValidator]"
-                  :error-messages="errors.user_name"
+                  :error-messages="errors.username"
                 />
               </VCol>
 
