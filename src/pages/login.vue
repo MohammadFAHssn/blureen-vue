@@ -95,6 +95,10 @@ const onSubmit = () => {
 </script>
 
 <template>
+  <div>
+    {{ route.params }}
+  </div>
+
   <VSnackbar
     v-model="IsThereAProblem"
     :timeout="2000"

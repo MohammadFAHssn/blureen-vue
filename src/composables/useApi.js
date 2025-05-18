@@ -1,6 +1,8 @@
 import { createFetch } from '@vueuse/core'
 import { destr } from 'destr'
 
+import { logout } from './logout'
+
 export const useApi = createFetch({
   baseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
   fetchOptions: {
@@ -34,6 +36,13 @@ export const useApi = createFetch({
       }
       
       return { data: parsedData, response }
+    },
+    onFetchError(ctx) {
+      if (ctx.response.status === 401) {
+        logout()
+      }
+
+      return ctx
     },
   },
 })
