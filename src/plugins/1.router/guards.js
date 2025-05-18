@@ -28,6 +28,17 @@ export const setupGuards = router => {
       else
         return undefined
     }
+
+    if (!isLoggedIn) {
+      return {
+        name: 'login',
+        query: {
+          ...to.query,
+          to: to.fullPath !== '/' ? to.path : undefined,
+        },
+      }
+    }
+
     if (!canNavigate(to) && to.matched.length) {
       /* eslint-disable indent */
             return isLoggedIn
