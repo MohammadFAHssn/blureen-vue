@@ -49,6 +49,12 @@ const rememberMe = ref(false)
 const IsThereAProblem = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
+const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
+
+setTimeout(() => {
+  isRedirectedFromUnauthorizedStatus.value = false
+}, 5000)
+
 const login = async () => {
   IsItWaitingServerResponse.value = true
   try {
@@ -95,9 +101,15 @@ const onSubmit = () => {
 </script>
 
 <template>
-  <div>
-    {{ route.params }}
-  </div>
+  <VSnackbar
+    v-model="isRedirectedFromUnauthorizedStatus"
+    :timeout="5000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره وارد شوید.
+  </VSnackbar>
 
   <VSnackbar
     v-model="IsThereAProblem"

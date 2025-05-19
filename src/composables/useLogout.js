@@ -1,6 +1,7 @@
-import { useRouter } from 'vue-router'
 
-export const logout = async () => {
+import { router } from '@/plugins/1.router/index'
+
+export const useLogout = async () => {
 
   // Remove "accessToken" from cookie
   useCookie('accessToken').value = null
@@ -11,9 +12,8 @@ export const logout = async () => {
   userData.value = null
 
   // Redirect to login page
-  const router = useRouter()
 
-  await router.push({ path: '/login', params: { redirected: true } })
+  await router.push({ path: '/login', query: { isRedirectedFromUnauthorizedStatus: true } })
 
   // ℹ️ We had to remove abilities in then block because if we don't nav menu items mutation is visible while redirecting user to login page
 
@@ -21,5 +21,7 @@ export const logout = async () => {
   useCookie('userAbilityRules').value = null
 
   // Reset ability to initial ability
-  ability.update([])
+  // const ability = useAbility()
+
+  // ability.update([])
 }
