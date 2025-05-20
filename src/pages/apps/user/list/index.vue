@@ -20,6 +20,7 @@ const theme = computed(() =>
     : themeQuartz.withPart(colorSchemeDarkBlue),
 )
 
+import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
 import { AgGridVue } from "ag-grid-vue3"
 
 const defaultColDef = {
@@ -30,7 +31,13 @@ const columnDefs = ref([
   { headerName: "کد پرسنلی", field: "personnelCode", flex: 1 },
   { headerName: "نام", field: "firstName", flex: 2 },
   { headerName: "نام خانوادگی", field: "lastName", flex: 2 },
-  { headerName: "نوع کاربر", field: "role", flex: 3 },
+  {
+    headerName: "نوع کاربر",
+    field: "roles",
+    flex: 3,
+    cellRenderer: MultiValuedCell,
+    cellStyle: { display: "flex", "align-items": "center" },
+  },
   { headerName: "شماره تلفن", field: "phoneNumber", flex: 2 },
   {
     headerName: "وضعیت",
@@ -40,6 +47,7 @@ const columnDefs = ref([
     filterParams: {
       cellRenderer: Active,
     },
+    cellStyle: { display: "flex", "align-items": "center" },
   },
 ])
 
@@ -49,7 +57,7 @@ const rowData = computed(() =>
       personnelCode: user.personnel_code,
       firstName: user.first_name,
       lastName: user.last_name,
-      role: null,
+      roles: user.roles.map(role => role.name),
       phoneNumber: user.phone_number,
       active: user.active,
     }
@@ -62,7 +70,7 @@ const {
   execute: fetchUsers,
   data,
   error,
-} = await useApi(createUrl("/base/user/get"))
+} = await useApi(createUrl("/base/user/get?include=roles&fields[roles]=name"))
 
 const users = computed(() => data.value.data)
 </script>
