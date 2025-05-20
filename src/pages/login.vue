@@ -5,17 +5,12 @@
 
 <script setup>
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
-import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
-import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
-import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import { VForm } from 'vuetify/components/VForm'
 
-const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
@@ -51,9 +46,6 @@ const IsItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
 
-setTimeout(() => {
-  isRedirectedFromUnauthorizedStatus.value = false
-}, 5000)
 
 const login = async () => {
   IsItWaitingServerResponse.value = true
@@ -71,9 +63,6 @@ const login = async () => {
         } else {
           IsItWaitingServerResponse.value = false
           IsThereAProblem.value = true
-          setTimeout(() => {
-            IsThereAProblem.value = false
-          }, 2000)
         }
       },
     })
@@ -114,8 +103,8 @@ const onSubmit = () => {
   <VSnackbar
     v-model="IsThereAProblem"
     :timeout="2000"
-    location="outlined"
-    variant="flat"
+    location="center"
+    variant="outlined"
     color="error"
   >
     مشکلی پیش آمده است
