@@ -105,7 +105,7 @@ const onSubmit = () => {
     v-model="isRedirectedFromUnauthorizedStatus"
     :timeout="5000"
     location="center"
-    variant="flat"
+    variant="outlined"
     color="error"
   >
     زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره وارد شوید.
@@ -114,7 +114,7 @@ const onSubmit = () => {
   <VSnackbar
     v-model="IsThereAProblem"
     :timeout="2000"
-    location="center"
+    location="outlined"
     variant="flat"
     color="error"
   >
