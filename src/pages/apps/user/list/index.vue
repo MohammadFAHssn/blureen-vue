@@ -8,6 +8,18 @@ import Active from "@/plugins/ag-grid/components/Active.vue"
 // ----- start ag-grid -----
 
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
+import {
+  colorSchemeDarkBlue,
+  colorSchemeLight,
+  themeQuartz,
+} from "ag-grid-community"
+
+const theme = computed(() =>
+  vuetifyTheme.current.value.colors.surface === "#fff"
+    ? themeQuartz.withPart(colorSchemeLight)
+    : themeQuartz.withPart(colorSchemeDarkBlue),
+)
+
 import { AgGridVue } from "ag-grid-vue3"
 
 const defaultColDef = {
@@ -71,6 +83,7 @@ const users = computed(() => data.value.data)
       :row-numbers="true"
       :pagination="true"
       :locale-text="AG_GRID_LOCALE_IR"
+      :theme="theme"
     />
   </section>
 </template>
