@@ -13,6 +13,9 @@ importers:
 
   .:
     dependencies:
+      '@ag-grid-community/locale':
+        specifier: ^33.3.0
+        version: 33.3.0
       '@casl/ability':
         specifier: 6.7.2
         version: 6.7.2
@@ -307,6 +310,9 @@ importers:
         version: 3.0.0(vue@3.5.13(typescript@5.8.3))
 
 packages:
+
+  '@ag-grid-community/locale@33.3.0':
+    resolution: {integrity: sha512-Pc3OOUQKa7zO2Ahs6iIMW87LGcH/A+Fi2e7j+LRIs0QA0eaQQIfSdXAhs9GSgVoRgNurQ+2b9Hljm0oQZfQP+A==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -4761,6 +4767,8 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@ag-grid-community/locale@33.3.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
