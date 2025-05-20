@@ -57,7 +57,7 @@ const rowData = computed(() =>
       personnelCode: user.personnel_code,
       firstName: user.first_name,
       lastName: user.last_name,
-      roles: user.roles.map(role => role.name),
+      roles: user.roles?.map(role => role.name),
       phoneNumber: user.phone_number,
       active: user.active,
     }
@@ -70,7 +70,7 @@ const {
   execute: fetchUsers,
   data,
   error,
-} = await useApi(createUrl("/base/user/get?include=roles&fields[roles]=name"))
+} = await useApi(createUrl("/base/user/get"))
 
 const users = computed(() => data.value.data)
 </script>
