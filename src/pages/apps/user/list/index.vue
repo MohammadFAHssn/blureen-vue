@@ -22,6 +22,7 @@ const theme = computed(() =>
 
 import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
 import { AgGridVue } from "ag-grid-vue3"
+import { computed } from "vue"
 
 const defaultColDef = {
   filter: true,
@@ -52,7 +53,7 @@ const columnDefs = ref([
 ])
 
 const rowData = computed(() =>
-  users.value.map(user => {
+  users.value?.map(user => {
     return {
       personnelCode: user.personnel_code,
       firstName: user.first_name,
@@ -72,11 +73,24 @@ const {
   error,
 } = await useApi(createUrl("/base/user/get"))
 
-const users = computed(() => data.value.data)
+const hasError = computed(() => Boolean(error.value))
+
+const users = computed(() => data.value?.data)
 </script>
 
 <template>
+  <VSnackbar
+    v-model="hasError"
+    :timeout="2000"
+    location="center"
+    variant="outlined"
+    color="error"
+  >
+    مشکلی پیش آمده است
+  </VSnackbar>
+
   <section
+    v-if="!hasError"
     class="ag-grid-sec"
     :data-ag-theme-mode="
       vuetifyTheme.current.value.colors === '#fff' ? 'light' : 'dark'
