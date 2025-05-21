@@ -13,11 +13,11 @@ export const useAGGridTheme = () => {
     fontFamily: "Shabnam",
   })
 
-  const customTheme = computed(() =>
+  const theme = computed(() =>
     global.name.value === "light"
       ? persianThemeQuartz.withPart(colorSchemeLight)
       : persianThemeQuartz.withPart(colorSchemeDarkBlue),
   )
 
-  return { customTheme }
+  return { theme }
 }
