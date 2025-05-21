@@ -1,24 +1,12 @@
 <script setup>
-import { useTheme } from "vuetify"
-
-const vuetifyTheme = useTheme()
-
 import Active from "@/plugins/ag-grid/components/Active.vue"
 
 // ----- start ag-grid -----
 
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
-import {
-  colorSchemeDarkBlue,
-  colorSchemeLight,
-  themeQuartz,
-} from "ag-grid-community"
 
-const theme = computed(() =>
-  vuetifyTheme.current.value.colors.surface === "#fff"
-    ? themeQuartz.withPart(colorSchemeLight)
-    : themeQuartz.withPart(colorSchemeDarkBlue),
-)
+
+const { theme } = useAGGridTheme()
 
 import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
 import { AgGridVue } from "ag-grid-vue3"
@@ -92,9 +80,6 @@ const users = computed(() => data.value?.data)
   <section
     v-if="!hasError"
     class="ag-grid-sec"
-    :data-ag-theme-mode="
-      vuetifyTheme.current.value.colors === '#fff' ? 'light' : 'dark'
-    "
   >
     <AgGridVue
       style="block-size: 100%; inline-size: 100%;"

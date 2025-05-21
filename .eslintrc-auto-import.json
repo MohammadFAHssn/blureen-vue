@@ -361,6 +361,7 @@
     "watchTriggerable": true,
     "watchWithFilter": true,
     "whenever": true,
-    "useLogout": true
+    "useLogout": true,
+    "useAGGridTheme": true
   }
 }
