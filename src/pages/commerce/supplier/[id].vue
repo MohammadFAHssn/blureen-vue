@@ -11,6 +11,8 @@ definePage({
 
 // const { execute: fetchUsers, data, error } = await useApi(createUrl("/test"))
 
+const isPricingDialogVisible = ref([])
+
 const products = ref([
   {
     id: 1,
@@ -58,7 +60,7 @@ const products = ref([
   
       <VRow>
         <VCol
-          v-for="product in products"
+          v-for="(product, index) in products"
           :key="product.id"
           lg="4"
           md="6"
@@ -74,7 +76,53 @@ const products = ref([
             </VCardText>
   
             <VCardActions>
-              <VBtn>قیمت گذاری</VBtn>
+              <VDialog
+                v-model="isPricingDialogVisible[index]"
+                fullscreen
+                :scrim="false"
+                transition="dialog-bottom-transition"
+              >
+                <!-- Dialog Activator -->
+                <template #activator="{ props }">
+                  <VBtn v-bind="props">
+                    قیمت گذاری
+                  </VBtn>
+                </template>
+
+                <!-- Dialog Content -->
+                <VCard>
+                  <!-- Toolbar -->
+                  <div>
+                    <VToolbar color="primary">
+                      <VBtn
+                        icon
+                        variant="plain"
+                        @click="isPricingDialogVisible[index] = false"
+                      >
+                        <VIcon
+                          color="white"
+                          icon="tabler-x"
+                        />
+                      </VBtn>
+
+                      <VToolbarTitle class="custom-v-toolbar-title">
+                        {{ product.name }}
+                      </VToolbarTitle>
+
+                      <VSpacer />
+
+                      <VToolbarItems>
+                        <VBtn
+                          variant="text"
+                          @click="isPricingDialogVisible[index] = false"
+                        >
+                          ذخیره
+                        </VBtn>
+                      </VToolbarItems>
+                    </VToolbar>
+                  </div>
+                </VCard>
+              </VDialog>
             </VCardActions>
           </VCard>
         </VCol>
@@ -94,5 +142,15 @@ const products = ref([
 
 .custom-v-card-title {
   white-space: break-spaces !important;
+}
+
+.custom-v-toolbar-title {
+  flex: 10 1 !important;
+  font-size: 1.1em !important;
+}
+
+.dialog-bottom-transition-enter-active,
+.dialog-bottom-transition-leave-active {
+  transition: transform 0.2s ease-in-out;
 }
 </style>
