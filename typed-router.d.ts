@@ -51,6 +51,7 @@ declare module 'vue-router/auto-routes' {
     'apps-email-label': RouteRecordInfo<'apps-email-label', '/apps/email/:label', { label: ParamValue<true> }, { label: ParamValue<false> }>,
     'charts-apex-chart': RouteRecordInfo<'charts-apex-chart', '/charts/apex-chart', Record<never, never>, Record<never, never>>,
     'charts-chartjs': RouteRecordInfo<'charts-chartjs', '/charts/chartjs', Record<never, never>, Record<never, never>>,
+    'commerce-supplier-id': RouteRecordInfo<'commerce-supplier-id', '/commerce/supplier/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'components-alert': RouteRecordInfo<'components-alert', '/components/alert', Record<never, never>, Record<never, never>>,
     'components-avatar': RouteRecordInfo<'components-avatar', '/components/avatar', Record<never, never>, Record<never, never>>,
     'components-badge': RouteRecordInfo<'components-badge', '/components/badge', Record<never, never>, Record<never, never>>,
