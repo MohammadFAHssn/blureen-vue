@@ -1,4 +1,6 @@
 <script setup>
+import AppTextarea from "@/@core/components/app-form-elements/AppTextarea.vue"
+
 definePage({
   meta: {
     layout: "blank",
@@ -11,29 +13,81 @@ definePage({
 
 // const { execute: fetchUsers, data, error } = await useApi(createUrl("/test"))
 
-const isPricingDialogVisible = ref([])
-
 const products = ref([
   {
     id: 1,
     name: "دستگاه پمپ چسب آکواریوم",
     description: "توضیحات",
-    brands: [{ name: "آذرخش" }, { name: "شهاب" }, { name: "پارس" }],
+    brands: [
+      { id: 1, name: "آذرخش" },
+      { id: 2, name: "شهاب" },
+      { id: 3, name: "پارس" },
+    ],
+    unit: { name: "انس" },
   },
   {
     id: 2,
     name: "الک",
     description:
       "توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد.",
-    brands: [],
+    brands: [
+      // { id: 1, name: "طهماسب" },
+      // { id: 2, name: "دولک" },
+    ],
+    unit: { name: "کیلوگرم" },
   },
   {
     id: 3,
     name: "فوم عایق صدا 5 سانتی ( شونه تخم مرغی)",
     description: "توضیحات",
-    brands: [{ name: "ایگو" }],
+    brands: [{ id: 1, name: "ایگو" }],
+    unit: { name: "متر" },
+  },
+  {
+    id: 4,
+    name: "درزگیر",
+    description: "",
+    brands: [
+      { id: 1, name: "ضد" },
+      { id: 2, name: "آسمان" },
+    ],
+    unit: { name: "رأس" },
   },
 ])
+
+const firstName = ref("")
+const lastName = ref("")
+const city = ref("")
+const country = ref("")
+const company = ref("")
+const email = ref("")
+const checkbox = ref(false)
+
+const tenderBids = computed(() => {
+  let initialTenderBids = []
+
+  const initialTenderBid = {
+    supplierId: "",
+    productId: "",
+    brandId: "",
+    bidPrice: "",
+    bidQuantity: "",
+    description: "",
+  }
+
+  products.value.map(product => {
+    if (!product.brands) {
+      initialTenderBids.push(initialTenderBid)
+    }
+    product.brands.map(brand => {
+      initialTenderBids.push(initialTenderBid)
+    })
+  })
+
+  return initialTenderBids
+})
+
+console.log(tenderBids)
 </script>
 
 <template>
@@ -46,92 +100,159 @@ const products = ref([
               مدیریت محترم شرکت/فروشگاه
             </h6>
           </div>
-  
+
           <div class="text-wrap text-body-1">
             لیست کالاهای مورد نیاز مجموعه کارخانجات شیشه اردکان به شرح زیر
             می‌باشد.
           </div>
-  
+
           <div class="text-wrap text-body-1">
             لطفاً قیمت‌های پیشنهادی خود را ارائه دهید.
           </div>
         </VCol>
       </VRow>
-  
+
       <VRow>
         <VCol
-          v-for="(product, index) in products"
+          v-for="(product, product_index) in products"
           :key="product.id"
-          lg="4"
-          md="6"
           cols="12"
         >
-          <VCard>
-            <VCardTitle class="custom-v-card-title">
-              {{ product.name }}
-            </VCardTitle>
+          <VRow>
+            <VCol
+              v-for="(brand, brand_index) in product.brands"
+              :key="brand.id"
+              lg="4"
+              md="6"
+              cols="12"
+            >
+              <VCard>
+                <VCardTitle class="custom-v-card-title">
+                  {{ product.name + " " + "(" + brand.name + ")" }}
+                </VCardTitle>
 
-            <VCardText>
-              {{ product.description }}
-            </VCardText>
-  
-            <VCardActions>
-              <VDialog
-                v-model="isPricingDialogVisible[index]"
-                fullscreen
-                :scrim="false"
-                transition="dialog-bottom-transition"
-              >
-                <!-- Dialog Activator -->
-                <template #activator="{ props }">
-                  <VBtn v-bind="props">
-                    قیمت گذاری
-                  </VBtn>
-                </template>
-
-                <!-- Dialog Content -->
-                <VCard>
-                  <!-- Toolbar -->
-                  <div>
-                    <VToolbar color="primary">
-                      <VBtn
-                        icon
-                        variant="plain"
-                        @click="isPricingDialogVisible[index] = false"
-                      >
-                        <VIcon
-                          color="white"
-                          icon="tabler-x"
+                <VCardText>
+                  {{ product.description }}
+                </VCardText>
+                <VCardText>
+                  <VForm
+                    class="custom-v-form"
+                    @submit.prevent="
+                      {
+                      }
+                    "
+                  >
+                    <VRow>
+                      <VCol cols="12">
+                        <AppTextField
+                          v-model="firstName"
+                          prepend-inner-icon="tabler-coin"
+                          label="قیمت"
+                          suffix="ریال"
+                          type="number"
                         />
-                      </VBtn>
+                      </VCol>
 
-                      <VToolbarTitle class="custom-v-toolbar-title">
-                        {{ product.name }}
-                      </VToolbarTitle>
+                      <VCol cols="12">
+                        <AppTextField
+                          v-model="email"
+                          prepend-inner-icon="tabler-scale"
+                          label="تعداد"
+                          type="number"
+                          :suffix="product.unit.name"
+                        />
+                      </VCol>
 
-                      <VSpacer />
+                      <VCol cols="12">
+                        <AppTextarea
+                          v-model="mobile"
+                          label="توضیحات"
+                          rows="3"
+                        />
+                      </VCol>
 
-                      <VToolbarItems>
-                        <VBtn
-                          variant="text"
-                          @click="isPricingDialogVisible[index] = false"
-                        >
-                          ذخیره
+                      <VCol cols="12">
+                        <VBtn type="submit">
+                          <VIcon icon="tabler-send" />
+                          ارسال
                         </VBtn>
-                      </VToolbarItems>
-                    </VToolbar>
-                  </div>
-                </VCard>
-              </VDialog>
-            </VCardActions>
-          </VCard>
+                      </VCol>
+                    </VRow>
+                  </VForm>
+                </VCardText>
+              </VCard>
+            </VCol>
+
+            <VCol
+              v-if="!product.brands.length"
+              lg="4"
+              md="6"
+              cols="12"
+            >
+              <VCard>
+                <VCardTitle class="custom-v-card-title">
+                  {{ product.name }}
+                </VCardTitle>
+
+                <VCardText>
+                  {{ product.description }}
+                </VCardText>
+                <VCardText>
+                  <VForm
+                    class="custom-v-form"
+                    @submit.prevent="
+                      {
+                      }
+                    "
+                  >
+                    <VRow>
+                      <VCol cols="12">
+                        <AppTextField
+                          v-model="firstName"
+                          prepend-inner-icon="tabler-coin"
+                          label="قیمت"
+                          suffix="ریال"
+                          type="number"
+                        />
+                      </VCol>
+
+                      <VCol cols="12">
+                        <AppTextField
+                          v-model="email"
+                          prepend-inner-icon="tabler-scale"
+                          label="تعداد"
+                          type="number"
+                          :suffix="product.unit.name"
+                        />
+                      </VCol>
+
+                      <VCol cols="12">
+                        <AppTextarea
+                          v-model="mobile"
+                          label="توضیحات"
+                          rows="3"
+                        />
+                      </VCol>
+
+                      <VCol cols="12">
+                        <VBtn type="submit">
+                          <VIcon icon="tabler-send" />
+                          ارسال
+                        </VBtn>
+                      </VCol>
+                    </VRow>
+                  </VForm>
+                </VCardText>
+              </VCard>
+            </VCol>
+          </VRow>
         </VCol>
       </VRow>
     </div>
   </main>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .layout-page-content {
   overflow: hidden;
 
@@ -147,6 +268,10 @@ const products = ref([
 .custom-v-toolbar-title {
   flex: 10 1 !important;
   font-size: 1.1em !important;
+}
+
+.custom-v-form {
+  // margin: 1em;marginmargin
 }
 
 .dialog-bottom-transition-enter-active,
