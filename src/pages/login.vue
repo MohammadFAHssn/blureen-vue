@@ -162,6 +162,7 @@ const onSubmit = () => {
         <VCardText>
           <VForm
             ref="refVForm"
+            validate-on="submit lazy"
             @submit.prevent="onSubmit"
           >
             <VRow>
