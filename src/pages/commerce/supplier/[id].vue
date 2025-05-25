@@ -22,6 +22,7 @@ const products = [
       { id: 3, name: "پارس" },
     ],
     unit: { name: "انس" },
+    requiredQuantity: 50,
   },
   {
     id: 2,
@@ -33,6 +34,7 @@ const products = [
       // { id: 2, name: "دولک" },
     ],
     unit: { name: "کیلوگرم" },
+    requiredQuantity: 100,
   },
   {
     id: 3,
@@ -40,6 +42,7 @@ const products = [
     description: "توضیحات",
     brands: [{ id: 1, name: "ایگو" }],
     unit: { name: "متر" },
+    requiredQuantity: 1,
   },
   {
     id: 4,
@@ -50,6 +53,7 @@ const products = [
       { id: 2, name: "آسمان" },
     ],
     unit: { name: "رأس" },
+    requiredQuantity: 1000,
   },
 ]
 
@@ -57,7 +61,31 @@ const supplier = { id: 1, name: "امید ترمه گستر یزد شهاب" }
 
 const tenderBids = ref([])
 
-console.log(tenderBids)
+const isSendTenderBidsPending = ref([])
+const isTenderBidsVisible = ref([])
+const hasError = ref(false)
+const isSuccessful = ref(false)
+
+const sendTenderBid = async tenderBidId => {
+  isSendTenderBidsPending.value[tenderBidId] = true
+
+  await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (tenderBidId === 2) {
+        hasError.value = true
+        isSendTenderBidsPending.value[tenderBidId] = false
+
+        return reject(false)
+      } else {
+        return resolve(true)
+      }
+    }, 1000)
+  })
+
+  isSendTenderBidsPending.value[tenderBidId] = false
+  isTenderBidsVisible.value[tenderBidId] = false
+  isSuccessful.value = true
+}
 
 onMounted(() => {
   // start init tenderBids
@@ -66,10 +94,26 @@ onMounted(() => {
 
   products.forEach(product => {
     if (!product.brands.length) {
-      initialTenderBids.push({ id: id++, product, brand: {}, bidPrice: '', bidQuantity: '', description: '' })
+      initialTenderBids.push({
+        id: id++,
+        product,
+        brand: {},
+        bidPrice: "",
+        bidQuantity: "",
+        description: "",
+      })
     }
+    isTenderBidsVisible.value[id] = true
     product.brands.forEach(brand => {
-      initialTenderBids.push({ id: id++, product, brand, bidPrice: '', bidQuantity: '', description: '' })
+      initialTenderBids.push({
+        id: id++,
+        product,
+        brand,
+        bidPrice: "",
+        bidQuantity: "",
+        description: "",
+      })
+      isTenderBidsVisible.value[id] = true
     })
   })
 
@@ -80,6 +124,26 @@ onMounted(() => {
 </script>
 
 <template>
+  <VSnackbar
+    v-model="hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    مشکلی پیش آمده‌است
+  </VSnackbar>
+
+  <VSnackbar
+    v-model="isSuccessful"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="success"
+  >
+    ارسال شد
+  </VSnackbar>
+
   <main class="layout-page-content">
     <div>
       <VRow>
@@ -103,67 +167,78 @@ onMounted(() => {
       </VRow>
 
       <VRow>
-        <VCol
-          v-for="tenderBid in tenderBids"
-          :key="tenderBid.id"
-          cols="12"
-        >
-          <VCard>
-            <VCardTitle class="custom-v-card-title">
-              {{ tenderBid.product.name + (tenderBid.brand.name ? ` (${tenderBid.brand.name})` : "") }}
-            </VCardTitle>
+        <VExpandTransition group>
+          <VCol
+            v-for="tenderBid in tenderBids.filter(
+              (tenderBid) => isTenderBidsVisible[tenderBid.id]
+            )"
+            :key="tenderBid.id"
+            cols="12"
+            md="6"
+            lg="4"
+          >
+            <VCard>
+              <VCardTitle class="custom-v-card-title">
+                {{
+                  tenderBid.product.name +
+                    (tenderBid.brand.name ? ` (${tenderBid.brand.name})` : "")
+                }}
+              </VCardTitle>
 
-            <VCardText>
-              {{ tenderBid.product.description }}
-            </VCardText>
+              <VCardText>
+                {{ tenderBid.product.description }}
+              </VCardText>
 
-            <VCardText>
-              <VForm
-                @submit.prevent="
-                  {
-                  }
-                "
-              >
-                <VRow>
-                  <VCol cols="12">
-                    <AppTextField
-                      v-model="tenderBid.bidPrice"
-                      label="قیمت"
-                      type="number"
-                      prepend-inner-icon="tabler-coin"
-                      suffix="ریال"
-                    />
-                  </VCol>
+              <VCardText>
+                <VForm
+                  validate-on="submit lazy"
+                  @submit.prevent="sendTenderBid(tenderBid.id)"
+                >
+                  <VRow>
+                    <VCol cols="12">
+                      <AppTextField
+                        v-model="tenderBid.bidPrice"
+                        label="قیمت"
+                        type="number"
+                        prepend-inner-icon="tabler-coin"
+                        suffix="ریال"
+                      />
+                    </VCol>
 
-                  <VCol cols="12">
-                    <AppTextField
-                      v-model="tenderBid.bidQuantity"
-                      label="تعداد"
-                      type="number"
-                      prepend-inner-icon="tabler-scale"
-                      :suffix="tenderBid.product.unit.name"
-                    />
-                  </VCol>
+                    <VCol cols="12">
+                      <AppTextField
+                        v-model="tenderBid.bidQuantity"
+                        label="تعداد"
+                        type="number"
+                        prepend-inner-icon="tabler-scale"
+                        :suffix="tenderBid.product.unit.name"
+                        :placeholder="`مقدار مورد نیاز: ${tenderBid.product.requiredQuantity}`"
+                      />
+                    </VCol>
 
-                  <VCol cols="12">
-                    <AppTextarea
-                      v-model="tenderBid.description"
-                      label="توضیحات"
-                      rows="3"
-                    />
-                  </VCol>
+                    <VCol cols="12">
+                      <AppTextarea
+                        v-model="tenderBid.description"
+                        label="توضیحات"
+                        rows="3"
+                      />
+                    </VCol>
 
-                  <VCol cols="12">
-                    <VBtn type="submit">
-                      <VIcon icon="tabler-send" />
-                      ارسال
-                    </VBtn>
-                  </VCol>
-                </VRow>
-              </VForm>
-            </VCardText>
-          </VCard>
-        </VCol>
+                    <VCol cols="12">
+                      <VBtn
+                        type="submit"
+                        :loading="isSendTenderBidsPending[tenderBid.id]"
+                      >
+                        <VIcon icon="tabler-send" />
+                        ارسال
+                      </VBtn>
+                    </VCol>
+                  </VRow>
+                </VForm>
+              </VCardText>
+            </VCard>
+          </VCol>
+        </VExpandTransition>
       </VRow>
     </div>
   </main>
