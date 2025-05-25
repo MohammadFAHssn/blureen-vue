@@ -1,6 +1,4 @@
 <script setup>
-import AppTextarea from "@/@core/components/app-form-elements/AppTextarea.vue"
-
 definePage({
   meta: {
     layout: "blank",
@@ -13,7 +11,7 @@ definePage({
 
 // const { execute: fetchUsers, data, error } = await useApi(createUrl("/test"))
 
-const products = ref([
+const products = [
   {
     id: 1,
     name: "دستگاه پمپ چسب آکواریوم",
@@ -53,41 +51,32 @@ const products = ref([
     ],
     unit: { name: "رأس" },
   },
-])
+]
 
-const firstName = ref("")
-const lastName = ref("")
-const city = ref("")
-const country = ref("")
-const company = ref("")
-const email = ref("")
-const checkbox = ref(false)
+const supplier = { id: 1, name: "امید ترمه گستر یزد شهاب" }
 
-const tenderBids = computed(() => {
+const tenderBids = ref([])
+
+console.log(tenderBids)
+
+onMounted(() => {
+  // start init tenderBids
   let initialTenderBids = []
+  let id = 1
 
-  const initialTenderBid = {
-    supplierId: "",
-    productId: "",
-    brandId: "",
-    bidPrice: "",
-    bidQuantity: "",
-    description: "",
-  }
-
-  products.value.map(product => {
-    if (!product.brands) {
-      initialTenderBids.push(initialTenderBid)
+  products.forEach(product => {
+    if (!product.brands.length) {
+      initialTenderBids.push({ id: id++, product, brand: {}, bidPrice: '', bidQuantity: '', description: '' })
     }
-    product.brands.map(brand => {
-      initialTenderBids.push(initialTenderBid)
+    product.brands.forEach(brand => {
+      initialTenderBids.push({ id: id++, product, brand, bidPrice: '', bidQuantity: '', description: '' })
     })
   })
 
-  return initialTenderBids
-})
+  tenderBids.value = initialTenderBids
 
-console.log(tenderBids)
+  // end init tenderBids
+})
 </script>
 
 <template>
@@ -95,10 +84,11 @@ console.log(tenderBids)
     <div>
       <VRow>
         <VCol>
-          <div>
-            <h6 class="text-h6 mb-2">
-              مدیریت محترم شرکت/فروشگاه
-            </h6>
+          <div class="text-wrap mb-2">
+            مدیریت محترم شرکت/فروشگاه
+            <span class="text-h6">
+              {{ supplier.name }}
+            </span>
           </div>
 
           <div class="text-wrap text-body-1">
@@ -114,138 +104,65 @@ console.log(tenderBids)
 
       <VRow>
         <VCol
-          v-for="(product, product_index) in products"
-          :key="product.id"
+          v-for="tenderBid in tenderBids"
+          :key="tenderBid.id"
           cols="12"
         >
-          <VRow>
-            <VCol
-              v-for="(brand, brand_index) in product.brands"
-              :key="brand.id"
-              lg="4"
-              md="6"
-              cols="12"
-            >
-              <VCard>
-                <VCardTitle class="custom-v-card-title">
-                  {{ product.name + " " + "(" + brand.name + ")" }}
-                </VCardTitle>
+          <VCard>
+            <VCardTitle class="custom-v-card-title">
+              {{ tenderBid.product.name + (tenderBid.brand.name ? ` (${tenderBid.brand.name})` : "") }}
+            </VCardTitle>
 
-                <VCardText>
-                  {{ product.description }}
-                </VCardText>
-                <VCardText>
-                  <VForm
-                    class="custom-v-form"
-                    @submit.prevent="
-                      {
-                      }
-                    "
-                  >
-                    <VRow>
-                      <VCol cols="12">
-                        <AppTextField
-                          v-model="firstName"
-                          prepend-inner-icon="tabler-coin"
-                          label="قیمت"
-                          suffix="ریال"
-                          type="number"
-                        />
-                      </VCol>
+            <VCardText>
+              {{ tenderBid.product.description }}
+            </VCardText>
 
-                      <VCol cols="12">
-                        <AppTextField
-                          v-model="email"
-                          prepend-inner-icon="tabler-scale"
-                          label="تعداد"
-                          type="number"
-                          :suffix="product.unit.name"
-                        />
-                      </VCol>
+            <VCardText>
+              <VForm
+                @submit.prevent="
+                  {
+                  }
+                "
+              >
+                <VRow>
+                  <VCol cols="12">
+                    <AppTextField
+                      v-model="tenderBid.bidPrice"
+                      label="قیمت"
+                      type="number"
+                      prepend-inner-icon="tabler-coin"
+                      suffix="ریال"
+                    />
+                  </VCol>
 
-                      <VCol cols="12">
-                        <AppTextarea
-                          v-model="mobile"
-                          label="توضیحات"
-                          rows="3"
-                        />
-                      </VCol>
+                  <VCol cols="12">
+                    <AppTextField
+                      v-model="tenderBid.bidQuantity"
+                      label="تعداد"
+                      type="number"
+                      prepend-inner-icon="tabler-scale"
+                      :suffix="tenderBid.product.unit.name"
+                    />
+                  </VCol>
 
-                      <VCol cols="12">
-                        <VBtn type="submit">
-                          <VIcon icon="tabler-send" />
-                          ارسال
-                        </VBtn>
-                      </VCol>
-                    </VRow>
-                  </VForm>
-                </VCardText>
-              </VCard>
-            </VCol>
+                  <VCol cols="12">
+                    <AppTextarea
+                      v-model="tenderBid.description"
+                      label="توضیحات"
+                      rows="3"
+                    />
+                  </VCol>
 
-            <VCol
-              v-if="!product.brands.length"
-              lg="4"
-              md="6"
-              cols="12"
-            >
-              <VCard>
-                <VCardTitle class="custom-v-card-title">
-                  {{ product.name }}
-                </VCardTitle>
-
-                <VCardText>
-                  {{ product.description }}
-                </VCardText>
-                <VCardText>
-                  <VForm
-                    class="custom-v-form"
-                    @submit.prevent="
-                      {
-                      }
-                    "
-                  >
-                    <VRow>
-                      <VCol cols="12">
-                        <AppTextField
-                          v-model="firstName"
-                          prepend-inner-icon="tabler-coin"
-                          label="قیمت"
-                          suffix="ریال"
-                          type="number"
-                        />
-                      </VCol>
-
-                      <VCol cols="12">
-                        <AppTextField
-                          v-model="email"
-                          prepend-inner-icon="tabler-scale"
-                          label="تعداد"
-                          type="number"
-                          :suffix="product.unit.name"
-                        />
-                      </VCol>
-
-                      <VCol cols="12">
-                        <AppTextarea
-                          v-model="mobile"
-                          label="توضیحات"
-                          rows="3"
-                        />
-                      </VCol>
-
-                      <VCol cols="12">
-                        <VBtn type="submit">
-                          <VIcon icon="tabler-send" />
-                          ارسال
-                        </VBtn>
-                      </VCol>
-                    </VRow>
-                  </VForm>
-                </VCardText>
-              </VCard>
-            </VCol>
-          </VRow>
+                  <VCol cols="12">
+                    <VBtn type="submit">
+                      <VIcon icon="tabler-send" />
+                      ارسال
+                    </VBtn>
+                  </VCol>
+                </VRow>
+              </VForm>
+            </VCardText>
+          </VCard>
         </VCol>
       </VRow>
     </div>
@@ -263,19 +180,5 @@ console.log(tenderBids)
 
 .custom-v-card-title {
   white-space: break-spaces !important;
-}
-
-.custom-v-toolbar-title {
-  flex: 10 1 !important;
-  font-size: 1.1em !important;
-}
-
-.custom-v-form {
-  // margin: 1em;marginmargin
-}
-
-.dialog-bottom-transition-enter-active,
-.dialog-bottom-transition-leave-active {
-  transition: transform 0.2s ease-in-out;
 }
 </style>
