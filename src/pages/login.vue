@@ -41,7 +41,7 @@ const credentials = ref({
 
 const rememberMe = ref(false)
 
-const IsThereAProblem = ref(false)
+const hasError = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
@@ -62,7 +62,7 @@ const login = async () => {
           errors.value = response._data.errors
         } else {
           IsItWaitingServerResponse.value = false
-          IsThereAProblem.value = true
+          hasError.value = true
         }
       },
     })
@@ -101,7 +101,7 @@ const onSubmit = () => {
   </VSnackbar>
 
   <VSnackbar
-    v-model="IsThereAProblem"
+    v-model="hasError"
     :timeout="2000"
     location="center"
     variant="outlined"
