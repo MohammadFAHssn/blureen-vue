@@ -60,10 +60,15 @@ const supplier = { id: 1, name: "امید ترمه گستر یزد شهاب" }
 
 const tenderBids = ref([])
 
-const isSendTenderBidsPending = ref([])
 const isTenderBidsVisible = ref([])
+
+const isSendTenderBidsPending = ref([])
+
 const hasError = ref(false)
 const isSuccessful = ref(false)
+
+const paymentTerms = ref()
+const invoiceType = ref()
 
 const sendTenderBid = async tenderBidId => {
   const tenderBid = tenderBids.value.find(tenderBid => tenderBid.id === tenderBidId)
@@ -168,6 +173,55 @@ onMounted(() => {
           <div class="text-wrap text-body-1">
             لطفاً قیمت‌های پیشنهادی خود را ارائه دهید.
           </div>
+        </VCol>
+      </VRow>
+
+      <VRow>
+        <VCol>
+          <VLabel class="mb-2">
+            شرایط پرداخت
+          </VLabel>
+          <VRadioGroup
+            v-model="paymentTerms"
+            inline
+          >
+            <VRadio
+              label="نقدی"
+              value="cash"
+            />
+            <VRadio
+              label="شرایطی"
+              value="credit"
+            />
+          </VRadioGroup>
+
+          <AppTextField
+            v-if="paymentTerms === 'credit'"
+            v-model="creditDescription"
+            type="text"
+            placeholder="توضیحات"
+          />
+        </VCol>
+      </VRow>
+
+      <VRow>
+        <VCol>
+          <VLabel class="mb-2">
+            نوع فاکتور
+          </VLabel>
+          <VRadioGroup
+            v-model="invoiceType"
+            inline
+          >
+            <VRadio
+              label="فاکتور رسمی"
+              value="cash"
+            />
+            <VRadio
+              label="فاکتور 6 درصد"
+              value="credit"
+            />
+          </VRadioGroup>
         </VCol>
       </VRow>
 
