@@ -8,7 +8,6 @@ definePage({
 
 // const route = useRoute()
 // <div>{{ route.params.id }}</div>
-
 // const { execute: fetchUsers, data, error } = await useApi(createUrl("/test"))
 
 const products = [
@@ -67,6 +66,12 @@ const hasError = ref(false)
 const isSuccessful = ref(false)
 
 const sendTenderBid = async tenderBidId => {
+  const tenderBid = tenderBids.value.find(tenderBid => tenderBid.id === tenderBidId)
+
+  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {    
+    return
+  }
+
   isSendTenderBidsPending.value[tenderBidId] = true
 
   await new Promise((resolve, reject) => {
@@ -202,6 +207,7 @@ onMounted(() => {
                         type="number"
                         prepend-inner-icon="tabler-coin"
                         suffix="ریال"
+                        :rules="[requiredValidator]"
                       />
                     </VCol>
 
@@ -213,6 +219,7 @@ onMounted(() => {
                         prepend-inner-icon="tabler-scale"
                         :suffix="tenderBid.product.unit.name"
                         :placeholder="`مقدار مورد نیاز: ${tenderBid.product.requiredQuantity}`"
+                        :rules="[requiredValidator]"
                       />
                     </VCol>
 
