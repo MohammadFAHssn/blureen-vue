@@ -1,8 +1,8 @@
 export default [
   {
     heading: 'User Management',
-    action: 'manage',
-    subject: 'User',
+    action: 'see',
+    subject: 'User-Management-Navbar',
   },
   {
     title: 'Users',

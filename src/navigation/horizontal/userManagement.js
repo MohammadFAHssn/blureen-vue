@@ -2,8 +2,8 @@ export default [
   {
     title: 'User Management',
     icon: { icon: 'tabler-users' },
-    action: 'manage',
-    subject: 'User',
+    action: 'see',
+    subject: 'User-Management-Navbar',
     children: [
       {
         title: 'Users',
