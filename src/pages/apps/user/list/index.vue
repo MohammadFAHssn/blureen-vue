@@ -59,7 +59,7 @@ const {
   execute: fetchUsers,
   data,
   error,
-} = await useApi(createUrl("/base/user/get?fields[roles]=name&include=roles"))
+} = await useApi(createUrl("/get?fields[roles]=name&include=roles&model=base.user"))
 
 const hasError = computed(() => Boolean(error.value))
 
