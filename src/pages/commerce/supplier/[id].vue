@@ -218,7 +218,7 @@ onMounted(() => {
               value="cash"
             />
             <VRadio
-              label="فاکتور 6 درصد"
+              label="فاکتور فروشگاهی"
               value="credit"
             />
           </VRadioGroup>
