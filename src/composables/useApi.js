@@ -35,5 +35,12 @@ export const useApi = createFetch({
       
       return { data: parsedData, response }
     },
+    onFetchError(ctx) {
+      if (ctx.response.status === 401) {
+        useLogout()
+      }
+
+      return ctx
+    },
   },
 })

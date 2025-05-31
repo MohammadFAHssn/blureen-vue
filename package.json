@@ -13,6 +13,7 @@
     "postinstall": "npm run build:icons && npm run msw:init"
   },
   "dependencies": {
+    "@ag-grid-community/locale": "^33.3.0",
     "@casl/ability": "6.7.2",
     "@casl/vue": "2.2.2",
     "@floating-ui/dom": "1.6.8",
@@ -27,6 +28,9 @@
     "@tiptap/vue-3": "^2.10.3",
     "@vueuse/core": "10.11.1",
     "@vueuse/math": "10.11.1",
+    "ag-charts-enterprise": "^11.2.4",
+    "ag-grid-enterprise": "^33.2.4",
+    "ag-grid-vue3": "^33.2.4",
     "apexcharts": "3.54.1",
     "chart.js": "4.4.7",
     "cookie-es": "1.2.2",

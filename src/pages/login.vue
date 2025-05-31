@@ -4,25 +4,21 @@
 -->
 
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
-import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
-import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
-import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
+import { VForm } from 'vuetify/components/VForm'
 
-const authThemeImg = useGenerateImageVariant(authV2LoginIllustrationLight, authV2LoginIllustrationDark, authV2LoginIllustrationBorderedLight, authV2LoginIllustrationBorderedDark, true)
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
   meta: {
     layout: 'blank',
     unauthenticatedOnly: true,
+
+    // public, 
   },
 })
 
@@ -45,16 +41,29 @@ const credentials = ref({
 
 const rememberMe = ref(false)
 
+const hasError = ref(false)
+const IsItWaitingServerResponse = ref(false)
+
+const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
+
+
 const login = async () => {
+  IsItWaitingServerResponse.value = true
   try {
     const res = await $api('/login', {
       method: 'POST',
       body: {
-        user_name: credentials.value.username,
+        username: credentials.value.username,
         password: credentials.value.password,
       },
       onResponseError({ response }) {
-        errors.value = response._data.errors
+        IsItWaitingServerResponse.value = false
+        if (response._data.errors) {
+          errors.value = response._data.errors
+        } else {
+          IsItWaitingServerResponse.value = false
+          hasError.value = true
+        }
       },
     })
 
@@ -81,6 +90,26 @@ const onSubmit = () => {
 </script>
 
 <template>
+  <VSnackbar
+    v-model="isRedirectedFromUnauthorizedStatus"
+    :timeout="5000"
+    location="center"
+    variant="outlined"
+    color="error"
+  >
+    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره وارد شوید.
+  </VSnackbar>
+
+  <VSnackbar
+    v-model="hasError"
+    :timeout="2000"
+    location="center"
+    variant="outlined"
+    color="error"
+  >
+    مشکلی پیش آمده است
+  </VSnackbar>
+
   <RouterLink to="/">
     <div class="auth-logo d-flex align-center gap-x-3">
       <VNodeRenderer :nodes="themeConfig.app.logo" />
@@ -133,6 +162,7 @@ const onSubmit = () => {
         <VCardText>
           <VForm
             ref="refVForm"
+            validate-on="submit lazy"
             @submit.prevent="onSubmit"
           >
             <VRow>
@@ -157,7 +187,7 @@ const onSubmit = () => {
                   placeholder="············"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  autocomplete="password"
+                  autocomplete="off"
                   :error-messages="errors.password"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
@@ -170,7 +200,7 @@ const onSubmit = () => {
                   />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
-                    :to="{ name: 'forgot-password' }"
+                    :to="{ name: 'login' }"
                   >
                     رمز عبور خود را فراموش کرده‌اید؟
                   </RouterLink>
@@ -179,6 +209,8 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
+                  :loading="IsItWaitingServerResponse"  
+                  :disabled="IsItWaitingServerResponse"
                 >
                   ورود
                 </VBtn>

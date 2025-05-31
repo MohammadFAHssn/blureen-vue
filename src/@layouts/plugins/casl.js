@@ -46,5 +46,5 @@ export const canNavigate = to => {
 
   // If no specific permissions, fall back to checking if any parent route allows access
     
-  return to.matched.some(route => ability.can(route.meta.action, route.meta.subject))
+  return to.matched.some(route => (route.meta.action && route.meta.subject) ? ability.can(route.meta.action, route.meta.subject) : true)
 }
