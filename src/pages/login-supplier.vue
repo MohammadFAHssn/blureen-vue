@@ -47,7 +47,7 @@ const login = async () => {
     const res = await $api('/login-supplier', {
       method: 'POST',
       body: {
-        phone_number: credentials.value.phoneNumber,
+        phoneNumber: credentials.value.phoneNumber,
       },
       onResponseError({ response }) {
         IsItWaitingServerResponse.value = false
