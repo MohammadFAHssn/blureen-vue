@@ -93,3 +93,10 @@ export const alphaDashValidator = value => {
   
   return /^[\w-]*$/.test(valueAsString) || 'All Character are not valid'
 }
+
+// 👉 Phone Number Validator
+export const phoneNumberValidator = value => {
+  const valueAsString = String(value)
+  
+  return /^09\d{9}$/.test(valueAsString) || 'شماره تلفن معتبر نیست'
+}
