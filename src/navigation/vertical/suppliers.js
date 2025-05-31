@@ -20,15 +20,13 @@ export default [
       {
         title: 'Active Tenders',
         icon: { icon: "tabler-checkbox" },
-
-        // to: 'apps-user-list',
+        to: 'apps-supplier-tender-active-tenders',
         action: 'see',
         subject: 'Tender-Navbar',
       },
       {
         title: 'Tender History',
-
-        // to: 'apps-user-list',
+        to: 'apps-supplier-tender-tender-history',
         icon: { icon: "tabler-history" },
         action: 'see',
         subject: 'Tender-Navbar',

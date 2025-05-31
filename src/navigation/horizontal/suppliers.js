@@ -22,7 +22,7 @@ export default [
             title: 'Active Tenders',
             icon: { icon: "tabler-checkbox" },
 
-            // to: 'apps-user-list',
+            to: 'apps-supplier-tender-active-tenders',
             action: 'see',
             subject: 'Tender-Navbar',
           },
@@ -30,7 +30,7 @@ export default [
             title: 'Tender History',
             icon: { icon: "tabler-history" },
 
-            // to: 'apps-user-list',
+            to: 'apps-supplier-tender-tender-history',
             action: 'see',
             subject: 'Tender-Navbar',
           },
