@@ -26,32 +26,34 @@ definePage({
   },
 })
 
-const isPasswordVisible = ref(false)
 const route = useRoute()
 const router = useRouter()
 const ability = useAbility()
 
 const errors = ref({
-  username: undefined,
-  password: undefined,
+  phoneNumber: undefined,
 })
 
 const refVForm = ref()
 
 const credentials = ref({
-  username: '',
-  password: '',
+  phoneNumber: '',
 })
 
 const rememberMe = ref(false)
 
 const login = async () => {
+  if (phoneNumberValidator(credentials.value.phoneNumber)) {
+    errors.value.phoneNumber = "شماره تلفن معتبر نیست"
+    
+    return
+  }
+
   try {
     const res = await $api('/login', {
       method: 'POST',
       body: {
-        user_name: credentials.value.username,
-        password: credentials.value.password,
+        phone_number: credentials.value.phoneNumber,
       },
       onResponseError({ response }) {
         errors.value = response._data.errors
@@ -128,6 +130,10 @@ const onSubmit = () => {
           <h4 class="text-h4 mb-1">
             خوش آمدید <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
           </h4>
+
+          <p class="mb-0">
+            جهت ورود به سامانه، شماره تلفن همراه خود را وارد کنید
+          </p>
         </VCardText>
 
         <VCardText>
@@ -136,20 +142,19 @@ const onSubmit = () => {
             @submit.prevent="onSubmit"
           >
             <VRow>
-              <!-- username -->
+              <!-- phoneNumber -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="credentials.username"
-                  label="شماره تلفن همراه خود را وارد کرده و پس از کلیک بر روی دکمه ارسال، منتظر پیامک حاوی کد تأیید باشید"
+                  v-model="credentials.phoneNumber"
+                  label="شماره تلفن همراه"
                   placeholder="مثلاً: 09123456789"
                   type="text"
                   autofocus
                   :rules="[requiredValidator]"
-                  :error-messages="errors.username"
+                  :error-messages="errors.phoneNumber"
                 />
               </VCol>
 
-              <!-- password -->
               <VCol cols="12">
                 <VBtn
                   block
