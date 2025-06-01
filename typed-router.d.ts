@@ -19,7 +19,6 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'apps-email': RouteRecordInfo<'apps-email', '/apps/email', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
     'apps-roles': RouteRecordInfo<'apps-roles', '/apps/roles', Record<never, never>, Record<never, never>>,
     'apps-supplier-id': RouteRecordInfo<'apps-supplier-id', '/apps/supplier/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
@@ -27,8 +26,6 @@ declare module 'vue-router/auto-routes' {
     'apps-supplier-tender-active-tenders': RouteRecordInfo<'apps-supplier-tender-active-tenders', '/apps/supplier/tender/active-tenders', Record<never, never>, Record<never, never>>,
     'apps-supplier-tender-tender-history': RouteRecordInfo<'apps-supplier-tender-tender-history', '/apps/supplier/tender/tender-history', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
-    'apps-email-filter': RouteRecordInfo<'apps-email-filter', '/apps/email/:filter', { filter: ParamValue<true> }, { filter: ParamValue<false> }>,
-    'apps-email-label': RouteRecordInfo<'apps-email-label', '/apps/email/:label', { label: ParamValue<true> }, { label: ParamValue<false> }>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
