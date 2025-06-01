@@ -70,10 +70,41 @@ const isSuccessful = ref(false)
 const paymentTerms = ref()
 const invoiceType = ref()
 
-const sendTenderBid = async tenderBidId => {
-  const tenderBid = tenderBids.value.find(tenderBid => tenderBid.id === tenderBidId)
+const tenderExpiresAt = 1748869346842
+const tenderExpiresIn = ref(tenderExpiresAt - Date.now())
 
-  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {    
+const intervalId = setInterval(() => {
+  tenderExpiresIn.value -= 1000
+
+  if (tenderExpiresIn.value <= 0) {
+    clearInterval(intervalId)
+    tenderExpiresIn.value = 0
+  }
+}, 1000)
+
+
+const timeRemaining = computed(() => {
+  const totalSeconds = Math.floor(tenderExpiresIn.value / 1000)
+
+  const days = Math.floor(totalSeconds / (3600 * 24))
+  const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = Math.floor(totalSeconds % 60)
+
+  return {
+    days,
+    hours: hours.toString().padStart(2, "0"),
+    minutes: minutes.toString().padStart(2, "0"),
+    seconds: seconds.toString().padStart(2, "0"),
+  }
+})
+
+const sendTenderBid = async tenderBidId => {
+  const tenderBid = tenderBids.value.find(
+    tenderBid => tenderBid.id === tenderBidId,
+  )
+
+  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {
     return
   }
 
@@ -131,6 +162,8 @@ onMounted(() => {
 
   // end init tenderBids
 })
+
+onUnmounted(() => clearInterval(intervalId))
 </script>
 
 <template>
@@ -177,51 +210,89 @@ onMounted(() => {
       </VRow>
 
       <VRow>
-        <VCol>
-          <VLabel class="mb-2">
-            شرایط پرداخت
-          </VLabel>
-          <VRadioGroup
-            v-model="paymentTerms"
-            inline
-          >
-            <VRadio
-              label="نقدی"
-              value="cash"
-            />
-            <VRadio
-              label="شرایطی"
-              value="credit"
-            />
-          </VRadioGroup>
+        <VList style="background-color: rgb(var(--v-theme-background));">
+          <VListItem>
+            <VListItemTitle class="font-weight-medium">
+              مدت زمان باقی‌مانده تا پایان مناقصه:
+            </VListItemTitle>
 
-          <AppTextField
-            v-if="paymentTerms === 'credit'"
-            v-model="creditDescription"
-            type="text"
-            placeholder="توضیحات"
-          />
-        </VCol>
+            <template #prepend>
+              <VAvatar
+                color="warning"
+                variant="tonal"
+                rounded
+                icon="tabler-stopwatch"
+              />
+            </template>
+
+            <VListItemSubtitle class="text-wrap text-body-1">
+              <VChip v-if="timeRemaining.days > 0">
+                {{ timeRemaining.days }} روز و {{ timeRemaining.hours }} ساعت
+              </VChip>
+              <VChip v-else>
+                {{ timeRemaining.hours }}:{{ timeRemaining.minutes }}:{{
+                  timeRemaining.seconds
+                }}
+              </VChip>
+            </VListItemSubtitle>
+          </VListItem>
+        </VList>
       </VRow>
 
       <VRow>
-        <VCol>
-          <VLabel class="mb-2">
-            نوع فاکتور
-          </VLabel>
-          <VRadioGroup
-            v-model="invoiceType"
-            inline
-          >
-            <VRadio
-              label="فاکتور رسمی"
-              value="cash"
-            />
-            <VRadio
-              label="فاکتور فروشگاهی"
-              value="credit"
-            />
-          </VRadioGroup>
+        <VCol
+          cols="12"
+          md="6"
+          lg="4"
+        >
+          <VCard>
+            <VCardText class="custom-v-card-text">
+              <VLabel class="mb-2">
+                شرایط پرداخت
+              </VLabel>
+              <VRadioGroup
+                v-model="paymentTerms"
+                inline
+              >
+                <VRadio
+                  label="نقدی"
+                  value="cash"
+                />
+                <VRadio
+                  label="شرایطی"
+                  value="credit"
+                />
+              </VRadioGroup>
+
+              <AppTextField
+                v-if="paymentTerms === 'credit'"
+                v-model="creditDescription"
+                type="text"
+                placeholder="توضیحات"
+              />
+            </VCardText>
+            
+            <VDivider />
+
+            <VCardText class="custom-v-card-text">
+              <VLabel class="mb-2">
+                نوع فاکتور
+              </VLabel>
+              <VRadioGroup
+                v-model="invoiceType"
+                inline
+              >
+                <VRadio
+                  label="فاکتور رسمی"
+                  value="cash"
+                />
+                <VRadio
+                  label="فاکتور فروشگاهی"
+                  value="credit"
+                />
+              </VRadioGroup>
+            </VCardText>
+          </VCard>
         </VCol>
       </VRow>
 
@@ -316,5 +387,9 @@ onMounted(() => {
 
 .custom-v-card-title {
   white-space: break-spaces !important;
+}
+
+.custom-v-card-text {
+  padding: 1em !important;
 }
 </style>
