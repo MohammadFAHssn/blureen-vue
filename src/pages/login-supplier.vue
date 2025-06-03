@@ -26,6 +26,7 @@ const ability = useAbility()
 
 const errors = ref({
   phoneNumber: undefined,
+  other: undefined,
 })
 
 const refVForm = ref()
@@ -54,7 +55,7 @@ const login = async () => {
         if (response._data.errors) {
           errors.value = response._data.errors
         } else {
-          IsItWaitingServerResponse.value = false
+          errors.value.other = response._data.message
           hasError.value = true
         }
       },
@@ -70,7 +71,6 @@ const login = async () => {
       router.replace('/two-step-supplier')
     })
   } catch (err) {
-    console.error(err)
   }
 }
 
@@ -100,7 +100,7 @@ const onSubmit = () => {
     variant="outlined"
     color="error"
   >
-    مشکلی پیش آمده است
+    {{ errors.other }}
   </VSnackbar>
   
   <RouterLink to="/">
@@ -169,7 +169,7 @@ const onSubmit = () => {
                   v-model="credentials.phoneNumber"
                   label="شماره تلفن همراه"
                   placeholder="مثلاً: 09123456789"
-                  type="text"
+                  type="number"
                   autofocus
                   :rules="[requiredValidator, phoneNumberValidator]"
                   :error-messages="errors.phoneNumber"
