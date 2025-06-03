@@ -74,7 +74,7 @@ const users = computed(() => data.value?.data)
     variant="outlined"
     color="error"
   >
-    مشکلی پیش آمده است
+    خطایی رخ داده‌است
   </VSnackbar>
 
   <section
