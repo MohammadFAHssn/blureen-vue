@@ -363,6 +363,6 @@
     "whenever": true,
     "useLogout": true,
     "useAGGridTheme": true,
-    "phoneNumberValidator": true
+    "mobileNumberValidator": true
   }
 }

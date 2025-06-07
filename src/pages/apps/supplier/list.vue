@@ -27,7 +27,7 @@ const columnDefs = ref([
     cellRenderer: MultiValuedCell,
     cellStyle: { display: "flex", "align-items": "center" },
   },
-  { headerName: "شماره تلفن", field: "phoneNumber", flex: 2 },
+  { headerName: "شماره تلفن", field: "mobileNumber", flex: 2 },
   {
     headerName: "وضعیت",
     field: "active",
@@ -47,7 +47,7 @@ const rowData = computed(() =>
       firstName: user.first_name,
       lastName: user.last_name,
       roles: user.roles?.map(role => role.name),
-      phoneNumber: user.phone_number,
+      mobileNumber: user.mobile_number,
       active: user.active,
     }
   }),

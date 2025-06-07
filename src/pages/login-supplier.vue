@@ -25,14 +25,14 @@ const router = useRouter()
 const ability = useAbility()
 
 const errors = ref({
-  phoneNumber: undefined,
+  mobileNumber: undefined,
   other: undefined,
 })
 
 const refVForm = ref()
 
 const credentials = ref({
-  phoneNumber: '',
+  mobileNumber: '',
 })
 
 
@@ -48,7 +48,7 @@ const login = async () => {
     const res = await $api('/login-supplier', {
       method: 'POST',
       body: {
-        phoneNumber: credentials.value.phoneNumber,
+        mobileNumber: credentials.value.mobileNumber,
       },
       onResponseError({ response }) {
         IsItWaitingServerResponse.value = false
@@ -163,16 +163,16 @@ const onSubmit = () => {
             @submit.prevent="onSubmit"
           >
             <VRow>
-              <!-- phoneNumber -->
+              <!-- mobileNumber -->
               <VCol cols="12">
                 <AppTextField
-                  v-model="credentials.phoneNumber"
+                  v-model="credentials.mobileNumber"
                   label="شماره تلفن همراه"
                   placeholder="مثلاً: 09123456789"
                   type="number"
                   autofocus
-                  :rules="[requiredValidator, phoneNumberValidator]"
-                  :error-messages="errors.phoneNumber"
+                  :rules="[requiredValidator, mobileNumberValidator]"
+                  :error-messages="errors.mobileNumber"
                 />
               </VCol>
 
