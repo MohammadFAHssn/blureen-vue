@@ -1,12 +1,8 @@
 <script setup>
-import {
-  animations,
-  handleEnd,
-  performTransfer,
-} from '@formkit/drag-and-drop'
-import { dragAndDrop } from '@formkit/drag-and-drop/vue'
-import { VForm } from 'vuetify/components/VForm'
-import KanbanCard from '@/views/apps/kanban/KanbanCard.vue'
+import { animations, handleEnd, performTransfer } from "@formkit/drag-and-drop"
+import { dragAndDrop } from "@formkit/drag-and-drop/vue"
+import { VForm } from "vuetify/components/VForm"
+import KanbanCard from "@/views/apps/kanban/KanbanCard.vue"
 
 const props = defineProps({
   kanbanIds: {
@@ -32,12 +28,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'renameBoard',
-  'deleteBoard',
-  'addNewItem',
-  'editItem',
-  'updateItemsState',
-  'deleteItem',
+  "renameBoard",
+  "deleteBoard",
+  "addNewItem",
+  "editItem",
+  "updateItemsState",
+  "deleteItem",
 ])
 
 const refKanbanBoard = ref()
@@ -46,22 +42,22 @@ const localIds = ref(props.kanbanIds)
 const isAddNewFormVisible = ref(false)
 const isBoardNameEditing = ref(false)
 const refForm = ref()
-const newTaskTitle = ref('')
+const newTaskTitle = ref("")
 const refKanbanBoardTitle = ref()
 
 // 👉 required validator
 const boardActions = [
   {
-    title: 'Rename',
-    prependIcon: 'tabler-pencil',
+    title: "Rename",
+    prependIcon: "tabler-pencil",
     onClick: () => {
       isBoardNameEditing.value = true
     },
   },
   {
-    title: 'Delete',
-    prependIcon: 'tabler-trash',
-    onClick: () => emit('deleteBoard', props.boardId),
+    title: "Delete",
+    prependIcon: "tabler-trash",
+    onClick: () => emit("deleteBoard", props.boardId),
   },
 ]
 
@@ -69,7 +65,7 @@ const boardActions = [
 const renameBoard = () => {
   refKanbanBoardTitle.value?.validate().then(valid => {
     if (valid.valid) {
-      emit('renameBoard', {
+      emit("renameBoard", {
         oldName: props.boardName,
         newName: localBoardName.value,
         boardId: props.boardId,
@@ -83,13 +79,13 @@ const renameBoard = () => {
 const addNewItem = () => {
   refForm.value?.validate().then(valid => {
     if (valid.valid) {
-      emit('addNewItem', {
+      emit("addNewItem", {
         itemTitle: newTaskTitle.value,
         boardName: props.boardName,
         boardId: props.boardId,
       })
       isAddNewFormVisible.value = false
-      newTaskTitle.value = ''
+      newTaskTitle.value = ""
     }
   })
 }
@@ -99,18 +95,18 @@ dragAndDrop({
   parent: refKanbanBoard,
   values: localIds,
   group: props.groupName,
-  draggable: child => child.classList.contains('kanban-card'),
+  draggable: child => child.classList.contains("kanban-card"),
   plugins: [animations()],
   performTransfer: (state, data) => {
     performTransfer(state, data)
-    emit('updateItemsState', {
+    emit("updateItemsState", {
       boardId: props.boardId,
       ids: localIds.value,
     })
   },
   handleEnd: data => {
     handleEnd(data)
-    emit('updateItemsState', {
+    emit("updateItemsState", {
       boardId: props.boardId,
       ids: localIds.value,
     })
@@ -118,17 +114,22 @@ dragAndDrop({
 })
 
 // 👉 watch kanbanIds its is useful when you add new task
-watch(() => props, () => {
-  localIds.value = props.kanbanIds
-}, {
-  immediate: true,
-  deep: true,
-})
+watch(
+  () => props,
+  () => {
+    localIds.value = props.kanbanIds
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
 
-const resolveItemUsingId = id => props.kanbanData.items.find(item => item.id === id)
+const resolveItemUsingId = id =>
+  props.kanbanData.items.find(item => item.id === id)
 
 const deleteItem = item => {
-  emit('deleteItem', item)
+  emit("deleteItem", item)
 }
 
 // 👉 reset add new item form when esc or close
@@ -152,8 +153,7 @@ const hideResetBoardNameForm = () => {
 }
 
 const handleEnterKeydown = event => {
-  if (event.key === 'Enter' && !event.shiftKey)
-    addNewItem()
+  if (event.key === "Enter" && !event.shiftKey) addNewItem()
 }
 </script>
 
@@ -196,7 +196,7 @@ const handleEnterKeydown = event => {
 
       <div
         v-else
-        class="d-flex align-center justify-space-between "
+        class="d-flex align-center justify-space-between"
       >
         <h4 class="text-lg font-weight-medium text-truncate">
           {{ boardName }}
@@ -236,7 +236,13 @@ const handleEnterKeydown = event => {
           :board-id="props.boardId"
           :board-name="props.boardName"
           @delete-kanban-item="deleteItem"
-          @click="emit('editItem', { item: resolveItemUsingId(id), boardId: props.boardId, boardName: props.boardName })"
+          @click="
+            emit('editItem', {
+              item: resolveItemUsingId(id),
+              boardId: props.boardId,
+              boardName: props.boardName,
+            })
+          "
         />
       </template>
 

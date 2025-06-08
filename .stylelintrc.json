@@ -4,21 +4,14 @@
     "stylelint-config-idiomatic-order",
     "@stylistic/stylelint-config"
   ],
-  "plugins": [
-    "stylelint-use-logical-spec",
-    "@stylistic/stylelint-plugin"
-  ],
+  "plugins": ["stylelint-use-logical-spec", "@stylistic/stylelint-plugin"],
   "overrides": [
     {
-      "files": [
-        "**/*.scss"
-      ],
+      "files": ["**/*.scss"],
       "customSyntax": "postcss-scss"
     },
     {
-      "files": [
-        "**/*.vue"
-      ],
+      "files": ["**/*.vue"],
       "customSyntax": "postcss-html"
     }
   ],
@@ -36,9 +29,7 @@
     "annotation-no-unknown": [
       true,
       {
-        "ignoreAnnotations": [
-          "default"
-        ]
+        "ignoreAnnotations": ["default"]
       }
     ],
     "media-feature-range-notation": null

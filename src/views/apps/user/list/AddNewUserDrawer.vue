@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   isDrawerOpen: {
@@ -8,26 +8,23 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDrawerOpen',
-  'userData',
-])
+const emit = defineEmits(["update:isDrawerOpen", "userData"])
 
 const isFormValid = ref(false)
 const refForm = ref()
-const fullName = ref('')
-const userName = ref('')
-const email = ref('')
-const company = ref('')
+const fullName = ref("")
+const userName = ref("")
+const email = ref("")
+const company = ref("")
 const country = ref()
-const contact = ref('')
+const contact = ref("")
 const role = ref()
 const plan = ref()
 const status = ref()
 
 // 👉 drawer close
 const closeNavigationDrawer = () => {
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
   nextTick(() => {
     refForm.value?.reset()
     refForm.value?.resetValidation()
@@ -37,7 +34,7 @@ const closeNavigationDrawer = () => {
 const onSubmit = () => {
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
-      emit('userData', {
+      emit("userData", {
         id: 0,
         fullName: fullName.value,
         company: company.value,
@@ -47,10 +44,10 @@ const onSubmit = () => {
         email: email.value,
         currentPlan: plan.value,
         status: status.value,
-        avatar: '',
-        billing: 'Auto Debit',
+        avatar: "",
+        billing: "Auto Debit",
       })
-      emit('update:isDrawerOpen', false)
+      emit("update:isDrawerOpen", false)
       nextTick(() => {
         refForm.value?.reset()
         refForm.value?.resetValidation()
@@ -60,7 +57,7 @@ const onSubmit = () => {
 }
 
 const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 </script>
 
@@ -161,7 +158,13 @@ const handleDrawerModelValueUpdate = val => {
                   label="Select Role"
                   placeholder="Select Role"
                   :rules="[requiredValidator]"
-                  :items="['Admin', 'Author', 'Editor', 'Maintainer', 'Subscriber']"
+                  :items="[
+                    'Admin',
+                    'Author',
+                    'Editor',
+                    'Maintainer',
+                    'Subscriber',
+                  ]"
                 />
               </VCol>
 
@@ -183,7 +186,11 @@ const handleDrawerModelValueUpdate = val => {
                   label="Select Status"
                   placeholder="Select Status"
                   :rules="[requiredValidator]"
-                  :items="[{ title: 'Active', value: 'active' }, { title: 'Inactive', value: 'inactive' }, { title: 'Pending', value: 'pending' }]"
+                  :items="[
+                    { title: 'Active', value: 'active' },
+                    { title: 'Inactive', value: 'inactive' },
+                    { title: 'Pending', value: 'pending' },
+                  ]"
                 />
               </VCol>
 

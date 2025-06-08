@@ -19,7 +19,10 @@
       </template>
 
       <VListItemTitle>Notifications</VListItemTitle>
-      <VListItemSubtitle>Notify me about updates to apps or games that I downloaded</VListItemSubtitle>
+      <VListItemSubtitle>
+        Notify me about updates to apps or games that I
+        downloaded
+      </VListItemSubtitle>
     </VListItem>
 
     <VListItem value="sound">
@@ -34,7 +37,9 @@
       </template>
 
       <VListItemTitle>Sound</VListItemTitle>
-      <VListItemSubtitle>Auto-update apps at any time. Data charges may apply</VListItemSubtitle>
+      <VListItemSubtitle>
+        Auto-update apps at any time. Data charges may apply
+      </VListItemSubtitle>
     </VListItem>
 
     <VListItem value="widgets">
@@ -49,7 +54,10 @@
       </template>
 
       <VListItemTitle>Auto-add widgets</VListItemTitle>
-      <VListItemSubtitle>Automatically add home screen widgets when downloads complete</VListItemSubtitle>
+      <VListItemSubtitle>
+        Automatically add home screen widgets when downloads
+        complete
+      </VListItemSubtitle>
     </VListItem>
   </VList>
 </template>

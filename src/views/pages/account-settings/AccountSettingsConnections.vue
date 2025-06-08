@@ -1,45 +1,45 @@
 <script setup>
-import asana from '@images/icons/brands/asana.png'
-import behance from '@images/icons/brands/behance.png'
-import dribbble from '@images/icons/brands/dribbble.png'
-import facebook from '@images/icons/brands/facebook.png'
-import github from '@images/icons/brands/github.png'
-import google from '@images/icons/brands/google.png'
-import linkedin from '@images/icons/brands/linkedin.png'
-import mailchimp from '@images/icons/brands/mailchimp.png'
-import slack from '@images/icons/brands/slack.png'
-import twitter from '@images/icons/brands/twitter.png'
+import asana from "@images/icons/brands/asana.png"
+import behance from "@images/icons/brands/behance.png"
+import dribbble from "@images/icons/brands/dribbble.png"
+import facebook from "@images/icons/brands/facebook.png"
+import github from "@images/icons/brands/github.png"
+import google from "@images/icons/brands/google.png"
+import linkedin from "@images/icons/brands/linkedin.png"
+import mailchimp from "@images/icons/brands/mailchimp.png"
+import slack from "@images/icons/brands/slack.png"
+import twitter from "@images/icons/brands/twitter.png"
 
 const connectedAccounts = ref([
   {
     logo: google,
-    name: 'Google',
-    subtitle: 'Calendar and contacts',
+    name: "Google",
+    subtitle: "Calendar and contacts",
     connected: true,
   },
   {
     logo: slack,
-    name: 'Slack',
-    subtitle: 'Communication',
+    name: "Slack",
+    subtitle: "Communication",
     connected: false,
   },
   {
     logo: github,
-    name: 'GitHub',
-    subtitle: 'Manage your Git repositories',
+    name: "GitHub",
+    subtitle: "Manage your Git repositories",
     connected: true,
   },
   {
     logo: mailchimp,
-    name: 'MailChimp',
-    color: 'yellow',
-    subtitle: 'Email marketing service',
+    name: "MailChimp",
+    color: "yellow",
+    subtitle: "Email marketing service",
     connected: true,
   },
   {
     logo: asana,
-    name: 'Asana',
-    subtitle: 'Task management',
+    name: "Asana",
+    subtitle: "Task management",
     connected: false,
   },
 ])
@@ -47,35 +47,35 @@ const connectedAccounts = ref([
 const socialAccounts = ref([
   {
     logo: facebook,
-    name: 'Facebook',
+    name: "Facebook",
     connected: false,
   },
   {
     logo: twitter,
-    name: 'Twitter',
+    name: "Twitter",
     links: {
-      username: '@Pixinvent',
-      link: 'https://twitter.com/Pixinvents',
+      username: "@Pixinvent",
+      link: "https://twitter.com/Pixinvents",
     },
     connected: true,
   },
   {
     logo: linkedin,
-    name: 'LinkedIn',
+    name: "LinkedIn",
     links: {
-      username: '@Pixinvent',
-      link: 'https://in.linkedin.com/in/pixinvent-creative-studio-561a4713b',
+      username: "@Pixinvent",
+      link: "https://in.linkedin.com/in/pixinvent-creative-studio-561a4713b",
     },
     connected: true,
   },
   {
     logo: dribbble,
-    name: 'Dribbble',
+    name: "Dribbble",
     connected: false,
   },
   {
     logo: behance,
-    name: 'Behance',
+    name: "Behance",
     connected: false,
   },
 ])
@@ -183,7 +183,7 @@ const socialAccounts = ref([
                     >
                       <VIcon
                         size="22"
-                        :icon="item.connected ? 'tabler-trash' : 'tabler-link' "
+                        :icon="item.connected ? 'tabler-trash' : 'tabler-link'"
                       />
                     </IconBtn>
                   </VListItemAction>

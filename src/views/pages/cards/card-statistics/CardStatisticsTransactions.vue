@@ -1,28 +1,28 @@
 <script setup>
 const statistics = [
   {
-    title: 'Sales',
-    stats: '230k',
-    icon: 'tabler-chart-pie-2',
-    color: 'primary',
+    title: "Sales",
+    stats: "230k",
+    icon: "tabler-chart-pie-2",
+    color: "primary",
   },
   {
-    title: 'Customers',
-    stats: '8.549k',
-    icon: 'tabler-users',
-    color: 'info',
+    title: "Customers",
+    stats: "8.549k",
+    icon: "tabler-users",
+    color: "info",
   },
   {
-    title: 'Products',
-    stats: '1.423k',
-    icon: 'tabler-shopping-cart',
-    color: 'error',
+    title: "Products",
+    stats: "1.423k",
+    icon: "tabler-shopping-cart",
+    color: "error",
   },
   {
-    title: 'Revenue',
-    stats: '$9745',
-    icon: 'tabler-currency-dollar',
-    color: 'success',
+    title: "Revenue",
+    stats: "$9745",
+    icon: "tabler-currency-dollar",
+    color: "success",
   },
 ]
 </script>

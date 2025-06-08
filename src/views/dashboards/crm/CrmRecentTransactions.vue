@@ -1,73 +1,74 @@
 <script setup>
-import aeIcon from '@images/icons/payments/ae-icon.png'
-import mastercardIcon from '@images/icons/payments/mastercard-icon.png'
-import visaIcon from '@images/icons/payments/visa-icon.png'
+import aeIcon from "@images/icons/payments/ae-icon.png"
+import mastercardIcon from "@images/icons/payments/mastercard-icon.png"
+import visaIcon from "@images/icons/payments/visa-icon.png"
 
 const lastTransitions = [
   {
     cardImg: visaIcon,
-    lastDigit: '*4230',
-    cardType: 'Credit',
-    sentDate: '17 Mar 2022',
-    status: 'Verified',
-    trend: '+$1,678',
+    lastDigit: "*4230",
+    cardType: "Credit",
+    sentDate: "17 Mar 2022",
+    status: "Verified",
+    trend: "+$1,678",
   },
   {
     cardImg: mastercardIcon,
-    lastDigit: '*5578',
-    cardType: 'Credit',
-    sentDate: '12 Feb 2022',
-    status: 'Rejected',
-    trend: '-$839',
+    lastDigit: "*5578",
+    cardType: "Credit",
+    sentDate: "12 Feb 2022",
+    status: "Rejected",
+    trend: "-$839",
   },
   {
     cardImg: aeIcon,
-    lastDigit: '*4567',
-    cardType: 'Credit',
-    sentDate: '28 Feb 2022',
-    status: 'Verified',
-    trend: '+$435',
+    lastDigit: "*4567",
+    cardType: "Credit",
+    sentDate: "28 Feb 2022",
+    status: "Verified",
+    trend: "+$435",
   },
   {
     cardImg: visaIcon,
-    lastDigit: '*5699',
-    cardType: 'Credit',
-    sentDate: '8 Jan 2022',
-    status: 'Pending',
-    trend: '+$2,345',
+    lastDigit: "*5699",
+    cardType: "Credit",
+    sentDate: "8 Jan 2022",
+    status: "Pending",
+    trend: "+$2,345",
   },
   {
     cardImg: visaIcon,
-    lastDigit: '*5699',
-    cardType: 'Credit',
-    sentDate: '8 Jan 2022',
-    status: 'Rejected',
-    trend: '-$234',
+    lastDigit: "*5699",
+    cardType: "Credit",
+    sentDate: "8 Jan 2022",
+    status: "Rejected",
+    trend: "-$234",
   },
 ]
 
 const resolveStatus = {
-  Verified: 'success',
-  Rejected: 'error',
-  Pending: 'secondary',
+  Verified: "success",
+  Rejected: "error",
+  Pending: "secondary",
 }
 
 const moreList = [
   {
-    title: 'Refresh',
-    value: 'refresh',
+    title: "Refresh",
+    value: "refresh",
   },
   {
-    title: 'Download',
-    value: 'Download',
+    title: "Download",
+    value: "Download",
   },
   {
-    title: 'View All',
-    value: 'View All',
+    title: "View All",
+    value: "View All",
   },
 ]
 
-const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'padding-block: 1.25rem;'
+const getPaddingStyle = index =>
+  index ? "padding-block-end: 1.25rem;" : "padding-block: 1.25rem;"
 </script>
 
 <template>
@@ -88,9 +89,7 @@ const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'paddin
           <th>CARD</th>
           <th>DATE</th>
           <th>STATUS</th>
-          <th>
-            TREND
-          </th>
+          <th>TREND</th>
         </tr>
       </thead>
 
@@ -101,7 +100,7 @@ const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'paddin
         >
           <td
             :style="getPaddingStyle(index)"
-            style="padding-inline-end: 1.5rem;"
+            style="padding-inline-end: 1.5rem"
           >
             <div class="d-flex align-center">
               <div class="me-4">
@@ -122,7 +121,7 @@ const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'paddin
           </td>
           <td
             :style="getPaddingStyle(index)"
-            style="padding-inline-end: 1.5rem;"
+            style="padding-inline-end: 1.5rem"
           >
             <p class="text-high-emphasis text-base mb-0">
               Sent
@@ -133,7 +132,7 @@ const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'paddin
           </td>
           <td
             :style="getPaddingStyle(index)"
-            style="padding-inline-end: 1.5rem;"
+            style="padding-inline-end: 1.5rem"
           >
             <VChip
               label
@@ -145,7 +144,7 @@ const getPaddingStyle = index => index ? 'padding-block-end: 1.25rem;' : 'paddin
           </td>
           <td
             :style="getPaddingStyle(index)"
-            style="padding-inline-end: 1.5rem;"
+            style="padding-inline-end: 1.5rem"
             align="right"
           >
             <div class="text-high-emphasis text-base">

@@ -1,5 +1,5 @@
 <script setup>
-import rocketImg from '@images/eCommerce/rocket.png'
+import rocketImg from "@images/eCommerce/rocket.png"
 
 const props = defineProps({
   customerData: {
@@ -14,21 +14,21 @@ const isUpgradePlanDialogVisible = ref(false)
 const customerData = {
   id: props.customerData.id,
   fullName: props.customerData.customer,
-  firstName: props.customerData.customer.split(' ')[0],
-  lastName: props.customerData.customer.split(' ')[1],
-  company: '',
-  role: '',
+  firstName: props.customerData.customer.split(" ")[0],
+  lastName: props.customerData.customer.split(" ")[1],
+  company: "",
+  role: "",
   username: props.customerData.customer,
   country: props.customerData.country,
   contact: props.customerData.contact,
   email: props.customerData.email,
-  currentPlan: '',
+  currentPlan: "",
   status: props.customerData.status,
-  avatar: '',
+  avatar: "",
   taskDone: null,
   projectDone: null,
-  taxId: 'Tax-8894',
-  language: 'English',
+  taxId: "Tax-8894",
+  language: "English",
 }
 </script>
 
@@ -229,7 +229,11 @@ const customerData = {
 }
 
 .current-plan {
-  background: linear-gradient(45deg, rgb(var(--v-theme-primary)) 0%, #9e95f5 100%);
+  background: linear-gradient(
+    45deg,
+    rgb(var(--v-theme-primary)) 0%,
+    #9e95f5 100%
+  );
   color: #fff;
 }
 </style>

@@ -34,14 +34,15 @@
           <h5 class="text-h5">
             Heading 5
           </h5>
-          <span>font-size: 1.125rem  / line-height: 1.75rem / font-weight: 500</span>
+          <span>font-size: 1.125rem / line-height: 1.75rem / font-weight: 500</span>
         </VCol>
 
         <VCol cols="12">
           <h6 class="text-h6">
             Heading 6
           </h6>
-          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight: 500</span>
+          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight:
+            500</span>
         </VCol>
       </VRow>
     </VCardText>

@@ -1,14 +1,14 @@
 <script setup>
-import avatar8 from '@images/avatars/avatar-8.png'
-import xls from '@images/icons/file/xls.png'
-import pdf from '@images/icons/project-icons/pdf.png'
-import aviato from '@images/logos/aviato.png'
-import bitbank from '@images/logos/bitbank.png'
-import zipcar from '@images/logos/zipcar.png'
-import TimelineRectangle1 from '@images/pages/TimelineRectangle1.png'
-import TimelineRectangle2 from '@images/pages/TimelineRectangle2.png'
-import TimelineRectangle3 from '@images/pages/TimelineRectangle3.png'
-import TimelineRectangle4 from '@images/pages/TimelineRectangle4.png'
+import avatar8 from "@images/avatars/avatar-8.png"
+import xls from "@images/icons/file/xls.png"
+import pdf from "@images/icons/project-icons/pdf.png"
+import aviato from "@images/logos/aviato.png"
+import bitbank from "@images/logos/bitbank.png"
+import zipcar from "@images/logos/zipcar.png"
+import TimelineRectangle1 from "@images/pages/TimelineRectangle1.png"
+import TimelineRectangle2 from "@images/pages/TimelineRectangle2.png"
+import TimelineRectangle3 from "@images/pages/TimelineRectangle3.png"
+import TimelineRectangle4 from "@images/pages/TimelineRectangle4.png"
 
 const albumImages = [
   TimelineRectangle1,
@@ -20,24 +20,24 @@ const albumImages = [
 const earnings = [
   {
     avatar: zipcar,
-    title: 'Zipcar',
-    subtitle: 'Vuejs, React & HTML',
-    amount: '$24,895.65',
-    progress: 'primary',
+    title: "Zipcar",
+    subtitle: "Vuejs, React & HTML",
+    amount: "$24,895.65",
+    progress: "primary",
   },
   {
     avatar: bitbank,
-    title: 'Bitbank',
-    subtitle: 'Sketch, Figma & XD',
-    amount: '$8,6500.20',
-    progress: 'info',
+    title: "Bitbank",
+    subtitle: "Sketch, Figma & XD",
+    amount: "$8,6500.20",
+    progress: "info",
   },
   {
     avatar: aviato,
-    title: 'Aviato',
-    subtitle: 'HTML & Anguler',
-    amount: '$1,2450.80',
-    progress: 'secondary',
+    title: "Aviato",
+    subtitle: "HTML & Anguler",
+    amount: "$1,2450.80",
+    progress: "secondary",
   },
 ]
 </script>
@@ -63,9 +63,7 @@ const earnings = [
         size="small"
       >
         <template #opposite>
-          <span class="app-timeline-meta">
-            2 month's ago
-          </span>
+          <span class="app-timeline-meta"> 2 month's ago </span>
         </template>
         <template #icon>
           <div class="v-timeline-avatar-wrapper rounded-circle">
@@ -84,12 +82,17 @@ const earnings = [
         <!-- 👉 Header -->
         <VCard class="mb-10 mt-n4">
           <VCardItem class="pb-4">
-            <VCardTitle>You've uploaded doc pdf to the Pixinvent project</VCardTitle>
+            <VCardTitle>
+              You've uploaded doc pdf to the Pixinvent project
+            </VCardTitle>
           </VCardItem>
           <VCardText>
             <!-- 👉 Content -->
             <p class="app-timeline-text mb-3">
-              he process of recording the key project details and producing the documents that are required to implement it successfully. Simply put, it's an umbrella term which includes all the documents created over the course of the project.
+              he process of recording the key project details and producing the
+              documents that are required to implement it successfully. Simply
+              put, it's an umbrella term which includes all the documents
+              created over the course of the project.
             </p>
             <div class="d-inline-flex align-items-center timeline-chip">
               <img
@@ -112,9 +115,7 @@ const earnings = [
         size="small"
       >
         <template #opposite>
-          <span class="app-timeline-meta">
-            24 day's ago
-          </span>
+          <span class="app-timeline-meta"> 24 day's ago </span>
         </template>
         <template #icon>
           <div class="v-timeline-avatar-wrapper rounded-circle">
@@ -136,7 +137,8 @@ const earnings = [
           </VCardItem>
           <VCardText>
             <p class="mb-3">
-              In the Select Image for Project dialog box, choose one of the following: Under the Upload New Image section
+              In the Select Image for Project dialog box, choose one of the
+              following: Under the Upload New Image section
             </p>
             <div class="d-flex gap-4 flex-wrap">
               <template
@@ -156,9 +158,7 @@ const earnings = [
         size="small"
       >
         <template #opposite>
-          <span class="app-timeline-meta">
-            6 day's ago
-          </span>
+          <span class="app-timeline-meta"> 6 day's ago </span>
         </template>
         <template #icon>
           <div class="v-timeline-avatar-wrapper rounded-circle">
@@ -176,9 +176,7 @@ const earnings = [
         </template>
         <VCard class="mb-10 mt-n4">
           <VCardItem class="pb-4">
-            <VCardTitle>
-              Loretta write a review on Pixinvent
-            </VCardTitle>
+            <VCardTitle> Loretta write a review on Pixinvent </VCardTitle>
           </VCardItem>
           <VCardText>
             <div>
@@ -218,7 +216,12 @@ const earnings = [
                 </VChip>
               </div>
               <div class="text-body-1">
-                I wish I could select more than one main reason for rating this. I love how they constantly work on to make the template better. I am so thankful for this. Also, in the past, they had responded well to my tickets. Thank you for this great theme, for such an amazing support, for the better updates. I wish I could rate this for so many times. I highly recommend this template!
+                I wish I could select more than one main reason for rating this.
+                I love how they constantly work on to make the template better.
+                I am so thankful for this. Also, in the past, they had responded
+                well to my tickets. Thank you for this great theme, for such an
+                amazing support, for the better updates. I wish I could rate
+                this for so many times. I highly recommend this template!
               </div>
             </div>
           </VCardText>
@@ -231,9 +234,7 @@ const earnings = [
         size="small"
       >
         <template #opposite>
-          <span class="app-timeline-meta">
-            2 day's ago
-          </span>
+          <span class="app-timeline-meta"> 2 day's ago </span>
         </template>
         <template #icon>
           <div class="v-timeline-avatar-wrapper rounded-circle">
@@ -264,7 +265,9 @@ const earnings = [
                     size="24"
                     icon="tabler-caret-up-filled"
                   />
-                  <div class="align-self-center text-body-2 font-weight-medium text-success">10%</div>
+                  <div class="align-self-center text-body-2 font-weight-medium text-success">
+                    10%
+                  </div>
                 </span>
               </div>
               <div class="text-body-2">
@@ -330,17 +333,20 @@ const earnings = [
           </div>
         </template>
         <template #opposite>
-          <span class="app-timeline-meta">
-            2 day's ago
-          </span>
+          <span class="app-timeline-meta"> 2 day's ago </span>
         </template>
         <VCard class="mb-10 mt-n4">
           <VCardItem class="pb-4">
-            <VCardTitle>josh johnson shared Nuxt js project progress report</VCardTitle>
+            <VCardTitle>
+              josh johnson shared Nuxt js project progress report
+            </VCardTitle>
           </VCardItem>
           <VCardText>
             <p class="mb-3">
-              The structure and process are defined in the project organization considering the attainment of the corporate objectives and therefore also project objectives. The components of the project process are
+              The structure and process are defined in the project organization
+              considering the attainment of the corporate objectives and
+              therefore also project objectives. The components of the project
+              process are
             </p>
             <div class="d-inline-flex align-items-center timeline-chip mb-3">
               <img

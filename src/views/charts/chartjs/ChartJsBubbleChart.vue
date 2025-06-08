@@ -1,7 +1,7 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { getBubbleChartConfig } from '@core/libs/chartjs/chartjsConfig'
-import BubbleChart from '@core/libs/chartjs/components/BubbleChart'
+import { useTheme } from "vuetify"
+import { getBubbleChartConfig } from "@core/libs/chartjs/chartjsConfig"
+import BubbleChart from "@core/libs/chartjs/components/BubbleChart"
 
 const props = defineProps({
   colors: {
@@ -11,13 +11,16 @@ const props = defineProps({
 })
 
 const vuetifyTheme = useTheme()
-const chartConfig = computed(() => getBubbleChartConfig(vuetifyTheme.current.value))
+
+const chartConfig = computed(() =>
+  getBubbleChartConfig(vuetifyTheme.current.value),
+)
 
 const data = {
   animation: { duration: 10000 },
   datasets: [
     {
-      label: 'Dataset 1',
+      label: "Dataset 1",
       borderColor: props.colors.primary,
       backgroundColor: props.colors.primary,
       data: [
@@ -89,7 +92,7 @@ const data = {
       ],
     },
     {
-      label: 'Dataset 2',
+      label: "Dataset 2",
       borderColor: props.colors.yellow,
       backgroundColor: props.colors.yellow,
       data: [

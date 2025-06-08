@@ -1,39 +1,41 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { prefixWithPlus } from '@core/utils/formatters'
+import { useTheme } from "vuetify"
+import { prefixWithPlus } from "@core/utils/formatters"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    2000,
-    2000,
-    4000,
-    4000,
-    3050,
-    3050,
-    2000,
-    2000,
-    3050,
-    3050,
-    4700,
-    4700,
-    2750,
-    2750,
-    5700,
-    5700,
-  ],
-}]
+const series = [
+  {
+    data: [
+      2000,
+      2000,
+      4000,
+      4000,
+      3050,
+      3050,
+      2000,
+      2000,
+      3050,
+      3050,
+      4700,
+      4700,
+      2750,
+      2750,
+      5700,
+      5700,
+    ],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
-  
+
   return {
     chart: {
-      type: 'area',
+      type: "area",
       toolbar: false,
     },
-    markers: { strokeColor: 'transparent' },
+    markers: { strokeColor: "transparent" },
     dataLabels: { enabled: false },
     grid: {
       show: false,
@@ -45,19 +47,15 @@ const chartOptions = computed(() => {
     },
     stroke: {
       width: 3,
-      curve: 'straight',
+      curve: "straight",
     },
     colors: [currentTheme.warning],
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
         opacityFrom: 0.6,
         opacityTo: 0.15,
-        stops: [
-          0,
-          95,
-          100,
-        ],
+        stops: [0, 95, 100],
       },
     },
     xaxis: {
@@ -78,25 +76,25 @@ const chartOptions = computed(() => {
 
 const projectStatus = [
   {
-    title: 'Donates',
-    amount: '$756.26',
+    title: "Donates",
+    amount: "$756.26",
     lossProfit: -139.34,
   },
   {
-    title: 'Podcasts',
-    amount: '$2,207.03',
+    title: "Podcasts",
+    amount: "$2,207.03",
     lossProfit: +576.24,
   },
 ]
 
 const moreList = [
   {
-    title: 'View More',
-    value: 'View More',
+    title: "View More",
+    value: "View More",
   },
   {
-    title: 'Delete',
-    value: 'Delete',
+    title: "Delete",
+    value: "Delete",
   },
 ]
 </script>
@@ -126,9 +124,7 @@ const moreList = [
               icon="tabler-currency-dollar"
             />
           </template>
-          <VListItemSubtitle>
-            Your Earnings
-          </VListItemSubtitle>
+          <VListItemSubtitle> Your Earnings </VListItemSubtitle>
 
           <template #append>
             <span class="text-success font-weight-medium">+10.2%</span>

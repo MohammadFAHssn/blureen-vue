@@ -1,28 +1,28 @@
 <script setup>
 const assignmentData = [
   {
-    title: 'User Experience Design',
+    title: "User Experience Design",
     tasks: 120,
     progress: 72,
-    color: 'primary',
+    color: "primary",
   },
   {
-    title: 'Basic fundamentals',
+    title: "Basic fundamentals",
     tasks: 32,
     progress: 48,
-    color: 'success',
+    color: "success",
   },
   {
-    title: 'React Native components',
+    title: "React Native components",
     tasks: 182,
     progress: 15,
-    color: 'error',
+    color: "error",
   },
   {
-    title: 'Basic of music theory',
+    title: "Basic of music theory",
     tasks: 56,
     progress: 24,
-    color: 'info',
+    color: "info",
   },
 ]
 </script>

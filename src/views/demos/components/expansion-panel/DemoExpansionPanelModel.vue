@@ -3,7 +3,6 @@ const openedPanels = ref([])
 const items = ref(5)
 
 const all = () => {
-
   // [...Array(5).keys()] => [0, 1, 2, 3, 4]
   openedPanels.value = [...Array(items.value).keys()]
 }
@@ -45,7 +44,9 @@ const none = () => {
       >
         <VExpansionPanelTitle>Header {{ item }}</VExpansionPanelTitle>
         <VExpansionPanelText>
-          I love I love jujubes halvah cheesecake cookie macaroon sugar plum. Sugar plum I love bear claw marzipan wafer. Wafer sesame snaps danish candy cheesecake carrot cake tootsie roll.
+          I love I love jujubes halvah cheesecake cookie macaroon sugar plum.
+          Sugar plum I love bear claw marzipan wafer. Wafer sesame snaps danish
+          candy cheesecake carrot cake tootsie roll.
         </VExpansionPanelText>
       </VExpansionPanel>
     </VExpansionPanels>

@@ -1,4 +1,4 @@
-export const useChatStore = defineStore('chat', {
+export const useChatStore = defineStore("chat", {
   // ℹ️ arrow function recommended for full type inference
   state: () => ({
     contacts: [],
@@ -8,16 +8,17 @@ export const useChatStore = defineStore('chat', {
   }),
   actions: {
     async fetchChatsAndContacts(q) {
-      const { data, error } = await useApi(createUrl('/apps/chat/chats-and-contacts', {
-        query: {
-          q,
-        },
-      }))
+      const { data, error } = await useApi(
+        createUrl("/apps/chat/chats-and-contacts", {
+          query: {
+            q,
+          },
+        }),
+      )
 
       if (error.value) {
         console.log(error.value)
-      }
-      else {
+      } else {
         const { chatsContacts, contacts, profileUser } = data.value
 
         this.chatsContacts = chatsContacts
@@ -33,10 +34,13 @@ export const useChatStore = defineStore('chat', {
     async sendMsg(message) {
       const senderId = this.profileUser?.id
 
-      const response = await $api(`apps/chat/chats/${this.activeChat?.contact.id}`, {
-        method: 'POST',
-        body: { message, senderId },
-      })
+      const response = await $api(
+        `apps/chat/chats/${this.activeChat?.contact.id}`,
+        {
+          method: "POST",
+          body: { message, senderId },
+        },
+      )
 
       const { msg, chat } = response
 
@@ -61,16 +65,14 @@ export const useChatStore = defineStore('chat', {
             userId: this.activeChat?.contact.id,
           }
         }
-      }
-      else {
+      } else {
         this.activeChat?.chat?.messages.push(msg)
       }
 
       // Set Last Message for active contact
       const contact = this.chatsContacts.find(c => {
-        if (this.activeChat)
-          return c.id === this.activeChat.contact.id
-        
+        if (this.activeChat) return c.id === this.activeChat.contact.id
+
         return false
       })
 

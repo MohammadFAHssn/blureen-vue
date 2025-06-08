@@ -3,10 +3,10 @@ const value = ref(0)
 const fruits = ref(1)
 
 const ticksLabels = {
-  0: 'Figs',
-  1: 'Lemon',
-  2: 'Pear',
-  3: 'Apple',
+  0: "Figs",
+  1: "Lemon",
+  2: "Pear",
+  3: "Apple",
 }
 </script>
 

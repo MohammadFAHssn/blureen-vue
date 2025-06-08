@@ -17,7 +17,7 @@ const slider = ref(40)
       v-model="slider"
       type="number"
       placeholder="10"
-      style="max-inline-size: 5rem;"
+      style="max-inline-size: 5rem"
     />
   </div>
 </template>

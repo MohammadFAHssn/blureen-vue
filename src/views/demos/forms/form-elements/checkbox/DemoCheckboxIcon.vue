@@ -5,7 +5,7 @@ const toggleCheckboxThree = ref(true)
 
 const capitalizedLabel = label => {
   const convertLabelText = label.toString()
-  
+
   return convertLabelText.charAt(0).toUpperCase() + convertLabelText.slice(1)
 }
 </script>

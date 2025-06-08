@@ -1,9 +1,9 @@
 <script setup>
-import BillingHistoryTable from './BillingHistoryTable.vue'
-import mastercard from '@images/icons/payments/mastercard.png'
-import visa from '@images/icons/payments/visa.png'
+import BillingHistoryTable from "./BillingHistoryTable.vue"
+import mastercard from "@images/icons/payments/mastercard.png"
+import visa from "@images/icons/payments/visa.png"
 
-const selectedPaymentMethod = ref('credit-debit-atm-card')
+const selectedPaymentMethod = ref("credit-debit-atm-card")
 const isPricingPlanDialogVisible = ref(false)
 const isConfirmDialogVisible = ref(false)
 const isCardEditDialogVisible = ref(false)
@@ -11,35 +11,35 @@ const isCardDetailSaveBilling = ref(false)
 
 const creditCards = [
   {
-    name: 'Tom McBride',
-    number: '5531234567899856',
-    expiry: '12/24',
+    name: "Tom McBride",
+    number: "5531234567899856",
+    expiry: "12/24",
     isPrimary: true,
-    type: 'visa',
-    cvv: '456',
+    type: "visa",
+    cvv: "456",
     image: mastercard,
   },
   {
-    name: 'Mildred Wagner',
-    number: '4851234567895896',
-    expiry: '10/27',
+    name: "Mildred Wagner",
+    number: "4851234567895896",
+    expiry: "10/27",
     isPrimary: false,
-    type: 'mastercard',
-    cvv: '123',
+    type: "mastercard",
+    cvv: "123",
     image: visa,
   },
 ]
 
 const countryList = [
-  'United States',
-  'Canada',
-  'United Kingdom',
-  'Australia',
-  'New Zealand',
-  'India',
-  'Russia',
-  'China',
-  'Japan',
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Australia",
+  "New Zealand",
+  "India",
+  "Russia",
+  "China",
+  "Japan",
 ]
 
 const currentCardDetails = ref()
@@ -50,16 +50,16 @@ const openEditCardDialog = cardDetails => {
 }
 
 const cardNumber = ref(135632156548789)
-const cardName = ref('john Doe')
-const cardExpiryDate = ref('05/24')
+const cardName = ref("john Doe")
+const cardExpiryDate = ref("05/24")
 const cardCvv = ref(420)
 
 const resetPaymentForm = () => {
   cardNumber.value = 135632156548789
-  cardName.value = 'john Doe'
-  cardExpiryDate.value = '05/24'
+  cardName.value = "john Doe"
+  cardExpiryDate.value = "05/24"
   cardCvv.value = 420
-  selectedPaymentMethod.value = 'credit-debit-atm-card'
+  selectedPaymentMethod.value = "credit-debit-atm-card"
 }
 </script>
 
@@ -322,7 +322,8 @@ const resetPaymentForm = () => {
                           </VChip>
                         </h4>
                         <div class="text-body-1">
-                          **** **** **** {{ card.number.substring(card.number.length - 4) }}
+                          **** **** ****
+                          {{ card.number.substring(card.number.length - 4) }}
                         </div>
                       </div>
 

@@ -1,8 +1,8 @@
 <script setup>
-import keyboard from '@images/svg/keyboard.svg'
-import paper from '@images/svg/paper-send.svg'
-import rocket from '@images/svg/rocket.svg'
-import { themeConfig } from '@themeConfig'
+import keyboard from "@images/svg/keyboard.svg"
+import paper from "@images/svg/paper-send.svg"
+import rocket from "@images/svg/rocket.svg"
+import { themeConfig } from "@themeConfig"
 
 const props = defineProps({
   isDialogVisible: {
@@ -11,27 +11,27 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(["update:isDialogVisible"])
 
 const dialogVisibleUpdate = val => {
-  emit('update:isDialogVisible', val)
+  emit("update:isDialogVisible", val)
 }
 
 const referAndEarnSteps = [
   {
     icon: paper,
-    title: 'Send Invitation 👍🏻',
-    subtitle: 'Send your referral link to your friend',
+    title: "Send Invitation 👍🏻",
+    subtitle: "Send your referral link to your friend",
   },
   {
     icon: keyboard,
-    title: 'Registration 😎',
-    subtitle: 'Let them register to our services',
+    title: "Registration 😎",
+    subtitle: "Let them register to our services",
   },
   {
     icon: rocket,
-    title: 'Free Trial  🎉',
-    subtitle: 'Your friend will get 30 days free trial',
+    title: "Free Trial  🎉",
+    subtitle: "Your friend will get 30 days free trial",
   },
 ]
 </script>
@@ -51,7 +51,8 @@ const referAndEarnSteps = [
           Refer & Earn
         </h4>
         <p class="text-body-1 mb-6 text-center">
-          Invite your friend to <span class="text-capitalize">{{ themeConfig.app.title }}</span>, if they sign up, you and your friend will get 30 days free trial
+          Invite your friend to
+          <span class="text-capitalize">{{ themeConfig.app.title }}</span>, if they sign up, you and your friend will get 30 days free trial
         </p>
 
         <VRow class="text-center mt-8">

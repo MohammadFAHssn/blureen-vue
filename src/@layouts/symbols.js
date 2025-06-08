@@ -1,1 +1,1 @@
-export const injectionKeyIsVerticalNavHovered = Symbol('isVerticalNavHovered')
+export const injectionKeyIsVerticalNavHovered = Symbol("isVerticalNavHovered")

@@ -1,76 +1,76 @@
 <script setup>
 const isNewPasswordVisible = ref(false)
 const isConfirmPasswordVisible = ref(false)
-const smsVerificationNumber = ref('+1(968) 819-2547')
+const smsVerificationNumber = ref("+1(968) 819-2547")
 const isTwoFactorDialogOpen = ref(false)
 
 const recentDeviceHeader = [
   {
-    title: 'BROWSER',
-    key: 'browser',
+    title: "BROWSER",
+    key: "browser",
   },
   {
-    title: 'DEVICE',
-    key: 'device',
+    title: "DEVICE",
+    key: "device",
   },
   {
-    title: 'LOCATION',
-    key: 'location',
+    title: "LOCATION",
+    key: "location",
   },
   {
-    title: 'RECENT ACTIVITY',
-    key: 'activity',
+    title: "RECENT ACTIVITY",
+    key: "activity",
   },
 ]
 
 const recentDevices = [
   {
-    browser: 'Chrome on Windows',
-    logo: 'tabler-brand-windows',
-    color: 'info',
-    device: 'HP Specter 360',
-    location: 'Switzerland',
-    activity: '10, July 2021 20:07',
+    browser: "Chrome on Windows",
+    logo: "tabler-brand-windows",
+    color: "info",
+    device: "HP Specter 360",
+    location: "Switzerland",
+    activity: "10, July 2021 20:07",
   },
   {
-    browser: 'Chrome on iPhone',
-    logo: 'tabler-device-mobile',
-    color: 'error',
-    device: 'iPhone 12x',
-    location: 'Australia',
-    activity: '13, July 2021 10:10',
+    browser: "Chrome on iPhone",
+    logo: "tabler-device-mobile",
+    color: "error",
+    device: "iPhone 12x",
+    location: "Australia",
+    activity: "13, July 2021 10:10",
   },
   {
-    browser: 'Chrome on Android',
-    logo: 'tabler-brand-android',
-    color: 'success',
-    device: 'OnePlus 9 Pro',
-    location: 'Dubai',
-    activity: '4, July 2021 15:15',
+    browser: "Chrome on Android",
+    logo: "tabler-brand-android",
+    color: "success",
+    device: "OnePlus 9 Pro",
+    location: "Dubai",
+    activity: "4, July 2021 15:15",
   },
   {
-    browser: 'Chrome on macOS',
-    logo: 'tabler-brand-apple',
-    color: 'secondary',
-    device: 'Apple iMac',
-    location: 'India',
-    activity: '20, July 2021 21:01',
+    browser: "Chrome on macOS",
+    logo: "tabler-brand-apple",
+    color: "secondary",
+    device: "Apple iMac",
+    location: "India",
+    activity: "20, July 2021 21:01",
   },
   {
-    browser: 'Chrome on Windows',
-    logo: 'tabler-brand-windows',
-    color: 'info',
-    device: 'HP Specter 360',
-    location: 'Switzerland',
-    activity: '10, July 2021 20:07',
+    browser: "Chrome on Windows",
+    logo: "tabler-brand-windows",
+    color: "info",
+    device: "HP Specter 360",
+    location: "Switzerland",
+    activity: "10, July 2021 20:07",
   },
   {
-    browser: 'Chrome on Android',
-    logo: 'tabler-brand-android',
-    color: 'success',
-    device: 'OnePlus 9 Pro',
-    location: 'Dubai',
-    activity: '4, July 2021 15:15',
+    browser: "Chrome on Android",
+    logo: "tabler-brand-android",
+    color: "success",
+    device: "OnePlus 9 Pro",
+    location: "Dubai",
+    activity: "4, July 2021 15:15",
   },
 ]
 </script>
@@ -100,8 +100,12 @@ const recentDevices = [
                   label="New Password"
                   placeholder="············"
                   :type="isNewPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isNewPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isNewPasswordVisible = !isNewPasswordVisible"
+                  :append-inner-icon="
+                    isNewPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="
+                    isNewPasswordVisible = !isNewPasswordVisible
+                  "
                 />
               </VCol>
               <VCol
@@ -113,8 +117,12 @@ const recentDevices = [
                   autocomplete="confirm-password"
                   placeholder="············"
                   :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                  :append-inner-icon="
+                    isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="
+                    isConfirmPasswordVisible = !isConfirmPasswordVisible
+                  "
                 />
               </VCol>
 
@@ -157,7 +165,9 @@ const recentDevices = [
           </AppTextField>
 
           <p class="mb-0 mt-4">
-            Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in. <a
+            Two-factor authentication adds an additional layer of security to
+            your account by requiring more than just a password to log in.
+            <a
               href="javascript:void(0)"
               class="text-decoration-none"
             >Learn more</a>.

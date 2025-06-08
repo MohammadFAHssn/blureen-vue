@@ -1,5 +1,5 @@
 <script setup>
-import emptyCartImg from '@images/pages/empty-cart.png'
+import emptyCartImg from "@images/pages/empty-cart.png"
 
 const props = defineProps({
   currentStep: {
@@ -12,15 +12,13 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"])
 
 const checkoutCartDataLocal = ref(props.checkoutData)
 
 const removeItem = item => {
-  checkoutCartDataLocal.value.cartItems = checkoutCartDataLocal.value.cartItems.filter(i => i.id !== item.id)
+  checkoutCartDataLocal.value.cartItems =
+    checkoutCartDataLocal.value.cartItems.filter(i => i.id !== item.id)
 }
 
 const totalCost = computed(() => {
@@ -31,12 +29,12 @@ const totalCost = computed(() => {
 
 const updateCartData = () => {
   checkoutCartDataLocal.value.orderAmount = totalCost.value
-  emit('update:checkout-data', checkoutCartDataLocal.value)
+  emit("update:checkout-data", checkoutCartDataLocal.value)
 }
 
 const nextStep = () => {
   updateCartData()
-  emit('update:currentStep', props.currentStep ? props.currentStep + 1 : 1)
+  emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1)
 }
 
 watch(() => props.currentStep, updateCartData)
@@ -58,9 +56,11 @@ watch(() => props.currentStep, updateCartData)
       >
         <template #text>
           <p class="mb-0">
-            - 0% Instant Discount on Bank of America Corp Bank Debit and Credit cards
+            - 0% Instant Discount on Bank of America Corp Bank Debit and Credit
+            cards
             <br>
-            - 50% Cashback Voucher of up to $60 on first ever PayPal transaction. TCA
+            - 50% Cashback Voucher of up to $60 on first ever PayPal
+            transaction. TCA
           </p>
         </template>
       </VAlert>
@@ -108,14 +108,15 @@ watch(() => props.currentStep, updateCartData)
                 <div class="d-flex align-center text-no-wrap gap-4 text-body-1">
                   <div class="text-disabled">
                     Sold by:
-                    <span class="d-inline-block text-primary">  {{ item.seller }}</span>
+                    <span class="d-inline-block text-primary">
+                      {{ item.seller }}</span>
                   </div>
                   <VChip
                     :color="item.inStock ? 'success' : 'error'"
                     label
                     size="small"
                   >
-                    {{ item.inStock ? 'In Stock' : 'Out of Stock' }}
+                    {{ item.inStock ? "In Stock" : "Out of Stock" }}
                   </VChip>
                 </div>
 
@@ -129,7 +130,7 @@ watch(() => props.currentStep, updateCartData)
                 <AppTextField
                   v-model="item.quantity"
                   type="number"
-                  style="inline-size: 9.375rem;"
+                  style="inline-size: 9.375rem"
                   density="compact"
                 />
               </div>
@@ -172,7 +173,7 @@ watch(() => props.currentStep, updateCartData)
       <!-- 👉 Add more from wishlist -->
       <div
         class="d-flex align-center justify-space-between rounded py-2 px-5 text-base mt-4"
-        style="border: 1px solid rgb(var(--v-theme-primary));"
+        style="border: 1px solid rgb(var(--v-theme-primary))"
       >
         <a
           href="#"
@@ -204,7 +205,7 @@ watch(() => props.currentStep, updateCartData)
             <AppTextField
               v-model="checkoutCartDataLocal.promoCode"
               placeholder="Enter Promo Code"
-              style="min-inline-size: 200px;"
+              style="min-inline-size: 200px"
             />
 
             <VBtn

@@ -1,4 +1,5 @@
-export const basic = { ts: `<script setup lang="ts">
+export const basic = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -18,7 +19,8 @@ const headers = [
     :items-per-page="5"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -57,9 +59,11 @@ const headers = [
     :items-per-page="5"
   />
 </template>
-` }
+`,
+}
 
-export const cellSlot = { ts: `<script setup lang="ts">
+export const cellSlot = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -124,7 +128,8 @@ const resolveStatusVariant = (status: number) => {
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -222,9 +227,11 @@ const resolveStatusVariant = status => {
     </template>
   </VDataTable>
 </template>
-` }
+`,
+}
 
-export const dense = { ts: `<script setup lang="ts">
+export const dense = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -245,7 +252,8 @@ const headers = [
     :items-per-page="5"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -285,9 +293,11 @@ const headers = [
     :items-per-page="5"
   />
 </template>
-` }
+`,
+}
 
-export const expandableRows = { ts: `<script setup lang="ts">
+export const expandableRows = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 // Headers
@@ -370,7 +380,8 @@ const resolveStatusVariant = (status: number) => {
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 // Headers
@@ -489,9 +500,11 @@ const resolveStatusVariant = status => {
     </template>
   </VDataTable>
 </template>
-` }
+`,
+}
 
-export const externalPagination = { ts: `<script setup lang="ts">
+export const externalPagination = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 import type { Data } from '@db/pages/datatable/types'
 
@@ -588,7 +601,8 @@ onMounted(() => {
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const userList = ref([])
@@ -723,9 +737,11 @@ onMounted(() => {
     </template>
   </VDataTable>
 </template>
-` }
+`,
+}
 
-export const fixedHeader = { ts: `<script setup lang="ts">
+export const fixedHeader = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -793,7 +809,8 @@ const resolveStatusVariant = (status: number) => {
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -894,9 +911,11 @@ const resolveStatusVariant = status => {
     </template>
   </VDataTable>
 </template>
-` }
+`,
+}
 
-export const groupingRows = { ts: `<script setup lang="ts">
+export const groupingRows = {
+  ts: `<script setup lang="ts">
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
 import avatar4 from '@images/avatars/avatar-4.png'
@@ -1273,7 +1292,8 @@ const getIcon = (props: Record<string, unknown>) => props.icon as any
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
 import avatar4 from '@images/avatars/avatar-4.png'
@@ -1671,9 +1691,11 @@ const getIcon = props => props.icon
     </template>
   </VDataTable>
 </template>
-` }
+`,
+}
 
-export const kitchenSink = { ts: `<script setup lang="ts">
+export const kitchenSink = {
+  ts: `<script setup lang="ts">
 import type { SalesDetails } from '@db/pages/datatable/types'
 
 const { data: productList, error } = await useApi<SalesDetails[]>('pages/datatable')
@@ -1868,7 +1890,8 @@ if (error.value)
     </VDataTable>
   </div>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const {
   data: productList,
   error,
@@ -2173,9 +2196,11 @@ if (error.value)
     </VDataTable>
   </div>
 </template>
-` }
+`,
+}
 
-export const rowEditingViaDialog = { ts: `<script setup lang="ts">
+export const rowEditingViaDialog = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 import type { Data } from '@db/pages/datatable/types'
 
@@ -2466,7 +2491,8 @@ onMounted(() => {
     </VCard>
   </VDialog>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const editDialog = ref(false)
@@ -2804,9 +2830,11 @@ onMounted(() => {
     </VCard>
   </VDialog>
 </template>
-` }
+`,
+}
 
-export const rowSelection = { ts: `<script setup lang="ts">
+export const rowSelection = {
+  ts: `<script setup lang="ts">
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -2873,7 +2901,8 @@ const resolveStatusVariant = (status: number) => {
     </template>
   </VDataTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import data from '@/views/demos/forms/tables/data-table/datatable'
 
 const headers = [
@@ -2973,5 +3002,5 @@ const resolveStatusVariant = status => {
     </template>
   </VDataTable>
 </template>
-` }
-
+`,
+}

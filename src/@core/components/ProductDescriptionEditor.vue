@@ -1,12 +1,9 @@
 <script setup>
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { TextAlign } from '@tiptap/extension-text-align'
-import { Underline } from '@tiptap/extension-underline'
-import { StarterKit } from '@tiptap/starter-kit'
-import {
-  EditorContent,
-  useEditor,
-} from '@tiptap/vue-3'
+import { Placeholder } from "@tiptap/extension-placeholder"
+import { TextAlign } from "@tiptap/extension-text-align"
+import { Underline } from "@tiptap/extension-underline"
+import { StarterKit } from "@tiptap/starter-kit"
+import { EditorContent, useEditor } from "@tiptap/vue-3"
 
 const props = defineProps({
   modelValue: {
@@ -19,7 +16,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(["update:modelValue"])
 
 const editorRef = ref()
 
@@ -28,27 +25,27 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     TextAlign.configure({
-      types: [
-        'heading',
-        'paragraph',
-      ],
+      types: ["heading", "paragraph"],
     }),
-    Placeholder.configure({ placeholder: props.placeholder ?? 'Write something here...' }),
+    Placeholder.configure({
+      placeholder: props.placeholder ?? "Write something here...",
+    }),
     Underline,
   ],
   onUpdate() {
-    if (!editor.value)
-      return
-    emit('update:modelValue', editor.value.getHTML())
+    if (!editor.value) return
+    emit("update:modelValue", editor.value.getHTML())
   },
 })
 
-watch(() => props.modelValue, () => {
-  const isSame = editor.value?.getHTML() === props.modelValue
-  if (isSame)
-    return
-  editor.value?.commands.setContent(props.modelValue)
-})
+watch(
+  () => props.modelValue,
+  () => {
+    const isSame = editor.value?.getHTML() === props.modelValue
+    if (isSame) return
+    editor.value?.commands.setContent(props.modelValue)
+  },
+)
 </script>
 
 <template>
@@ -129,7 +126,9 @@ watch(() => props.modelValue, () => {
         size="small"
         icon
         rounded
-        :color="editor.isActive({ textAlign: 'center' }) ? 'primary' : 'default'"
+        :color="
+          editor.isActive({ textAlign: 'center' }) ? 'primary' : 'default'
+        "
         :variant="editor.isActive({ textAlign: 'center' }) ? 'tonal' : 'text'"
         @click="editor.chain().focus().setTextAlign('center').run()"
       >
@@ -158,7 +157,9 @@ watch(() => props.modelValue, () => {
         icon
         rounded
         :variant="editor.isActive({ textAlign: 'justify' }) ? 'tonal' : 'text'"
-        :color="editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'default'"
+        :color="
+          editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'default'
+        "
         @click="editor.chain().focus().setTextAlign('justify').run()"
       >
         <VIcon

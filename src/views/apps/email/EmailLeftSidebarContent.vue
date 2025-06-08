@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   emailsMeta: {
@@ -8,7 +8,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['toggleComposeDialogVisibility'])
+const emit = defineEmits(["toggleComposeDialogVisibility"])
 
 defineOptions({
   inheritAttrs: false,
@@ -19,113 +19,116 @@ const draftEmails = ref(0)
 const spamEmails = ref(0)
 const starredEmails = ref(0)
 
-watch(() => props.emailsMeta, emailsMeta => {
-  if (!emailsMeta)
-    return
-  inboxEmails.value = emailsMeta.inbox
-  draftEmails.value = emailsMeta.draft
-  spamEmails.value = emailsMeta.spam
-  starredEmails.value = emailsMeta.star
-}, {
-  immediate: true,
-  deep: true,
-})
+watch(
+  () => props.emailsMeta,
+  emailsMeta => {
+    if (!emailsMeta) return
+    inboxEmails.value = emailsMeta.inbox
+    draftEmails.value = emailsMeta.draft
+    spamEmails.value = emailsMeta.spam
+    starredEmails.value = emailsMeta.star
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
 
 const folders = computed(() => [
   {
-    title: 'Inbox',
-    prependIcon: 'tabler-mail',
-    to: { name: 'apps-email' },
+    title: "Inbox",
+    prependIcon: "tabler-mail",
+    to: { name: "apps-email" },
     badge: {
       content: inboxEmails.value,
-      color: 'primary',
+      color: "primary",
     },
   },
   {
-    title: 'Sent',
-    prependIcon: 'tabler-send',
+    title: "Sent",
+    prependIcon: "tabler-send",
     to: {
-      name: 'apps-email-filter',
-      params: { filter: 'sent' },
+      name: "apps-email-filter",
+      params: { filter: "sent" },
     },
   },
   {
-    title: 'Draft',
-    prependIcon: 'tabler-edit',
+    title: "Draft",
+    prependIcon: "tabler-edit",
     to: {
-      name: 'apps-email-filter',
-      params: { filter: 'draft' },
+      name: "apps-email-filter",
+      params: { filter: "draft" },
     },
     badge: {
       content: draftEmails.value,
-      color: 'warning',
+      color: "warning",
     },
   },
   {
-    title: 'Starred',
-    prependIcon: 'tabler-star',
+    title: "Starred",
+    prependIcon: "tabler-star",
     to: {
-      name: 'apps-email-filter',
-      params: { filter: 'starred' },
+      name: "apps-email-filter",
+      params: { filter: "starred" },
     },
     badge: {
       content: starredEmails.value,
-      color: 'success',
+      color: "success",
     },
   },
   {
-    title: 'Spam',
-    prependIcon: 'tabler-alert-circle',
+    title: "Spam",
+    prependIcon: "tabler-alert-circle",
     to: {
-      name: 'apps-email-filter',
-      params: { filter: 'spam' },
+      name: "apps-email-filter",
+      params: { filter: "spam" },
     },
     badge: {
       content: spamEmails.value,
-      color: 'error',
+      color: "error",
     },
   },
   {
-    title: 'Trash',
-    prependIcon: 'tabler-trash',
+    title: "Trash",
+    prependIcon: "tabler-trash",
     to: {
-      name: 'apps-email-filter',
-      params: { filter: 'trashed' },
+      name: "apps-email-filter",
+      params: { filter: "trashed" },
     },
   },
 ])
 
 const labels = [
   {
-    title: 'Personal',
-    color: 'success',
+    title: "Personal",
+    color: "success",
     to: {
-      name: 'apps-email-label',
-      params: { label: 'personal' },
+      name: "apps-email-label",
+      params: { label: "personal" },
     },
   },
   {
-    title: 'Company',
-    color: 'primary',
+    title: "Company",
+    color: "primary",
     to: {
-      name: 'apps-email-label',
-      params: { label: 'company' },
+      name: "apps-email-label",
+      params: { label: "company" },
     },
   },
   {
-    title: 'Important',
-    color: 'warning',
+    title: "Important",
+    color: "warning",
     to: {
-      name: 'apps-email-label',
-      params: { label: 'important' },
+      name: "apps-email-label",
+      params: { label: "important" },
     },
   },
   {
-    title: 'Private',
-    color: 'error',
+    title: "Private",
+    color: "error",
     to: {
-      name: 'apps-email-label',
-      params: { label: 'private' },
+      name: "apps-email-label",
+      params: { label: "private" },
     },
   },
 ]

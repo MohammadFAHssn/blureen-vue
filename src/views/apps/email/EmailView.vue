@@ -1,6 +1,6 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { useEmail } from '@/views/apps/email/useEmail'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { useEmail } from "@/views/apps/email/useEmail"
 
 const props = defineProps({
   email: {
@@ -14,31 +14,38 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'refresh',
-  'navigated',
-  'close',
-  'trash',
-  'unread',
-  'read',
-  'star',
-  'unstar',
+  "refresh",
+  "navigated",
+  "close",
+  "trash",
+  "unread",
+  "read",
+  "star",
+  "unstar",
 ])
 
-const emailReply = ref('')
+const emailReply = ref("")
 const showReplyBox = ref(false)
 const showReplyCard = ref(true)
 const { updateEmailLabels } = useEmail()
-const { labels, resolveLabelColor, emailMoveToFolderActions, shallShowMoveToActionFor, moveSelectedEmailTo } = useEmail()
+
+const {
+  labels,
+  resolveLabelColor,
+  emailMoveToFolderActions,
+  shallShowMoveToActionFor,
+  moveSelectedEmailTo,
+} = useEmail()
 
 const handleMoveMailsTo = async action => {
   await moveSelectedEmailTo(action, [props.email.id])
-  emit('refresh')
-  emit('close')
+  emit("refresh")
+  emit("close")
 }
 
 const updateMailLabel = async label => {
   await updateEmailLabels([props.email.id], label)
-  emit('refresh')
+  emit("refresh")
 }
 </script>
 
@@ -59,7 +66,12 @@ const updateMailLabel = async label => {
       <div class="email-view-header d-flex align-center px-5 py-3">
         <IconBtn
           class="me-2"
-          @click="$emit('close'); showReplyBox = false; showReplyCard = true; emailReply = ''"
+          @click="
+            $emit('close');
+            showReplyBox = false;
+            showReplyCard = true;
+            emailReply = '';
+          "
         >
           <VIcon
             size="22"
@@ -119,7 +131,10 @@ const updateMailLabel = async label => {
         <!-- Trash -->
         <IconBtn
           v-show="!props.email.isDeleted"
-          @click="$emit('trash'); $emit('close')"
+          @click="
+            $emit('trash');
+            $emit('close');
+          "
         >
           <VIcon
             icon="tabler-trash"
@@ -134,7 +149,12 @@ const updateMailLabel = async label => {
         </IconBtn>
 
         <!-- Read/Unread -->
-        <IconBtn @click.stop="$emit('unread'); $emit('close')">
+        <IconBtn
+          @click.stop="
+            $emit('unread');
+            $emit('close');
+          "
+        >
           <VIcon
             icon="tabler-mail"
             size="22"
@@ -167,7 +187,11 @@ const updateMailLabel = async label => {
                 :key="moveTo.title"
               >
                 <VListItem
-                  :class="shallShowMoveToActionFor(moveTo.action) ? 'd-flex' : 'd-none'"
+                  :class="
+                    shallShowMoveToActionFor(moveTo.action)
+                      ? 'd-flex'
+                      : 'd-none'
+                  "
                   class="align-center"
                   href="#"
                   @click="handleMoveMailsTo(moveTo.action)"
@@ -230,7 +254,10 @@ const updateMailLabel = async label => {
           <!-- Star/Unstar -->
           <IconBtn
             :color="props.email.isStarred ? 'warning' : 'default'"
-            @click="props.email?.isStarred ? $emit('unstar') : $emit('star'); $emit('refresh')"
+            @click="
+              props.email?.isStarred ? $emit('unstar') : $emit('star');
+              $emit('refresh');
+            "
           >
             <VIcon icon="tabler-star" />
           </IconBtn>
@@ -333,14 +360,17 @@ const updateMailLabel = async label => {
         <VCard v-show="showReplyCard">
           <VCardText class="font-weight-medium text-high-emphasis">
             <div class="text-base">
-              Click here to <span
+              Click here to
+              <span
                 class="text-primary cursor-pointer"
-                @click="showReplyBox = !showReplyBox; showReplyCard = !showReplyCard"
+                @click="
+                  showReplyBox = !showReplyBox;
+                  showReplyCard = !showReplyCard;
+                "
               >
                 Reply
-              </span> or <span class="text-primary cursor-pointer">
-                Forward
               </span>
+              or <span class="text-primary cursor-pointer"> Forward </span>
             </div>
           </VCardText>
         </VCard>
@@ -359,7 +389,11 @@ const updateMailLabel = async label => {
                 icon
                 variant="text"
                 color="secondary"
-                @click="showReplyBox = !showReplyBox; showReplyCard = !showReplyCard; emailReply = ''"
+                @click="
+                  showReplyBox = !showReplyBox;
+                  showReplyCard = !showReplyCard;
+                  emailReply = '';
+                "
               >
                 <VIcon icon="tabler-trash" />
               </VBtn>

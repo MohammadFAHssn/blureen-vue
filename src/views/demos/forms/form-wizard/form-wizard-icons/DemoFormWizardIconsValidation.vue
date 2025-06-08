@@ -1,30 +1,30 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
-import customWizardAccount from '@images/svg/wizard-account.svg'
-import customWizardAddress from '@images/svg/wizard-address.svg'
-import customWizardPersonal from '@images/svg/wizard-personal.svg'
-import customWizardSocialLink from '@images/svg/wizard-social-link.svg'
-import customWizardSubmit from '@images/svg/wizard-submit.svg'
+import { VForm } from "vuetify/components/VForm"
+import customWizardAccount from "@images/svg/wizard-account.svg"
+import customWizardAddress from "@images/svg/wizard-address.svg"
+import customWizardPersonal from "@images/svg/wizard-personal.svg"
+import customWizardSocialLink from "@images/svg/wizard-social-link.svg"
+import customWizardSubmit from "@images/svg/wizard-submit.svg"
 
 const iconsSteps = [
   {
-    title: 'Account Details',
+    title: "Account Details",
     icon: customWizardAccount,
   },
   {
-    title: 'Personal Info',
+    title: "Personal Info",
     icon: customWizardPersonal,
   },
   {
-    title: 'Address',
+    title: "Address",
     icon: customWizardAddress,
   },
   {
-    title: 'Social Links',
+    title: "Social Links",
     icon: customWizardSocialLink,
   },
   {
-    title: 'Review & Submit',
+    title: "Review & Submit",
     icon: customWizardSubmit,
   },
 ]
@@ -39,31 +39,31 @@ const refSocialLinkForm = ref()
 const refAddressForm = ref()
 
 const accountForm = ref({
-  username: '',
-  email: '',
-  password: '',
-  cPassword: '',
+  username: "",
+  email: "",
+  password: "",
+  cPassword: "",
 })
 
 const personalForm = ref({
-  firstName: '',
-  lastName: '',
+  firstName: "",
+  lastName: "",
   country: undefined,
   language: undefined,
 })
 
 const socialForm = ref({
-  twitter: '',
-  facebook: '',
-  googlePlus: '',
-  linkedIn: '',
+  twitter: "",
+  facebook: "",
+  googlePlus: "",
+  linkedIn: "",
 })
 
 const addressForm = ref({
-  address: '',
-  landmark: '',
-  city: '',
-  pincode: '',
+  address: "",
+  landmark: "",
+  city: "",
+  pincode: "",
 })
 
 const validateAccountForm = () => {
@@ -182,7 +182,9 @@ const validateSocialLinkForm = () => {
                   :rules="[requiredValidator, passwordValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -196,9 +198,17 @@ const validateSocialLinkForm = () => {
                   placeholder="············"
                   label="Confirm Password"
                   autocomplete="confirm-password"
-                  :rules="[requiredValidator, confirmedValidator(accountForm.cPassword, accountForm.password)]"
+                  :rules="[
+                    requiredValidator,
+                    confirmedValidator(
+                      accountForm.cPassword,
+                      accountForm.password,
+                    ),
+                  ]"
                   :type="isCPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
                 />
               </VCol>

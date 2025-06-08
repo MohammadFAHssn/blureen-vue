@@ -1,62 +1,62 @@
 <script setup>
-import brave from '@images/logos/brave.png'
-import chrome from '@images/logos/chrome.png'
-import firefox from '@images/logos/firefox.png'
-import internetExplorer from '@images/logos/internet-explorer.png'
-import operaMini from '@images/logos/opera-mini.png'
-import safari from '@images/logos/safari.png'
+import brave from "@images/logos/brave.png"
+import chrome from "@images/logos/chrome.png"
+import firefox from "@images/logos/firefox.png"
+import internetExplorer from "@images/logos/internet-explorer.png"
+import operaMini from "@images/logos/opera-mini.png"
+import safari from "@images/logos/safari.png"
 
 const browserStates = [
   {
     avatarImg: chrome,
-    title: 'Google Chrome',
-    stats: '90.4',
-    progress: 'secondary',
+    title: "Google Chrome",
+    stats: "90.4",
+    progress: "secondary",
   },
   {
     avatarImg: safari,
-    title: 'Apple Safari',
-    stats: '70.6',
-    progress: 'success',
+    title: "Apple Safari",
+    stats: "70.6",
+    progress: "success",
   },
   {
     avatarImg: firefox,
-    title: 'Mozilla Firefox',
-    stats: '35.5',
-    progress: 'primary',
+    title: "Mozilla Firefox",
+    stats: "35.5",
+    progress: "primary",
   },
   {
     avatarImg: operaMini,
-    title: 'Opera Mini',
-    stats: '80.0',
-    progress: 'error',
+    title: "Opera Mini",
+    stats: "80.0",
+    progress: "error",
   },
   {
     avatarImg: internetExplorer,
-    title: 'Internet Explorer',
-    stats: '62.2',
-    progress: 'info',
+    title: "Internet Explorer",
+    stats: "62.2",
+    progress: "info",
   },
   {
     avatarImg: brave,
-    title: 'Brave',
-    stats: '46.3',
-    progress: 'warning',
+    title: "Brave",
+    stats: "46.3",
+    progress: "warning",
   },
 ]
 
 const moreList = [
   {
-    title: 'Refresh',
-    value: 'refresh',
+    title: "Refresh",
+    value: "refresh",
   },
   {
-    title: 'Download',
-    value: 'Download',
+    title: "Download",
+    value: "Download",
   },
   {
-    title: 'View All',
-    value: 'View All',
+    title: "View All",
+    value: "View All",
   },
 ]
 </script>

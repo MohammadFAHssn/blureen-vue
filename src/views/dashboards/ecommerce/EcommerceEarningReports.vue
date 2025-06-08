@@ -1,39 +1,33 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    40,
-    95,
-    60,
-    45,
-    90,
-    50,
-    75,
-  ],
-}]
+const series = [
+  {
+    data: [40, 95, 60, 45, 90, 50, 75],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const labelColor = `rgba(${ hexToRgb(currentTheme['on-background']) },${ variableTheme['disabled-opacity'] })`
-  const labelPrimaryColor = `rgba(${ hexToRgb(currentTheme.primary) },0.1)`
-  
+  const labelColor = `rgba(${hexToRgb(currentTheme["on-background"])},${variableTheme["disabled-opacity"]})`
+  const labelPrimaryColor = `rgba(${hexToRgb(currentTheme.primary)},0.1)`
+
   return {
     chart: {
-      type: 'bar',
+      type: "bar",
       toolbar: { show: false },
     },
     tooltip: { enabled: false },
     plotOptions: {
       bar: {
-        barHeight: '60%',
-        columnWidth: '60%',
-        startingShape: 'rounded',
-        endingShape: 'rounded',
+        barHeight: "60%",
+        columnWidth: "60%",
+        startingShape: "rounded",
+        endingShape: "rounded",
         borderRadius: 4,
         distributed: true,
       },
@@ -52,28 +46,20 @@ const chartOptions = computed(() => {
       labelPrimaryColor,
       labelPrimaryColor,
       labelPrimaryColor,
-      `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
+      `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
       labelPrimaryColor,
       labelPrimaryColor,
     ],
     dataLabels: { enabled: false },
     legend: { show: false },
     xaxis: {
-      categories: [
-        'Mo',
-        'Tu',
-        'We',
-        'Th',
-        'Fr',
-        'Sa',
-        'Su',
-      ],
+      categories: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
         style: {
           colors: labelColor,
-          fontSize: '13px',
+          fontSize: "13px",
         },
       },
     },
@@ -83,43 +69,43 @@ const chartOptions = computed(() => {
 
 const earningReports = [
   {
-    avatarIcon: 'tabler-chart-pie-2',
-    avatarColor: 'primary',
-    title: 'Net Profit',
-    subtitle: '12.4k Sales',
-    earnings: '$1,619',
-    percentage: '18.6%',
+    avatarIcon: "tabler-chart-pie-2",
+    avatarColor: "primary",
+    title: "Net Profit",
+    subtitle: "12.4k Sales",
+    earnings: "$1,619",
+    percentage: "18.6%",
   },
   {
-    avatarIcon: 'tabler-currency-dollar',
-    avatarColor: 'success',
-    title: 'Total Income',
-    subtitle: 'Sales, Affiliation',
-    earnings: '$3,571',
-    percentage: '39.6%',
+    avatarIcon: "tabler-currency-dollar",
+    avatarColor: "success",
+    title: "Total Income",
+    subtitle: "Sales, Affiliation",
+    earnings: "$3,571",
+    percentage: "39.6%",
   },
   {
-    avatarIcon: 'tabler-credit-card',
-    avatarColor: 'secondary',
-    title: 'Total Expenses',
-    subtitle: 'ADVT, Marketing',
-    earnings: '$430',
-    percentage: '52.8%',
+    avatarIcon: "tabler-credit-card",
+    avatarColor: "secondary",
+    title: "Total Expenses",
+    subtitle: "ADVT, Marketing",
+    earnings: "$430",
+    percentage: "52.8%",
   },
 ]
 
 const moreList = [
   {
-    title: 'Refresh',
-    value: 'refresh',
+    title: "Refresh",
+    value: "refresh",
   },
   {
-    title: 'Download',
-    value: 'Download',
+    title: "Download",
+    value: "Download",
   },
   {
-    title: 'View All',
-    value: 'View All',
+    title: "View All",
+    value: "View All",
   },
 ]
 </script>

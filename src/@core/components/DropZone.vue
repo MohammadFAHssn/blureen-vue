@@ -1,35 +1,29 @@
 <script setup>
-import {
-  useDropZone,
-  useFileDialog,
-  useObjectUrl,
-} from '@vueuse/core'
+import { useDropZone, useFileDialog, useObjectUrl } from "@vueuse/core"
 
 const dropZoneRef = ref()
 const fileData = ref([])
-const { open, onChange } = useFileDialog({ accept: 'image/*' })
+const { open, onChange } = useFileDialog({ accept: "image/*" })
 function onDrop(DroppedFiles) {
   DroppedFiles?.forEach(file => {
-    if (file.type.slice(0, 6) !== 'image/') {
-
+    if (file.type.slice(0, 6) !== "image/") {
       // eslint-disable-next-line no-alert
-      alert('Only image files are allowed')
-      
+      alert("Only image files are allowed")
+
       return
     }
     fileData.value.push({
       file,
-      url: useObjectUrl(file).value ?? '',
+      url: useObjectUrl(file).value ?? "",
     })
   })
 }
 onChange(selectedFiles => {
-  if (!selectedFiles)
-    return
+  if (!selectedFiles) return
   for (const file of selectedFiles) {
     fileData.value.push({
       file,
-      url: useObjectUrl(file).value ?? '',
+      url: useObjectUrl(file).value ?? "",
     })
   }
 })
@@ -95,9 +89,7 @@ useDropZone(dropZoneRef, onDrop)
                       <span class="clamp-text text-wrap">
                         {{ item.file.name }}
                       </span>
-                      <span>
-                        {{ item.file.size / 1000 }} KB
-                      </span>
+                      <span> {{ item.file.size / 1000 }} KB </span>
                     </div>
                   </VCardText>
                   <VCardActions>

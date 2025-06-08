@@ -9,47 +9,44 @@ const props = defineProps({
     type: Object,
     required: true,
     default: () => ({
-      title: 'App Design',
+      title: "App Design",
       cost: 24,
       hours: 1,
-      description: 'Designed UI kit & app pages.',
+      description: "Designed UI kit & app pages.",
     }),
   },
 })
 
-const emit = defineEmits([
-  'removeProduct',
-  'totalAmount',
-])
+const emit = defineEmits(["removeProduct", "totalAmount"])
 
 const itemsOptions = [
   {
-    title: 'App Design',
+    title: "App Design",
     cost: 24,
     hours: 1,
-    description: 'Designed UI kit & app pages.',
+    description: "Designed UI kit & app pages.",
   },
   {
-    title: 'App Customization',
+    title: "App Customization",
     cost: 26,
     hours: 1,
-    description: 'Customization & Bug Fixes.',
+    description: "Customization & Bug Fixes.",
   },
   {
-    title: 'ABC Template',
+    title: "ABC Template",
     cost: 28,
     hours: 1,
-    description: 'Vuetify admin template.',
+    description: "Vuetify admin template.",
   },
   {
-    title: 'App Development',
+    title: "App Development",
     cost: 32,
     hours: 1,
-    description: 'Native App Development.',
+    description: "Native App Development.",
   },
 ]
 
-const selectedItem = ref('App Customization')
+const selectedItem = ref("App Customization")
 const localProductData = ref(structuredClone(toRaw(props.data)))
 
 watch(selectedItem, () => {
@@ -61,14 +58,21 @@ watch(selectedItem, () => {
 })
 
 const removeProduct = () => {
-  emit('removeProduct', props.id)
+  emit("removeProduct", props.id)
 }
 
-const totalPrice = computed(() => Number(localProductData.value.cost) * Number(localProductData.value.hours))
+const totalPrice = computed(
+  () =>
+    Number(localProductData.value.cost) * Number(localProductData.value.hours),
+)
 
-watch(totalPrice, () => {
-  emit('totalAmount', totalPrice.value)
-}, { immediate: true })
+watch(
+  totalPrice,
+  () => {
+    emit("totalAmount", totalPrice.value)
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -196,7 +200,7 @@ watch(totalPrice, () => {
     <!-- 👉 Item Actions -->
     <div
       class="d-flex flex-column align-end item-actions"
-      :class="$vuetify.display.smAndUp ? 'border-s' : 'border-b' "
+      :class="$vuetify.display.smAndUp ? 'border-s' : 'border-b'"
     >
       <IconBtn
         size="36"

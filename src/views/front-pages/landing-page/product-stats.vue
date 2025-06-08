@@ -1,33 +1,33 @@
 <script setup>
-import check from '@images/svg/Check.svg'
-import diamond from '@images/svg/Diamond.svg'
-import laptop from '@images/svg/laptop.svg'
-import user from '@images/svg/user.svg'
+import check from "@images/svg/Check.svg"
+import diamond from "@images/svg/Diamond.svg"
+import laptop from "@images/svg/laptop.svg"
+import user from "@images/svg/user.svg"
 
 const statData = [
   {
-    title: 'Support Tickets Resolved',
-    value: '7.1k+',
+    title: "Support Tickets Resolved",
+    value: "7.1k+",
     icon: laptop,
-    color: 'primary',
+    color: "primary",
   },
   {
-    title: 'Join creatives community',
-    value: '50k+',
+    title: "Join creatives community",
+    value: "50k+",
     icon: user,
-    color: 'success',
+    color: "success",
   },
   {
-    title: 'Highly Rated Products',
-    value: '4.8/5',
+    title: "Highly Rated Products",
+    value: "4.8/5",
     icon: diamond,
-    color: 'info',
+    color: "info",
   },
   {
-    title: 'Money Back Guarantee',
-    value: '100%',
+    title: "Money Back Guarantee",
+    value: "100%",
     icon: check,
-    color: 'warning',
+    color: "warning",
   },
 ]
 </script>
@@ -46,7 +46,9 @@ const statData = [
           >
             <VCard
               flat
-              :style="{ border: `1px solid rgba(var(--v-theme-${product.color}))` }"
+              :style="{
+                border: `1px solid rgba(var(--v-theme-${product.color}))`,
+              }"
             >
               <VCardText class="text-center">
                 <VIcon

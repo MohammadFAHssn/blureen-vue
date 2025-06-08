@@ -15,7 +15,7 @@ const props = defineProps({
   class: {
     type: String,
     required: false,
-    default: 'text-disabled',
+    default: "text-disabled",
   },
 })
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-const currentTab = ref('tab-1')
+const currentTab = ref("tab-1")
 </script>
 
 <template>
@@ -43,23 +43,29 @@ const currentTab = ref('tab-1')
         >
           <VWindowItem value="tab-1">
             <p>
-              Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi ac felis. Etiam feugiat lorem non metus. Sed a libero.
+              Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi
+              ac felis. Etiam feugiat lorem non metus. Sed a libero.
             </p>
 
             <p class="mb-0">
-              Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu. Pellentesque libero tortor, tincidunt et, tincidunt eget.
+              Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu.
+              Pellentesque libero tortor, tincidunt et, tincidunt eget.
             </p>
           </VWindowItem>
 
           <VWindowItem value="tab-2">
             <p class="mb-0">
-              Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero.
+              Morbi nec metus. Suspendisse faucibus, nunc et pellentesque
+              egestas, lacus ante convallis tellus, vitae iaculis lacus elit id
+              tortor. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam
+              libero.
             </p>
           </VWindowItem>
 
           <VWindowItem value="tab-3">
             <p class="mb-0">
-              Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper.
+              Fusce a quam. Phasellus nec sem in justo pellentesque facilisis.
+              Nam eget dui. Proin viverra, ligula sit amet ultrices semper.
             </p>
           </VWindowItem>
         </VWindow>

@@ -1,15 +1,12 @@
 <script setup>
-import { Image } from '@tiptap/extension-image'
-import { Link } from '@tiptap/extension-link'
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { Underline } from '@tiptap/extension-underline'
-import { StarterKit } from '@tiptap/starter-kit'
-import {
-  EditorContent,
-  useEditor,
-} from '@tiptap/vue-3'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VForm } from 'vuetify/components/VForm'
+import { Image } from "@tiptap/extension-image"
+import { Link } from "@tiptap/extension-link"
+import { Placeholder } from "@tiptap/extension-placeholder"
+import { Underline } from "@tiptap/extension-underline"
+import { StarterKit } from "@tiptap/starter-kit"
+import { EditorContent, useEditor } from "@tiptap/vue-3"
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { VForm } from "vuetify/components/VForm"
 
 const props = defineProps({
   isDrawerOpen: {
@@ -18,50 +15,52 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDrawerOpen'])
+const emit = defineEmits(["update:isDrawerOpen"])
 
 const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 
 const editor = useEditor({
-  content: '',
+  content: "",
   extensions: [
     StarterKit,
     Image,
-    Placeholder.configure({ placeholder: 'Enter a category description...' }),
+    Placeholder.configure({ placeholder: "Enter a category description..." }),
     Underline,
     Link.configure({ openOnClick: false }),
   ],
 })
 
 const setLink = () => {
-  const previousUrl = editor.value?.getAttributes('link').href
+  const previousUrl = editor.value?.getAttributes("link").href
 
   // eslint-disable-next-line no-alert
-  const url = window.prompt('URL', previousUrl)
+  const url = window.prompt("URL", previousUrl)
 
   // cancelled
-  if (url === null)
-    return
+  if (url === null) return
 
   // empty
-  if (url === '') {
-    editor.value?.chain().focus().extendMarkRange('link').unsetLink().run()
-    
+  if (url === "") {
+    editor.value?.chain().focus().extendMarkRange("link").unsetLink().run()
+
     return
   }
 
   // update link
-  editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  editor.value
+    ?.chain()
+    .focus()
+    .extendMarkRange("link")
+    .setLink({ href: url })
+    .run()
 }
 
 const addImage = () => {
-
   // eslint-disable-next-line no-alert
-  const url = window.prompt('URL')
-  if (url)
-    editor.value?.chain().focus().setImage({ src: url }).run()
+  const url = window.prompt("URL")
+  if (url) editor.value?.chain().focus().setImage({ src: url }).run()
 }
 
 const refVForm = ref()
@@ -72,7 +71,7 @@ const parentCategory = ref()
 const parentStatus = ref()
 
 const resetForm = () => {
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
   refVForm.value?.reset()
 }
 </script>
@@ -145,7 +144,13 @@ const resetForm = () => {
                   :rules="[requiredValidator]"
                   label="Parent Category"
                   placeholder="Select Parent Category"
-                  :items="['HouseHold', 'Management', 'Electronics', 'Office', 'Accessories']"
+                  :items="[
+                    'HouseHold',
+                    'Management',
+                    'Electronics',
+                    'Office',
+                    'Accessories',
+                  ]"
                 />
               </VCol>
 
@@ -273,7 +278,10 @@ const resetForm = () => {
   }
 
   .is-active {
-    border-color: rgba(var(--v-theme-primary), var(--v-border-opacity)) !important;
+    border-color: rgba(
+      var(--v-theme-primary),
+      var(--v-border-opacity)
+    ) !important;
     background-color: rgba(var(--v-theme-primary), var(--v-activated-opacity));
     color: rgb(var(--v-theme-primary));
   }

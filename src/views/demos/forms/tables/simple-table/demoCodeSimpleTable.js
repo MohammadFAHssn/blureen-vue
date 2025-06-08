@@ -1,4 +1,5 @@
-export const basic = { ts: `<script setup lang="ts">
+export const basic = {
+  ts: `<script setup lang="ts">
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -84,7 +85,8 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -170,9 +172,11 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-` }
+`,
+}
 
-export const density = { ts: `<script setup lang="ts">
+export const density = {
+  ts: `<script setup lang="ts">
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -261,7 +265,8 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -350,9 +355,11 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-` }
+`,
+}
 
-export const fixedHeader = { ts: `<script setup lang="ts">
+export const fixedHeader = {
+  ts: `<script setup lang="ts">
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -442,7 +449,8 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -532,9 +540,11 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-` }
+`,
+}
 
-export const height = { ts: `<script setup lang="ts">
+export const height = {
+  ts: `<script setup lang="ts">
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -623,7 +633,8 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -712,9 +723,11 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-` }
+`,
+}
 
-export const theme = { ts: `<script setup lang="ts">
+export const theme = {
+  ts: `<script setup lang="ts">
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -804,7 +817,8 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const desserts = [
   {
     dessert: 'Frozen Yogurt',
@@ -894,5 +908,5 @@ const desserts = [
     </tbody>
   </VTable>
 </template>
-` }
-
+`,
+}

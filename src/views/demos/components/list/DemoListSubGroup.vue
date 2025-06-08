@@ -1,37 +1,16 @@
 <script setup>
-const open = ref([
-  'Users',
-  'Admin',
-])
+const open = ref(["Users", "Admin"])
 
 const admins = [
-  [
-    'Management',
-    'tabler-users',
-  ],
-  [
-    'Settings',
-    'tabler-settings',
-  ],
+  ["Management", "tabler-users"],
+  ["Settings", "tabler-settings"],
 ]
 
 const cruds = [
-  [
-    'Create',
-    'tabler-plus',
-  ],
-  [
-    'Read',
-    'tabler-file',
-  ],
-  [
-    'Update',
-    'tabler-reload',
-  ],
-  [
-    'Delete',
-    'tabler-trash',
-  ],
+  ["Create", "tabler-plus"],
+  ["Read", "tabler-file"],
+  ["Update", "tabler-reload"],
+  ["Delete", "tabler-trash"],
 ]
 </script>
 

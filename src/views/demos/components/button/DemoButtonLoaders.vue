@@ -69,19 +69,19 @@ const load = i => {
   </div>
 </template>
 
-  <style lang="scss" scoped>
-  .custom-loader {
-    display: flex;
-    animation: loader 1s infinite;
+<style lang="scss" scoped>
+.custom-loader {
+  display: flex;
+  animation: loader 1s infinite;
+}
+
+@keyframes loader {
+  from {
+    transform: rotate(0);
   }
 
-  @keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-
-    to {
-      transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
   }
-  </style>
+}
+</style>

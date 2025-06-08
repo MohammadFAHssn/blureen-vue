@@ -1,5 +1,5 @@
 <script setup>
-const searchQuery = ref('')
+const searchQuery = ref("")
 
 // Data table options
 const itemsPerPage = ref(5)
@@ -14,34 +14,36 @@ const updateOptions = options => {
 
 const headers = [
   {
-    title: 'Course Name',
-    key: 'courseName',
+    title: "Course Name",
+    key: "courseName",
   },
   {
-    title: 'Time',
-    key: 'time',
+    title: "Time",
+    key: "time",
     sortable: false,
   },
   {
-    title: 'Progress',
-    key: 'progress',
+    title: "Progress",
+    key: "progress",
   },
   {
-    title: 'Status',
-    key: 'status',
+    title: "Status",
+    key: "status",
     sortable: false,
   },
 ]
 
-const { data: courseData } = await useApi(createUrl('/apps/academy/courses', {
-  query: {
-    q: searchQuery,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: courseData } = await useApi(
+  createUrl("/apps/academy/courses", {
+    query: {
+      q: searchQuery,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const courses = computed(() => courseData.value.courses)
 const totalCourse = computed(() => courseData.value.total)
@@ -58,7 +60,7 @@ const totalCourse = computed(() => courseData.value.total)
           <AppTextField
             v-model="searchQuery"
             placeholder="Search Course"
-            style="max-inline-size: 300px;min-inline-size: 300px;"
+            style="max-inline-size: 300px; min-inline-size: 300px"
           />
         </div>
       </div>
@@ -128,7 +130,7 @@ const totalCourse = computed(() => courseData.value.total)
       <template #item.progress="{ item }">
         <div
           class="d-flex align-center gap-x-4"
-          style="inline-size: 15.625rem;"
+          style="inline-size: 15.625rem"
         >
           <div class="text-no-wrap font-weight-medium text-high-emphasis">
             {{ Math.floor((item.completedTasks / item.totalTasks) * 100) }}%
@@ -137,7 +139,9 @@ const totalCourse = computed(() => courseData.value.total)
             <VProgressLinear
               color="primary"
               height="8"
-              :model-value="Math.floor((item.completedTasks / item.totalTasks) * 100)"
+              :model-value="
+                Math.floor((item.completedTasks / item.totalTasks) * 100)
+              "
               rounded
             />
           </div>

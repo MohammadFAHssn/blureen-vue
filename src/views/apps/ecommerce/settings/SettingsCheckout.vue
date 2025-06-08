@@ -1,9 +1,9 @@
 <script setup>
-const contactMethod = ref('Phone number')
-const fullName = ref('Only require last name')
-const companyName = ref('Don\'t include')
-const addressLine = ref('Optional')
-const shippingAddress = ref('Optional')
+const contactMethod = ref("Phone number")
+const fullName = ref("Only require last name")
+const companyName = ref("Don't include")
+const addressLine = ref("Optional")
+const shippingAddress = ref("Optional")
 </script>
 
 <template>

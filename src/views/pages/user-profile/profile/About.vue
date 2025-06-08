@@ -26,7 +26,9 @@ const props = defineProps({
                 size="24"
                 class="me-2"
               />
-              <div class="text-body-1 font-weight-medium me-2">{{ item.property }}:</div>
+              <div class="text-body-1 font-weight-medium me-2">
+                {{ item.property }}:
+              </div>
               <div>{{ item.value }}</div>
             </span>
           </VListItemTitle>
@@ -49,7 +51,9 @@ const props = defineProps({
                 size="24"
                 class="me-2"
               />
-              <div class="text-body-1 font-weight-medium me-2">{{ item.property }}:</div>
+              <div class="text-body-1 font-weight-medium me-2">
+                {{ item.property }}:
+              </div>
               <div>{{ item.value }}</div>
             </span>
           </VListItemTitle>
@@ -67,7 +71,9 @@ const props = defineProps({
         >
           <VListItemTitle>
             <span class="d-flex align-center">
-              <div class="text-body-1 font-weight-medium me-2">{{ item.property }}</div>
+              <div class="text-body-1 font-weight-medium me-2">
+                {{ item.property }}
+              </div>
               <div>{{ item.value }}</div>
             </span>
           </VListItemTitle>
@@ -94,7 +100,9 @@ const props = defineProps({
                 size="24"
                 class="me-2"
               />
-              <div class="text-body-1 font-weight-medium me-2">{{ item.property }}:</div>
+              <div class="text-body-1 font-weight-medium me-2">
+                {{ item.property }}:
+              </div>
               <div>{{ item.value }}</div>
             </span>
           </VListItemTitle>

@@ -1,6 +1,6 @@
 <script setup>
-import { useChat } from '@/views/apps/chat/useChat'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
+import { useChat } from "@/views/apps/chat/useChat"
+import { useChatStore } from "@/views/apps/chat/useChatStore"
 
 const props = defineProps({
   isChatContact: {
@@ -19,9 +19,8 @@ const { resolveAvatarBadgeVariant } = useChat()
 
 const isChatContactActive = computed(() => {
   const isActive = store.activeChat?.contact.id === props.user.id
-  if (!props.isChatContact)
-    return !store.activeChat?.chat && isActive
-  
+  if (!props.isChatContact) return !store.activeChat?.chat && isActive
+
   return isActive
 })
 </script>
@@ -44,7 +43,11 @@ const isChatContactActive = computed(() => {
       <VAvatar
         size="40"
         :variant="!props.user.avatar ? 'tonal' : undefined"
-        :color="!props.user.avatar ? resolveAvatarBadgeVariant(props.user.status) : undefined"
+        :color="
+          !props.user.avatar
+            ? resolveAvatarBadgeVariant(props.user.status)
+            : undefined
+        "
       >
         <VImg
           v-if="props.user.avatar"
@@ -59,7 +62,11 @@ const isChatContactActive = computed(() => {
         {{ props.user.fullName }}
       </p>
       <p class="mb-0 text-truncate text-body-2">
-        {{ props.isChatContact && 'chat' in props.user ? props.user.chat.lastMessage.message : props.user.about }}
+        {{
+          props.isChatContact && "chat" in props.user
+            ? props.user.chat.lastMessage.message
+            : props.user.about
+        }}
       </p>
     </div>
     <div

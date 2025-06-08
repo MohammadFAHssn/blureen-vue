@@ -5,30 +5,24 @@ const max = 218
 const isPlaying = ref(false)
 
 const color = computed(() => {
-  if (bpm.value < 100)
-    return 'primary'
-  if (bpm.value < 125)
-    return 'success'
-  if (bpm.value < 140)
-    return 'info'
-  if (bpm.value < 175)
-    return 'warning'
-  
-  return 'error'
+  if (bpm.value < 100) return "primary"
+  if (bpm.value < 125) return "success"
+  if (bpm.value < 140) return "info"
+  if (bpm.value < 175) return "warning"
+
+  return "error"
 })
 
 const animationDuration = computed(() => {
-  return `${ 60 / bpm.value }s`
+  return `${60 / bpm.value}s`
 })
 
 const decrement = () => {
-  if (bpm.value > min)
-    bpm.value -= 1
+  if (bpm.value > min) bpm.value -= 1
 }
 
 const increment = () => {
-  if (bpm.value < max)
-    bpm.value += 1
+  if (bpm.value < max) bpm.value += 1
 }
 </script>
 
@@ -100,19 +94,19 @@ const increment = () => {
 </template>
 
 <style lang="scss" scoped>
-  @keyframes metronome-example {
-    from {
-      transform: scale(0.5);
-    }
-
-    to {
-      transform: scale(1);
-    }
+@keyframes metronome-example {
+  from {
+    transform: scale(0.5);
   }
 
-  .v-avatar--metronome {
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
-    animation-name: metronome-example;
+  to {
+    transform: scale(1);
   }
+}
+
+.v-avatar--metronome {
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-name: metronome-example;
+}
 </style>

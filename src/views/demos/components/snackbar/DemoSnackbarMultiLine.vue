@@ -12,7 +12,8 @@ const isSnackbarVisible = ref(false)
     v-model="isSnackbarVisible"
     multi-line
   >
-    I am a multi-line snackbar. I can have more than one line. This is another line that is quite long.
+    I am a multi-line snackbar. I can have more than one line. This is another
+    line that is quite long.
 
     <template #actions>
       <VBtn

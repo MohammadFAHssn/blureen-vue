@@ -1,37 +1,25 @@
 <script setup>
-import { useTheme } from 'vuetify'
+import { useTheme } from "vuetify"
 
 const vuetifyTheme = useTheme()
 
 const series = [
   {
-    name: 'PRODUCT A',
-    data: [
-      4,
-      3,
-      6,
-      4,
-      3,
-    ],
+    name: "PRODUCT A",
+    data: [4, 3, 6, 4, 3],
   },
   {
-    name: 'PRODUCT B',
-    data: [
-      -3,
-      -4,
-      -3,
-      -2,
-      -3,
-    ],
+    name: "PRODUCT B",
+    data: [-3, -4, -3, -2, -3],
   },
 ]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
-  
+
   return {
     chart: {
-      type: 'bar',
+      type: "bar",
       height: 90,
       parentHeightOffset: 0,
       stacked: true,
@@ -39,47 +27,35 @@ const chartOptions = computed(() => {
     },
     series: [
       {
-        name: 'PRODUCT A',
-        data: [
-          4,
-          3,
-          6,
-          4,
-          3,
-        ],
+        name: "PRODUCT A",
+        data: [4, 3, 6, 4, 3],
       },
       {
-        name: 'PRODUCT B',
-        data: [
-          -3,
-          -4,
-          -3,
-          -2,
-          -3,
-        ],
+        name: "PRODUCT B",
+        data: [-3, -4, -3, -2, -3],
       },
     ],
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '40%',
+        columnWidth: "40%",
         borderRadius: 5,
-        borderRadiusApplication: 'around',
-        borderRadiusWhenStacked: 'all',
+        borderRadiusApplication: "around",
+        borderRadiusWhenStacked: "all",
       },
     },
     dataLabels: { enabled: false },
     tooltip: { enabled: false },
     stroke: {
-      curve: 'smooth',
+      curve: "smooth",
       width: 4,
-      lineCap: 'round',
+      lineCap: "round",
       colors: [currentTheme.surface],
     },
     legend: { show: false },
     colors: [
-      'rgba(var(--v-theme-primary),1)',
-      'rgba(var(--v-theme-success),1)',
+      "rgba(var(--v-theme-primary),1)",
+      "rgba(var(--v-theme-success),1)",
     ],
     grid: {
       show: false,
@@ -91,13 +67,7 @@ const chartOptions = computed(() => {
       },
     },
     xaxis: {
-      categories: [
-        'Mon',
-        'Tue',
-        'Wed',
-        'Thu',
-        'Fri',
-      ],
+      categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
       labels: { show: false },
       axisBorder: { show: false },
       axisTicks: { show: false },
@@ -109,7 +79,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '50%',
+              columnWidth: "50%",
               borderRadius: 4,
             },
           },
@@ -120,7 +90,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '60%',
+              columnWidth: "60%",
               borderRadius: 4,
             },
           },
@@ -132,7 +102,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '30%',
+              columnWidth: "30%",
             },
           },
         },
@@ -143,7 +113,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '30%',
+              columnWidth: "30%",
             },
           },
           chart: { height: 110 },
@@ -155,7 +125,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '25%',
+              columnWidth: "25%",
             },
           },
         },
@@ -165,7 +135,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '30%',
+              columnWidth: "30%",
               borderRadius: 6,
             },
           },
@@ -177,7 +147,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '20%',
+              columnWidth: "20%",
             },
           },
           chart: { height: 160 },
@@ -189,7 +159,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '30%',
+              columnWidth: "30%",
             },
           },
         },
@@ -200,8 +170,8 @@ const chartOptions = computed(() => {
       },
     ],
     states: {
-      hover: { filter: { type: 'none' } },
-      active: { filter: { type: 'none' } },
+      hover: { filter: { type: "none" } },
+      active: { filter: { type: "none" } },
     },
   }
 })
@@ -210,12 +180,8 @@ const chartOptions = computed(() => {
 <template>
   <VCard>
     <VCardItem class="pb-3">
-      <VCardTitle>
-        Sessions
-      </VCardTitle>
-      <VCardSubtitle>
-        This Month
-      </VCardSubtitle>
+      <VCardTitle> Sessions </VCardTitle>
+      <VCardSubtitle> This Month </VCardSubtitle>
     </VCardItem>
 
     <VCardText>

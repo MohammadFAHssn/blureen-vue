@@ -10,19 +10,16 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"])
 
 const prop = __props
 const checkoutPaymentDataLocal = ref(prop.checkoutData)
-const selectedPaymentMethod = ref('card')
+const selectedPaymentMethod = ref("card")
 
 const cardFormData = ref({
   cardNumber: null,
-  cardName: '',
-  cardExpiry: '',
+  cardName: "",
+  cardExpiry: "",
   cardCvv: null,
   isCardSave: true,
 })
@@ -39,12 +36,12 @@ const selectedDeliveryAddress = computed(() => {
 })
 
 const updateCartData = () => {
-  emit('update:checkout-data', checkoutPaymentDataLocal.value)
+  emit("update:checkout-data", checkoutPaymentDataLocal.value)
 }
 
 const nextStep = () => {
   updateCartData()
-  emit('update:currentStep', prop.currentStep ? prop.currentStep + 1 : 1)
+  emit("update:currentStep", prop.currentStep ? prop.currentStep + 1 : 1)
 }
 
 watch(() => prop.currentStep, updateCartData)
@@ -67,9 +64,11 @@ watch(() => prop.currentStep, updateCartData)
       >
         <template #text>
           <p class="mb-0">
-            - 0% Instant Discount on Bank of America Corp Bank Debit and Credit cards
+            - 0% Instant Discount on Bank of America Corp Bank Debit and Credit
+            cards
             <br>
-            - 50% Cashback Voucher of up to $60 on first ever PayPal transaction. TCA
+            - 50% Cashback Voucher of up to $60 on first ever PayPal
+            transaction. TCA
           </p>
         </template>
       </VAlert>
@@ -92,7 +91,7 @@ watch(() => prop.currentStep, updateCartData)
 
       <VWindow
         v-model="selectedPaymentMethod"
-        style="max-inline-size: 600px;"
+        style="max-inline-size: 600px"
         :touch="false"
       >
         <VWindowItem
@@ -189,7 +188,9 @@ watch(() => prop.currentStep, updateCartData)
 
         <VWindowItem value="cash-on-delivery">
           <p class="text-base text-high-emphasis my-6">
-            Cash on Delivery is a type of payment method where the recipient make payment for the order at the time of delivery rather than in advance.
+            Cash on Delivery is a type of payment method where the recipient
+            make payment for the order at the time of delivery rather than in
+            advance.
           </p>
 
           <VBtn @click="nextStep">
@@ -275,7 +276,10 @@ watch(() => prop.currentStep, updateCartData)
         <VCardText>
           <div class="d-flex justify-space-between text-base mb-2">
             <span class="text-high-emphasis font-weight-medium">Total</span>
-            <span class="font-weight-medium">${{ checkoutPaymentDataLocal.orderAmount + checkoutPaymentDataLocal.deliveryCharges }}.00</span>
+            <span class="font-weight-medium">${{
+              checkoutPaymentDataLocal.orderAmount +
+                checkoutPaymentDataLocal.deliveryCharges
+            }}.00</span>
           </div>
 
           <div class="d-flex justify-space-between text-base mb-4">

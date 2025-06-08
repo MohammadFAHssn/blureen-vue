@@ -1,73 +1,73 @@
 <script setup>
-import { VIcon } from 'vuetify/components/VIcon'
-import sliderBar1 from '@images/illustrations/sidebar-pic-1.png'
-import sliderBar2 from '@images/illustrations/sidebar-pic-2.png'
-import sliderBar3 from '@images/illustrations/sidebar-pic-3.png'
+import { VIcon } from "vuetify/components/VIcon"
+import sliderBar1 from "@images/illustrations/sidebar-pic-1.png"
+import sliderBar2 from "@images/illustrations/sidebar-pic-2.png"
+import sliderBar3 from "@images/illustrations/sidebar-pic-3.png"
 
 const websiteAnalytics = [
   {
-    name: 'Traffic',
+    name: "Traffic",
     slideImg: sliderBar1,
     data: [
       {
-        number: '1.5k',
-        text: 'Sessions',
+        number: "1.5k",
+        text: "Sessions",
       },
       {
-        number: '3.1k',
-        text: 'Page Views',
+        number: "3.1k",
+        text: "Page Views",
       },
       {
-        number: '1.2k',
-        text: 'Leads',
+        number: "1.2k",
+        text: "Leads",
       },
       {
-        number: '12%',
-        text: 'Conversions',
+        number: "12%",
+        text: "Conversions",
       },
     ],
   },
   {
-    name: 'Spending',
+    name: "Spending",
     slideImg: sliderBar2,
     data: [
       {
-        number: '12h',
-        text: 'Spend',
+        number: "12h",
+        text: "Spend",
       },
       {
-        number: '182',
-        text: 'Order Size',
+        number: "182",
+        text: "Order Size",
       },
       {
-        number: '127',
-        text: 'Order',
+        number: "127",
+        text: "Order",
       },
       {
-        number: '23k',
-        text: 'Items',
+        number: "23k",
+        text: "Items",
       },
     ],
   },
   {
-    name: 'Revenue Sources',
+    name: "Revenue Sources",
     slideImg: sliderBar3,
     data: [
       {
-        number: '268',
-        text: 'Direct',
+        number: "268",
+        text: "Direct",
       },
       {
-        number: '890',
-        text: 'Organic',
+        number: "890",
+        text: "Organic",
       },
       {
-        number: '622',
-        text: 'Referral',
+        number: "622",
+        text: "Referral",
       },
       {
-        number: '1.2k',
-        text: 'Campaign',
+        number: "1.2k",
+        text: "Campaign",
       },
     ],
   },
@@ -128,7 +128,7 @@ const websiteAnalytics = [
                     size="default"
                     color="rgb(var(--v-theme-primary-darken-1))"
                     class="font-weight-medium text-white rounded me-2 px-2"
-                    style="block-size: 30px;"
+                    style="block-size: 30px"
                   >
                     <span class="text-base">{{ d.number }}</span>
                   </VChip>
@@ -147,7 +147,7 @@ const websiteAnalytics = [
               <img
                 :src="item.slideImg"
                 class="card-website-analytics-img"
-                style="filter: drop-shadow(0 4px 60px rgba(0, 0, 0, 50%));"
+                style="filter: drop-shadow(0 4px 60px rgba(0, 0, 0, 50%))"
               >
             </VCol>
           </VRow>

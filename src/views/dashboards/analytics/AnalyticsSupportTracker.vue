@@ -1,6 +1,6 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 const series = [85]
@@ -8,53 +8,49 @@ const series = [85]
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  
+
   return {
-    labels: ['Completed Task'],
-    chart: { type: 'radialBar' },
+    labels: ["Completed Task"],
+    chart: { type: "radialBar" },
     plotOptions: {
       radialBar: {
         offsetY: 10,
         startAngle: -140,
         endAngle: 130,
-        hollow: { size: '65%' },
+        hollow: { size: "65%" },
         track: {
           background: currentTheme.surface,
-          strokeWidth: '100%',
+          strokeWidth: "100%",
         },
         dataLabels: {
           name: {
             offsetY: -20,
-            color: `rgba(${ hexToRgb(currentTheme['on-surface']) },${ variableTheme['disabled-opacity'] })`,
-            fontSize: '13px',
-            fontWeight: '400',
-            fontFamily: 'Public Sans',
+            color: `rgba(${hexToRgb(currentTheme["on-surface"])},${variableTheme["disabled-opacity"]})`,
+            fontSize: "13px",
+            fontWeight: "400",
+            fontFamily: "Public Sans",
           },
           value: {
             offsetY: 10,
-            color: `rgba(${ hexToRgb(currentTheme['on-background']) },${ variableTheme['high-emphasis-opacity'] })`,
-            fontSize: '38px',
-            fontWeight: '500',
-            fontFamily: 'Public Sans',
+            color: `rgba(${hexToRgb(currentTheme["on-background"])},${variableTheme["high-emphasis-opacity"]})`,
+            fontSize: "38px",
+            fontWeight: "500",
+            fontFamily: "Public Sans",
           },
         },
       },
     },
     colors: [currentTheme.primary],
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
-        shade: 'dark',
+        shade: "dark",
         shadeIntensity: 0.5,
         gradientToColors: [currentTheme.primary],
         inverseColors: true,
         opacityFrom: 1,
         opacityTo: 0.6,
-        stops: [
-          30,
-          70,
-          100,
-        ],
+        stops: [30, 70, 100],
       },
     },
     stroke: { dashArray: 10 },
@@ -65,45 +61,47 @@ const chartOptions = computed(() => {
       },
     },
     states: {
-      hover: { filter: { type: 'none' } },
-      active: { filter: { type: 'none' } },
+      hover: { filter: { type: "none" } },
+      active: { filter: { type: "none" } },
     },
-    responsive: [{
-      breakpoint: 960,
-      options: { chart: { height: 280 } },
-    }],
+    responsive: [
+      {
+        breakpoint: 960,
+        options: { chart: { height: 280 } },
+      },
+    ],
   }
 })
 
 const supportTicket = [
   {
-    avatarColor: 'primary',
-    avatarIcon: 'tabler-ticket',
-    title: 'New Tickets',
-    subtitle: '142',
+    avatarColor: "primary",
+    avatarIcon: "tabler-ticket",
+    title: "New Tickets",
+    subtitle: "142",
   },
   {
-    avatarColor: 'info',
-    avatarIcon: 'tabler-check',
-    title: 'Open Tickets',
-    subtitle: '28',
+    avatarColor: "info",
+    avatarIcon: "tabler-check",
+    title: "Open Tickets",
+    subtitle: "28",
   },
   {
-    avatarColor: 'warning',
-    avatarIcon: 'tabler-clock',
-    title: 'Response Time',
-    subtitle: '1 Day',
+    avatarColor: "warning",
+    avatarIcon: "tabler-clock",
+    title: "Response Time",
+    subtitle: "1 Day",
   },
 ]
 
 const moreList = [
   {
-    title: 'View More',
-    value: 'View More',
+    title: "View More",
+    value: "View More",
   },
   {
-    title: 'Delete',
-    value: 'Delete',
+    title: "Delete",
+    value: "Delete",
   },
 ]
 </script>

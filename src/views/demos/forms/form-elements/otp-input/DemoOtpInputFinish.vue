@@ -1,17 +1,17 @@
 <script setup>
 const loading = ref(false)
 const snackbar = ref(false)
-const snackbarColor = ref('default')
-const otp = ref('')
-const text = ref('')
-const expectedOtp = ref('133707')
+const snackbarColor = ref("default")
+const otp = ref("")
+const text = ref("")
+const expectedOtp = ref("133707")
 
 const onFinish = rsp => {
   loading.value = true
   setTimeout(() => {
     loading.value = false
-    snackbarColor.value = rsp === expectedOtp.value ? 'success' : 'warning'
-    text.value = `Processed OTP with "${ rsp }" (${ snackbarColor.value })`
+    snackbarColor.value = rsp === expectedOtp.value ? "success" : "warning"
+    text.value = `Processed OTP with "${rsp}" (${snackbarColor.value})`
     snackbar.value = true
   }, 3000)
 }

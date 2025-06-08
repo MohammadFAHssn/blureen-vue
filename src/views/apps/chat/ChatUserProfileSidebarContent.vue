@@ -1,10 +1,9 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { useChat } from './useChat'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { useChat } from "./useChat"
+import { useChatStore } from "@/views/apps/chat/useChatStore"
 
-const emit = defineEmits(['close'])
-
+const emit = defineEmits(["close"])
 
 // composables
 const store = useChatStore()
@@ -12,24 +11,24 @@ const { resolveAvatarBadgeVariant } = useChat()
 
 const userStatusRadioOptions = [
   {
-    title: 'Online',
-    value: 'online',
-    color: 'success',
+    title: "Online",
+    value: "online",
+    color: "success",
   },
   {
-    title: 'Away',
-    value: 'away',
-    color: 'warning',
+    title: "Away",
+    value: "away",
+    color: "warning",
   },
   {
-    title: 'Do not disturb',
-    value: 'busy',
-    color: 'error',
+    title: "Do not disturb",
+    value: "busy",
+    color: "error",
   },
   {
-    title: 'Offline',
-    value: 'offline',
-    color: 'secondary',
+    title: "Offline",
+    value: "offline",
+    color: "secondary",
   },
 ]
 
@@ -63,7 +62,11 @@ const isNotificationEnabled = ref(false)
         <VAvatar
           size="84"
           :variant="!store.profileUser.avatar ? 'tonal' : undefined"
-          :color="!store.profileUser.avatar ? resolveAvatarBadgeVariant(store.profileUser.status) : undefined"
+          :color="
+            !store.profileUser.avatar
+              ? resolveAvatarBadgeVariant(store.profileUser.status)
+              : undefined
+          "
         >
           <VImg
             v-if="store.profileUser.avatar"
@@ -72,7 +75,9 @@ const isNotificationEnabled = ref(false)
           <span
             v-else
             class="text-3xl"
-          >{{ avatarText(store.profileUser.fullName) }}</span>
+          >{{
+            avatarText(store.profileUser.fullName)
+          }}</span>
         </VAvatar>
       </VBadge>
       <h5 class="text-h5">

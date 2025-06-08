@@ -1,8 +1,6 @@
 <template>
   <div class="demo-space-x">
-    <VChip>
-      Default
-    </VChip>
+    <VChip> Default </VChip>
 
     <VChip color="primary">
       Primary

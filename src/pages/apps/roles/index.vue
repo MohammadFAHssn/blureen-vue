@@ -1,6 +1,6 @@
 <script setup>
-import RoleCards from '@/views/apps/roles/RoleCards.vue'
-import UserList from '@/views/apps/roles/UserList.vue'
+import RoleCards from "@/views/apps/roles/RoleCards.vue"
+import UserList from "@/views/apps/roles/UserList.vue"
 </script>
 
 <template>
@@ -10,7 +10,9 @@ import UserList from '@/views/apps/roles/UserList.vue'
         Roles List
       </h4>
       <p class="text-body-1 mb-0">
-        A role provided access to predefined menus and features so that depending on assigned role an administrator can have access to what he need
+        A role provided access to predefined menus and features so that
+        depending on assigned role an administrator can have access to what he
+        need
       </p>
     </VCol>
 
@@ -24,7 +26,8 @@ import UserList from '@/views/apps/roles/UserList.vue'
         Total users with their roles
       </h4>
       <p class="text-body-1 mb-0">
-        Find all of your company’s administrator accounts and their associate roles.
+        Find all of your company’s administrator accounts and their associate
+        roles.
       </p>
     </VCol>
 

@@ -1,5 +1,5 @@
 <script setup>
-import congoImg from '@images/illustrations/congo-illustration.png'
+import congoImg from "@images/illustrations/congo-illustration.png"
 </script>
 
 <template>

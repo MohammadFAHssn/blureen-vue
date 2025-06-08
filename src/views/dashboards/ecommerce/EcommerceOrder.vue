@@ -1,11 +1,7 @@
 <script setup>
-const currentTab = ref('New')
+const currentTab = ref("New")
 
-const tabsData = [
-  'New',
-  'Preparing',
-  'Shipping',
-]
+const tabsData = ["New", "Preparing", "Shipping"]
 </script>
 
 <template>
@@ -84,7 +80,7 @@ const tabsData = [
             </VTimeline>
             <VDivider
               class="my-4"
-              style="border-style: dashed;"
+              style="border-style: dashed"
             />
             <VTimeline
               align="start"
@@ -109,7 +105,7 @@ const tabsData = [
                   Veronica Herman
                 </div>
                 <div class="app-timeline-text">
-                  162  Windsor, California(CA), 95492
+                  162 Windsor, California(CA), 95492
                 </div>
               </VTimelineItem>
 
@@ -184,7 +180,7 @@ const tabsData = [
             </VTimeline>
             <VDivider
               class="my-4"
-              style="border-style: dashed;"
+              style="border-style: dashed"
             />
             <VTimeline
               align="start"
@@ -209,7 +205,7 @@ const tabsData = [
                   Veronica Herman
                 </div>
                 <div class="app-timeline-text">
-                  162  Windsor, California(CA), 95492
+                  162 Windsor, California(CA), 95492
                 </div>
               </VTimelineItem>
 
@@ -284,7 +280,7 @@ const tabsData = [
             </VTimeline>
             <VDivider
               class="my-4"
-              style="border-style: dashed;"
+              style="border-style: dashed"
             />
             <VTimeline
               align="start"
@@ -309,7 +305,7 @@ const tabsData = [
                   Veronica Herman
                 </div>
                 <div class="app-timeline-text">
-                  162  Windsor, California(CA), 95492
+                  162 Windsor, California(CA), 95492
                 </div>
               </VTimelineItem>
 

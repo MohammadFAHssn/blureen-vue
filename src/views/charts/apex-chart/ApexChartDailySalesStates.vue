@@ -1,16 +1,21 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { getHeatMapChartConfig } from '@core/libs/apex-chart/apexCharConfig'
+import { useTheme } from "vuetify"
+import { getHeatMapChartConfig } from "@core/libs/apex-chart/apexCharConfig"
 
 const vuetifyTheme = useTheme()
-const chartConfig = computed(() => getHeatMapChartConfig(vuetifyTheme.current.value))
+
+const chartConfig = computed(() =>
+  getHeatMapChartConfig(vuetifyTheme.current.value),
+)
 
 const generateDataHeat = (count, yrange) => {
   let i = 0
   const series = []
   while (i < count) {
-    const x = `w${ (i + 1).toString() }`
-    const y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
+    const x = `w${(i + 1).toString()}`
+
+    const y =
+      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
 
     series.push({
       x,
@@ -18,55 +23,55 @@ const generateDataHeat = (count, yrange) => {
     })
     i += 1
   }
-  
+
   return series
 }
 
 const series = [
   {
-    name: 'SUN',
+    name: "SUN",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'MON',
+    name: "MON",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'TUE',
+    name: "TUE",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'WED',
+    name: "WED",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'THU',
+    name: "THU",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'FRI',
+    name: "FRI",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,
     }),
   },
   {
-    name: 'SAT',
+    name: "SAT",
     data: generateDataHeat(24, {
       min: 0,
       max: 60,

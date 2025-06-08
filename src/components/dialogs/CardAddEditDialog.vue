@@ -4,12 +4,12 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({
-      number: '',
-      name: '',
-      expiry: '',
-      cvv: '',
+      number: "",
+      name: "",
+      expiry: "",
+      cvv: "",
       isPrimary: false,
-      type: '',
+      type: "",
     }),
   },
   isDialogVisible: {
@@ -18,23 +18,23 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'submit',
-  'update:isDialogVisible',
-])
+const emit = defineEmits(["submit", "update:isDialogVisible"])
 
 const cardDetails = ref(structuredClone(toRaw(props.cardDetails)))
 
-watch(() => props, () => {
-  cardDetails.value = structuredClone(toRaw(props.cardDetails))
-})
+watch(
+  () => props,
+  () => {
+    cardDetails.value = structuredClone(toRaw(props.cardDetails))
+  },
+)
 
 const formSubmit = () => {
-  emit('submit', cardDetails.value)
+  emit("submit", cardDetails.value)
 }
 
 const dialogModelValueUpdate = val => {
-  emit('update:isDialogVisible', val)
+  emit("update:isDialogVisible", val)
 }
 </script>
 
@@ -52,11 +52,15 @@ const dialogModelValueUpdate = val => {
       <VCardItem class="text-center">
         <VCardTitle>
           <h4 class="text-h4 mb-2">
-            {{ props.cardDetails.name ? 'Edit Card' : 'Add New Card' }}
+            {{ props.cardDetails.name ? "Edit Card" : "Add New Card" }}
           </h4>
         </VCardTitle>
         <p class="text-body-1 mb-0">
-          {{ props.cardDetails.name ? 'Edit your saved card details' : 'Add card for future billing' }}
+          {{
+            props.cardDetails.name
+              ? "Edit your saved card details"
+              : "Add card for future billing"
+          }}
         </p>
       </VCardItem>
 

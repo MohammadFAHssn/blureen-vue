@@ -1,17 +1,17 @@
 <script setup>
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"])
 
-const content = ref('')
-const to = ref('')
-const subject = ref('')
-const message = ref('')
-const cc = ref('')
-const bcc = ref('')
+const content = ref("")
+const to = ref("")
+const subject = ref("")
+const message = ref("")
+const cc = ref("")
+const bcc = ref("")
 const isEmailCc = ref(false)
 const isEmailBcc = ref(false)
 
 const resetValues = () => {
-  to.value = subject.value = message.value = ''
+  to.value = subject.value = message.value = ""
 }
 </script>
 
@@ -37,7 +37,12 @@ const resetValues = () => {
           <IconBtn
             size="small"
             icon="tabler-x"
-            @click="$emit('close'); resetValues(); isEmailCc = false; isEmailBcc = false;"
+            @click="
+              $emit('close');
+              resetValues();
+              isEmailCc = false;
+              isEmailBcc = false;
+            "
           />
         </div>
       </div>
@@ -129,7 +134,13 @@ const resetValues = () => {
         class="me-4"
         append-icon="tabler-send"
         :disabled="to === '' ? true : false"
-        @click="$emit('close'); content = ''; resetValues(); isEmailCc = false; isEmailBcc = false;"
+        @click="
+          $emit('close');
+          content = '';
+          resetValues();
+          isEmailCc = false;
+          isEmailBcc = false;
+        "
       >
         send
       </VBtn>
@@ -149,7 +160,13 @@ const resetValues = () => {
 
       <IconBtn
         size="small"
-        @click="$emit('close'); resetValues(); content = ''; isEmailCc = false; isEmailBcc = false;"
+        @click="
+          $emit('close');
+          resetValues();
+          content = '';
+          isEmailCc = false;
+          isEmailBcc = false;
+        "
       >
         <VIcon icon="tabler-trash" />
       </IconBtn>

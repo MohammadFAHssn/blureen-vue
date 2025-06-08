@@ -1,9 +1,9 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { useChat } from './useChat'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { useChat } from "./useChat"
+import { useChatStore } from "@/views/apps/chat/useChatStore"
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"])
 
 const store = useChatStore()
 const { resolveAvatarBadgeVariant } = useChat()
@@ -37,7 +37,11 @@ const { resolveAvatarBadgeVariant } = useChat()
         <VAvatar
           size="84"
           :variant="!store.activeChat.contact.avatar ? 'tonal' : undefined"
-          :color="!store.activeChat.contact.avatar ? resolveAvatarBadgeVariant(store.activeChat.contact.status) : undefined"
+          :color="
+            !store.activeChat.contact.avatar
+              ? resolveAvatarBadgeVariant(store.activeChat.contact.status)
+              : undefined
+          "
         >
           <VImg
             v-if="store.activeChat.contact.avatar"
@@ -46,7 +50,9 @@ const { resolveAvatarBadgeVariant } = useChat()
           <span
             v-else
             class="text-3xl"
-          >{{ avatarText(store.activeChat.contact.fullName) }}</span>
+          >{{
+            avatarText(store.activeChat.contact.fullName)
+          }}</span>
         </VAvatar>
       </VBadge>
       <h5 class="text-h5">

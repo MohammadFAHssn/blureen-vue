@@ -1,7 +1,7 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { getScatterChartConfig } from '@core/libs/chartjs/chartjsConfig'
-import ScatterChart from '@core/libs/chartjs/components/ScatterChart'
+import { useTheme } from "vuetify"
+import { getScatterChartConfig } from "@core/libs/chartjs/chartjsConfig"
+import ScatterChart from "@core/libs/chartjs/components/ScatterChart"
 
 const props = defineProps({
   colors: {
@@ -11,17 +11,20 @@ const props = defineProps({
 })
 
 const vuetifyTheme = useTheme()
-const chartConfig = computed(() => getScatterChartConfig(vuetifyTheme.current.value))
+
+const chartConfig = computed(() =>
+  getScatterChartConfig(vuetifyTheme.current.value),
+)
 
 const data = {
   datasets: [
     {
       pointRadius: 5,
-      label: 'iPhone',
+      label: "iPhone",
       pointBorderWidth: 2,
       backgroundColor: props.colors.primary,
       pointHoverBorderWidth: 2,
-      borderColor: 'transparent',
+      borderColor: "transparent",
       data: [
         {
           x: 72,
@@ -92,10 +95,10 @@ const data = {
     {
       pointRadius: 5,
       pointBorderWidth: 2,
-      label: 'Samsung Note',
+      label: "Samsung Note",
       backgroundColor: props.colors.scatterChartWarning,
       pointHoverBorderWidth: 2,
-      borderColor: 'transparent',
+      borderColor: "transparent",
       data: [
         {
           x: 13,
@@ -161,11 +164,11 @@ const data = {
     },
     {
       pointRadius: 5,
-      label: 'OnePlus',
+      label: "OnePlus",
       pointBorderWidth: 2,
       backgroundColor: props.colors.scatterChartGreen,
       pointHoverBorderWidth: 2,
-      borderColor: 'transparent',
+      borderColor: "transparent",
       data: [
         {
           x: 70,

@@ -67,16 +67,25 @@ $v-input-density: (
     }
 
     // Shadow on focus
-    &.v-field--variant-outlined.v-field--focused:not(.v-field--error, .v-field--success) {
+    &.v-field--variant-outlined.v-field--focused:not(
+        .v-field--error,
+        .v-field--success
+      ) {
       .v-field__outline {
         @each $color-name in variables.$theme-colors-name {
           &.text-#{$color-name} {
-            @include templateMixins.custom-elevation(var(--v-theme-#{$color-name}), "sm");
+            @include templateMixins.custom-elevation(
+              var(--v-theme-#{$color-name}),
+              "sm"
+            );
           }
         }
 
         &:not([class*="text-"]) {
-          @include templateMixins.custom-elevation(var(--v-theme-primary), "sm");
+          @include templateMixins.custom-elevation(
+            var(--v-theme-primary),
+            "sm"
+          );
         }
       }
     }
@@ -84,7 +93,7 @@ $v-input-density: (
 
   // Give hint messages color based on theme color
   @each $color-name in variables.$theme-colors-name {
-    &:has( .v-field.v-field--focused .v-field__outline.text-#{$color-name}) {
+    &:has(.v-field.v-field--focused .v-field__outline.text-#{$color-name}) {
       .v-messages {
         color: rgb(var(--v-theme-#{$color-name}));
       }
@@ -102,7 +111,10 @@ $v-input-density: (
       .v-field .v-field__clearable {
         > .v-icon {
           block-size: map.get($settings, icon-size);
-          color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+          color: rgba(
+            var(--v-theme-on-surface),
+            var(--v-high-emphasis-opacity)
+          );
           font-size: map.get($settings, icon-size);
           inline-size: map.get($settings, icon-size);
           opacity: 1;
@@ -197,7 +209,10 @@ body {
 
       .v-input {
         .v-field.v-field--disabled {
-          background-color: rgba(var(--v-theme-on-surface), var(--v-hover-opacity));
+          background-color: rgba(
+            var(--v-theme-on-surface),
+            var(--v-hover-opacity)
+          );
           opacity: 1;
 
           .v-field__outline {
@@ -216,7 +231,11 @@ body {
       .v-label {
         color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
 
-        &:has(+ .v-input .v-field.v-field--focused .v-field__outline.text-#{$color-name}) {
+        &:has(
+            + .v-input
+              .v-field.v-field--focused
+              .v-field__outline.text-#{$color-name}
+          ) {
           color: rgb(var(--v-theme-#{$color-name}));
         }
 

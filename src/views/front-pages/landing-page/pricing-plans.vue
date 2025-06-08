@@ -1,67 +1,67 @@
 <script setup>
-import paperPlane from '@images/front-pages/icons/paper-airplane.png'
-import plane from '@images/front-pages/icons/plane.png'
-import pricingPlanArrow from '@images/front-pages/icons/pricing-plans-arrow.png'
-import shuttleRocket from '@images/front-pages/icons/shuttle-rocket.png'
+import paperPlane from "@images/front-pages/icons/paper-airplane.png"
+import plane from "@images/front-pages/icons/plane.png"
+import pricingPlanArrow from "@images/front-pages/icons/pricing-plans-arrow.png"
+import shuttleRocket from "@images/front-pages/icons/shuttle-rocket.png"
 
 const annualMonthlyPlanPriceToggler = ref(true)
 
 const pricingPlans = [
   {
-    title: 'Basic',
+    title: "Basic",
     image: paperPlane,
     monthlyPrice: 19,
     yearlyPrice: 168,
     features: [
-      'Timeline',
-      'Basic search',
-      'Live chat widget',
-      'Email marketing',
-      'Custom Forms',
-      'Traffic analytics',
-      'Basic Support',
+      "Timeline",
+      "Basic search",
+      "Live chat widget",
+      "Email marketing",
+      "Custom Forms",
+      "Traffic analytics",
+      "Basic Support",
     ],
-    supportType: 'Basic',
-    supportMedium: 'Only Email',
-    respondTime: 'AVG. Time: 24h',
+    supportType: "Basic",
+    supportMedium: "Only Email",
+    respondTime: "AVG. Time: 24h",
     current: false,
   },
   {
-    title: 'Favourite',
+    title: "Favourite",
     image: plane,
     monthlyPrice: 29,
     yearlyPrice: 264,
     features: [
-      'Everything in basic',
-      'Timeline with database',
-      'Advanced search',
-      'Marketing automation',
-      'Advanced chatbot',
-      'Campaign management',
-      'Collaboration tools',
+      "Everything in basic",
+      "Timeline with database",
+      "Advanced search",
+      "Marketing automation",
+      "Advanced chatbot",
+      "Campaign management",
+      "Collaboration tools",
     ],
-    supportType: 'Standard',
-    supportMedium: 'Email & Chat',
-    respondTime: 'AVG. Time: 6h',
+    supportType: "Standard",
+    supportMedium: "Email & Chat",
+    respondTime: "AVG. Time: 6h",
     current: true,
   },
   {
-    title: 'Standard',
+    title: "Standard",
     image: shuttleRocket,
     monthlyPrice: 49,
     yearlyPrice: 444,
     features: [
-      'Campaign management',
-      'Timeline with database',
-      'Fuzzy search',
-      'A/B testing sanbox',
-      'Custom permissions',
-      'Social media automation',
-      'Sales automation tools',
+      "Campaign management",
+      "Timeline with database",
+      "Fuzzy search",
+      "A/B testing sanbox",
+      "Custom permissions",
+      "Social media automation",
+      "Sales automation tools",
     ],
-    supportType: 'Exclusive',
-    supportMedium: 'Email, Chat & Google Meet',
-    respondTime: 'Live Support',
+    supportType: "Exclusive",
+    supportMedium: "Email, Chat & Google Meet",
+    respondTime: "Live Support",
     current: false,
   },
 ]
@@ -91,7 +91,8 @@ const pricingPlans = [
           </h4>
           <div class="text-center text-body-1">
             <p class="mb-0">
-              All plans include 40+ advanced tools and features to boost your product.
+              All plans include 40+ advanced tools and features to boost your
+              product.
             </p>
             <p class="mb-0">
               Choose the best plan to fit your needs.
@@ -135,7 +136,13 @@ const pricingPlans = [
             v-for="(plan, index) in pricingPlans"
             :key="index"
           >
-            <VCard :style="plan.current ? 'border:2px solid rgb(var(--v-theme-primary))' : ''">
+            <VCard
+              :style="
+                plan.current
+                  ? 'border:2px solid rgb(var(--v-theme-primary))'
+                  : ''
+              "
+            >
               <VCardText class="pa-8 pt-12">
                 <VImg
                   :src="plan.image"
@@ -149,7 +156,11 @@ const pricingPlans = [
                 <div class="d-flex justify-center mb-8 position-relative">
                   <div class="d-flex align-end">
                     <div class="pricing-title text-primary me-1">
-                      ${{ annualMonthlyPlanPriceToggler ? Math.floor(plan.yearlyPrice) / 12 : plan.monthlyPrice }}
+                      ${{
+                        annualMonthlyPlanPriceToggler
+                          ? Math.floor(plan.yearlyPrice) / 12
+                          : plan.monthlyPrice
+                      }}
                     </div>
                     <span class="text-disabled mb-2">/mo</span>
                   </div>
@@ -159,7 +170,11 @@ const pricingPlans = [
                     v-show="annualMonthlyPlanPriceToggler"
                     class="annual-price-text position-absolute text-sm text-disabled"
                   >
-                    {{ plan.yearlyPrice === 0 ? 'free' : `USD ${plan.yearlyPrice}/Year` }}
+                    {{
+                      plan.yearlyPrice === 0
+                        ? "free"
+                        : `USD ${plan.yearlyPrice}/Year`
+                    }}
                   </span>
                 </div>
                 <VList class="card-list">
@@ -247,7 +262,8 @@ const pricingPlans = [
 
 .section-title::after {
   position: absolute;
-  background: url("../../../assets/images/front-pages/icons/section-title-icon.png") no-repeat left bottom;
+  background: url("../../../assets/images/front-pages/icons/section-title-icon.png")
+    no-repeat left bottom;
   background-size: contain;
   block-size: 100%;
   content: "";

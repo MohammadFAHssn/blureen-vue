@@ -1,24 +1,24 @@
 <script setup>
-import bg1 from '@images/pages/custom-checkbox-img-1.png'
-import bg2 from '@images/pages/custom-checkbox-img-2.png'
-import bg3 from '@images/pages/custom-checkbox-img-3.png'
+import bg1 from "@images/pages/custom-checkbox-img-1.png"
+import bg2 from "@images/pages/custom-checkbox-img-2.png"
+import bg3 from "@images/pages/custom-checkbox-img-3.png"
 
 const checkboxContent = [
   {
     bgImage: bg1,
-    value: 'basic',
+    value: "basic",
   },
   {
     bgImage: bg2,
-    value: 'premium',
+    value: "premium",
   },
   {
     bgImage: bg3,
-    value: 'enterprise',
+    value: "enterprise",
   },
 ]
 
-const selectedCheckbox = ref(['basic'])
+const selectedCheckbox = ref(["basic"])
 </script>
 
 <template>

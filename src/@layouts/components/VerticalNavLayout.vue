@@ -1,6 +1,6 @@
 <script setup>
-import { VerticalNav } from '@layouts/components'
-import { useLayoutConfigStore } from '@layouts/stores/config'
+import { VerticalNav } from "@layouts/components"
+import { useLayoutConfigStore } from "@layouts/stores/config"
 
 const props = defineProps({
   navItems: {
@@ -29,12 +29,15 @@ syncRef(isOverlayNavActive, isLayoutOverlayVisible)
 
 // ℹ️ Hide overlay if user open overlay nav in <md and increase the window width without closing overlay nav
 watch(windowWidth, () => {
-  if (!configStore.isLessThanOverlayNavBreakpoint && isLayoutOverlayVisible.value)
+  if (
+    !configStore.isLessThanOverlayNavBreakpoint &&
+    isLayoutOverlayVisible.value
+  )
     isLayoutOverlayVisible.value = false
 })
 
 const verticalNavAttrs = computed(() => {
-  const vNavAttrs = toRef(props, 'verticalNavAttrs')
+  const vNavAttrs = toRef(props, "verticalNavAttrs")
 
   const {
     wrapper: verticalNavWrapper,
@@ -42,7 +45,6 @@ const verticalNavAttrs = computed(() => {
     ...additionalVerticalNavAttrs
   } = vNavAttrs.value
 
-  
   return {
     verticalNavWrapper,
     verticalNavWrapperProps,
@@ -58,7 +60,11 @@ const verticalNavAttrs = computed(() => {
     :class="configStore._layoutClasses"
   >
     <component
-      :is="verticalNavAttrs.verticalNavWrapper ? verticalNavAttrs.verticalNavWrapper : 'div'"
+      :is="
+        verticalNavAttrs.verticalNavWrapper
+          ? verticalNavAttrs.verticalNavWrapper
+          : 'div'
+      "
       v-bind="verticalNavAttrs.verticalNavWrapperProps"
       class="vertical-nav-wrapper"
     >
@@ -102,7 +108,11 @@ const verticalNavAttrs = computed(() => {
     <div
       class="layout-overlay"
       :class="[{ visible: isLayoutOverlayVisible }]"
-      @click="() => { isLayoutOverlayVisible = !isLayoutOverlayVisible }"
+      @click="
+        () => {
+          isLayoutOverlayVisible = !isLayoutOverlayVisible;
+        }
+      "
     />
   </div>
 </template>

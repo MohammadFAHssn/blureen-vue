@@ -1,4 +1,5 @@
-export const customCheckboxes = { ts: `<script setup lang="ts">
+export const customCheckboxes = {
+  ts: `<script setup lang="ts">
 import type { CustomInputContent } from '@core/types'
 
 const checkboxContent: CustomInputContent[] = [
@@ -26,7 +27,8 @@ const selectedCheckbox = ref(['discount'])
     :grid-column="{ sm: '6', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const checkboxContent = [
   {
     title: 'Discount',
@@ -52,9 +54,11 @@ const selectedCheckbox = ref(['discount'])
     :grid-column="{ sm: '6', cols: '12' }"
   />
 </template>
-` }
+`,
+}
 
-export const customCheckboxesWithIcon = { ts: `<script setup lang="ts">
+export const customCheckboxesWithIcon = {
+  ts: `<script setup lang="ts">
 import type { CustomInputContent } from '@core/types'
 
 const checkboxContent: CustomInputContent[] = [
@@ -88,7 +92,8 @@ const selectedCheckbox = ref(['backup'])
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const checkboxContent = [
   {
     title: 'Backup',
@@ -129,9 +134,11 @@ const selectedCheckbox = ref(['backup'])
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-` }
+`,
+}
 
-export const customCheckboxesWithImage = { ts: `<script setup lang="ts">
+export const customCheckboxesWithImage = {
+  ts: `<script setup lang="ts">
 import bg1 from '@images/pages/custom-checkbox-img-1.png'
 import bg2 from '@images/pages/custom-checkbox-img-2.png'
 import bg3 from '@images/pages/custom-checkbox-img-3.png'
@@ -161,7 +168,8 @@ const selectedCheckbox = ref(['basic'])
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import bg1 from '@images/pages/custom-checkbox-img-1.png'
 import bg2 from '@images/pages/custom-checkbox-img-2.png'
 import bg3 from '@images/pages/custom-checkbox-img-3.png'
@@ -191,9 +199,11 @@ const selectedCheckbox = ref(['basic'])
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-` }
+`,
+}
 
-export const customRadios = { ts: `<script setup lang="ts">
+export const customRadios = {
+  ts: `<script setup lang="ts">
 import type { CustomInputContent } from '@core/types'
 
 const radioContent: CustomInputContent[] = [
@@ -221,7 +231,8 @@ const selectedRadio = ref('basic')
     :grid-column="{ sm: '6', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const radioContent = [
   {
     title: 'Basic',
@@ -247,9 +258,11 @@ const selectedRadio = ref('basic')
     :grid-column="{ sm: '6', cols: '12' }"
   />
 </template>
-` }
+`,
+}
 
-export const customRadiosWithIcon = { ts: `<script setup lang="ts">
+export const customRadiosWithIcon = {
+  ts: `<script setup lang="ts">
 import type { CustomInputContent } from '@core/types'
 
 const radioContent: CustomInputContent[] = [
@@ -283,7 +296,8 @@ const selectedRadio = ref('starter')
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const radioContent = [
   {
     title: 'Starter',
@@ -324,9 +338,11 @@ const selectedRadio = ref('starter')
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-` }
+`,
+}
 
-export const customRadiosWithImage = { ts: `<script setup lang="ts">
+export const customRadiosWithImage = {
+  ts: `<script setup lang="ts">
 import bg1 from '@images/pages/custom-radio-img-1.png'
 import bg2 from '@images/pages/custom-radio-img-2.png'
 import bg3 from '@images/pages/custom-radio-img-3.png'
@@ -356,7 +372,8 @@ const selectedRadio = ref('basic')
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import bg1 from '@images/pages/custom-radio-img-1.png'
 import bg2 from '@images/pages/custom-radio-img-2.png'
 import bg3 from '@images/pages/custom-radio-img-3.png'
@@ -386,5 +403,5 @@ const selectedRadio = ref('basic')
     :grid-column="{ sm: '4', cols: '12' }"
   />
 </template>
-` }
-
+`,
+}

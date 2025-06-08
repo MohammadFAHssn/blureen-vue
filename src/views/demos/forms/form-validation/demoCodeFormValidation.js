@@ -1,4 +1,5 @@
-export const simpleFormValidation = { ts: `<script lang="ts" setup>
+export const simpleFormValidation = {
+  ts: `<script lang="ts" setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const firstName = ref('')
@@ -48,7 +49,8 @@ const refForm = ref<VForm>()
     </VRow>
   </VForm>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const firstName = ref('')
@@ -97,9 +99,11 @@ const refForm = ref()
     </VRow>
   </VForm>
 </template>
-` }
+`,
+}
 
-export const validatingMultipleRules = { ts: `<script lang="ts" setup>
+export const validatingMultipleRules = {
+  ts: `<script lang="ts" setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const name = ref()
@@ -184,7 +188,8 @@ const isConfirmPasswordVisible = ref(false)
     </VRow>
   </VForm>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const name = ref()
@@ -269,9 +274,11 @@ const isConfirmPasswordVisible = ref(false)
     </VRow>
   </VForm>
 </template>
-` }
+`,
+}
 
-export const validationTypes = { ts: `<script lang="ts" setup>
+export const validationTypes = {
+  ts: `<script lang="ts" setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const requiredField = ref('')
@@ -454,7 +461,8 @@ const refForm = ref<VForm>()
     </VRow>
   </VForm>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import { VForm } from 'vuetify/components/VForm'
 
 const requiredField = ref('')
@@ -637,5 +645,5 @@ const refForm = ref()
     </VRow>
   </VForm>
 </template>
-` }
-
+`,
+}

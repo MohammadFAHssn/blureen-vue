@@ -1,12 +1,9 @@
 <script setup>
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { TextAlign } from '@tiptap/extension-text-align'
-import { Underline } from '@tiptap/extension-underline'
-import { StarterKit } from '@tiptap/starter-kit'
-import {
-  EditorContent,
-  useEditor,
-} from '@tiptap/vue-3'
+import { Placeholder } from "@tiptap/extension-placeholder"
+import { TextAlign } from "@tiptap/extension-text-align"
+import { Underline } from "@tiptap/extension-underline"
+import { StarterKit } from "@tiptap/starter-kit"
+import { EditorContent, useEditor } from "@tiptap/vue-3"
 
 const editor = useEditor({
   content: `
@@ -42,12 +39,9 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     TextAlign.configure({
-      types: [
-        'heading',
-        'paragraph',
-      ],
+      types: ["heading", "paragraph"],
     }),
-    Placeholder.configure({ placeholder: 'Write something here...' }),
+    Placeholder.configure({ placeholder: "Write something here..." }),
     Underline,
   ],
 })

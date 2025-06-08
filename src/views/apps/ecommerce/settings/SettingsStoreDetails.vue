@@ -154,7 +154,12 @@
         <VCol cols="12">
           <AppSelect
             label="Time zone"
-            :items="['(UTC-12:00) International Date Line West', '(UTC-11:00) Coordinated Universal Time-11', '(UTC-09:00) Alaska', '(UTC-08:00) Baja California']"
+            :items="[
+              '(UTC-12:00) International Date Line West',
+              '(UTC-11:00) Coordinated Universal Time-11',
+              '(UTC-09:00) Alaska',
+              '(UTC-08:00) Baja California',
+            ]"
             placeholder="(UTC-12:00) International Date Line West"
           />
         </VCol>

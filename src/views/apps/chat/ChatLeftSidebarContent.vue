@@ -1,8 +1,8 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { useChat } from './useChat'
-import ChatContact from '@/views/apps/chat/ChatContact.vue'
-import { useChatStore } from '@/views/apps/chat/useChatStore'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { useChat } from "./useChat"
+import ChatContact from "@/views/apps/chat/ChatContact.vue"
+import { useChatStore } from "@/views/apps/chat/useChatStore"
 
 const props = defineProps({
   search: {
@@ -16,14 +16,14 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'openChatOfContact',
-  'showUserProfile',
-  'close',
-  'update:search',
+  "openChatOfContact",
+  "showUserProfile",
+  "close",
+  "update:search",
 ])
 
 const { resolveAvatarBadgeVariant } = useChat()
-const search = useVModel(props, 'search', emit)
+const search = useVModel(props, "search", emit)
 const store = useChatStore()
 </script>
 

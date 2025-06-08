@@ -1,6 +1,6 @@
 <script setup>
-const firstName = ref('')
-const email = ref('')
+const firstName = ref("")
+const email = ref("")
 const mobile = ref()
 const password = ref()
 const checkbox = ref(false)

@@ -6,12 +6,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 

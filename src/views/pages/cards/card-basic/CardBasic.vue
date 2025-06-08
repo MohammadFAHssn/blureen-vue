@@ -1,21 +1,16 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar2 from '@images/avatars/avatar-2.png'
-import avatar3 from '@images/avatars/avatar-3.png'
-import avatar4 from '@images/avatars/avatar-4.png'
-import eCommerce2 from '@images/eCommerce/2.png'
-import pages1 from '@images/pages/1.png'
-import pages2 from '@images/pages/2.png'
-import pages3 from '@images/pages/3.png'
-import pages5 from '@images/pages/5.jpg'
-import pages6 from '@images/pages/6.jpg'
+import avatar1 from "@images/avatars/avatar-1.png"
+import avatar2 from "@images/avatars/avatar-2.png"
+import avatar3 from "@images/avatars/avatar-3.png"
+import avatar4 from "@images/avatars/avatar-4.png"
+import eCommerce2 from "@images/eCommerce/2.png"
+import pages1 from "@images/pages/1.png"
+import pages2 from "@images/pages/2.png"
+import pages3 from "@images/pages/3.png"
+import pages5 from "@images/pages/5.jpg"
+import pages6 from "@images/pages/6.jpg"
 
-const avatars = [
-  avatar1,
-  avatar2,
-  avatar3,
-  avatar4,
-]
+const avatars = [avatar1, avatar2, avatar3, avatar4]
 
 const isCardDetailsVisible = ref(false)
 </script>
@@ -39,7 +34,9 @@ const isCardDetailsVisible = ref(false)
         </VCardItem>
 
         <VCardText>
-          Cancun is back, better than ever! Over a hundred Mexico resorts have reopened and the state tourism minister predicts Cancun will draw as many visitors in 2006 as it did two years ago.
+          Cancun is back, better than ever! Over a hundred Mexico resorts have
+          reopened and the state tourism minister predicts Cancun will draw as
+          many visitors in 2006 as it did two years ago.
         </VCardText>
       </VCard>
     </VCol>
@@ -105,7 +102,8 @@ const isCardDetailsVisible = ref(false)
         </VCardItem>
 
         <VCardText>
-          Although cards can support multiple actions, UI controls, and an overflow menu.
+          Although cards can support multiple actions, UI controls, and an
+          overflow menu.
         </VCardText>
 
         <VCardActions>
@@ -120,7 +118,13 @@ const isCardDetailsVisible = ref(false)
             size="small"
             @click="isCardDetailsVisible = !isCardDetailsVisible"
           >
-            <VIcon :icon="isCardDetailsVisible ? 'tabler-chevron-up' : 'tabler-chevron-down'" />
+            <VIcon
+              :icon="
+                isCardDetailsVisible
+                  ? 'tabler-chevron-up'
+                  : 'tabler-chevron-down'
+              "
+            />
           </VBtn>
         </VCardActions>
 
@@ -128,7 +132,11 @@ const isCardDetailsVisible = ref(false)
           <div v-show="isCardDetailsVisible">
             <VDivider />
             <VCardText>
-              I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+              I'm a thing. But, like most politicians, he promised more than he
+              could deliver. You won't have time for sleeping, soldier, not with
+              all the bed making you'll be doing. Then we'll go with that data
+              file! Hey, you add a one and two zeros to that or we walk! You're
+              going to do his laundry? I've got to find a way to escape.
             </VCardText>
           </div>
         </VExpandTransition>
@@ -158,7 +166,8 @@ const isCardDetailsVisible = ref(false)
             </VCardItem>
 
             <VCardText>
-              Apple iPhone 11 Pro smartphone. Announced Sep 2019. Features 5.8″ display Apple A13 Bionic
+              Apple iPhone 11 Pro smartphone. Announced Sep 2019. Features 5.8″
+              display Apple A13 Bionic
             </VCardText>
 
             <VCardText class="text-subtitle-1">
@@ -204,7 +213,8 @@ const isCardDetailsVisible = ref(false)
             </VCardText>
 
             <VCardText>
-              Before there was a United States of America, there were coffee houses, because how are you supposed to build.
+              Before there was a United States of America, there were coffee
+              houses, because how are you supposed to build.
             </VCardText>
 
             <VCardActions>
@@ -243,7 +253,8 @@ const isCardDetailsVisible = ref(false)
           </p>
 
           <p class="mb-0">
-            3.1GHz 6-core 10th-generation Intel Core i5 processor, Turbo Boost up to 4.5GHz
+            3.1GHz 6-core 10th-generation Intel Core i5 processor, Turbo Boost
+            up to 4.5GHz
           </p>
         </VCardText>
 
@@ -277,7 +288,12 @@ const isCardDetailsVisible = ref(false)
             </VCardItem>
 
             <VCardText>
-              Here, I focus on a range of items and features that we use in life without giving them a second thought such as Coca Cola, body muscles and holding ones own breath. Though, most of these notes are not fundamentally necessary, they are such that you can use them for a good laugh, at a drinks party or for picking up women or men.
+              Here, I focus on a range of items and features that we use in life
+              without giving them a second thought such as Coca Cola, body
+              muscles and holding ones own breath. Though, most of these notes
+              are not fundamentally necessary, they are such that you can use
+              them for a good laugh, at a drinks party or for picking up women
+              or men.
             </VCardText>
 
             <VCardText>
@@ -350,7 +366,8 @@ const isCardDetailsVisible = ref(false)
               </p>
 
               <p class="text-sm">
-                5 Tips For Offshore <br> Software Development
+                5 Tips For Offshore <br>
+                Software Development
               </p>
 
               <VBtn class="mt-8">
@@ -370,11 +387,15 @@ const isCardDetailsVisible = ref(false)
     >
       <VCard title="Influencing The Influencer">
         <VCardText>
-          Computers have become ubiquitous in almost every facet of our lives. At work, desk jockeys spend hours in front of their desktops, while delivery people scan bar codes with handhelds and workers in the field stay in touch.
+          Computers have become ubiquitous in almost every facet of our lives.
+          At work, desk jockeys spend hours in front of their desktops, while
+          delivery people scan bar codes with handhelds and workers in the field
+          stay in touch.
         </VCardText>
 
         <VCardText>
-          If you're in the market for new desktops, notebooks, or PDAs, there are a myriad of choices.
+          If you're in the market for new desktops, notebooks, or PDAs, there
+          are a myriad of choices.
         </VCardText>
 
         <VCardActions>
@@ -401,11 +422,14 @@ const isCardDetailsVisible = ref(false)
         </VCardText>
 
         <VCardText>
-          If you are looking for a new way to promote your business that won't cost you more money, maybe printing is one of the options you won't resist.
+          If you are looking for a new way to promote your business that won't
+          cost you more money, maybe printing is one of the options you won't
+          resist.
         </VCardText>
 
         <VCardText>
-          become fast, easy and simple. If you want your promotional material to be an eye-catching
+          become fast, easy and simple. If you want your promotional material to
+          be an eye-catching
         </VCardText>
 
         <VCardActions>
@@ -442,7 +466,9 @@ const isCardDetailsVisible = ref(false)
 
         <VCardText>
           <p>
-            According to us blisters are a very common thing and we come across them very often in our daily lives. It is a very common occurrence like cold or fever depending upon your lifestyle.
+            According to us blisters are a very common thing and we come across
+            them very often in our daily lives. It is a very common occurrence
+            like cold or fever depending upon your lifestyle.
           </p>
         </VCardText>
 

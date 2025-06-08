@@ -1,17 +1,7 @@
 <script setup>
-const items = [
-  'foo',
-  'bar',
-  'fizz',
-  'buzz',
-]
+const items = ["foo", "bar", "fizz", "buzz"]
 
-const selected = ref([
-  'foo',
-  'bar',
-  'fizz',
-  'buzz',
-])
+const selected = ref(["foo", "bar", "fizz", "buzz"])
 </script>
 
 <template>

@@ -2,8 +2,7 @@
 const isDialogVisible = ref(false)
 
 watch(isDialogVisible, value => {
-  if (!value)
-    return
+  if (!value) return
   setTimeout(() => {
     isDialogVisible.value = false
   }, 4000)

@@ -1,9 +1,6 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import {
-  VList,
-  VListItem,
-} from 'vuetify/components/VList'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { VList, VListItem } from "vuetify/components/VList"
 
 const props = defineProps({
   isDialogVisible: {
@@ -20,11 +17,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDialogVisible',
-  'search',
-])
-
+const emit = defineEmits(["update:isDialogVisible", "search"])
 
 // 👉 Hotkey
 
@@ -32,51 +25,50 @@ const emit = defineEmits([
 const { ctrl_k, meta_k } = useMagicKeys({
   passive: false,
   onEventFired(e) {
-    if (e.ctrlKey && e.key === 'k' && e.type === 'keydown')
-      e.preventDefault()
+    if (e.ctrlKey && e.key === "k" && e.type === "keydown") e.preventDefault()
   },
 })
 
 const refSearchList = ref()
 const refSearchInput = ref()
-const searchQueryLocal = ref('')
+const searchQueryLocal = ref("")
 
 // 👉 watching control + / to open dialog
 
 /* eslint-disable camelcase */
-watch([
-  ctrl_k,
-  meta_k,
-], () => {
-  emit('update:isDialogVisible', true)
+watch([ctrl_k, meta_k], () => {
+  emit("update:isDialogVisible", true)
 })
 
 /* eslint-enable */
 
 // 👉 clear search result and close the dialog
 const clearSearchAndCloseDialog = () => {
-  searchQueryLocal.value = ''
-  emit('update:isDialogVisible', false)
+  searchQueryLocal.value = ""
+  emit("update:isDialogVisible", false)
 }
 
 const getFocusOnSearchList = e => {
-  if (e.key === 'ArrowDown') {
+  if (e.key === "ArrowDown") {
     e.preventDefault()
-    refSearchList.value?.focus('next')
-  } else if (e.key === 'ArrowUp') {
+    refSearchList.value?.focus("next")
+  } else if (e.key === "ArrowUp") {
     e.preventDefault()
-    refSearchList.value?.focus('prev')
+    refSearchList.value?.focus("prev")
   }
 }
 
 const dialogModelValueUpdate = val => {
-  searchQueryLocal.value = ''
-  emit('update:isDialogVisible', val)
+  searchQueryLocal.value = ""
+  emit("update:isDialogVisible", val)
 }
 
-watch(() => props.isDialogVisible, () => {
-  searchQueryLocal.value = ''
-})
+watch(
+  () => props.isDialogVisible,
+  () => {
+    searchQueryLocal.value = ""
+  },
+)
 </script>
 
 <template>
@@ -96,7 +88,7 @@ watch(() => props.isDialogVisible, () => {
     >
       <VCardText
         class="px-4"
-        style="padding-block: 1rem 1.2rem;"
+        style="padding-block: 1rem 1.2rem"
       >
         <!-- 👉 Search Input -->
         <VTextField
@@ -150,7 +142,9 @@ watch(() => props.isDialogVisible, () => {
       >
         <!-- 👉 Suggestions -->
         <div
-          v-show="!!props.searchResults && !searchQueryLocal && $slots.suggestions"
+          v-show="
+            !!props.searchResults && !searchQueryLocal && $slots.suggestions
+          "
           class="h-100"
         >
           <slot name="suggestions" />

@@ -1,6 +1,6 @@
 <script setup>
-import home from '@images/svg/home.svg'
-import wallet from '@images/svg/Wallet.svg'
+import home from "@images/svg/home.svg"
+import wallet from "@images/svg/Wallet.svg"
 
 const props = defineProps({
   formData: {
@@ -9,33 +9,33 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const radioContent = [
   {
-    title: 'Sell the property',
-    desc: 'Post your property for sale. Unlimited free listing.',
+    title: "Sell the property",
+    desc: "Post your property for sale. Unlimited free listing.",
     icon: {
       icon: home,
-      size: '28',
+      size: "28",
     },
-    value: 'sell',
+    value: "sell",
   },
   {
-    title: 'Rent the property',
-    desc: 'Post your property for rent. Unlimited free listing.',
+    title: "Rent the property",
+    desc: "Post your property for rent. Unlimited free listing.",
     icon: {
       icon: wallet,
-      size: '28',
+      size: "28",
     },
-    value: 'rent',
+    value: "rent",
   },
 ]
 
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 

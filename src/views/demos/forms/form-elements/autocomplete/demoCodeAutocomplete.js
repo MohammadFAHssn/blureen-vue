@@ -1,4 +1,5 @@
-export const asyncItems = { ts: `<script setup lang="ts">
+export const asyncItems = {
+  ts: `<script setup lang="ts">
 const loading = ref(false)
 const search = ref()
 const select = ref(null)
@@ -94,7 +95,8 @@ watch(search, query => {
     :menu-props="{ maxHeight: '200px' }"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const loading = ref(false)
 const search = ref()
 const select = ref(null)
@@ -190,9 +192,11 @@ watch(search, query => {
     :menu-props="{ maxHeight: '200px' }"
   />
 </template>
-` }
+`,
+}
 
-export const basic = { ts: `<script setup lang="ts">
+export const basic = {
+  ts: `<script setup lang="ts">
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
 
@@ -203,7 +207,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     placeholder="Select State"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'California',
   'Colorado',
@@ -221,9 +226,11 @@ const items = [
     placeholder="Select State"
   />
 </template>
-` }
+`,
+}
 
-export const chips = { ts: `<script setup lang="ts">
+export const chips = {
+  ts: `<script setup lang="ts">
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
 
@@ -237,7 +244,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     closable-chips
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'California',
   'Colorado',
@@ -258,9 +266,11 @@ const items = [
     closable-chips
   />
 </template>
-` }
+`,
+}
 
-export const clearable = { ts: `<script setup lang="ts">
+export const clearable = {
+  ts: `<script setup lang="ts">
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
 
@@ -273,7 +283,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     clearable
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'California',
   'Colorado',
@@ -293,9 +304,11 @@ const items = [
     clearable
   />
 </template>
-` }
+`,
+}
 
-export const customFilter = { ts: `<script setup lang="ts">
+export const customFilter = {
+  ts: `<script setup lang="ts">
 const states = [
   { name: 'Florida', abbr: 'FL', id: 1 },
   { name: 'Georgia', abbr: 'GA', id: 2 },
@@ -323,7 +336,8 @@ function customFilter(itemTitle: any, queryText: any, item: any) {
     placeholder="Select State"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const states = [
   {
     name: 'Florida',
@@ -371,9 +385,11 @@ function customFilter(itemTitle, queryText, item) {
     placeholder="Select State"
   />
 </template>
-` }
+`,
+}
 
-export const density = { ts: `<script setup lang="ts">
+export const density = {
+  ts: `<script setup lang="ts">
 const select = ref('Florida')
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
@@ -387,7 +403,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     :items="items"
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const select = ref('Florida')
 
 const items = [
@@ -409,9 +426,11 @@ const items = [
     :items="items"
   />
 </template>
-` }
+`,
+}
 
-export const multiple = { ts: `<script setup lang="ts">
+export const multiple = {
+  ts: `<script setup lang="ts">
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
 
@@ -424,7 +443,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     eager
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'California',
   'Colorado',
@@ -444,9 +464,11 @@ const items = [
     eager
   />
 </template>
-` }
+`,
+}
 
-export const slots = { ts: `<script setup lang="ts">
+export const slots = {
+  ts: `<script setup lang="ts">
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
 import avatar3 from '@images/avatars/avatar-3.png'
@@ -500,7 +522,8 @@ const people = [
     </template>
   </AppAutocomplete>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
 import avatar2 from '@images/avatars/avatar-2.png'
 import avatar3 from '@images/avatars/avatar-3.png'
@@ -589,9 +612,11 @@ const people = [
     </template>
   </AppAutocomplete>
 </template>
-` }
+`,
+}
 
-export const stateSelector = { ts: `<script setup lang="ts">
+export const stateSelector = {
+  ts: `<script setup lang="ts">
 const isEditing = ref(false)
 const selectedState = ref(null)
 
@@ -682,7 +707,8 @@ const states = [
     </template>
   </AppAutocomplete>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const isEditing = ref(false)
 const selectedState = ref(null)
 
@@ -773,9 +799,11 @@ const states = [
     </template>
   </AppAutocomplete>
 </template>
-` }
+`,
+}
 
-export const validation = { ts: `<script setup lang="ts">
+export const validation = {
+  ts: `<script setup lang="ts">
 const items = ['foo', 'bar', 'fizz', 'buzz']
 const values = ref(['foo'])
 const nameRules = [(v: string) => !!v.length || 'Select at least one option.']
@@ -790,7 +818,8 @@ const nameRules = [(v: string) => !!v.length || 'Select at least one option.']
     multiple
   />
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'foo',
   'bar',
@@ -811,9 +840,11 @@ const nameRules = [v => !!v.length || 'Select at least one option.']
     multiple
   />
 </template>
-` }
+`,
+}
 
-export const variant = { ts: `<script setup lang="ts">
+export const variant = {
+  ts: `<script setup lang="ts">
 const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']
 </script>
 
@@ -885,7 +916,8 @@ const items = ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming
     </VCol>
   </VRow>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const items = [
   'California',
   'Colorado',
@@ -964,5 +996,5 @@ const items = [
     </VCol>
   </VRow>
 </template>
-` }
-
+`,
+}

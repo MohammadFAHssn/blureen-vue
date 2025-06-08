@@ -5,7 +5,6 @@ import Active from "@/plugins/ag-grid/components/Active.vue"
 
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
 
-
 const { theme } = useAGGridTheme()
 
 import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
@@ -59,7 +58,9 @@ const {
   execute: fetchUsers,
   data,
   error,
-} = await useApi(createUrl("/get?fields[roles]=name&include=roles&model=base.user"))
+} = await useApi(
+  createUrl("/get?fields[roles]=name&include=roles&model=base.user"),
+)
 
 const hasError = computed(() => Boolean(error.value))
 
@@ -82,7 +83,7 @@ const users = computed(() => data.value?.data)
     class="ag-grid-sec"
   >
     <AgGridVue
-      style="block-size: 100%; inline-size: 100%;"
+      style="block-size: 100%; inline-size: 100%"
       :column-defs="columnDefs"
       :row-data="rowData"
       :default-col-def="defaultColDef"

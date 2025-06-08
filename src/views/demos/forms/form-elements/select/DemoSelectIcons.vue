@@ -1,22 +1,22 @@
 <script setup>
-const selectedOption1 = ref('Florida')
-const selectedOption2 = ref('Texas')
+const selectedOption1 = ref("Florida")
+const selectedOption2 = ref("Texas")
 
 const states = [
-  'Alabama',
-  'Alaska',
-  'American Samoa',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'District of Columbia',
-  'Federated States of Micronesia',
-  'Florida',
-  'Georgia',
-  'Guam',
+  "Alabama",
+  "Alaska",
+  "American Samoa",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "District of Columbia",
+  "Federated States of Micronesia",
+  "Florida",
+  "Georgia",
+  "Guam",
 ]
 </script>
 

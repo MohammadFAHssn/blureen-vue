@@ -1,31 +1,31 @@
 <script setup>
-import data from '@/views/demos/forms/tables/data-table/datatable'
+import data from "@/views/demos/forms/tables/data-table/datatable"
 
 const headers = [
   {
-    title: 'ID',
+    title: "ID",
     sortable: false,
-    key: 'id',
+    key: "id",
   },
   {
-    title: 'NAME',
-    key: 'fullName',
+    title: "NAME",
+    key: "fullName",
   },
   {
-    title: 'EMAIL',
-    key: 'email',
+    title: "EMAIL",
+    key: "email",
   },
   {
-    title: 'DATE',
-    key: 'startDate',
+    title: "DATE",
+    key: "startDate",
   },
   {
-    title: 'EXPERIENCE',
-    key: 'experience',
+    title: "EXPERIENCE",
+    key: "experience",
   },
   {
-    title: 'AGE',
-    key: 'age',
+    title: "AGE",
+    key: "age",
   },
 ]
 </script>

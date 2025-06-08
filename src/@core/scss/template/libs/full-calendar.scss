@@ -188,7 +188,10 @@ body .fc {
         &:not(.disabled):active {
           border-color: transparent;
           background-color: transparent;
-          color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
+          color: rgba(
+            var(--v-theme-on-surface),
+            var(--v-high-emphasis-opacity)
+          );
         }
 
         &:focus {
@@ -212,7 +215,8 @@ body .fc {
           text-transform: capitalize;
 
           &:not(:last-child) {
-            border-inline-end: 0.0625rem solid rgba(var(--v-theme-primary), var(--v-border-opacity));
+            border-inline-end: 0.0625rem solid
+              rgba(var(--v-theme-primary), var(--v-border-opacity));
           }
 
           &.fc-button-active {

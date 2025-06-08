@@ -1,11 +1,10 @@
 <script setup>
 const profileHeaderData = ref()
-const { data, error } = await useApi('/pages/profile/header')
+const { data, error } = await useApi("/pages/profile/header")
 if (error.value) {
   console.log(error.value)
 } else {
-  if (data.value)
-    profileHeaderData.value = data.value
+  if (data.value) profileHeaderData.value = data.value
 }
 </script>
 

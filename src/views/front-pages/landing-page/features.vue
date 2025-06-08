@@ -1,40 +1,40 @@
 <script setup>
-import check from '@images/svg/Check.svg'
-import keyboard from '@images/svg/keyboard.svg'
-import laptop from '@images/svg/laptop.svg'
-import paper from '@images/svg/paper-send.svg'
-import rocket from '@images/svg/rocket.svg'
-import user from '@images/svg/user.svg'
+import check from "@images/svg/Check.svg"
+import keyboard from "@images/svg/keyboard.svg"
+import laptop from "@images/svg/laptop.svg"
+import paper from "@images/svg/paper-send.svg"
+import rocket from "@images/svg/rocket.svg"
+import user from "@images/svg/user.svg"
 
 const featuresData = [
   {
-    title: 'Quality Code',
-    desc: 'Code structure that all developers will easily understand and fall in love with.',
+    title: "Quality Code",
+    desc: "Code structure that all developers will easily understand and fall in love with.",
     icon: laptop,
   },
   {
-    title: 'Continuous Updates',
-    desc: 'Free updates for the next 12 months, including new demos and features.',
+    title: "Continuous Updates",
+    desc: "Free updates for the next 12 months, including new demos and features.",
     icon: rocket,
   },
   {
-    title: 'Starter Kit',
-    desc: 'Start your project quickly without having to remove unnecessary features.',
+    title: "Starter Kit",
+    desc: "Start your project quickly without having to remove unnecessary features.",
     icon: paper,
   },
   {
-    title: 'API Ready',
-    desc: 'Just change the endpoint and see your own data loaded within seconds.',
+    title: "API Ready",
+    desc: "Just change the endpoint and see your own data loaded within seconds.",
     icon: check,
   },
   {
-    title: 'Excellent Support',
-    desc: 'An easy-to-follow doc with lots of references and code examples.',
+    title: "Excellent Support",
+    desc: "An easy-to-follow doc with lots of references and code examples.",
     icon: user,
   },
   {
-    title: 'Well Documented',
-    desc: 'An easy-to-follow doc with lots of references and code examples.',
+    title: "Well Documented",
+    desc: "An easy-to-follow doc with lots of references and code examples.",
     icon: keyboard,
   },
 ]
@@ -61,7 +61,8 @@ const featuresData = [
           to start your next project
         </div>
         <p class="text-body-1 mb-0">
-          Not just a set of tools, the package includes ready-to-deploy conceptual application.
+          Not just a set of tools, the package includes ready-to-deploy
+          conceptual application.
         </p>
       </div>
       <VRow>
@@ -84,7 +85,7 @@ const featuresData = [
               </h5>
               <p
                 class="text-body-1 mb-6"
-                style="max-inline-size: 310px;"
+                style="max-inline-size: 310px"
               >
                 {{ data.desc }}
               </p>
@@ -103,7 +104,8 @@ const featuresData = [
 
 .section-title::after {
   position: absolute;
-  background: url("../../../assets/images/front-pages/icons/section-title-icon.png") no-repeat left bottom;
+  background: url("../../../assets/images/front-pages/icons/section-title-icon.png")
+    no-repeat left bottom;
   background-size: contain;
   block-size: 100%;
   content: "";

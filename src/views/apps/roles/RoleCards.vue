@@ -1,42 +1,37 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar10 from '@images/avatars/avatar-10.png'
-import avatar2 from '@images/avatars/avatar-2.png'
-import avatar3 from '@images/avatars/avatar-3.png'
-import avatar4 from '@images/avatars/avatar-4.png'
-import avatar5 from '@images/avatars/avatar-5.png'
-import avatar6 from '@images/avatars/avatar-6.png'
-import avatar7 from '@images/avatars/avatar-7.png'
-import avatar8 from '@images/avatars/avatar-8.png'
-import avatar9 from '@images/avatars/avatar-9.png'
-import girlUsingMobile from '@images/pages/girl-using-mobile.png'
+import avatar1 from "@images/avatars/avatar-1.png"
+import avatar10 from "@images/avatars/avatar-10.png"
+import avatar2 from "@images/avatars/avatar-2.png"
+import avatar3 from "@images/avatars/avatar-3.png"
+import avatar4 from "@images/avatars/avatar-4.png"
+import avatar5 from "@images/avatars/avatar-5.png"
+import avatar6 from "@images/avatars/avatar-6.png"
+import avatar7 from "@images/avatars/avatar-7.png"
+import avatar8 from "@images/avatars/avatar-8.png"
+import avatar9 from "@images/avatars/avatar-9.png"
+import girlUsingMobile from "@images/pages/girl-using-mobile.png"
 
 const roles = ref([
   {
-    role: 'Administrator',
-    users: [
-      avatar1,
-      avatar2,
-      avatar3,
-      avatar4,
-    ],
+    role: "Administrator",
+    users: [avatar1, avatar2, avatar3, avatar4],
     details: {
-      name: 'Administrator',
+      name: "Administrator",
       permissions: [
         {
-          name: 'User Management',
+          name: "User Management",
           read: true,
           write: true,
           create: true,
         },
         {
-          name: 'Disputes Management',
+          name: "Disputes Management",
           read: true,
           write: true,
           create: true,
         },
         {
-          name: 'API Control',
+          name: "API Control",
           read: true,
           write: true,
           create: true,
@@ -45,33 +40,25 @@ const roles = ref([
     },
   },
   {
-    role: 'Manager',
-    users: [
-      avatar1,
-      avatar2,
-      avatar3,
-      avatar4,
-      avatar5,
-      avatar6,
-      avatar7,
-    ],
+    role: "Manager",
+    users: [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7],
     details: {
-      name: 'Manager',
+      name: "Manager",
       permissions: [
         {
-          name: 'Reporting',
+          name: "Reporting",
           read: true,
           write: true,
           create: false,
         },
         {
-          name: 'Payroll',
+          name: "Payroll",
           read: true,
           write: true,
           create: true,
         },
         {
-          name: 'User Management',
+          name: "User Management",
           read: true,
           write: true,
           create: true,
@@ -80,37 +67,31 @@ const roles = ref([
     },
   },
   {
-    role: 'Users',
-    users: [
-      avatar1,
-      avatar2,
-      avatar3,
-      avatar4,
-      avatar5,
-    ],
+    role: "Users",
+    users: [avatar1, avatar2, avatar3, avatar4, avatar5],
     details: {
-      name: 'Users',
+      name: "Users",
       permissions: [
         {
-          name: 'User Management',
+          name: "User Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Content Management',
+          name: "Content Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Disputes Management',
+          name: "Disputes Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Database Management',
+          name: "Database Management",
           read: true,
           write: false,
           create: false,
@@ -119,32 +100,25 @@ const roles = ref([
     },
   },
   {
-    role: 'Support',
-    users: [
-      avatar1,
-      avatar2,
-      avatar3,
-      avatar4,
-      avatar5,
-      avatar6,
-    ],
+    role: "Support",
+    users: [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6],
     details: {
-      name: 'Support',
+      name: "Support",
       permissions: [
         {
-          name: 'Repository Management',
+          name: "Repository Management",
           read: true,
           write: true,
           create: false,
         },
         {
-          name: 'Content Management',
+          name: "Content Management",
           read: true,
           write: true,
           create: false,
         },
         {
-          name: 'Database Management',
+          name: "Database Management",
           read: true,
           write: true,
           create: false,
@@ -153,7 +127,7 @@ const roles = ref([
     },
   },
   {
-    role: 'Restricted User',
+    role: "Restricted User",
     users: [
       avatar1,
       avatar2,
@@ -167,28 +141,28 @@ const roles = ref([
       avatar10,
     ],
     details: {
-      name: 'Restricted User',
+      name: "Restricted User",
       permissions: [
         {
-          name: 'User Management',
+          name: "User Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Content Management',
+          name: "Content Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Disputes Management',
+          name: "Disputes Management",
           read: true,
           write: false,
           create: false,
         },
         {
-          name: 'Database Management',
+          name: "Database Management",
           read: true,
           write: false,
           create: false,
@@ -232,7 +206,9 @@ const editPermission = value => {
               :key="user"
             >
               <VAvatar
-                v-if="item.users.length > 4 && item.users.length !== 4 && index < 3"
+                v-if="
+                  item.users.length > 4 && item.users.length !== 4 && index < 3
+                "
                 size="40"
                 :image="user"
               />
@@ -247,9 +223,7 @@ const editPermission = value => {
               v-if="item.users.length > 4"
               :color="$vuetify.theme.current.dark ? '#373B50' : '#EEEDF0'"
             >
-              <span>
-                +{{ item.users.length - 3 }}
-              </span>
+              <span> +{{ item.users.length - 3 }} </span>
             </VAvatar>
           </div>
         </VCardText>
@@ -313,7 +287,8 @@ const editPermission = value => {
                 Add New Role
               </VBtn>
               <div class="text-end">
-                Add new role,<br> if it doesn't exist.
+                Add new role,<br>
+                if it doesn't exist.
               </div>
             </VCardText>
           </VCol>

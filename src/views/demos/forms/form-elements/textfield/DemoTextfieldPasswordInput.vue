@@ -1,12 +1,12 @@
 <script setup>
 const show1 = ref(false)
 const show2 = ref(true)
-const password = ref('Password')
-const confirmPassword = ref('wqfasds')
+const password = ref("Password")
+const confirmPassword = ref("wqfasds")
 
 const rules = {
-  required: value => !!value || 'Required.',
-  min: v => v.length >= 8 || 'Min 8 characters',
+  required: value => !!value || "Required.",
+  min: v => v.length >= 8 || "Min 8 characters",
 }
 </script>
 
@@ -18,7 +18,7 @@ const rules = {
     >
       <AppTextField
         v-model="password"
-        :append-inner-icon="show1 ? 'tabler-eye-off' : 'tabler-eye' "
+        :append-inner-icon="show1 ? 'tabler-eye-off' : 'tabler-eye'"
         :rules="[rules.required, rules.min]"
         :type="show1 ? 'text' : 'password'"
         name="input-10-1"
@@ -37,7 +37,7 @@ const rules = {
       <AppTextField
         v-model="confirmPassword"
         :rules="[rules.required, rules.min]"
-        :append-inner-icon="show2 ? 'tabler-eye-off' : 'tabler-eye' "
+        :append-inner-icon="show2 ? 'tabler-eye-off' : 'tabler-eye'"
         :type="show2 ? 'text' : 'password'"
         name="input-10-2"
         placeholder="············"

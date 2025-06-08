@@ -1,29 +1,29 @@
 <script setup>
-const borderColor = 'rgba(var(--v-border-color), var(--v-border-opacity))'
+const borderColor = "rgba(var(--v-border-color), var(--v-border-opacity))"
 
 // Topics Charts config
 const topicsChartConfig = {
   chart: {
     height: 270,
-    type: 'bar',
+    type: "bar",
     toolbar: { show: false },
   },
   plotOptions: {
     bar: {
       horizontal: true,
-      barHeight: '70%',
+      barHeight: "70%",
       distributed: true,
       borderRadius: 7,
-      borderRadiusApplication: 'end',
+      borderRadiusApplication: "end",
     },
   },
   colors: [
-    'rgba(var(--v-theme-primary),1)',
-    'rgba(var(--v-theme-info),1)',
-    'rgba(var(--v-theme-success),1)',
-    'rgba(var(--v-theme-secondary),1)',
-    'rgba(var(--v-theme-error),1)',
-    'rgba(var(--v-theme-warning),1)',
+    "rgba(var(--v-theme-primary),1)",
+    "rgba(var(--v-theme-info),1)",
+    "rgba(var(--v-theme-success),1)",
+    "rgba(var(--v-theme-secondary),1)",
+    "rgba(var(--v-theme-error),1)",
+    "rgba(var(--v-theme-warning),1)",
   ],
   grid: {
     borderColor,
@@ -38,9 +38,9 @@ const topicsChartConfig = {
   dataLabels: {
     enabled: true,
     style: {
-      colors: ['#fff'],
+      colors: ["#fff"],
       fontWeight: 200,
-      fontSize: '13px',
+      fontSize: "13px",
     },
     offsetX: 0,
     dropShadow: { enabled: false },
@@ -48,32 +48,18 @@ const topicsChartConfig = {
       return topicsChartConfig.labels[opt.dataPointIndex]
     },
   },
-  labels: [
-    'UI Design',
-    'UX Design',
-    'Music',
-    'Animation',
-    'Vue',
-    'SEO',
-  ],
+  labels: ["UI Design", "UX Design", "Music", "Animation", "Vue", "SEO"],
   xaxis: {
-    categories: [
-      '6',
-      '5',
-      '4',
-      '3',
-      '2',
-      '1',
-    ],
+    categories: ["6", "5", "4", "3", "2", "1"],
     axisBorder: { show: false },
     axisTicks: { show: false },
     labels: {
       style: {
-        colors: 'rgba(var(--v-theme-on-background), var(--v-disabled-opacity))',
-        fontSize: '13px',
+        colors: "rgba(var(--v-theme-on-background), var(--v-disabled-opacity))",
+        fontSize: "13px",
       },
       formatter(val) {
-        return `${ val }%`
+        return `${val}%`
       },
     },
   },
@@ -81,60 +67,55 @@ const topicsChartConfig = {
     max: 35,
     labels: {
       style: {
-        colors: 'rgba(var(--v-theme-on-background), var(--v-disabled-opacity))',
-        fontSize: '13px',
+        colors: "rgba(var(--v-theme-on-background), var(--v-disabled-opacity))",
+        fontSize: "13px",
       },
     },
   },
   tooltip: {
     enabled: true,
-    style: { fontSize: '12px' },
+    style: { fontSize: "12px" },
     onDatasetHover: { highlightDataSeries: false },
   },
   legend: { show: false },
 }
 
-const topicsChartSeries = [{
-  data: [
-    35,
-    20,
-    14,
-    12,
-    10,
-    9,
-  ],
-}]
+const topicsChartSeries = [
+  {
+    data: [35, 20, 14, 12, 10, 9],
+  },
+]
 
 const topicsData = [
   {
-    title: 'UI Design',
+    title: "UI Design",
     value: 35,
-    color: 'primary',
+    color: "primary",
   },
   {
-    title: 'UX Design',
+    title: "UX Design",
     value: 20,
-    color: 'info',
+    color: "info",
   },
   {
-    title: 'Music',
+    title: "Music",
     value: 14,
-    color: 'success',
+    color: "success",
   },
   {
-    title: 'Animation',
+    title: "Animation",
     value: 12,
-    color: 'secondary',
+    color: "secondary",
   },
   {
-    title: 'Vue',
+    title: "Vue",
     value: 10,
-    color: 'error',
+    color: "error",
   },
   {
-    title: 'SEO',
+    title: "SEO",
     value: 9,
-    color: 'warning',
+    color: "warning",
   },
 ]
 </script>
@@ -186,7 +167,7 @@ const topicsData = [
               <div>
                 <div
                   class="text-body-1"
-                  style="min-inline-size: 90px;"
+                  style="min-inline-size: 90px"
                 >
                   {{ topic.title }}
                 </div>

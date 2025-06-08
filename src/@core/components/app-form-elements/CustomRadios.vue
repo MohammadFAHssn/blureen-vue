@@ -14,11 +14,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:selectedRadio'])
+const emit = defineEmits(["update:selectedRadio"])
 
 const updateSelectedOption = value => {
-  if (value !== null)
-    emit('update:selectedRadio', value)
+  if (value !== null) emit("update:selectedRadio", value)
 }
 </script>
 
@@ -55,7 +54,9 @@ const updateSelectedOption = value => {
                 <span
                   v-if="item.subtitle"
                   class="text-disabled text-body-2"
-                >{{ item.subtitle }}</span>
+                >{{
+                  item.subtitle
+                }}</span>
               </div>
               <p class="text-body-2 mb-0">
                 {{ item.desc }}

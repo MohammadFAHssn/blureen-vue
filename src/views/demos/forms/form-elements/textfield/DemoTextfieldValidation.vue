@@ -1,5 +1,5 @@
 <script setup>
-const email = ref('')
+const email = ref("")
 </script>
 
 <template>

@@ -1,10 +1,10 @@
 <script setup>
-import { register } from 'swiper/element/bundle'
-import swiper11 from '@images/banner/banner-11.jpg'
-import swiper12 from '@images/banner/banner-12.jpg'
-import swiper13 from '@images/banner/banner-13.jpg'
-import swiper15 from '@images/banner/banner-15.jpg'
-import swiper16 from '@images/banner/banner-16.jpg'
+import { register } from "swiper/element/bundle"
+import swiper11 from "@images/banner/banner-11.jpg"
+import swiper12 from "@images/banner/banner-12.jpg"
+import swiper13 from "@images/banner/banner-13.jpg"
+import swiper15 from "@images/banner/banner-15.jpg"
+import swiper16 from "@images/banner/banner-16.jpg"
 
 register()
 </script>
@@ -29,7 +29,6 @@ register()
         swiper11,
         swiper12,
         swiper13,
-
       ]"
       :key="swiperImg"
     >

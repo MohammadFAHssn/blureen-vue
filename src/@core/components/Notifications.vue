@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   notifications: {
@@ -14,16 +14,11 @@ const props = defineProps({
   location: {
     type: null,
     required: false,
-    default: 'bottom end',
+    default: "bottom end",
   },
 })
 
-const emit = defineEmits([
-  'read',
-  'unread',
-  'remove',
-  'click:notification',
-])
+const emit = defineEmits(["read", "unread", "remove", "click:notification"])
 
 const isAllMarkRead = computed(() => {
   return props.notifications.some(item => item.isSeen === false)
@@ -31,10 +26,8 @@ const isAllMarkRead = computed(() => {
 
 const markAllReadOrUnread = () => {
   const allNotificationsIds = props.notifications.map(item => item.id)
-  if (!isAllMarkRead.value)
-    emit('unread', allNotificationsIds)
-  else
-    emit('read', allNotificationsIds)
+  if (!isAllMarkRead.value) emit("unread", allNotificationsIds)
+  else emit("read", allNotificationsIds)
 }
 
 const totalUnseenNotifications = computed(() => {
@@ -42,10 +35,8 @@ const totalUnseenNotifications = computed(() => {
 })
 
 const toggleReadUnread = (isSeen, Id) => {
-  if (isSeen)
-    emit('unread', [Id])
-  else
-    emit('read', [Id])
+  if (isSeen) emit("unread", [Id])
+  else emit("read", [Id])
 }
 </script>
 
@@ -53,7 +44,7 @@ const toggleReadUnread = (isSeen, Id) => {
   <IconBtn id="notification-btn">
     <VBadge
       v-bind="props.badgeProps"
-      :model-value="props.notifications.some(n => !n.isSeen)"
+      :model-value="props.notifications.some((n) => !n.isSeen)"
       color="error"
       dot
       offset-x="2"
@@ -78,7 +69,7 @@ const toggleReadUnread = (isSeen, Id) => {
 
           <template #append>
             <VChip
-              v-show="props.notifications.some(n => !n.isSeen)"
+              v-show="props.notifications.some((n) => !n.isSeen)"
               size="small"
               color="primary"
               class="me-2"
@@ -93,14 +84,14 @@ const toggleReadUnread = (isSeen, Id) => {
               <VIcon
                 size="20"
                 color="high-emphasis"
-                :icon="!isAllMarkRead ? 'tabler-mail' : 'tabler-mail-opened' "
+                :icon="!isAllMarkRead ? 'tabler-mail' : 'tabler-mail-opened'"
               />
 
               <VTooltip
                 activator="parent"
                 location="start"
               >
-                {{ !isAllMarkRead ? 'Mark all as unread' : 'Mark all as read' }}
+                {{ !isAllMarkRead ? "Mark all as unread" : "Mark all as read" }}
               </VTooltip>
             </IconBtn>
           </template>
@@ -111,7 +102,7 @@ const toggleReadUnread = (isSeen, Id) => {
         <!-- 👉 Notifications list -->
         <PerfectScrollbar
           :options="{ wheelPropagation: false }"
-          style="max-block-size: 23.75rem;"
+          style="max-block-size: 23.75rem"
         >
           <VList class="notification-list rounded-0 py-0">
             <template
@@ -130,10 +121,16 @@ const toggleReadUnread = (isSeen, Id) => {
                 <!-- Handles Avatar: Image, Icon, Text -->
                 <div class="d-flex align-start gap-3">
                   <VAvatar
-                    :color="notification.color && !notification.img ? notification.color : undefined"
-                    :variant="notification.img ? undefined : 'tonal' "
+                    :color="
+                      notification.color && !notification.img
+                        ? notification.color
+                        : undefined
+                    "
+                    :variant="notification.img ? undefined : 'tonal'"
                   >
-                    <span v-if="notification.text">{{ avatarText(notification.text) }}</span>
+                    <span v-if="notification.text">{{
+                      avatarText(notification.text)
+                    }}</span>
                     <VImg
                       v-if="notification.img"
                       :src="notification.img"
@@ -150,13 +147,19 @@ const toggleReadUnread = (isSeen, Id) => {
                     </p>
                     <p
                       class="text-body-2 mb-2"
-                      style=" letter-spacing: 0.4px !important; line-height: 18px;"
+                      style="
+                        letter-spacing: 0.4px !important;
+                        line-height: 18px;
+                      "
                     >
                       {{ notification.subtitle }}
                     </p>
                     <p
                       class="text-sm text-disabled mb-0"
-                      style=" letter-spacing: 0.4px !important; line-height: 18px;"
+                      style="
+                        letter-spacing: 0.4px !important;
+                        line-height: 18px;
+                      "
                     >
                       {{ notification.time }}
                     </p>
@@ -170,7 +173,9 @@ const toggleReadUnread = (isSeen, Id) => {
                       :color="!notification.isSeen ? 'primary' : '#a8aaae'"
                       :class="`${notification.isSeen ? 'visible-in-hover' : ''}`"
                       class="mb-2"
-                      @click.stop="toggleReadUnread(notification.isSeen, notification.id)"
+                      @click.stop="
+                        toggleReadUnread(notification.isSeen, notification.id)
+                      "
                     />
 
                     <VIcon
@@ -187,7 +192,7 @@ const toggleReadUnread = (isSeen, Id) => {
             <VListItem
               v-show="!props.notifications.length"
               class="text-center text-medium-emphasis"
-              style="block-size: 56px;"
+              style="block-size: 56px"
             >
               <VListItemTitle>No Notification Found!</VListItemTitle>
             </VListItem>

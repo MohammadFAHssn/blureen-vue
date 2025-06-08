@@ -14,11 +14,11 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:selectedCheckbox'])
+const emit = defineEmits(["update:selectedCheckbox"])
 
 const updateSelectedOption = value => {
-  if (typeof value !== 'boolean' && value !== null)
-    emit('update:selectedCheckbox', value)
+  if (typeof value !== "boolean" && value !== null)
+    emit("update:selectedCheckbox", value)
 }
 </script>
 
@@ -53,7 +53,9 @@ const updateSelectedOption = value => {
               <span
                 v-if="item.subtitle"
                 class="text-disabled text-body-2"
-              >{{ item.subtitle }}</span>
+              >{{
+                item.subtitle
+              }}</span>
             </div>
             <p class="text-sm mb-0">
               {{ item.desc }}

@@ -1,4 +1,5 @@
-export const alignment = { ts: `<template>
+export const alignment = {
+  ts: `<template>
   <VCard>
     <VCardText class="d-flex flex-column gap-4">
       <!-- Default -->
@@ -30,7 +31,8 @@ export const alignment = { ts: `<template>
     </VCardText>
   </VCard>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VCard>
     <VCardText class="d-flex flex-column gap-4">
       <!-- Default -->
@@ -62,9 +64,11 @@ export const alignment = { ts: `<template>
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const basic = { ts: `<script lang="ts" setup>
+export const basic = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref('item-1')
 const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.'
 </script>
@@ -90,7 +94,8 @@ const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oa
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('item-1')
 const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.'
 </script>
@@ -116,9 +121,11 @@ const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oa
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const basicPill = { ts: `<script lang="ts" setup>
+export const basicPill = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref('window1')
 const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.'
 </script>
@@ -146,7 +153,8 @@ const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oa
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('window1')
 const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.'
 </script>
@@ -174,9 +182,11 @@ const tabItemContent = 'Candy canes donut chupa chups candy canes lemon drops oa
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const customIcons = { ts: `<script setup lang="ts">
+export const customIcons = {
+  ts: `<script setup lang="ts">
 const currentTab = ref(0)
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer.'
 </script>
@@ -208,7 +218,8 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref(0)
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer.'
 </script>
@@ -240,9 +251,11 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const dynamic = { ts: `<script lang="ts" setup>
+export const dynamic = {
+  ts: `<script lang="ts" setup>
 const totalTabs = ref(3)
 const currentTab = ref(0)
 
@@ -280,7 +293,8 @@ watch(totalTabs, newValue => {
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const totalTabs = ref(3)
 const currentTab = ref(0)
 
@@ -318,9 +332,11 @@ watch(totalTabs, newValue => {
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const fixed = { ts: `<script lang="ts" setup>
+export const fixed = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref('Appetizers')
 const items = ['Fixed Tab 1', 'Fixed Tab 2', 'Fixed Tab 3', 'Fixed Tab 4']
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer. Gummies sweet brownie brownie marshmallow chocolate cake pastry. Topping macaroon shortbread liquorice dragée macaroon.'
@@ -354,7 +370,8 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('Appetizers')
 
 const items = [
@@ -395,9 +412,11 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const grow = { ts: `<script lang="ts" setup>
+export const grow = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref('Appetizers')
 const items = ['Appetizers', 'Entrees', 'Deserts', 'Cocktails']
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer. Gummies sweet brownie brownie marshmallow chocolate cake pastry. Topping macaroon shortbread liquorice dragée macaroon.'
@@ -430,7 +449,8 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('Appetizers')
 
 const items = [
@@ -470,9 +490,11 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const pagination = { ts: `<script setup lang="ts">
+export const pagination = {
+  ts: `<script setup lang="ts">
 const currentTab = ref('item1')
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer.'
 </script>
@@ -501,7 +523,8 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('item1')
 const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer.'
 </script>
@@ -530,9 +553,11 @@ const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu choc
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const programmaticNavigation = { ts: `<script lang="ts" setup>
+export const programmaticNavigation = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref(1)
 const items = ['Appetizers', 'Entrees', 'Deserts', 'Cocktails']
 const tabItemText = 'Chocolate cake marshmallow toffee sweet caramels tootsie roll chocolate bar. Chocolate candy lemon drops cupcake macaroon liquorice. Icing tiramisu cake pastry jujubes lollipop gummies sugar plum pie.'
@@ -593,7 +618,8 @@ const nextTab = () => {
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref(1)
 
 const items = [
@@ -661,9 +687,11 @@ const nextTab = () => {
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const stacked = { ts: `<script lang="ts" setup>
+export const stacked = {
+  ts: `<script lang="ts" setup>
 const currentTab = ref('tab-1')
 const tabItemText = 'Biscuit cheesecake gingerbread oat cake tiramisu. Marzipan tiramisu jelly-o muffin biscuit jelly cake pie. Chocolate cookie candy croissant brownie cupcake powder cheesecake. Biscuit sesame snaps biscuit topping tiramisu croissant.'
 </script>
@@ -713,7 +741,8 @@ const tabItemText = 'Biscuit cheesecake gingerbread oat cake tiramisu. Marzipan 
     </VCardText>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('tab-1')
 const tabItemText = 'Biscuit cheesecake gingerbread oat cake tiramisu. Marzipan tiramisu jelly-o muffin biscuit jelly cake pie. Chocolate cookie candy croissant brownie cupcake powder cheesecake. Biscuit sesame snaps biscuit topping tiramisu croissant.'
 </script>
@@ -763,9 +792,11 @@ const tabItemText = 'Biscuit cheesecake gingerbread oat cake tiramisu. Marzipan 
     </VCardText>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const vertical = { ts: `<script setup lang="ts">
+export const vertical = {
+  ts: `<script setup lang="ts">
 const currentTab = ref('tab-1')
 </script>
 
@@ -834,7 +865,8 @@ const currentTab = ref('tab-1')
     </div>
   </VCard>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('tab-1')
 </script>
 
@@ -903,9 +935,11 @@ const currentTab = ref('tab-1')
     </div>
   </VCard>
 </template>
-` }
+`,
+}
 
-export const verticalPill = { ts: `<script setup lang="ts">
+export const verticalPill = {
+  ts: `<script setup lang="ts">
 const currentTab = ref('window-1')
 </script>
 
@@ -972,7 +1006,8 @@ const currentTab = ref('window-1')
     </VCard>
   </div>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const currentTab = ref('window-1')
 </script>
 
@@ -1039,5 +1074,5 @@ const currentTab = ref('window-1')
     </VCard>
   </div>
 </template>
-` }
-
+`,
+}

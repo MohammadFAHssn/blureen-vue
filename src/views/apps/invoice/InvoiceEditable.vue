@@ -1,7 +1,7 @@
 <script setup>
-import InvoiceProductEdit from './InvoiceProductEdit.vue'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import InvoiceProductEdit from "./InvoiceProductEdit.vue"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
 
 const props = defineProps({
   data: {
@@ -10,10 +10,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'push',
-  'remove',
-])
+const emit = defineEmits(["push", "remove"])
 
 const invoice = ref(props.data.invoice)
 const salesperson = ref(props.data.salesperson)
@@ -25,27 +22,25 @@ const clients = ref([])
 
 // 👉 fetchClients
 const fetchClients = async () => {
-  const { data, error } = await useApi('/apps/invoice/clients')
-  if (error.value)
-    console.log(error.value)
-  else
-    clients.value = data.value
+  const { data, error } = await useApi("/apps/invoice/clients")
+  if (error.value) console.log(error.value)
+  else clients.value = data.value
 }
 
 fetchClients()
 
 // 👉 Add item function
 const addItem = () => {
-  emit('push', {
-    title: 'App Design',
+  emit("push", {
+    title: "App Design",
     cost: 24,
     hours: 1,
-    description: 'Designed UI kit & app pages.',
+    description: "Designed UI kit & app pages.",
   })
 }
 
 const removeProduct = id => {
-  emit('remove', id)
+  emit("remove", id)
 }
 </script>
 
@@ -83,7 +78,7 @@ const removeProduct = id => {
         <div class="d-flex align-start align-sm-center gap-x-4 font-weight-medium text-lg flex-column flex-sm-row">
           <span
             class="text-high-emphasis text-sm-end"
-            style="inline-size: 5.625rem ;"
+            style="inline-size: 5.625rem"
           >Invoice:</span>
           <span>
             <AppTextField
@@ -91,7 +86,7 @@ const removeProduct = id => {
               v-model="invoice.id"
               disabled
               prefix="#"
-              style="inline-size: 9.5rem;"
+              style="inline-size: 9.5rem"
             />
           </span>
         </div>
@@ -100,10 +95,10 @@ const removeProduct = id => {
         <div class="d-flex gap-x-4 align-start align-sm-center flex-column flex-sm-row">
           <span
             class="text-high-emphasis text-sm-end"
-            style="inline-size: 5.625rem;"
+            style="inline-size: 5.625rem"
           >Date Issued:</span>
 
-          <span style="inline-size: 9.5rem;">
+          <span style="inline-size: 9.5rem">
             <AppDateTimePicker
               id="issued-date"
               v-model="invoice.issuedDate"
@@ -117,9 +112,9 @@ const removeProduct = id => {
         <div class="d-flex gap-x-4 align-start align-sm-center flex-column flex-sm-row">
           <span
             class="text-high-emphasis text-sm-end"
-            style="inline-size: 5.625rem;"
+            style="inline-size: 5.625rem"
           >Due Date:</span>
-          <span style="min-inline-size: 9.5rem;">
+          <span style="min-inline-size: 9.5rem">
             <AppDateTimePicker
               id="due-date"
               v-model="invoice.dueDate"
@@ -147,7 +142,7 @@ const removeProduct = id => {
           placeholder="Select Client"
           return-object
           class="mb-4"
-          style="inline-size: 11.875rem;"
+          style="inline-size: 11.875rem"
         />
         <p class="mb-0">
           {{ invoice.client.name }}
@@ -251,7 +246,7 @@ const removeProduct = id => {
           <AppTextField
             id="salesperson"
             v-model="salesperson"
-            style="inline-size: 8rem;"
+            style="inline-size: 8rem"
             placeholder="John Doe"
           />
         </div>

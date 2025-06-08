@@ -1,11 +1,11 @@
 <script setup>
-import { useWindowScroll } from '@vueuse/core'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { useDisplay } from 'vuetify'
-import navImg from '@images/front-pages/misc/nav-item-col-img.png'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { useWindowScroll } from "@vueuse/core"
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { useDisplay } from "vuetify"
+import navImg from "@images/front-pages/misc/nav-item-col-img.png"
+import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
 
 const props = defineProps({ activeId: String })
 
@@ -15,123 +15,133 @@ const route = useRoute()
 const router = useRouter()
 const sidebar = ref(false)
 
-watch(() => display, () => {
-  return display.mdAndUp ? sidebar.value = false : sidebar.value
-}, { deep: true })
+watch(
+  () => display,
+  () => {
+    return display.mdAndUp ? (sidebar.value = false) : sidebar.value
+  },
+  { deep: true },
+)
 
 const isMenuOpen = ref(false)
 const isMegaMenuOpen = ref(false)
 
 const menuItems = [
   {
-    listTitle: 'Page',
-    listIcon: 'tabler-layout-grid',
+    listTitle: "Page",
+    listIcon: "tabler-layout-grid",
     navItems: [
       {
-        name: 'Pricing',
-        to: { name: 'front-pages-pricing' },
+        name: "Pricing",
+        to: { name: "front-pages-pricing" },
       },
       {
-        name: 'Payment',
-        to: { name: 'front-pages-payment' },
+        name: "Payment",
+        to: { name: "front-pages-payment" },
       },
       {
-        name: 'Checkout',
-        to: { name: 'front-pages-checkout' },
+        name: "Checkout",
+        to: { name: "front-pages-checkout" },
       },
       {
-        name: 'Help Center',
-        to: { name: 'front-pages-help-center' },
+        name: "Help Center",
+        to: { name: "front-pages-help-center" },
       },
     ],
   },
   {
-    listTitle: 'Auth Demo',
-    listIcon: 'tabler-lock-open',
+    listTitle: "Auth Demo",
+    listIcon: "tabler-lock-open",
     navItems: [
       {
-        name: 'Login (Basic)',
-        to: { name: 'pages-authentication-login-v1' },
+        name: "Login (Basic)",
+        to: { name: "pages-authentication-login-v1" },
       },
       {
-        name: 'Login (Cover)',
-        to: { name: 'pages-authentication-login-v2' },
+        name: "Login (Cover)",
+        to: { name: "pages-authentication-login-v2" },
       },
       {
-        name: 'Register (Basic)',
-        to: { name: 'pages-authentication-register-v1' },
+        name: "Register (Basic)",
+        to: { name: "pages-authentication-register-v1" },
       },
       {
-        name: 'Register (Cover)',
-        to: { name: 'pages-authentication-register-v2' },
+        name: "Register (Cover)",
+        to: { name: "pages-authentication-register-v2" },
       },
       {
-        name: 'Register (Multi-steps)',
-        to: { name: 'pages-authentication-register-multi-steps' },
+        name: "Register (Multi-steps)",
+        to: { name: "pages-authentication-register-multi-steps" },
       },
       {
-        name: 'Forgot Password (Basic)',
-        to: { name: 'pages-authentication-forgot-password-v1' },
+        name: "Forgot Password (Basic)",
+        to: { name: "pages-authentication-forgot-password-v1" },
       },
       {
-        name: 'Forgot Password (Cover)',
-        to: { name: 'pages-authentication-forgot-password-v2' },
+        name: "Forgot Password (Cover)",
+        to: { name: "pages-authentication-forgot-password-v2" },
       },
       {
-        name: 'Reset Password (Basic)',
-        to: { name: 'pages-authentication-reset-password-v1' },
+        name: "Reset Password (Basic)",
+        to: { name: "pages-authentication-reset-password-v1" },
       },
       {
-        name: 'Reset Password (cover  )',
-        to: { name: 'pages-authentication-reset-password-v2' },
+        name: "Reset Password (cover  )",
+        to: { name: "pages-authentication-reset-password-v2" },
       },
     ],
   },
   {
-    listTitle: 'Other',
-    listIcon: 'tabler-photo',
+    listTitle: "Other",
+    listIcon: "tabler-photo",
     navItems: [
       {
-        name: 'Under Maintenance',
-        to: { name: 'pages-misc-under-maintenance' },
+        name: "Under Maintenance",
+        to: { name: "pages-misc-under-maintenance" },
       },
       {
-        name: 'Coming Soon',
-        to: { name: 'pages-misc-coming-soon' },
+        name: "Coming Soon",
+        to: { name: "pages-misc-coming-soon" },
       },
       {
-        name: 'Not Authorized',
-        to: { path: '/not-authorized' },
+        name: "Not Authorized",
+        to: { path: "/not-authorized" },
       },
       {
-        name: 'Verify Email (Basic)',
-        to: { name: 'pages-authentication-verify-email-v1' },
+        name: "Verify Email (Basic)",
+        to: { name: "pages-authentication-verify-email-v1" },
       },
       {
-        name: 'Verify Email (Cover)',
-        to: { name: 'pages-authentication-verify-email-v2' },
+        name: "Verify Email (Cover)",
+        to: { name: "pages-authentication-verify-email-v2" },
       },
       {
-        name: 'Two Steps (Basic)',
-        to: { name: 'pages-authentication-two-steps-v1' },
+        name: "Two Steps (Basic)",
+        to: { name: "pages-authentication-two-steps-v1" },
       },
       {
-        name: 'Two Steps (Cover)',
-        to: { name: 'pages-authentication-two-steps-v2' },
+        name: "Two Steps (Cover)",
+        to: { name: "pages-authentication-two-steps-v2" },
       },
     ],
   },
 ]
 
 const isCurrentRoute = to => {
-  return route.matched.some(_route => _route.path.startsWith(router.resolve(to).path))
+  return route.matched.some(_route =>
+    _route.path.startsWith(router.resolve(to).path),
+  )
 
   // ℹ️ Below is much accurate approach if you don't have any nested routes
 
-// return route.matched.some(_route => _route.path === router.resolve(to).path)
+  // return route.matched.some(_route => _route.path === router.resolve(to).path)
 }
 
-const isPageActive = computed(() => menuItems.some(item => item.navItems.some(listItem => isCurrentRoute(listItem.to))))
+const isPageActive = computed(() =>
+  menuItems.some(item =>
+    item.navItems.some(listItem => isCurrentRoute(listItem.to)),
+  ),
+)
 </script>
 
 <template>
@@ -150,23 +160,41 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
       <div>
         <div class="d-flex flex-column gap-y-4 pa-4">
           <RouterLink
-            v-for="(item, index) in ['Home', 'Features', 'Team', 'FAQ', 'Contact us']"
+            v-for="(item, index) in [
+              'Home',
+              'Features',
+              'Team',
+              'FAQ',
+              'Contact us',
+            ]"
             :key="index"
-            :to="{ name: 'front-pages-landing-page', hash: `#${item.toLowerCase().replace(' ', '-')}` }"
+            :to="{
+              name: 'front-pages-landing-page',
+              hash: `#${item.toLowerCase().replace(' ', '-')}`,
+            }"
             class="nav-link font-weight-medium"
-            :class="[props.activeId?.toLocaleLowerCase().replace('-', ' ') === item.toLocaleLowerCase() ? 'active-link' : '']"
+            :class="[
+              props.activeId?.toLocaleLowerCase().replace('-', ' ') ===
+                item.toLocaleLowerCase()
+                ? 'active-link'
+                : '',
+            ]"
           >
             {{ item }}
           </RouterLink>
 
           <div class="font-weight-medium cursor-pointer">
             <div
-              :class="[isMenuOpen ? 'mb-6 active-link' : '', isPageActive ? 'active-link' : '']"
-              style="color: rgba(var(--v-theme-on-surface));"
+              :class="[
+                isMenuOpen ? 'mb-6 active-link' : '',
+                isPageActive ? 'active-link' : '',
+              ]"
+              style="color: rgba(var(--v-theme-on-surface))"
               class="page-link"
               @click="isMenuOpen = !isMenuOpen"
             >
-              Pages <VIcon :icon="isMenuOpen ? 'tabler-chevron-up' : 'tabler-chevron-down'" />
+              Pages
+              <VIcon :icon="isMenuOpen ? 'tabler-chevron-up' : 'tabler-chevron-down'" />
             </div>
 
             <div
@@ -192,21 +220,25 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
                   <li
                     v-for="listItem in item.navItems"
                     :key="listItem.name"
-                    style="list-style: none;"
+                    style="list-style: none"
                     class="text-body-1 mb-4 text-no-wrap"
                   >
                     <RouterLink
                       :to="listItem.to"
                       :target="item.listTitle === 'Page' ? '_self' : '_blank'"
                       class="mega-menu-item"
-                      :class="isCurrentRoute(listItem.to) ? 'active-link' : 'text-high-emphasis'"
+                      :class="
+                        isCurrentRoute(listItem.to)
+                          ? 'active-link'
+                          : 'text-high-emphasis'
+                      "
                     >
                       <VIcon
                         icon="tabler-circle"
                         :size="10"
                         class="me-2"
                       />
-                      <span>  {{ listItem.name }}</span>
+                      <span> {{ listItem.name }}</span>
                     </RouterLink>
                   </li>
                 </ul>
@@ -238,8 +270,19 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
   <div class="front-page-navbar">
     <div class="front-page-navbar">
       <VAppBar
-        :color="$vuetify.theme.current.dark ? 'rgba(var(--v-theme-surface),0.38)' : 'rgba(var(--v-theme-surface), 0.38)'"
-        :class="y > 10 ? 'app-bar-scrolled' : [$vuetify.theme.current.dark ? 'app-bar-dark' : 'app-bar-light', 'elevation-0']"
+        :color="
+          $vuetify.theme.current.dark
+            ? 'rgba(var(--v-theme-surface),0.38)'
+            : 'rgba(var(--v-theme-surface), 0.38)'
+        "
+        :class="
+          y > 10
+            ? 'app-bar-scrolled'
+            : [
+              $vuetify.theme.current.dark ? 'app-bar-dark' : 'app-bar-light',
+              'elevation-0',
+            ]
+        "
         class="navbar-blur"
       >
         <!-- toggle icon for mobile device -->
@@ -274,11 +317,25 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
           <!-- landing page sections -->
           <div class="text-base align-center d-none d-md-flex">
             <RouterLink
-              v-for="(item, index) in ['Home', 'Features', 'Team', 'FAQ', 'Contact us']"
+              v-for="(item, index) in [
+                'Home',
+                'Features',
+                'Team',
+                'FAQ',
+                'Contact us',
+              ]"
               :key="index"
-              :to="{ name: 'front-pages-landing-page', hash: `#${item.toLowerCase().replace(' ', '-')}` }"
+              :to="{
+                name: 'front-pages-landing-page',
+                hash: `#${item.toLowerCase().replace(' ', '-')}`,
+              }"
               class="nav-link font-weight-medium py-2 px-2 px-lg-4"
-              :class="[props.activeId?.toLocaleLowerCase().replace('-', ' ') === item.toLocaleLowerCase() ? 'active-link' : '']"
+              :class="[
+                props.activeId?.toLocaleLowerCase().replace('-', ' ') ===
+                  item.toLocaleLowerCase()
+                  ? 'active-link'
+                  : '',
+              ]"
             >
               {{ item }}
             </RouterLink>
@@ -287,7 +344,7 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
             <span
               class="font-weight-medium cursor-pointer px-2 px-lg-4 py-2"
               :class="isPageActive || isMegaMenuOpen ? 'active-link' : ''"
-              style="color: rgba(var(--v-theme-on-surface));"
+              style="color: rgba(var(--v-theme-on-surface))"
             >
               Pages
               <VIcon
@@ -328,14 +385,20 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
                           <li
                             v-for="listItem in item.navItems"
                             :key="listItem.name"
-                            style="list-style: none;"
+                            style="list-style: none"
                             class="text-body-1 mb-4 text-no-wrap"
                           >
                             <RouterLink
                               class="mega-menu-item"
                               :to="listItem.to"
-                              :target="item.listTitle === 'Page' ? '_self' : '_blank'"
-                              :class="isCurrentRoute(listItem.to) ? 'active-link' : 'text-high-emphasis'"
+                              :target="
+                                item.listTitle === 'Page' ? '_self' : '_blank'
+                              "
+                              :class="
+                                isCurrentRoute(listItem.to)
+                                  ? 'active-link'
+                                  : 'text-high-emphasis'
+                              "
                             >
                               <div class="d-flex align-center">
                                 <VIcon
@@ -354,7 +417,9 @@ const isPageActive = computed(() => menuItems.some(item => item.navItems.some(li
                         :src="navImg"
                         alt="Navigation Image"
                         class="d-inline-block rounded-lg"
-                        style="border: 10px solid rgb(var(--v-theme-background));"
+                        style="
+                          border: 10px solid rgb(var(--v-theme-background));
+                        "
                         :width="$vuetify.display.lgAndUp ? '330' : '250'"
                         :height="$vuetify.display.lgAndUp ? '330' : '250'"
                       >

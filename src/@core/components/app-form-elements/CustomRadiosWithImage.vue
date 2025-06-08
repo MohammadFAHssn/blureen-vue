@@ -14,11 +14,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:selectedRadio'])
+const emit = defineEmits(["update:selectedRadio"])
 
 const updateSelectedOption = value => {
-  if (value !== null)
-    emit('update:selectedRadio', value)
+  if (value !== null) emit("update:selectedRadio", value)
 }
 </script>
 

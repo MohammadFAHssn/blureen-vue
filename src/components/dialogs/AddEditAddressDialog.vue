@@ -1,22 +1,22 @@
 <script setup>
-import home from '@images/svg/home.svg'
-import office from '@images/svg/office.svg'
+import home from "@images/svg/home.svg"
+import office from "@images/svg/office.svg"
 
 const props = defineProps({
   billingAddress: {
     type: Object,
     required: false,
     default: () => ({
-      firstName: '',
-      lastName: '',
+      firstName: "",
+      lastName: "",
       selectedCountry: null,
-      addressLine1: '',
-      addressLine2: '',
-      landmark: '',
-      contact: '',
+      addressLine1: "",
+      addressLine2: "",
+      landmark: "",
+      contact: "",
       country: null,
-      city: '',
-      state: '',
+      city: "",
+      state: "",
       zipCode: null,
     }),
   },
@@ -26,52 +26,49 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDialogVisible',
-  'submit',
-])
+const emit = defineEmits(["update:isDialogVisible", "submit"])
 
 const billingAddress = ref(structuredClone(toRaw(props.billingAddress)))
 
 const resetForm = () => {
-  emit('update:isDialogVisible', false)
+  emit("update:isDialogVisible", false)
   billingAddress.value = structuredClone(toRaw(props.billingAddress))
 }
 
 const onFormSubmit = () => {
-  emit('update:isDialogVisible', false)
-  emit('submit', billingAddress.value)
+  emit("update:isDialogVisible", false)
+  emit("submit", billingAddress.value)
 }
 
-const selectedAddress = ref('Home')
+const selectedAddress = ref("Home")
 
 const addressTypes = [
   {
     icon: {
       icon: home,
-      size: '28',
+      size: "28",
     },
-    title: 'Home',
-    desc: 'Delivery Time (9am - 9pm)',
-    value: 'Home',
+    title: "Home",
+    desc: "Delivery Time (9am - 9pm)",
+    value: "Home",
   },
   {
     icon: {
       icon: office,
-      size: '28',
+      size: "28",
     },
-    title: 'Office',
-    desc: 'Delivery Time (9am - 5pm)',
-    value: 'Office',
+    title: "Office",
+    desc: "Delivery Time (9am - 5pm)",
+    value: "Office",
   },
 ]
 </script>
 
 <template>
   <VDialog
-    :width="$vuetify.display.smAndDown ? 'auto' : 900 "
+    :width="$vuetify.display.smAndDown ? 'auto' : 900"
     :model-value="props.isDialogVisible"
-    @update:model-value="val => $emit('update:isDialogVisible', val)"
+    @update:model-value="(val) => $emit('update:isDialogVisible', val)"
   >
     <!-- 👉 Dialog close btn -->
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
@@ -83,7 +80,13 @@ const addressTypes = [
       <VCardText>
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
-          {{ (props.billingAddress.addressLine1 || props.billingAddress.addressLine2) ? 'Edit' : 'Add New' }} Address
+          {{
+            props.billingAddress.addressLine1 ||
+              props.billingAddress.addressLine2
+              ? "Edit"
+              : "Add New"
+          }}
+          Address
         </h4>
         <p class="text-body-1 text-center mb-6">
           Add new address for express delivery

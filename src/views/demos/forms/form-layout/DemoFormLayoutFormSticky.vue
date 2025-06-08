@@ -1,59 +1,59 @@
 <script setup>
 const radioContent = [
   {
-    title: 'Standard',
-    desc: 'Delivery in 3-5 days.',
-    value: 'standard',
-    icon: 'tabler-briefcase',
+    title: "Standard",
+    desc: "Delivery in 3-5 days.",
+    value: "standard",
+    icon: "tabler-briefcase",
   },
   {
-    title: 'Express',
-    desc: 'Delivery within 2 days.',
-    value: 'express',
-    icon: 'tabler-rocket',
+    title: "Express",
+    desc: "Delivery within 2 days.",
+    value: "express",
+    icon: "tabler-rocket",
   },
   {
-    title: 'Overnight',
-    desc: 'Delivery within a days.',
-    value: 'overnight',
-    icon: 'tabler-crown',
+    title: "Overnight",
+    desc: "Delivery within a days.",
+    value: "overnight",
+    icon: "tabler-crown",
   },
 ]
 
 const promoCodeList = [
   {
-    code: 'TAKEITALL',
-    desc: 'Apply this code to get 15% discount on orders above 20$.',
+    code: "TAKEITALL",
+    desc: "Apply this code to get 15% discount on orders above 20$.",
   },
   {
-    code: 'FESTIVE10',
-    desc: 'Apply this code to get 10% discount on all orders.',
+    code: "FESTIVE10",
+    desc: "Apply this code to get 10% discount on all orders.",
   },
   {
-    code: 'MYSTERYDEAL',
-    desc: 'Apply this code to get discount between 10% - 50%.',
+    code: "MYSTERYDEAL",
+    desc: "Apply this code to get discount between 10% - 50%.",
   },
 ]
 
 const formData = ref({
-  fullName: '',
-  email: '',
+  fullName: "",
+  email: "",
   contactNumber: null,
   altContactNumber: null,
-  address: '',
+  address: "",
   pincode: null,
-  Landmark: '',
-  city: '',
-  state: '',
+  Landmark: "",
+  city: "",
+  state: "",
   defaultAddress: false,
-  addressType: 'home',
-  deliveryType: 'standard',
-  promoCode: '',
-  paymentMethod: 'card',
+  addressType: "home",
+  deliveryType: "standard",
+  promoCode: "",
+  paymentMethod: "card",
   cardNumber: null,
-  cardName: '',
-  cardExDate: '',
-  cardCvv: '',
+  cardName: "",
+  cardExDate: "",
+  cardCvv: "",
 })
 </script>
 
@@ -185,7 +185,17 @@ const formData = ref({
                   v-model="formData.state"
                   label="State"
                   placeholder="California"
-                  :items="['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida']"
+                  :items="[
+                    'Alabama',
+                    'Alaska',
+                    'Arizona',
+                    'Arkansas',
+                    'California',
+                    'Colorado',
+                    'Connecticut',
+                    'Delaware',
+                    'Florida',
+                  ]"
                 />
               </VCol>
 
@@ -244,9 +254,9 @@ const formData = ref({
             </div>
 
             <div class="d-flex align-center gap-2 my-4">
-              <VDivider style="border-style: dashed;" />
+              <VDivider style="border-style: dashed" />
               <span>OR</span>
-              <VDivider style="border-style: dashed;" />
+              <VDivider style="border-style: dashed" />
             </div>
 
             <VList
@@ -329,9 +339,13 @@ const formData = ref({
 
             <div v-show="formData.paymentMethod === 'cash-on-delivery'">
               <p>
-                Cash on delivery is a mode of payment where you make the payment after the goods/services are received.
+                Cash on delivery is a mode of payment where you make the payment
+                after the goods/services are received.
               </p>
-              <p>You can pay cash or make the payment via debit/credit card directly to the delivery person.</p>
+              <p>
+                You can pay cash or make the payment via debit/credit card
+                directly to the delivery person.
+              </p>
             </div>
           </VForm>
         </VCol>

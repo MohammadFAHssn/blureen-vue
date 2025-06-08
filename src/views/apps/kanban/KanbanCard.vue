@@ -14,30 +14,30 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['deleteKanbanItem'])
+const emit = defineEmits(["deleteKanbanItem"])
 
 const resolveLabelColor = {
-  'UX': 'success',
-  'Image': 'warning',
-  'Code Review': 'error',
-  'Dashboard': 'info',
-  'App': 'secondary',
-  'Charts & Maps': 'primary',
+  UX: "success",
+  Image: "warning",
+  "Code Review": "error",
+  Dashboard: "info",
+  App: "secondary",
+  "Charts & Maps": "primary",
 }
 
 const moreOptions = [
   {
-    title: 'Copy Task link',
-    href: '#',
+    title: "Copy Task link",
+    href: "#",
   },
   {
-    title: 'Duplicate Task',
-    href: '#',
+    title: "Duplicate Task",
+    href: "#",
   },
   {
-    title: 'Delete',
+    title: "Delete",
     onClick: () => {
-      emit('deleteKanbanItem', {
+      emit("deleteKanbanItem", {
         item: props.item,
         boardId: props.boardId,
         boardName: props.boardName,
@@ -78,7 +78,7 @@ const moreOptions = [
               v-bind="p"
               icon="tabler-dots-vertical"
               class="position-absolute more-options"
-              style="inset-block-start: 16px; inset-inline-end: 10px;"
+              style="inset-block-start: 16px; inset-inline-end: 10px"
               :style="isActive ? 'opacity: 1' : ''"
               size="20"
               @click.stop
@@ -115,7 +115,9 @@ const moreOptions = [
               icon="tabler-paperclip"
               class="me-1"
             />
-            <span class="text-body-1 d-inline-block">{{ item.attachments }}</span>
+            <span class="text-body-1 d-inline-block">{{
+              item.attachments
+            }}</span>
           </div>
 
           <div v-if="item.commentsCount">
@@ -124,7 +126,9 @@ const moreOptions = [
               icon="tabler-message-2"
               class="me-1"
             />
-            <span class="text-body-1 d-inline-block">{{ item.commentsCount }}</span>
+            <span class="text-body-1 d-inline-block">{{
+              item.commentsCount
+            }}</span>
           </div>
         </div>
 

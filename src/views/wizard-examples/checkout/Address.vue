@@ -10,78 +10,86 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"])
 
-const checkoutAddressDataLocal = ref(JSON.parse(JSON.stringify(props.checkoutData)))
+const checkoutAddressDataLocal = ref(
+  JSON.parse(JSON.stringify(props.checkoutData)),
+)
+
 const isEditAddressDialogVisible = ref(false)
 
-watch(() => props.checkoutData, value => {
-  checkoutAddressDataLocal.value = JSON.parse(JSON.stringify(value))
-})
+watch(
+  () => props.checkoutData,
+  value => {
+    checkoutAddressDataLocal.value = JSON.parse(JSON.stringify(value))
+  },
+)
 
 const deliveryOptions = [
   {
-    icon: { icon: 'tabler-user' },
-    title: 'Standard',
-    desc: 'Get your product in 1 Week.',
-    value: 'free',
+    icon: { icon: "tabler-user" },
+    title: "Standard",
+    desc: "Get your product in 1 Week.",
+    value: "free",
   },
   {
-    icon: { icon: 'tabler-star' },
-    title: 'Express',
-    desc: 'Get your product in 4 days.',
-    value: 'express',
+    icon: { icon: "tabler-star" },
+    title: "Express",
+    desc: "Get your product in 4 days.",
+    value: "express",
   },
   {
-    icon: { icon: 'tabler-crown' },
-    title: 'Overnight',
-    desc: 'Get your product in 1 day.',
-    value: 'overnight',
+    icon: { icon: "tabler-crown" },
+    title: "Overnight",
+    desc: "Get your product in 1 day.",
+    value: "overnight",
   },
 ]
 
 const resolveAddressBadgeColor = {
-  home: 'primary',
-  office: 'success',
+  home: "primary",
+  office: "success",
 }
 
 const resolveDeliveryBadgeData = {
   free: {
-    color: 'success',
+    color: "success",
     price: 0,
-    text: 'Free',
+    text: "Free",
   },
   express: {
-    color: 'secondary',
+    color: "secondary",
     price: 10,
-    text: '$10',
+    text: "$10",
   },
   overnight: {
-    color: 'secondary',
+    color: "secondary",
     price: 15,
-    text: '$15',
+    text: "$15",
   },
 }
 
 const totalPriceWithDeliveryCharges = computed(() => {
   let deliveryCharges = 0
-  if (checkoutAddressDataLocal.value.deliverySpeed !== 'free')
-    deliveryCharges = resolveDeliveryBadgeData[checkoutAddressDataLocal.value.deliverySpeed].price
-  
+  if (checkoutAddressDataLocal.value.deliverySpeed !== "free")
+    deliveryCharges =
+      resolveDeliveryBadgeData[checkoutAddressDataLocal.value.deliverySpeed]
+        .price
+
   return checkoutAddressDataLocal.value.orderAmount + deliveryCharges
 })
 
 const updateAddressData = () => {
-  checkoutAddressDataLocal.value.deliveryCharges = resolveDeliveryBadgeData[checkoutAddressDataLocal.value.deliverySpeed].price
-  emit('update:checkout-data', checkoutAddressDataLocal.value)
+  checkoutAddressDataLocal.value.deliveryCharges =
+    resolveDeliveryBadgeData[
+      checkoutAddressDataLocal.value.deliverySpeed
+    ].price
+  emit("update:checkout-data", checkoutAddressDataLocal.value)
 }
 
 const nextStep = () => {
   updateAddressData()
-  emit('update:currentStep', props.currentStep ? props.currentStep + 1 : 1)
+  emit("update:currentStep", props.currentStep ? props.currentStep + 1 : 1)
 }
 
 watch(() => props.currentStep, updateAddressData)
@@ -255,7 +263,11 @@ watch(() => props.currentStep, updateAddressData)
                   FREE
                 </VChip>
               </div>
-              <span v-else>${{ resolveDeliveryBadgeData[checkoutAddressDataLocal.deliverySpeed ].price }}.00</span>
+              <span v-else>${{
+                resolveDeliveryBadgeData[
+                  checkoutAddressDataLocal.deliverySpeed
+                ].price
+              }}.00</span>
             </div>
           </div>
         </VCardText>
@@ -266,7 +278,6 @@ watch(() => props.currentStep, updateAddressData)
           <span class="text-base font-weight-medium">Total</span>
           <span class="text-base font-weight-medium">
             ${{ totalPriceWithDeliveryCharges }}
-
           </span>
         </VCardText>
       </VCard>

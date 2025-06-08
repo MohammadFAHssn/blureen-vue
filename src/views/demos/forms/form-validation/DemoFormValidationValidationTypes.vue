@@ -1,18 +1,18 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
+import { VForm } from "vuetify/components/VForm"
 
-const requiredField = ref('')
-const numberBetween10to20 = ref('')
-const onlyConsistNumber = ref('')
-const matchRegularEx = ref('')
-const onlyAlphabeticCharacters = ref('')
-const specifiedLength = ref('')
-const password = ref('')
-const digits = ref('')
-const repeatPassword = ref('')
-const onlyAlphabeticNumbersDashesUnderscores = ref('')
-const email = ref('')
-const validURL = ref('')
+const requiredField = ref("")
+const numberBetween10to20 = ref("")
+const onlyConsistNumber = ref("")
+const matchRegularEx = ref("")
+const onlyAlphabeticCharacters = ref("")
+const specifiedLength = ref("")
+const password = ref("")
+const digits = ref("")
+const repeatPassword = ref("")
+const onlyAlphabeticNumbersDashesUnderscores = ref("")
+const email = ref("")
+const validURL = ref("")
 const refForm = ref()
 </script>
 
@@ -42,7 +42,10 @@ const refForm = ref()
           v-model="numberBetween10to20"
           persistent-placeholder
           placeholder="Enter Number between 10 & 20"
-          :rules="[requiredValidator, betweenValidator(numberBetween10to20, 10, 20)]"
+          :rules="[
+            requiredValidator,
+            betweenValidator(numberBetween10to20, 10, 20),
+          ]"
         />
       </VCol>
 
@@ -66,7 +69,10 @@ const refForm = ref()
           v-model="matchRegularEx"
           persistent-placeholder
           placeholder="Must match the specified regular expression : ^([0-9]+)$ - numbers only"
-          :rules="[requiredValidator, regexValidator(matchRegularEx, '^([0-9]+)$')]"
+          :rules="[
+            requiredValidator,
+            regexValidator(matchRegularEx, '^([0-9]+)$'),
+          ]"
         />
       </VCol>
 
@@ -116,7 +122,11 @@ const refForm = ref()
           v-model="digits"
           persistent-placeholder
           placeholder="The digits field must be numeric and exactly contain 3 digits"
-          :rules="[requiredValidator, lengthValidator(digits, 3), integerValidator]"
+          :rules="[
+            requiredValidator,
+            lengthValidator(digits, 3),
+            integerValidator,
+          ]"
         />
       </VCol>
 
@@ -129,7 +139,10 @@ const refForm = ref()
           persistent-placeholder
           placeholder="Repeat password must match"
           type="password"
-          :rules="[requiredValidator, confirmedValidator(repeatPassword, password)]"
+          :rules="[
+            requiredValidator,
+            confirmedValidator(repeatPassword, password),
+          ]"
           autocomplete="on"
         />
       </VCol>

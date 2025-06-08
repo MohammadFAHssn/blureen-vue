@@ -1,55 +1,49 @@
 <script setup>
-const series = [{
-  name: '2020',
-  data: [
-    60,
-    50,
-    20,
-    45,
-    50,
-    30,
-    70,
-  ],
-}]
+const series = [
+  {
+    name: "2020",
+    data: [60, 50, 20, 45, 50, 30, 70],
+  },
+]
 
 const chartOptions = computed(() => {
   return {
     chart: {
       height: 90,
       parentHeightOffset: 0,
-      type: 'bar',
+      type: "bar",
       toolbar: { show: false },
     },
     tooltip: { enabled: false },
     plotOptions: {
       bar: {
-        barHeight: '100%',
-        columnWidth: '30%',
-        startingShape: 'rounded',
-        endingShape: 'rounded',
+        barHeight: "100%",
+        columnWidth: "30%",
+        startingShape: "rounded",
+        endingShape: "rounded",
         borderRadius: 4,
         colors: {
           backgroundBarColors: [
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
-            'rgba(var(--v-track-bg))',
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
+            "rgba(var(--v-track-bg))",
           ],
           backgroundBarRadius: 4,
         },
       },
     },
-    colors: ['rgba(var(--v-theme-primary),1)'],
+    colors: ["rgba(var(--v-theme-primary),1)"],
     grid: {
       show: false,
       padding: {
@@ -62,15 +56,7 @@ const chartOptions = computed(() => {
     dataLabels: { enabled: false },
     legend: { show: false },
     xaxis: {
-      categories: [
-        'M',
-        'T',
-        'W',
-        'T',
-        'F',
-        'S',
-        'S',
-      ],
+      categories: ["M", "T", "W", "T", "F", "S", "S"],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: { show: false },
@@ -82,7 +68,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '30%',
+              columnWidth: "30%",
               borderRadius: 4,
             },
           },
@@ -90,7 +76,7 @@ const chartOptions = computed(() => {
       },
       {
         breakpoint: 1368,
-        options: { plotOptions: { bar: { columnWidth: '48%' } } },
+        options: { plotOptions: { bar: { columnWidth: "48%" } } },
       },
       {
         breakpoint: 1264,
@@ -98,7 +84,7 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '30%',
+              columnWidth: "30%",
               colors: { backgroundBarRadius: 6 },
             },
           },
@@ -109,7 +95,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '15%',
+              columnWidth: "15%",
               borderRadius: 4,
             },
           },
@@ -117,18 +103,18 @@ const chartOptions = computed(() => {
       },
       {
         breakpoint: 883,
-        options: { plotOptions: { bar: { columnWidth: '20%' } } },
+        options: { plotOptions: { bar: { columnWidth: "20%" } } },
       },
       {
         breakpoint: 768,
-        options: { plotOptions: { bar: { columnWidth: '25%' } } },
+        options: { plotOptions: { bar: { columnWidth: "25%" } } },
       },
       {
         breakpoint: 600,
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '15%',
+              columnWidth: "15%",
               borderRadius: 4,
             },
             colors: { backgroundBarRadius: 9 },

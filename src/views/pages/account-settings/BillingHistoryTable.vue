@@ -1,5 +1,5 @@
 <script setup>
-const searchQuery = ref('')
+const searchQuery = ref("")
 const selectedStatus = ref()
 const selectedRows = ref([])
 
@@ -17,50 +17,49 @@ const updateOptions = options => {
 // 👉 headers
 const headers = [
   {
-    title: '#',
-    key: 'id',
+    title: "#",
+    key: "id",
   },
   {
-    title: 'Status',
-    key: 'status',
+    title: "Status",
+    key: "status",
     sortable: false,
   },
   {
-    title: 'Client',
-    key: 'client',
+    title: "Client",
+    key: "client",
   },
   {
-    title: 'Total',
-    key: 'total',
+    title: "Total",
+    key: "total",
   },
   {
-    title: 'Issued Date',
-    key: 'date',
+    title: "Issued Date",
+    key: "date",
   },
   {
-    title: 'Balance',
-    key: 'balance',
+    title: "Balance",
+    key: "balance",
   },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: "Actions",
+    key: "actions",
     sortable: false,
   },
 ]
 
-const {
-  data: invoiceData,
-  execute: fetchInvoices,
-} = await useApi(createUrl('/apps/invoice', {
-  query: {
-    q: searchQuery,
-    status: selectedStatus,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: invoiceData, execute: fetchInvoices } = await useApi(
+  createUrl("/apps/invoice", {
+    query: {
+      q: searchQuery,
+      status: selectedStatus,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const invoices = computed(() => invoiceData.value?.invoices)
 const totalInvoices = computed(() => invoiceData.value?.totalInvoices)
@@ -69,61 +68,61 @@ const totalInvoices = computed(() => invoiceData.value?.totalInvoices)
 const resolveInvoiceBalanceVariant = (balance, total) => {
   if (balance === total)
     return {
-      status: 'Unpaid',
-      chip: { color: 'error' },
+      status: "Unpaid",
+      chip: { color: "error" },
     }
   if (balance === 0)
     return {
-      status: 'Paid',
-      chip: { color: 'success' },
+      status: "Paid",
+      chip: { color: "success" },
     }
-  
+
   return {
     status: balance,
-    chip: { variant: 'text' },
+    chip: { variant: "text" },
   }
 }
 
 const resolveInvoiceStatusVariantAndIcon = status => {
-  if (status === 'Partial Payment')
+  if (status === "Partial Payment")
     return {
-      variant: 'warning',
-      icon: 'tabler-chart-pie',
+      variant: "warning",
+      icon: "tabler-chart-pie",
     }
-  if (status === 'Paid')
+  if (status === "Paid")
     return {
-      variant: 'success',
-      icon: 'tabler-check',
+      variant: "success",
+      icon: "tabler-check",
     }
-  if (status === 'Downloaded')
+  if (status === "Downloaded")
     return {
-      variant: 'info',
-      icon: 'tabler-arrow-down',
+      variant: "info",
+      icon: "tabler-arrow-down",
     }
-  if (status === 'Draft')
+  if (status === "Draft")
     return {
-      variant: 'primary',
-      icon: 'tabler-folder',
+      variant: "primary",
+      icon: "tabler-folder",
     }
-  if (status === 'Sent')
+  if (status === "Sent")
     return {
-      variant: 'secondary',
-      icon: 'tabler-mail',
+      variant: "secondary",
+      icon: "tabler-mail",
     }
-  if (status === 'Past Due')
+  if (status === "Past Due")
     return {
-      variant: 'error',
-      icon: 'tabler-alert-circle',
+      variant: "error",
+      icon: "tabler-alert-circle",
     }
-  
+
   return {
-    variant: 'secondary',
-    icon: 'tabler-x',
+    variant: "secondary",
+    icon: "tabler-x",
   }
 }
 
 const deleteInvoice = async id => {
-  await $api(`/apps/invoice/${ id }`, { method: 'DELETE' })
+  await $api(`/apps/invoice/${id}`, { method: "DELETE" })
   fetchInvoices()
 }
 </script>
@@ -168,8 +167,15 @@ const deleteInvoice = async id => {
             placeholder="Invoice Status"
             clearable
             clear-icon="tabler-x"
-            :items="['Downloaded', 'Draft', 'Sent', 'Paid', 'Partial Payment', 'Past Due']"
-            style="inline-size: 12rem;"
+            :items="[
+              'Downloaded',
+              'Draft',
+              'Sent',
+              'Paid',
+              'Partial Payment',
+              'Past Due',
+            ]"
+            style="inline-size: 12rem"
           />
         </div>
       </div>
@@ -205,12 +211,16 @@ const deleteInvoice = async id => {
             <VAvatar
               :size="28"
               v-bind="props"
-              :color="resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant"
+              :color="
+                resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant
+              "
               variant="tonal"
             >
               <VIcon
                 size="16"
-                :icon="resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).icon"
+                :icon="
+                  resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).icon
+                "
               />
             </VAvatar>
           </template>
@@ -231,7 +241,11 @@ const deleteInvoice = async id => {
         <div class="d-flex align-center">
           <VAvatar
             size="34"
-            :color="!item.avatar.length ? resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant : undefined"
+            :color="
+              !item.avatar.length
+                ? resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant
+                : undefined
+            "
             :variant="!item.avatar.length ? 'tonal' : undefined"
             class="me-3"
           >
@@ -244,7 +258,10 @@ const deleteInvoice = async id => {
           <div class="d-flex flex-column">
             <RouterLink
               class="font-weight-medium text-body-1 text-high-emphasis mb-0 text-link"
-              :to="{ name: 'pages-user-profile-tab', params: { tab: 'profile' } }"
+              :to="{
+                name: 'pages-user-profile-tab',
+                params: { tab: 'profile' },
+              }"
             >
               {{ item.client.name }}
             </RouterLink>
@@ -266,18 +283,29 @@ const deleteInvoice = async id => {
       <!-- Balance -->
       <template #item.balance="{ item }">
         <VChip
-          v-if="typeof ((resolveInvoiceBalanceVariant(item.balance, item.total)).status) === 'string'"
-          :color="resolveInvoiceBalanceVariant(item.balance, item.total).chip.color"
+          v-if="
+            typeof resolveInvoiceBalanceVariant(item.balance, item.total)
+              .status === 'string'
+          "
+          :color="
+            resolveInvoiceBalanceVariant(item.balance, item.total).chip.color
+          "
           size="small"
           label
         >
-          {{ (resolveInvoiceBalanceVariant(item.balance, item.total)).status }}
+          {{ resolveInvoiceBalanceVariant(item.balance, item.total).status }}
         </VChip>
         <div
           v-else
           class="text-body-1 text-high-emphasis"
         >
-          {{ Number((resolveInvoiceBalanceVariant(item.balance, item.total)).status) > 0 ? `$${(resolveInvoiceBalanceVariant(item.balance, item.total)).status}` : `-$${Math.abs(Number((resolveInvoiceBalanceVariant(item.balance, item.total)).status))}` }}
+          {{
+            Number(
+              resolveInvoiceBalanceVariant(item.balance, item.total).status,
+            ) > 0
+              ? `$${resolveInvoiceBalanceVariant(item.balance, item.total).status}`
+              : `-$${Math.abs(Number(resolveInvoiceBalanceVariant(item.balance, item.total).status))}`
+          }}
         </div>
       </template>
 

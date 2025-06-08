@@ -1,5 +1,5 @@
 <script setup>
-import AppSearchHeaderBg from '@images/pages/app-search-header-bg.png'
+import AppSearchHeaderBg from "@images/pages/app-search-header-bg.png"
 
 const props = defineProps({
   title: {
@@ -21,7 +21,7 @@ const props = defineProps({
   density: {
     type: String,
     required: false,
-    default: 'comfortable',
+    default: "comfortable",
   },
   isReverse: {
     type: Boolean,
@@ -51,7 +51,7 @@ defineOptions({
       </slot>
       <div
         class="d-flex"
-        :class="isReverse ? 'flex-column' : 'flex-column-reverse' "
+        :class="isReverse ? 'flex-column' : 'flex-column-reverse'"
       >
         <p class="mb-0">
           {{ props.subtitle }}

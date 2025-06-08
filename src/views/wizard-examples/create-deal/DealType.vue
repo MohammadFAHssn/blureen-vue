@@ -1,11 +1,11 @@
 <script setup>
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import sittingGirlWithLaptop from '@images/illustrations/sitting-girl-with-laptop.png'
-import CreateDealBackgroundDark from '@images/pages/DealTypeBackground-dark.png'
-import CreateDealBackgroundLight from '@images/pages/DealTypeBackground-light.png'
-import card from '@images/svg/Card.svg'
-import check from '@images/svg/Check.svg'
-import diamond from '@images/svg/Diamond.svg'
+import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
+import sittingGirlWithLaptop from "@images/illustrations/sitting-girl-with-laptop.png"
+import CreateDealBackgroundDark from "@images/pages/DealTypeBackground-dark.png"
+import CreateDealBackgroundLight from "@images/pages/DealTypeBackground-light.png"
+import card from "@images/svg/Card.svg"
+import check from "@images/svg/Check.svg"
+import diamond from "@images/svg/Diamond.svg"
 
 const props = defineProps({
   formData: {
@@ -14,44 +14,47 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
-const createDealBackground = useGenerateImageVariant(CreateDealBackgroundLight, CreateDealBackgroundDark)
+const createDealBackground = useGenerateImageVariant(
+  CreateDealBackgroundLight,
+  CreateDealBackgroundDark,
+)
 
 const discountOffers = [
   {
     icon: {
       icon: check,
-      size: '28',
+      size: "28",
     },
-    title: 'Percentage',
-    desc: 'Create a deal which offer uses some % off (i.e 5% OFF) on total.',
-    value: 'percentage',
+    title: "Percentage",
+    desc: "Create a deal which offer uses some % off (i.e 5% OFF) on total.",
+    value: "percentage",
   },
   {
     icon: {
       icon: card,
-      size: '28',
+      size: "28",
     },
-    title: 'Flat Amount',
-    desc: 'Create a deal which offer uses some flat amount (i.e $5 OFF) on total.',
-    value: 'flat',
+    title: "Flat Amount",
+    desc: "Create a deal which offer uses some flat amount (i.e $5 OFF) on total.",
+    value: "flat",
   },
   {
     icon: {
       icon: diamond,
-      size: '28',
+      size: "28",
     },
-    title: 'Prime member',
-    desc: 'Create prime member only deal to encourage the prime members.',
-    value: 'prime',
+    title: "Prime member",
+    desc: "Create prime member only deal to encourage the prime members.",
+    value: "prime",
   },
 ]
 
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 
@@ -98,7 +101,14 @@ watch(formData, () => {
         <AppSelect
           v-model="formData.region"
           label="Region"
-          :items="['Asia', 'Europe', 'Africa', 'Australia', 'North America', 'South America']"
+          :items="[
+            'Asia',
+            'Europe',
+            'Africa',
+            'Australia',
+            'North America',
+            'South America',
+          ]"
           placeholder="Select Region"
           hint="Select applicable regions for the deal."
           persistent-hint

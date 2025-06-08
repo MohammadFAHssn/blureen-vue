@@ -1,11 +1,10 @@
-
 // 👉 Redirects
 export const redirects = [
   // ℹ️ We are redirecting to different pages based on role.
   // NOTE: Role is just for UI purposes. ACL is based on abilities.
   {
-    path: '/',
-    name: 'index',
+    path: "/",
+    name: "index",
     redirect: to => {
       // ***
       // TODO: Get type from backend
@@ -16,12 +15,11 @@ export const redirects = [
       //   return { name: 'dashboards-crm' }
       // if (userRole === 'client')
       //   return { name: 'access-control' }
-      
-      return { name: 'dashboards-crm' }
+
+      return { name: "dashboards-crm" }
 
       // return { name: 'login', query: to.query }
     },
   },
 ]
-export const routes = [
-]
+export const routes = []

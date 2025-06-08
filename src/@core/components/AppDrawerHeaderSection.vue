@@ -6,7 +6,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['cancel'])
+const emit = defineEmits(["cancel"])
 </script>
 
 <template>

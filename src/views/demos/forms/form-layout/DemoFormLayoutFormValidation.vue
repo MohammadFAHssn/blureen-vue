@@ -1,13 +1,8 @@
 <script setup>
-const name = ref('')
-const email = ref('')
+const name = ref("")
+const email = ref("")
 
-const items = [
-  'Item 1',
-  'Item 2',
-  'Item 3',
-  'Item 4',
-]
+const items = ["Item 1", "Item 2", "Item 3", "Item 4"]
 
 const select = ref()
 const checkbox = ref(false)

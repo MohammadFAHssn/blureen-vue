@@ -1,5 +1,5 @@
 <script setup>
-import standingGirlImg from '@images/illustrations/standingGirlImg.png'
+import standingGirlImg from "@images/illustrations/standingGirlImg.png"
 
 const props = defineProps({
   formData: {
@@ -8,12 +8,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 
@@ -33,7 +33,7 @@ watch(formData, () => {
       <table class="text-base">
         <tbody>
           <tr>
-            <td style="inline-size: 150px;">
+            <td style="inline-size: 150px">
               <p class="font-weight-medium mb-2">
                 Deal Type
               </p>
@@ -120,7 +120,7 @@ watch(formData, () => {
         <VImg
           width="207"
           :src="standingGirlImg"
-          class="mx-auto  flip-in-rtl"
+          class="mx-auto flip-in-rtl"
         />
       </div>
     </VCol>

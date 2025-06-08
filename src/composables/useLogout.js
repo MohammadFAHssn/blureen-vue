@@ -1,24 +1,25 @@
-
-import { router } from '@/plugins/1.router/index'
+import { router } from "@/plugins/1.router/index"
 
 export const useLogout = async () => {
-
   // Remove "accessToken" from cookie
-  useCookie('accessToken').value = null
+  useCookie("accessToken").value = null
 
   // Remove "userData" from cookie
-  const userData = useCookie('userData')
+  const userData = useCookie("userData")
 
   userData.value = null
 
   // Redirect to login page
 
-  await router.push({ path: '/login', query: { isRedirectedFromUnauthorizedStatus: true } })
+  await router.push({
+    path: "/login",
+    query: { isRedirectedFromUnauthorizedStatus: true },
+  })
 
   // ℹ️ We had to remove abilities in then block because if we don't nav menu items mutation is visible while redirecting user to login page
 
   // Remove "userAbilities" from cookie
-  useCookie('userAbilityRules').value = null
+  useCookie("userAbilityRules").value = null
 
   // Reset ability to initial ability
   // const ability = useAbility()

@@ -1,16 +1,16 @@
 <script setup>
 const numberedSteps = [
   {
-    title: 'Account Details',
-    subtitle: 'Setup Account Details',
+    title: "Account Details",
+    subtitle: "Setup Account Details",
   },
   {
-    title: 'Personal Info',
-    subtitle: 'Add personal info',
+    title: "Personal Info",
+    subtitle: "Add personal info",
   },
   {
-    title: 'Social Links',
-    subtitle: 'Add social links',
+    title: "Social Links",
+    subtitle: "Add social links",
   },
 ]
 
@@ -19,18 +19,18 @@ const isPasswordVisible = ref(false)
 const isCPasswordVisible = ref(false)
 
 const formData = ref({
-  username: '',
-  email: '',
-  password: '',
-  cPassword: '',
-  firstName: '',
-  lastName: '',
+  username: "",
+  email: "",
+  password: "",
+  cPassword: "",
+  firstName: "",
+  lastName: "",
   country: undefined,
   language: undefined,
-  twitter: '',
-  facebook: '',
-  googlePlus: '',
-  linkedIn: '',
+  twitter: "",
+  facebook: "",
+  googlePlus: "",
+  linkedIn: "",
 })
 
 const onSubmit = () => {
@@ -95,7 +95,9 @@ const onSubmit = () => {
                   label="Password"
                   placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -108,7 +110,9 @@ const onSubmit = () => {
                   label="Confirm Password"
                   placeholder="············"
                   :type="isCPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
                 />
               </VCol>

@@ -1,32 +1,32 @@
 <script setup>
 const recentDevices = ref([
   {
-    type: 'New for you',
+    type: "New for you",
     email: true,
     browser: true,
     app: true,
   },
   {
-    type: 'Account activity',
+    type: "Account activity",
     email: true,
     browser: true,
     app: true,
   },
   {
-    type: 'A new browser used to sign in',
+    type: "A new browser used to sign in",
     email: true,
     browser: true,
     app: false,
   },
   {
-    type: 'A new device is linked',
+    type: "A new device is linked",
     email: true,
     browser: false,
     app: false,
   },
 ])
 
-const selectedNotification = ref('Only when I\'m online')
+const selectedNotification = ref("Only when I'm online")
 </script>
 
 <template>
@@ -34,7 +34,8 @@ const selectedNotification = ref('Only when I\'m online')
     <VCardItem>
       <VCardTitle>Recent Devices</VCardTitle>
       <p class="text-body-1 mb-0">
-        We need permission from your browser to show notifications. <span class="text-primary cursor-pointer">Request Permission</span>
+        We need permission from your browser to show notifications.
+        <span class="text-primary cursor-pointer">Request Permission</span>
       </p>
     </VCardItem>
 

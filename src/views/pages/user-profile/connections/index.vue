@@ -1,10 +1,12 @@
 <script setup>
-const router = useRoute('pages-user-profile-tab')
+const router = useRoute("pages-user-profile-tab")
 const connectionData = ref([])
 
 const fetchProjectData = async () => {
-  if (router.params.tab === 'connections') {
-    const data = await $api('/pages/profile', { query: { tab: router.params.tab } }).catch(err => console.log(err))
+  if (router.params.tab === "connections") {
+    const data = await $api("/pages/profile", {
+      query: { tab: router.params.tab },
+    }).catch(err => console.log(err))
 
     connectionData.value = data
   }
@@ -96,10 +98,12 @@ watch(router, fetchProjectData, { immediate: true })
 
           <div class="d-flex justify-center gap-4 mt-6">
             <VBtn
-              :prepend-icon="data.isConnected ? 'tabler-user-check' : 'tabler-user-plus'"
+              :prepend-icon="
+                data.isConnected ? 'tabler-user-check' : 'tabler-user-plus'
+              "
               :variant="data.isConnected ? 'elevated' : 'tonal'"
             >
-              {{ data.isConnected ? 'connected' : 'connect' }}
+              {{ data.isConnected ? "connected" : "connect" }}
             </VBtn>
 
             <IconBtn

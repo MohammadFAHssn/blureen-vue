@@ -9,7 +9,10 @@ const isAlertVisible = ref(true)
       color="warning"
       variant="tonal"
     >
-      non adipiscing dolor urna a orci. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur blandit mollis lacus. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo.
+      non adipiscing dolor urna a orci. Sed mollis, eros et ultrices tempus,
+      mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Curabitur
+      blandit mollis lacus. Curabitur ligula sapien, tincidunt non, euismod
+      vitae, posuere imperdiet, leo.
     </VAlert>
   </div>
 

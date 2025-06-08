@@ -1,6 +1,6 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VForm } from 'vuetify/components/VForm'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { VForm } from "vuetify/components/VForm"
 
 const props = defineProps({
   isDrawerOpen: {
@@ -9,10 +9,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDrawerOpen'])
+const emit = defineEmits(["update:isDrawerOpen"])
 
 const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 
 const refVForm = ref()
@@ -29,11 +29,11 @@ const isBillingAddress = ref(false)
 
 const resetForm = () => {
   refVForm.value?.reset()
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
 }
 
 const closeNavigationDrawer = () => {
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
   nextTick(() => {
     refVForm.value?.reset()
     refVForm.value?.resetValidation()
@@ -64,7 +64,7 @@ const closeNavigationDrawer = () => {
         :options="{ wheelPropagation: false }"
         class="h-100"
       >
-        <VCardText style="block-size: calc(100vh - 5rem);">
+        <VCardText style="block-size: calc(100vh - 5rem)">
           <VForm
             ref="refVForm"
             @submit.prevent=""

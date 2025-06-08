@@ -1,6 +1,8 @@
 <script setup>
 const currentTab = ref(0)
-const tabItemText = 'hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer.'
+
+const tabItemText =
+  "hortbread chocolate bar marshmallow bear claw tiramisu chocolate cookie wafer."
 </script>
 
 <template>

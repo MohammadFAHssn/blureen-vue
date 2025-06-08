@@ -1,44 +1,44 @@
 <script setup>
-import asana from '@images/icons/brands/asana.png'
-import behance from '@images/icons/brands/behance.png'
-import dribbble from '@images/icons/brands/dribbble.png'
-import facebook from '@images/icons/brands/facebook.png'
-import github from '@images/icons/brands/github.png'
-import google from '@images/icons/brands/google.png'
-import linkedin from '@images/icons/brands/linkedin.png'
-import mailchimp from '@images/icons/brands/mailchimp.png'
-import slack from '@images/icons/brands/slack.png'
-import twitter from '@images/icons/brands/twitter.png'
+import asana from "@images/icons/brands/asana.png"
+import behance from "@images/icons/brands/behance.png"
+import dribbble from "@images/icons/brands/dribbble.png"
+import facebook from "@images/icons/brands/facebook.png"
+import github from "@images/icons/brands/github.png"
+import google from "@images/icons/brands/google.png"
+import linkedin from "@images/icons/brands/linkedin.png"
+import mailchimp from "@images/icons/brands/mailchimp.png"
+import slack from "@images/icons/brands/slack.png"
+import twitter from "@images/icons/brands/twitter.png"
 
 const connectedAccounts = ref([
   {
     img: google,
-    title: 'Google',
-    text: 'Calendar and contacts',
+    title: "Google",
+    text: "Calendar and contacts",
     connected: true,
   },
   {
     img: slack,
-    title: 'Slack',
-    text: 'Communication',
+    title: "Slack",
+    text: "Communication",
     connected: false,
   },
   {
     img: github,
-    title: 'GitHub',
-    text: 'Manage your Git repositories',
+    title: "GitHub",
+    text: "Manage your Git repositories",
     connected: true,
   },
   {
     img: mailchimp,
-    title: 'Mailchimp',
-    text: 'Email marketing service',
+    title: "Mailchimp",
+    text: "Email marketing service",
     connected: false,
   },
   {
     img: asana,
-    title: 'Asana',
-    text: 'Communication',
+    title: "Asana",
+    text: "Communication",
     connected: false,
   },
 ])
@@ -46,31 +46,31 @@ const connectedAccounts = ref([
 const socialAccounts = ref([
   {
     img: facebook,
-    title: 'Facebook',
+    title: "Facebook",
     connected: false,
   },
   {
     img: twitter,
-    title: 'Twitter',
-    link: 'https://twitter.com/pixinvents',
-    username: '@Pixinvent',
+    title: "Twitter",
+    link: "https://twitter.com/pixinvents",
+    username: "@Pixinvent",
     connected: true,
   },
   {
     img: linkedin,
-    title: 'LinkedIn',
-    link: 'https://www.linkedin.com/company/pixinvent',
-    username: '@Pixinvent',
+    title: "LinkedIn",
+    link: "https://www.linkedin.com/company/pixinvent",
+    username: "@Pixinvent",
     connected: true,
   },
   {
     img: dribbble,
-    title: 'Dribbble',
+    title: "Dribbble",
     connected: false,
   },
   {
     img: behance,
-    title: 'Behance',
+    title: "Behance",
     connected: false,
   },
 ])
@@ -127,7 +127,7 @@ const socialAccounts = ref([
         <VCardText>
           <VList class="card-list">
             <VListItem
-              v-for="(account) in socialAccounts"
+              v-for="account in socialAccounts"
               :key="account.title"
             >
               <h6 class="text-h6">

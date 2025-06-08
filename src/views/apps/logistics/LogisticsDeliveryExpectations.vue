@@ -1,29 +1,27 @@
 <script setup>
 const chartColors = {
   donut: {
-    series1: '#28C76F',
-    series2: '#28C76FCC',
-    series3: '#28C76F99',
-    series4: '#28C76F66',
+    series1: "#28C76F",
+    series2: "#28C76FCC",
+    series3: "#28C76F99",
+    series4: "#28C76F66",
   },
 }
 
-const headingColor = 'rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))'
-const labelColor = 'rgba(var(--v-theme-on-background), var(--v-medium-emphasis-opacity))'
+const headingColor =
+  "rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity))"
 
-const deliveryExceptionsChartSeries = [
-  13,
-  25,
-  22,
-  40,
-]
+const labelColor =
+  "rgba(var(--v-theme-on-background), var(--v-medium-emphasis-opacity))"
+
+const deliveryExceptionsChartSeries = [13, 25, 22, 40]
 
 const deliveryExceptionsChartConfig = {
   labels: [
-    'Incorrect address',
-    'Weather conditions',
-    'Federal Holidays',
-    'Damage during transit',
+    "Incorrect address",
+    "Weather conditions",
+    "Federal Holidays",
+    "Damage during transit",
   ],
   colors: [
     chartColors.donut.series1,
@@ -35,12 +33,12 @@ const deliveryExceptionsChartConfig = {
   dataLabels: {
     enabled: false,
     formatter(val) {
-      return `${ Number.parseInt(val) }%`
+      return `${Number.parseInt(val)}%`
     },
   },
   legend: {
     show: true,
-    position: 'bottom',
+    position: "bottom",
     offsetY: 10,
     markers: {
       width: 8,
@@ -51,7 +49,7 @@ const deliveryExceptionsChartConfig = {
       horizontal: 15,
       vertical: 5,
     },
-    fontSize: '13px',
+    fontSize: "13px",
     fontWeight: 400,
     labels: {
       colors: headingColor,
@@ -63,37 +61,39 @@ const deliveryExceptionsChartConfig = {
   plotOptions: {
     pie: {
       donut: {
-        size: '75%',
+        size: "75%",
         labels: {
           show: true,
           value: {
-            fontSize: '24px',
+            fontSize: "24px",
             color: headingColor,
             fontWeight: 500,
             offsetY: -20,
             formatter(val) {
-              return `${ Number.parseInt(val) }%`
+              return `${Number.parseInt(val)}%`
             },
           },
           name: { offsetY: 20 },
           total: {
             show: true,
-            fontSize: '0.9375rem',
+            fontSize: "0.9375rem",
             fontWeight: 400,
-            label: 'AVG. Exceptions',
+            label: "AVG. Exceptions",
             color: labelColor,
             formatter() {
-              return '30%'
+              return "30%"
             },
           },
         },
       },
     },
   },
-  responsive: [{
-    breakpoint: 420,
-    options: { chart: { height: 400 } },
-  }],
+  responsive: [
+    {
+      breakpoint: 420,
+      options: { chart: { height: 400 } },
+    },
+  ],
 }
 </script>
 

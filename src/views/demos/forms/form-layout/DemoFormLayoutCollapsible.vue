@@ -1,33 +1,33 @@
 <script setup>
 const stateList = [
-  'Alabama',
-  'Alaska',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'Florida',
-  'Georgia',
-  'Hawaii',
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
 ]
 
-const radios = ref('home')
-const deliveryOption = ref('standard')
-const paymentMethod = ref('credit-debit-card')
+const radios = ref("home")
+const deliveryOption = ref("standard")
+const paymentMethod = ref("credit-debit-card")
 const panel = ref(0)
 
 const paymentMethods = [
   {
-    radioValue: 'credit-debit-card',
-    radioLabel: 'Credit/Debit/ATM Card',
-    icon: 'tabler-credit-card',
+    radioValue: "credit-debit-card",
+    radioLabel: "Credit/Debit/ATM Card",
+    icon: "tabler-credit-card",
   },
   {
-    radioValue: 'cash-on-delivery',
-    radioLabel: 'Cash On Delivery',
-    icon: 'tabler-help',
+    radioValue: "cash-on-delivery",
+    radioLabel: "Cash On Delivery",
+    icon: "tabler-help",
   },
 ]
 </script>
@@ -309,7 +309,9 @@ const paymentMethods = [
               <VRow v-else>
                 <VCol>
                   <div class="text-high-emphasis">
-                    Cash on Delivery is a type of payment method where the recipient make payment for the order at the time of delivery rather than in advance.
+                    Cash on Delivery is a type of payment method where the
+                    recipient make payment for the order at the time of delivery
+                    rather than in advance.
                   </div>
                 </VCol>
               </VRow>

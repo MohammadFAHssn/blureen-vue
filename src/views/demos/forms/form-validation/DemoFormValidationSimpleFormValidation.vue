@@ -1,8 +1,8 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
+import { VForm } from "vuetify/components/VForm"
 
-const firstName = ref('')
-const email = ref('')
+const firstName = ref("")
+const email = ref("")
 const refForm = ref()
 </script>
 

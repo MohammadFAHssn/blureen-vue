@@ -70,9 +70,7 @@ const props = defineProps({
               }"
               class="text-base d-flex align-center font-weight-medium d-inline-block"
             >
-              <span class="d-inline-block">
-                See All Articles
-              </span>
+              <span class="d-inline-block"> See All Articles </span>
 
               <VIcon
                 icon="tabler-arrow-right"

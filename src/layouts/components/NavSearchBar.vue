@@ -1,7 +1,7 @@
 <script setup>
-import Shepherd from 'shepherd.js'
-import { withQuery } from 'ufo'
-import { useConfigStore } from '@core/stores/config'
+import Shepherd from "shepherd.js"
+import { withQuery } from "ufo"
+import { useConfigStore } from "@core/stores/config"
 
 defineOptions({
   // 👉 Is App Search Bar Visible
@@ -15,105 +15,105 @@ const isLoading = ref(false)
 // 👉 Default suggestions
 const suggestionGroups = [
   {
-    title: 'Popular Searches',
+    title: "Popular Searches",
     content: [
       {
-        icon: 'tabler-chart-bar',
-        title: 'Analytics',
-        url: { name: 'dashboards-analytics' },
+        icon: "tabler-chart-bar",
+        title: "Analytics",
+        url: { name: "dashboards-analytics" },
       },
       {
-        icon: 'tabler-chart-donut-3',
-        title: 'CRM',
-        url: { name: 'dashboards-crm' },
+        icon: "tabler-chart-donut-3",
+        title: "CRM",
+        url: { name: "dashboards-crm" },
       },
       {
-        icon: 'tabler-shopping-cart',
-        title: 'eCommerce',
-        url: { name: 'dashboards-ecommerce' },
+        icon: "tabler-shopping-cart",
+        title: "eCommerce",
+        url: { name: "dashboards-ecommerce" },
       },
       {
-        icon: 'tabler-truck',
-        title: 'Logistics',
-        url: { name: 'dashboards-logistics' },
+        icon: "tabler-truck",
+        title: "Logistics",
+        url: { name: "dashboards-logistics" },
       },
     ],
   },
   {
-    title: 'Apps & Pages',
+    title: "Apps & Pages",
     content: [
       {
-        icon: 'tabler-calendar',
-        title: 'Calendar',
-        url: { name: 'apps-calendar' },
+        icon: "tabler-calendar",
+        title: "Calendar",
+        url: { name: "apps-calendar" },
       },
       {
-        icon: 'tabler-lock',
-        title: 'Roles & Permissions',
-        url: { name: 'apps-roles' },
+        icon: "tabler-lock",
+        title: "Roles & Permissions",
+        url: { name: "apps-roles" },
       },
       {
-        icon: 'tabler-settings',
-        title: 'Account Settings',
+        icon: "tabler-settings",
+        title: "Account Settings",
         url: {
-          name: 'pages-account-settings-tab',
-          params: { tab: 'account' },
+          name: "pages-account-settings-tab",
+          params: { tab: "account" },
         },
       },
       {
-        icon: 'tabler-copy',
-        title: 'Dialog Examples',
-        url: { name: 'pages-dialog-examples' },
+        icon: "tabler-copy",
+        title: "Dialog Examples",
+        url: { name: "pages-dialog-examples" },
       },
     ],
   },
   {
-    title: 'User Interface',
+    title: "User Interface",
     content: [
       {
-        icon: 'tabler-typography',
-        title: 'Typography',
-        url: { name: 'pages-typography' },
+        icon: "tabler-typography",
+        title: "Typography",
+        url: { name: "pages-typography" },
       },
       {
-        icon: 'tabler-menu-2',
-        title: 'Accordion',
-        url: { name: 'components-expansion-panel' },
+        icon: "tabler-menu-2",
+        title: "Accordion",
+        url: { name: "components-expansion-panel" },
       },
       {
-        icon: 'tabler-info-triangle',
-        title: 'Alert',
-        url: { name: 'components-alert' },
+        icon: "tabler-info-triangle",
+        title: "Alert",
+        url: { name: "components-alert" },
       },
       {
-        icon: 'tabler-checkbox',
-        title: 'Cards',
-        url: { name: 'pages-cards-card-basic' },
+        icon: "tabler-checkbox",
+        title: "Cards",
+        url: { name: "pages-cards-card-basic" },
       },
     ],
   },
   {
-    title: 'Forms & Tables',
+    title: "Forms & Tables",
     content: [
       {
-        icon: 'tabler-circle-dot',
-        title: 'Radio',
-        url: { name: 'forms-radio' },
+        icon: "tabler-circle-dot",
+        title: "Radio",
+        url: { name: "forms-radio" },
       },
       {
-        icon: 'tabler-file-invoice',
-        title: 'Form Layouts',
-        url: { name: 'forms-form-layouts' },
+        icon: "tabler-file-invoice",
+        title: "Form Layouts",
+        url: { name: "forms-form-layouts" },
       },
       {
-        icon: 'tabler-table',
-        title: 'Table',
-        url: { name: 'tables-data-table' },
+        icon: "tabler-table",
+        title: "Table",
+        url: { name: "tables-data-table" },
       },
       {
-        icon: 'tabler-edit',
-        title: 'Editor',
-        url: { name: 'forms-editors' },
+        icon: "tabler-edit",
+        title: "Editor",
+        url: { name: "forms-editors" },
       },
     ],
   },
@@ -122,30 +122,32 @@ const suggestionGroups = [
 // 👉 No Data suggestion
 const noDataSuggestions = [
   {
-    title: 'Analytics',
-    icon: 'tabler-chart-bar',
-    url: { name: 'dashboards-analytics' },
+    title: "Analytics",
+    icon: "tabler-chart-bar",
+    url: { name: "dashboards-analytics" },
   },
   {
-    title: 'CRM',
-    icon: 'tabler-chart-donut-3',
-    url: { name: 'dashboards-crm' },
+    title: "CRM",
+    icon: "tabler-chart-donut-3",
+    url: { name: "dashboards-crm" },
   },
   {
-    title: 'eCommerce',
-    icon: 'tabler-shopping-cart',
-    url: { name: 'dashboards-ecommerce' },
+    title: "eCommerce",
+    icon: "tabler-shopping-cart",
+    url: { name: "dashboards-ecommerce" },
   },
 ]
 
-const searchQuery = ref('')
+const searchQuery = ref("")
 const router = useRouter()
 const searchResult = ref([])
 
 const fetchResults = async () => {
   isLoading.value = true
 
-  const { data } = await useApi(withQuery('/app-bar/search', { q: searchQuery.value }))
+  const { data } = await useApi(
+    withQuery("/app-bar/search", { q: searchQuery.value }),
+  )
 
   searchResult.value = data.value
 
@@ -159,7 +161,7 @@ watch(searchQuery, fetchResults)
 
 const closeSearchBar = () => {
   isAppSearchBarVisible.value = false
-  searchQuery.value = ''
+  searchQuery.value = ""
 }
 
 const redirectToSuggestedPage = selected => {
@@ -167,14 +169,16 @@ const redirectToSuggestedPage = selected => {
   closeSearchBar()
 }
 
-const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/AppBarSearch.vue'))
+const LazyAppBarSearch = defineAsyncComponent(
+  () => import("@core/components/AppBarSearch.vue"),
+)
 </script>
 
 <template>
   <div
     class="d-flex align-center cursor-pointer"
     v-bind="$attrs"
-    style="user-select: none;"
+    style="user-select: none"
     @click="isAppSearchBarVisible = !isAppSearchBarVisible"
   >
     <!-- 👉 Search Trigger button -->
@@ -212,7 +216,7 @@ const LazyAppBarSearch = defineAsyncComponent(() => import('@core/components/App
           >
             <p
               class="custom-letter-spacing text-disabled text-uppercase py-2 px-4 mb-0"
-              style="font-size: 0.75rem; line-height: 0.875rem;"
+              style="font-size: 0.75rem; line-height: 0.875rem"
             >
               {{ suggestion.title }}
             </p>

@@ -7,30 +7,30 @@ const props = defineProps({
   permissionName: {
     type: String,
     required: false,
-    default: '',
+    default: "",
   },
 })
 
-const emit = defineEmits([
-  'update:isDialogVisible',
-  'update:permissionName',
-])
+const emit = defineEmits(["update:isDialogVisible", "update:permissionName"])
 
-const currentPermissionName = ref('')
+const currentPermissionName = ref("")
 
 const onReset = () => {
-  emit('update:isDialogVisible', false)
-  currentPermissionName.value = ''
+  emit("update:isDialogVisible", false)
+  currentPermissionName.value = ""
 }
 
 const onSubmit = () => {
-  emit('update:isDialogVisible', false)
-  emit('update:permissionName', currentPermissionName.value)
+  emit("update:isDialogVisible", false)
+  emit("update:permissionName", currentPermissionName.value)
 }
 
-watch(() => props, () => {
-  currentPermissionName.value = props.permissionName
-})
+watch(
+  () => props,
+  () => {
+    currentPermissionName.value = props.permissionName
+  },
+)
 </script>
 
 <template>
@@ -46,10 +46,11 @@ watch(() => props, () => {
       <VCardText>
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
-          {{ props.permissionName ? 'Edit' : 'Add' }} Permission
+          {{ props.permissionName ? "Edit" : "Add" }} Permission
         </h4>
         <p class="text-body-1 text-center mb-6">
-          {{ props.permissionName ? 'Edit' : 'Add' }}  permission as per your requirements.
+          {{ props.permissionName ? "Edit" : "Add" }} permission as per your
+          requirements.
         </p>
 
         <!-- 👉 Form -->
@@ -61,7 +62,9 @@ watch(() => props, () => {
             class="mb-6"
           >
             <template #text>
-              By {{ props.permissionName ? 'editing' : 'adding' }} the permission name, you might break the system permissions functionality.
+              By {{ props.permissionName ? "editing" : "adding" }} the
+              permission name, you might break the system permissions
+              functionality.
             </template>
           </VAlert>
 
@@ -73,7 +76,7 @@ watch(() => props, () => {
             />
 
             <VBtn @click="onSubmit">
-              {{ props.permissionName ? 'Update' : 'Add' }}
+              {{ props.permissionName ? "Update" : "Add" }}
             </VBtn>
           </div>
 
@@ -87,7 +90,8 @@ watch(() => props, () => {
 <style lang="scss">
 .permission-table {
   td {
-    border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-block-end: 1px solid
+      rgba(var(--v-border-color), var(--v-border-opacity));
     padding-block: 0.5rem;
     padding-inline: 0;
   }

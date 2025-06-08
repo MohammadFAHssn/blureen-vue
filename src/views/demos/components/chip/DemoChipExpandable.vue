@@ -20,7 +20,9 @@ const isMenuVisible = ref(false)
         <VListItemTitle class="mb-2">
           VueJS
         </VListItemTitle>
-        <VListItemSubtitle>The Progressive JavaScript Framework</VListItemSubtitle>
+        <VListItemSubtitle>
+          The Progressive JavaScript Framework
+        </VListItemSubtitle>
 
         <template #append>
           <VListItemAction class="ms-3">

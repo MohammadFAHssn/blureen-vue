@@ -1,35 +1,35 @@
 <script setup>
 const items = [
   {
-    title: 'halvah icing marshmallow',
+    title: "halvah icing marshmallow",
     value: 1,
   },
   {
-    title: 'Cake caramels donut danish muffin biscuit',
+    title: "Cake caramels donut danish muffin biscuit",
     value: 2,
   },
   {
-    title: 'Chocolate cake pie lollipop',
+    title: "Chocolate cake pie lollipop",
     value: 3,
   },
   {
-    title: 'Apple pie toffee pudding gummi bears',
+    title: "Apple pie toffee pudding gummi bears",
     value: 4,
   },
   {
-    title: 'Jujubes chupa chups cheesecake tart',
+    title: "Jujubes chupa chups cheesecake tart",
     value: 5,
   },
   {
-    title: 'Candy fruitcake bonbon sesame snaps dessert',
+    title: "Candy fruitcake bonbon sesame snaps dessert",
     value: 6,
   },
   {
-    title: 'Candy wafer tiramisu sugar plum sweet.',
+    title: "Candy wafer tiramisu sugar plum sweet.",
     value: 7,
   },
   {
-    title: 'Toffee gingerbread muffin macaroon cotton candy bonbon lollipop.',
+    title: "Toffee gingerbread muffin macaroon cotton candy bonbon lollipop.",
     value: 8,
   },
 ]

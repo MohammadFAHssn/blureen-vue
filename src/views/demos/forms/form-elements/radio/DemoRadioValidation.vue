@@ -1,6 +1,9 @@
 <script setup>
 const radioGroup = ref(1)
-const rules = [value => value !== 3 ? true : 'Do not select the third one!']
+
+const rules = [
+  value => (value !== 3 ? true : "Do not select the third one!"),
+]
 </script>
 
 <template>
@@ -12,7 +15,7 @@ const rules = [value => value !== 3 ? true : 'Do not select the third one!']
     <VRadio
       v-for="n in 3"
       :key="n"
-      :error="radioGroup === 3 "
+      :error="radioGroup === 3"
       :label="`Radio ${n}`"
       :value="n"
     />

@@ -8,7 +8,7 @@ export default [
       {
         title: "Supplier List",
         icon: { icon: "tabler-users" },
-        to: 'apps-supplier-list',
+        to: "apps-supplier-list",
         action: "read",
         subject: "Supplier",
       },
@@ -19,20 +19,20 @@ export default [
         subject: "Tender-Navbar",
         children: [
           {
-            title: 'Active Tenders',
+            title: "Active Tenders",
             icon: { icon: "tabler-checkbox" },
 
-            to: 'apps-supplier-tender-active-tenders',
-            action: 'see',
-            subject: 'Tender-Navbar',
+            to: "apps-supplier-tender-active-tenders",
+            action: "see",
+            subject: "Tender-Navbar",
           },
           {
-            title: 'Tender History',
+            title: "Tender History",
             icon: { icon: "tabler-history" },
 
-            to: 'apps-supplier-tender-tender-history',
-            action: 'see',
-            subject: 'Tender-Navbar',
+            to: "apps-supplier-tender-tender-history",
+            action: "see",
+            subject: "Tender-Navbar",
           },
         ],
       },

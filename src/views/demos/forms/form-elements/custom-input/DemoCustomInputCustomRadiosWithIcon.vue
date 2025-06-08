@@ -1,35 +1,35 @@
 <script setup>
 const radioContent = [
   {
-    title: 'Starter',
-    desc: 'For freelancers who work with multiple clients',
-    value: 'starter',
+    title: "Starter",
+    desc: "For freelancers who work with multiple clients",
+    value: "starter",
     icon: {
-      icon: 'tabler-rocket',
-      size: '28',
+      icon: "tabler-rocket",
+      size: "28",
     },
   },
   {
-    title: 'Personal',
-    desc: 'Join our talented community of talented digital agencies',
-    value: 'personal',
+    title: "Personal",
+    desc: "Join our talented community of talented digital agencies",
+    value: "personal",
     icon: {
-      icon: 'tabler-star',
-      size: '28',
+      icon: "tabler-star",
+      size: "28",
     },
   },
   {
-    title: 'Enterprise',
-    desc: 'Team plan for free upto 15 seats',
-    value: 'enterprise',
+    title: "Enterprise",
+    desc: "Team plan for free upto 15 seats",
+    value: "enterprise",
     icon: {
-      icon: 'tabler-crown',
-      size: '28',
+      icon: "tabler-crown",
+      size: "28",
     },
   },
 ]
 
-const selectedRadio = ref('starter')
+const selectedRadio = ref("starter")
 </script>
 
 <template>

@@ -1,10 +1,7 @@
 <script setup>
 const props = defineProps({
   statusCode: {
-    type: [
-      String,
-      Number,
-    ],
+    type: [String, Number],
     required: false,
   },
   title: {

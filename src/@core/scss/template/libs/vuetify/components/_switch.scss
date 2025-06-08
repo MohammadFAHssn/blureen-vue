@@ -12,7 +12,10 @@
       &.v-selection-control--dirty {
         @each $color-name in variables.$theme-colors-name {
           .v-switch__track.bg-#{$color-name} {
-            @include templateMixins.custom-elevation(var(--v-theme-#{$color-name}), "sm");
+            @include templateMixins.custom-elevation(
+              var(--v-theme-#{$color-name}),
+              "sm"
+            );
           }
         }
       }
@@ -30,7 +33,8 @@
       --v-selection-control-size: 0.875rem;
 
       .v-switch__thumb {
-        box-shadow: 0 1px 6px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xs-opacity));
+        box-shadow: 0 1px 6px
+          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xs-opacity));
         transform: scale(1);
       }
     }

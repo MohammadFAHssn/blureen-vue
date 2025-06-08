@@ -1,72 +1,72 @@
 <script setup>
 const countryList = [
   {
-    label: 'Bahamas, The',
-    value: 'bahamas',
+    label: "Bahamas, The",
+    value: "bahamas",
   },
   {
-    label: 'Bahrain',
-    value: 'bahrain',
+    label: "Bahrain",
+    value: "bahrain",
   },
   {
-    label: 'Bangladesh',
-    value: 'bangladesh',
+    label: "Bangladesh",
+    value: "bangladesh",
   },
   {
-    label: 'Barbados',
-    value: 'barbados',
+    label: "Barbados",
+    value: "barbados",
   },
   {
-    label: 'Belarus',
-    value: 'belarus',
+    label: "Belarus",
+    value: "belarus",
   },
   {
-    label: 'Belgium',
-    value: 'belgium',
+    label: "Belgium",
+    value: "belgium",
   },
   {
-    label: 'Belize',
-    value: 'belize',
+    label: "Belize",
+    value: "belize",
   },
   {
-    label: 'Benin',
-    value: 'benin',
+    label: "Benin",
+    value: "benin",
   },
   {
-    label: 'Bhutan',
-    value: 'bhutan',
+    label: "Bhutan",
+    value: "bhutan",
   },
   {
-    label: 'Bolivia',
-    value: 'bolivia',
+    label: "Bolivia",
+    value: "bolivia",
   },
   {
-    label: 'Bosnia and Herzegovina',
-    value: 'bosnia',
+    label: "Bosnia and Herzegovina",
+    value: "bosnia",
   },
   {
-    label: 'Botswana',
-    value: 'botswana',
+    label: "Botswana",
+    value: "botswana",
   },
   {
-    label: 'Brazil',
-    value: 'brazil',
+    label: "Brazil",
+    value: "brazil",
   },
   {
-    label: 'Brunei',
-    value: 'brunei',
+    label: "Brunei",
+    value: "brunei",
   },
   {
-    label: 'Bulgaria',
-    value: 'bulgaria',
+    label: "Bulgaria",
+    value: "bulgaria",
   },
   {
-    label: 'Burkina Faso',
-    value: 'burkina',
+    label: "Burkina Faso",
+    value: "burkina",
   },
 ]
 
-const selectedCountry = ref('')
+const selectedCountry = ref("")
 const isDialogVisible = ref(false)
 </script>
 
@@ -94,7 +94,7 @@ const isDialogVisible = ref(false)
       </VCardItem>
 
       <VDivider />
-      <VCardText style="block-size: 300px;">
+      <VCardText style="block-size: 300px">
         <VRadioGroup
           v-model="selectedCountry"
           :inline="false"

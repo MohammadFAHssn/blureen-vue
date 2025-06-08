@@ -1,32 +1,29 @@
 <script setup>
-import { useTheme } from 'vuetify'
+import { useTheme } from "vuetify"
 
 const vuetifyTheme = useTheme()
 const currentTheme = vuetifyTheme.current.value.colors
 
-const series = [{
-  data: [
-    400,
-    200,
-    650,
-    500,
-  ],
-}]
+const series = [
+  {
+    data: [400, 200, 650, 500],
+  },
+]
 
 const chartOptions = {
   chart: {
-    type: 'area',
+    type: "area",
     toolbar: { show: false },
     sparkline: { enabled: true },
   },
   markers: {
-    colors: 'transparent',
-    strokeColors: 'transparent',
+    colors: "transparent",
+    strokeColors: "transparent",
   },
   grid: { show: false },
   colors: [currentTheme.success],
   fill: {
-    type: 'gradient',
+    type: "gradient",
     gradient: {
       shadeIntensity: 0.8,
       opacityFrom: 0.6,
@@ -36,7 +33,7 @@ const chartOptions = {
   dataLabels: { enabled: false },
   stroke: {
     width: 2,
-    curve: 'smooth',
+    curve: "smooth",
   },
   xaxis: {
     show: true,

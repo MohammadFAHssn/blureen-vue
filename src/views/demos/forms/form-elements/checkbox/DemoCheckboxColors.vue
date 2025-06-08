@@ -1,20 +1,20 @@
 <script setup>
 const colorCheckbox = ref([
-  'Primary',
-  'Secondary',
-  'Success',
-  'Info',
-  'Warning',
-  'Error',
+  "Primary",
+  "Secondary",
+  "Success",
+  "Info",
+  "Warning",
+  "Error",
 ])
 
 const selectedCheckbox = ref([
-  'Primary',
-  'Secondary',
-  'Success',
-  'Info',
-  'Warning',
-  'Error',
+  "Primary",
+  "Secondary",
+  "Success",
+  "Info",
+  "Warning",
+  "Error",
 ])
 </script>
 

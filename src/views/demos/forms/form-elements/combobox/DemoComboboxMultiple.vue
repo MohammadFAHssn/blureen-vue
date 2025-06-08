@@ -1,15 +1,7 @@
 <script setup>
-const selectedItem = ref([
-  'Vuetify',
-  'Programming',
-])
+const selectedItem = ref(["Vuetify", "Programming"])
 
-const items = [
-  'Programming',
-  'Design',
-  'Vue',
-  'Vuetify',
-]
+const items = ["Programming", "Design", "Vue", "Vuetify"]
 </script>
 
 <template>

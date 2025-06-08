@@ -1,5 +1,5 @@
 <script setup>
-import { useConfigStore } from '@core/stores/config'
+import { useConfigStore } from "@core/stores/config"
 
 const props = defineProps({
   themes: {
@@ -12,25 +12,36 @@ const configStore = useConfigStore()
 const selectedItem = ref([configStore.theme])
 
 // Update icon if theme is changed from other sources
-watch(() => configStore.theme, () => {
-  selectedItem.value = [configStore.theme]
-}, { deep: true })
+watch(
+  () => configStore.theme,
+  () => {
+    selectedItem.value = [configStore.theme]
+  },
+  { deep: true },
+)
 </script>
 
 <template>
   <IconBtn color="rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity))">
-    <VIcon :icon="props.themes.find(t => t.name === configStore.theme)?.icon" />
+    <VIcon :icon="props.themes.find((t) => t.name === configStore.theme)?.icon" />
 
     <VTooltip
       activator="parent"
       open-delay="1000"
       scroll-strategy="close"
     >
-      <span class="text-capitalize">{{ configStore.theme === "light" ? "روشن" : configStore.theme === "dark" ? "تاریک" : configStore.theme === "system" ? "سیستم" : configStore.theme }}</span>
+      <span class="text-capitalize">{{
+        configStore.theme === "light"
+          ? "روشن"
+          : configStore.theme === "dark"
+            ? "تاریک"
+            : configStore.theme === "system"
+              ? "سیستم"
+              : configStore.theme
+      }}</span>
     </VTooltip>
 
     <VMenu
-
       activator="parent"
       offset="12px"
       :width="180"
@@ -45,10 +56,22 @@ watch(() => configStore.theme, () => {
           :value="name"
           :prepend-icon="icon"
           color="primary"
-          @click="() => { configStore.theme = name }"
+          @click="
+            () => {
+              configStore.theme = name;
+            }
+          "
         >
           <VListItemTitle class="text-capitalize">
-            {{ name === "light" ? "روشن" : name === "dark" ? "تاریک" : name === "system" ? "سیستم" : name }}
+            {{
+              name === "light"
+                ? "روشن"
+                : name === "dark"
+                  ? "تاریک"
+                  : name === "system"
+                    ? "سیستم"
+                    : name
+            }}
           </VListItemTitle>
         </VListItem>
       </VList>

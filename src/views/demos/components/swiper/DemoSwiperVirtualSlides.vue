@@ -1,9 +1,9 @@
 <script setup>
-import { register } from 'swiper/element/bundle'
+import { register } from "swiper/element/bundle"
 
 register()
 
-const slides = Array.from({ length: 500 }, (_, index) => `Slides ${ index + 1 }`)
+const slides = Array.from({ length: 500 }, (_, index) => `Slides ${index + 1}`)
 const swiperEl = ref(null)
 const prependNumber = ref(1)
 const appendNumber = ref(500)
@@ -14,13 +14,15 @@ const toSlide = index => {
 
 const prependSlide = () => {
   swiperEl.value?.swiper.prependSlide([
-    `<swiper-slide>Slide ${ --prependNumber.value } </swiper-slide>`,
-    `<swiper-slide>Slide ${ --prependNumber.value } </swiper-slide>`,
+    `<swiper-slide>Slide ${--prependNumber.value} </swiper-slide>`,
+    `<swiper-slide>Slide ${--prependNumber.value} </swiper-slide>`,
   ])
 }
 
 const appendSlide = () => {
-  swiperEl.value?.swiper.appendSlide([`<swiper-slide>Slide ${ ++appendNumber.value } </swiper-slide>`])
+  swiperEl.value?.swiper.appendSlide([
+    `<swiper-slide>Slide ${++appendNumber.value} </swiper-slide>`,
+  ])
 }
 </script>
 

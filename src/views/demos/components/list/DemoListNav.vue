@@ -1,39 +1,39 @@
 <script setup>
 const items = [
   {
-    title: 'My Files',
+    title: "My Files",
     value: 1,
-    prependIcon: 'tabler-folder',
+    prependIcon: "tabler-folder",
   },
   {
-    title: 'Shared with me',
+    title: "Shared with me",
     value: 2,
-    prependIcon: 'tabler-users',
+    prependIcon: "tabler-users",
   },
   {
-    title: 'Starred',
+    title: "Starred",
     value: 3,
-    prependIcon: 'tabler-star',
+    prependIcon: "tabler-star",
   },
   {
-    title: 'Recent',
+    title: "Recent",
     value: 4,
-    prependIcon: 'tabler-history',
+    prependIcon: "tabler-history",
   },
   {
-    title: 'Offline',
+    title: "Offline",
     value: 5,
-    prependIcon: 'tabler-circle-check',
+    prependIcon: "tabler-circle-check",
   },
   {
-    title: 'Uploads',
+    title: "Uploads",
     value: 6,
-    prependIcon: 'tabler-upload',
+    prependIcon: "tabler-upload",
   },
   {
-    title: 'Backups',
+    title: "Backups",
     value: 7,
-    prependIcon: 'tabler-cloud-upload',
+    prependIcon: "tabler-cloud-upload",
   },
 ]
 </script>

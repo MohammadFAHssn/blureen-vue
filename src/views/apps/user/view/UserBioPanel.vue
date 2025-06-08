@@ -7,48 +7,44 @@ const props = defineProps({
 })
 
 const standardPlan = {
-  plan: 'Standard',
+  plan: "Standard",
   price: 99,
-  benefits: [
-    '10 Users',
-    'Up to 10GB storage',
-    'Basic Support',
-  ],
+  benefits: ["10 Users", "Up to 10GB storage", "Basic Support"],
 }
 
 const isUserInfoEditDialogVisible = ref(false)
 const isUpgradePlanDialogVisible = ref(false)
 
 const resolveUserRoleVariant = role => {
-  if (role === 'subscriber')
+  if (role === "subscriber")
     return {
-      color: 'warning',
-      icon: 'tabler-user',
+      color: "warning",
+      icon: "tabler-user",
     }
-  if (role === 'author')
+  if (role === "author")
     return {
-      color: 'success',
-      icon: 'tabler-circle-check',
+      color: "success",
+      icon: "tabler-circle-check",
     }
-  if (role === 'maintainer')
+  if (role === "maintainer")
     return {
-      color: 'primary',
-      icon: 'tabler-chart-pie-2',
+      color: "primary",
+      icon: "tabler-chart-pie-2",
     }
-  if (role === 'editor')
+  if (role === "editor")
     return {
-      color: 'info',
-      icon: 'tabler-pencil',
+      color: "info",
+      icon: "tabler-pencil",
     }
-  if (role === 'admin')
+  if (role === "admin")
     return {
-      color: 'secondary',
-      icon: 'tabler-server-2',
+      color: "secondary",
+      icon: "tabler-server-2",
     }
-  
+
   return {
-    color: 'primary',
-    icon: 'tabler-user',
+    color: "primary",
+    icon: "tabler-user",
   }
 }
 </script>
@@ -164,9 +160,7 @@ const resolveUserRoleVariant = role => {
 
             <VListItem>
               <VListItemTitle>
-                <span class="text-h6">
-                  Billing Email:
-                </span>
+                <span class="text-h6"> Billing Email: </span>
                 <span class="text-body-1">
                   {{ props.userData.email }}
                 </span>

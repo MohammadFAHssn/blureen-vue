@@ -1,28 +1,17 @@
 <script setup>
-import { useTheme } from 'vuetify'
+import { useTheme } from "vuetify"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    200,
-    200,
-    500,
-    500,
-    300,
-    300,
-    100,
-    100,
-    450,
-    450,
-    650,
-    650,
-  ],
-}]
+const series = [
+  {
+    data: [200, 200, 500, 500, 300, 300, 100, 100, 450, 450, 650, 650],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
-  
+
   return {
     chart: {
       height: 90,
@@ -31,7 +20,7 @@ const chartOptions = computed(() => {
       sparkline: { enabled: true },
     },
     tooltip: { enabled: false },
-    markers: { strokeColor: 'transparent' },
+    markers: { strokeColor: "transparent" },
     colors: [currentTheme.error],
     stroke: { width: 3 },
     grid: { padding: { bottom: -10 } },
@@ -52,12 +41,8 @@ const chartOptions = computed(() => {
 <template>
   <VCard>
     <VCardItem class="pb-3">
-      <VCardTitle>
-        Impression
-      </VCardTitle>
-      <VCardSubtitle>
-        Expenses
-      </VCardSubtitle>
+      <VCardTitle> Impression </VCardTitle>
+      <VCardSubtitle> Expenses </VCardSubtitle>
     </VCardItem>
     <VCardText>
       <VueApexCharts
@@ -70,9 +55,7 @@ const chartOptions = computed(() => {
         <h4 class="text-h4 text-center">
           26.1k
         </h4>
-        <span class="text-sm text-error">
-          -24.5%
-        </span>
+        <span class="text-sm text-error"> -24.5% </span>
       </div>
     </VCardText>
   </VCard>

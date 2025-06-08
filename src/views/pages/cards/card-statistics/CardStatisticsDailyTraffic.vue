@@ -1,41 +1,35 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    30,
-    40,
-    50,
-    60,
-    70,
-    80,
-    90,
-  ],
-}]
+const series = [
+  {
+    data: [30, 40, 50, 60, 70, 80, 90],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  
+
   return {
     chart: {
       parentHeightOffset: 0,
-      type: 'bar',
+      type: "bar",
       toolbar: { show: false },
     },
     plotOptions: {
       bar: {
-        barHeight: '100%',
-        columnWidth: '25%',
-        startingShape: 'rounded',
-        endingShape: 'rounded',
+        barHeight: "100%",
+        columnWidth: "25%",
+        startingShape: "rounded",
+        endingShape: "rounded",
         borderRadius: 4,
       },
     },
-    colors: [`rgba(${ hexToRgb(currentTheme.warning) }, 1)`],
+    colors: [`rgba(${hexToRgb(currentTheme.warning)}, 1)`],
     grid: {
       show: false,
       padding: {
@@ -49,22 +43,14 @@ const chartOptions = computed(() => {
     tooltip: { enabled: false },
     legend: { show: false },
     xaxis: {
-      categories: [
-        '01',
-        '02',
-        '03',
-        '04',
-        '05',
-        '06',
-        '07',
-      ],
+      categories: ["01", "02", "03", "04", "05", "06", "07"],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
         style: {
-          colors: `rgba(${ hexToRgb(currentTheme['on-surface']) },${ variableTheme['disabled-opacity'] })`,
-          fontSize: '13px',
-          fontFamily: 'Public sans',
+          colors: `rgba(${hexToRgb(currentTheme["on-surface"])},${variableTheme["disabled-opacity"]})`,
+          fontSize: "13px",
+          fontFamily: "Public sans",
         },
         show: true,
       },
@@ -80,7 +66,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '25%',
+              columnWidth: "25%",
               borderRadius: 6,
             },
           },
@@ -92,21 +78,21 @@ const chartOptions = computed(() => {
           plotOptions: {
             bar: {
               borderRadius: 6,
-              columnWidth: '25%',
+              columnWidth: "25%",
             },
           },
         },
       },
       {
         breakpoint: 836,
-        options: { plotOptions: { bar: { columnWidth: '30%' } } },
+        options: { plotOptions: { bar: { columnWidth: "30%" } } },
       },
       {
         breakpoint: 738,
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '35%',
+              columnWidth: "35%",
               borderRadius: 6,
             },
           },
@@ -117,7 +103,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '25%',
+              columnWidth: "25%",
               borderRadius: 8,
             },
           },
@@ -128,7 +114,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '24%',
+              columnWidth: "24%",
               borderRadius: 6,
             },
           },

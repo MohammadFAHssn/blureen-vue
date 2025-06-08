@@ -1,17 +1,16 @@
 <script setup>
 defineOptions({
-  name: 'AppTextarea',
+  name: "AppTextarea",
   inheritAttrs: false,
 })
-
 
 // const { class: _class, label, variant: _, ...restAttrs } = useAttrs()
 const elementId = computed(() => {
   const attrs = useAttrs()
   const _elementIdToken = attrs.id
   const _id = useId()
-  
-  return _elementIdToken ? `app-textarea-${ _elementIdToken }` : _id
+
+  return _elementIdToken ? `app-textarea-${_elementIdToken}` : _id
 })
 
 const label = computed(() => useAttrs().label)

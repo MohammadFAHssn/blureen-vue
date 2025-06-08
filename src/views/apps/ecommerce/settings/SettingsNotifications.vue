@@ -1,17 +1,17 @@
 <script setup>
 const customerNotifications = ref([
   {
-    type: 'New customer sign up',
+    type: "New customer sign up",
     email: true,
     app: true,
   },
   {
-    type: 'Customer account password reset',
+    type: "Customer account password reset",
     email: true,
     app: true,
   },
   {
-    type: 'Customer account invite',
+    type: "Customer account invite",
     email: false,
     app: false,
   },
@@ -19,17 +19,17 @@ const customerNotifications = ref([
 
 const shippingNotifications = ref([
   {
-    type: 'Picked up',
+    type: "Picked up",
     email: true,
     app: true,
   },
   {
-    type: 'Shipping update ',
+    type: "Shipping update ",
     email: true,
     app: false,
   },
   {
-    type: 'Delivered',
+    type: "Delivered",
     email: false,
     app: true,
   },
@@ -37,27 +37,27 @@ const shippingNotifications = ref([
 
 const ordersNotification = ref([
   {
-    type: 'Order purchase',
+    type: "Order purchase",
     email: true,
     app: true,
   },
   {
-    type: 'Order cancelled',
+    type: "Order cancelled",
     email: true,
     app: false,
   },
   {
-    type: 'Order refund request',
+    type: "Order refund request",
     email: false,
     app: true,
   },
   {
-    type: 'Order confirmation',
+    type: "Order confirmation",
     email: true,
     app: false,
   },
   {
-    type: 'Payment error',
+    type: "Payment error",
     email: true,
     app: false,
   },

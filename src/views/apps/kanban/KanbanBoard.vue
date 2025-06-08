@@ -1,12 +1,9 @@
 <script setup>
-import {
-  animations,
-  remapNodes,
-} from '@formkit/drag-and-drop'
-import { dragAndDrop } from '@formkit/drag-and-drop/vue'
-import { VForm } from 'vuetify/components/VForm'
-import KanbanBoardEditDrawer from '@/views/apps/kanban/KanbanBoardEditDrawer.vue'
-import KanbanItems from '@/views/apps/kanban/KanbanItems.vue'
+import { animations, remapNodes } from "@formkit/drag-and-drop"
+import { dragAndDrop } from "@formkit/drag-and-drop/vue"
+import { VForm } from "vuetify/components/VForm"
+import KanbanBoardEditDrawer from "@/views/apps/kanban/KanbanBoardEditDrawer.vue"
+import KanbanItems from "@/views/apps/kanban/KanbanItems.vue"
 
 const props = defineProps({
   kanbanData: {
@@ -16,19 +13,19 @@ const props = defineProps({
   groupName: {
     type: String,
     required: false,
-    default: 'kanban',
+    default: "kanban",
   },
 })
 
 const emit = defineEmits([
-  'addNewBoard',
-  'renameBoard',
-  'deleteBoard',
-  'addNewItem',
-  'editItem',
-  'deleteItem',
-  'updateItemsState',
-  'updateBoardState',
+  "addNewBoard",
+  "renameBoard",
+  "deleteBoard",
+  "addNewItem",
+  "editItem",
+  "deleteItem",
+  "updateItemsState",
+  "updateBoardState",
 ])
 
 const kanbanWrapper = ref()
@@ -36,30 +33,30 @@ const localKanbanData = ref(props.kanbanData.boards)
 const isKanbanBoardEditVisible = ref(false)
 const isAddNewFormVisible = ref(false)
 const refAddNewBoard = ref()
-const boardTitle = ref('')
+const boardTitle = ref("")
 const editKanbanItem = ref()
 
 // 👉 Add new board function that emit the name and id of new board
 const addNewBoard = () => {
   refAddNewBoard.value?.validate().then(valid => {
     if (valid.valid) {
-      emit('addNewBoard', boardTitle.value)
+      emit("addNewBoard", boardTitle.value)
       isAddNewFormVisible.value = false
-      boardTitle.value = ''
+      boardTitle.value = ""
     }
   })
 }
 
 const deleteBoard = boardId => {
-  emit('deleteBoard', boardId)
+  emit("deleteBoard", boardId)
 }
 
 const renameBoard = boardName => {
-  emit('renameBoard', boardName)
+  emit("renameBoard", boardName)
 }
 
 const addNewItem = item => {
-  emit('addNewItem', item)
+  emit("addNewItem", item)
 }
 
 const editKanbanItemFn = item => {
@@ -70,43 +67,57 @@ const editKanbanItemFn = item => {
 }
 
 const updateStateFn = kanbanState => {
-  emit('updateItemsState', kanbanState)
+  emit("updateItemsState", kanbanState)
 }
 
 // 👉 initialize the drag and drop
 dragAndDrop({
   parent: kanbanWrapper,
   values: localKanbanData,
-  dragHandle: '.drag-handler',
+  dragHandle: ".drag-handler",
   plugins: [animations()],
 })
 
 // assign the new kanban data to the local kanban data
-watch(() => props, () => {
-  localKanbanData.value = props.kanbanData.boards
+watch(
+  () => props,
+  () => {
+    localKanbanData.value = props.kanbanData.boards
 
-  // 👉 remap the nodes when we rename the board: https://github.com/formkit/drag-and-drop/discussions/52#discussioncomment-8995203
-  remapNodes(kanbanWrapper.value)
-}, { deep: true })
+    // 👉 remap the nodes when we rename the board: https://github.com/formkit/drag-and-drop/discussions/52#discussioncomment-8995203
+    remapNodes(kanbanWrapper.value)
+  },
+  { deep: true },
+)
 
 const emitUpdatedTaskFn = item => {
-  emit('editItem', item)
+  emit("editItem", item)
 }
 
 const deleteKanbanItemFn = item => {
-  emit('deleteItem', item)
+  emit("deleteItem", item)
 }
 
 // 👉 update boards data when it sort
-watch(localKanbanData, () => {
-  const getIds = localKanbanData.value.map(board => board.id)
+watch(
+  localKanbanData,
+  () => {
+    const getIds = localKanbanData.value.map(board => board.id)
 
-  emit('updateBoardState', getIds)
-}, { deep: true })
+    emit("updateBoardState", getIds)
+  },
+  { deep: true },
+)
 
 // 👉 validators for add new board
 const validateBoardTitle = () => {
-  return props.kanbanData.boards.some(board => boardTitle.value && board.title.toLowerCase() === boardTitle.value.toLowerCase()) ? 'Board title already exists' : true
+  return props.kanbanData.boards.some(
+    board =>
+      boardTitle.value &&
+      board.title.toLowerCase() === boardTitle.value.toLowerCase(),
+  )
+    ? "Board title already exists"
+    : true
 }
 
 const hideAddNewForm = () => {
@@ -150,7 +161,7 @@ onClickOutside(refAddNewBoard, hideAddNewForm)
     <!-- 👉 add new form  -->
     <div
       class="add-new-form text-no-wrap"
-      style="inline-size: 10rem;"
+      style="inline-size: 10rem"
     >
       <h6
         class="text-lg font-weight-medium cursor-pointer"

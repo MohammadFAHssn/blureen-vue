@@ -1,16 +1,18 @@
 <script setup>
-import About from './About.vue'
-import ActivityTimeline from './ActivityTimeline.vue'
-import Connection from './Connection.vue'
-import ProjectList from './ProjectList.vue'
-import Teams from './Teams.vue'
+import About from "./About.vue"
+import ActivityTimeline from "./ActivityTimeline.vue"
+import Connection from "./Connection.vue"
+import ProjectList from "./ProjectList.vue"
+import Teams from "./Teams.vue"
 
-const router = useRoute('pages-user-profile-tab')
+const router = useRoute("pages-user-profile-tab")
 const profileTabData = ref()
 
 const fetchAboutData = async () => {
-  if (router.params.tab === 'profile') {
-    const data = await $api('/pages/profile', { query: { tab: router.params.tab } }).catch(err => console.log(err))
+  if (router.params.tab === "profile") {
+    const data = await $api("/pages/profile", {
+      query: { tab: router.params.tab },
+    }).catch(err => console.log(err))
 
     profileTabData.value = data
   }

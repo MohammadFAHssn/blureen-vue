@@ -1,4 +1,5 @@
-export const accordion = { ts: `<template>
+export const accordion = {
+  ts: `<template>
   <VExpansionPanels variant="accordion">
     <VExpansionPanel
       v-for="item in 4"
@@ -13,7 +14,8 @@ export const accordion = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VExpansionPanels variant="accordion">
     <VExpansionPanel
       v-for="item in 4"
@@ -28,9 +30,11 @@ export const accordion = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
+`,
+}
 
-export const basic = { ts: `<template>
+export const basic = {
+  ts: `<template>
   <VExpansionPanels multiple>
     <VExpansionPanel
       v-for="i in 4"
@@ -45,7 +49,8 @@ export const basic = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VExpansionPanels multiple>
     <VExpansionPanel
       v-for="i in 4"
@@ -60,9 +65,11 @@ export const basic = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
+`,
+}
 
-export const customIcon = { ts: `<script setup lang="ts">
+export const customIcon = {
+  ts: `<script setup lang="ts">
 const panel = ref(0)
 </script>
 
@@ -120,7 +127,8 @@ const panel = ref(0)
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const panel = ref(0)
 </script>
 
@@ -178,9 +186,11 @@ const panel = ref(0)
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
+`,
+}
 
-export const inset = { ts: `<template>
+export const inset = {
+  ts: `<template>
   <VExpansionPanels variant="inset">
     <VExpansionPanel
       v-for="item in 4"
@@ -193,7 +203,8 @@ export const inset = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VExpansionPanels variant="inset">
     <VExpansionPanel
       v-for="item in 4"
@@ -206,9 +217,11 @@ export const inset = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
+`,
+}
 
-export const model = { ts: `<script lang="ts" setup>
+export const model = {
+  ts: `<script lang="ts" setup>
 const openedPanels = ref<number[]>([])
 
 const items = ref(5)
@@ -261,7 +274,8 @@ const none = () => {
     </VExpansionPanels>
   </div>
 </template>
-`, js: `<script setup>
+`,
+  js: `<script setup>
 const openedPanels = ref([])
 const items = ref(5)
 
@@ -314,9 +328,11 @@ const none = () => {
     </VExpansionPanels>
   </div>
 </template>
-` }
+`,
+}
 
-export const popout = { ts: `<template>
+export const popout = {
+  ts: `<template>
   <VExpansionPanels variant="popout">
     <VExpansionPanel
       v-for="item in 4"
@@ -329,7 +345,8 @@ export const popout = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VExpansionPanels variant="popout">
     <VExpansionPanel
       v-for="item in 4"
@@ -342,9 +359,11 @@ export const popout = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
+`,
+}
 
-export const withBorder = { ts: `<template>
+export const withBorder = {
+  ts: `<template>
   <VExpansionPanels
     variant="accordion"
     class="expansion-panels-width-border"
@@ -367,7 +386,8 @@ export const withBorder = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-`, js: `<template>
+`,
+  js: `<template>
   <VExpansionPanels
     variant="accordion"
     class="expansion-panels-width-border"
@@ -390,5 +410,5 @@ export const withBorder = { ts: `<template>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
-` }
-
+`,
+}

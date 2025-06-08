@@ -1,11 +1,11 @@
 <script setup>
-import girlWithLaptop from '@images/illustrations/laptop-girl.png'
+import girlWithLaptop from "@images/illustrations/laptop-girl.png"
 </script>
 
 <template>
   <VCard>
     <VCardText>
-      <div class="d-flex justify-center  align-start pb-0 px-3 pt-3 mb-4 bg-light-primary rounded">
+      <div class="d-flex justify-center align-start pb-0 px-3 pt-3 mb-4 bg-light-primary rounded">
         <VImg
           :src="girlWithLaptop"
           width="145"
@@ -21,7 +21,10 @@ import girlWithLaptop from '@images/illustrations/laptop-girl.png'
         </div>
         <div class="d-flex justify-space-between gap-4 flex-wrap my-4">
           <div
-            v-for="{ icon, title, value } in [{ icon: 'tabler-calendar', title: '17 Nov 23', value: 'Date' }, { icon: 'tabler-clock', title: '32 Minutes', value: 'Duration' }]"
+            v-for="{ icon, title, value } in [
+              { icon: 'tabler-calendar', title: '17 Nov 23', value: 'Date' },
+              { icon: 'tabler-clock', title: '32 Minutes', value: 'Duration' },
+            ]"
             :key="title"
             class="d-flex gap-x-3 align-center"
           >

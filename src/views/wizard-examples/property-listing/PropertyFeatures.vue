@@ -6,12 +6,12 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 
@@ -63,7 +63,12 @@ watch(formData, () => {
           v-model="formData.furnishedStatus"
           label="Furnished Status"
           placeholder="Select Furnished Status"
-          :items="['Fully Furnished', 'Furnished', 'Semi-Furnished', 'Unfurnished']"
+          :items="[
+            'Fully Furnished',
+            'Furnished',
+            'Semi-Furnished',
+            'Unfurnished',
+          ]"
         />
       </VCol>
       <VCol cols="12">
@@ -75,7 +80,19 @@ watch(formData, () => {
           multiple
           chips
           closable-chips
-          :items="['TV', 'AC', 'RO', 'Bed', 'Fridge', 'Wifi', 'Sofa', 'Cupboard', 'Microwave', 'Dining Table', 'Washing Machine']"
+          :items="[
+            'TV',
+            'AC',
+            'RO',
+            'Bed',
+            'Fridge',
+            'Wifi',
+            'Sofa',
+            'Cupboard',
+            'Microwave',
+            'Dining Table',
+            'Washing Machine',
+          ]"
         />
       </VCol>
       <VCol

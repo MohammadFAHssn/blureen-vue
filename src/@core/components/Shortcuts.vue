@@ -1,11 +1,11 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   togglerIcon: {
     type: String,
     required: false,
-    default: 'tabler-layout-grid-add',
+    default: "tabler-layout-grid-add",
   },
   shortcuts: {
     type: Array,

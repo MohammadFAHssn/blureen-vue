@@ -3,12 +3,12 @@ const props = defineProps({
   icon: {
     type: String,
     required: false,
-    default: 'tabler-x',
+    default: "tabler-x",
   },
   iconSize: {
     type: String,
     required: false,
-    default: '20',
+    default: "20",
   },
 })
 </script>

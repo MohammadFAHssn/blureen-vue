@@ -11,42 +11,35 @@ const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 const hideCompleted = ref(true)
-const label = ref('All Courses')
+const label = ref("All Courses")
 
-const { data: coursesData } = await useApi(createUrl('/apps/academy/courses', {
-  query: {
-    q: () => props.searchQuery,
-    hideCompleted,
-    label,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: coursesData } = await useApi(
+  createUrl("/apps/academy/courses", {
+    query: {
+      q: () => props.searchQuery,
+      hideCompleted,
+      label,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const courses = computed(() => coursesData.value.courses)
 const totalCourse = computed(() => coursesData.value.total)
 
-watch([
-  hideCompleted,
-  label,
-  () => props.searchQuery,
-], () => {
+watch([hideCompleted, label, () => props.searchQuery], () => {
   page.value = 1
 })
 
 const resolveChipColor = tags => {
-  if (tags === 'Web')
-    return 'primary'
-  if (tags === 'Art')
-    return 'success'
-  if (tags === 'UI/UX')
-    return 'error'
-  if (tags === 'Psychology')
-    return 'warning'
-  if (tags === 'Design')
-    return 'info'
+  if (tags === "Web") return "primary"
+  if (tags === "Art") return "success"
+  if (tags === "UI/UX") return "error"
+  if (tags === "Psychology") return "warning"
+  if (tags === "Design") return "info"
 }
 </script>
 
@@ -75,7 +68,7 @@ const resolveChipColor = tags => {
               { title: 'Design', value: 'design' },
               { title: 'All Courses', value: 'All Courses' },
             ]"
-            style="min-inline-size: 260px;"
+            style="min-inline-size: 260px"
           />
           <VSwitch
             v-model="hideCompleted"
@@ -107,7 +100,10 @@ const resolveChipColor = tags => {
                   <VImg
                     :src="course.tutorImg"
                     class="cursor-pointer"
-                    @click="() => $router.push({ name: 'apps-academy-course-details' })"
+                    @click="
+                      () =>
+                        $router.push({ name: 'apps-academy-course-details' })
+                    "
                   />
                 </div>
                 <VCardText>
@@ -169,7 +165,9 @@ const resolveChipColor = tags => {
                     <span class="text-success text-body-1">Completed</span>
                   </div>
                   <VProgressLinear
-                    :model-value="(course.completedTasks / course.totalTasks) * 100"
+                    :model-value="
+                      (course.completedTasks / course.totalTasks) * 100
+                    "
                     rounded
                     color="primary"
                     height="8"

@@ -1,25 +1,25 @@
 <script setup>
-import authV1BottomShape from '@images/svg/auth-v1-bottom-shape.svg?raw'
-import authV1TopShape from '@images/svg/auth-v1-top-shape.svg?raw'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import authV1BottomShape from "@images/svg/auth-v1-bottom-shape.svg?raw"
+import authV1TopShape from "@images/svg/auth-v1-top-shape.svg?raw"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
 
 definePage({
   meta: {
-    layout: 'blank',
+    layout: "blank",
     public: true,
   },
 })
 
 const router = useRouter()
-const otp = ref('')
+const otp = ref("")
 const isOtpInserted = ref(false)
 
 const onFinish = () => {
   isOtpInserted.value = true
   setTimeout(() => {
     isOtpInserted.value = false
-    router.push('/')
+    router.push("/")
   }, 2000)
 }
 </script>
@@ -63,7 +63,8 @@ const onFinish = () => {
             Two Step Verification 💬
           </h4>
           <p class="mb-1">
-            We sent a verification code to your mobile. Enter the code from the mobile in the field below.
+            We sent a verification code to your mobile. Enter the code from the
+            mobile in the field below.
           </p>
           <h6 class="text-h6">
             ******1234

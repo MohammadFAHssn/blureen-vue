@@ -24,7 +24,8 @@ const isFullfilOnline = ref(true)
           variant="tonal"
         >
           <VAlertTitle class="mb-0">
-            This is your default location. To change whether you fulfill online orders from this location, select another default location first.
+            This is your default location. To change whether you fulfill online
+            orders from this location, select another default location first.
           </VAlertTitle>
         </VAlert>
       </VCardText>

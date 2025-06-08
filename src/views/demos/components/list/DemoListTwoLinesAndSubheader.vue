@@ -1,31 +1,31 @@
 <script setup>
 const files = [
   {
-    color: 'blue',
-    icon: 'tabler-clipboard-text',
-    subtitle: 'Jan 20, 2014',
-    title: 'Vacation itinerary',
+    color: "blue",
+    icon: "tabler-clipboard-text",
+    subtitle: "Jan 20, 2014",
+    title: "Vacation itinerary",
   },
   {
-    color: 'amber',
-    icon: 'tabler-device-mobile-rotated',
-    subtitle: 'Jan 10, 2014',
-    title: 'Kitchen remodel',
+    color: "amber",
+    icon: "tabler-device-mobile-rotated",
+    subtitle: "Jan 10, 2014",
+    title: "Kitchen remodel",
   },
 ]
 
 const folders = [
   {
-    subtitle: 'Jan 9, 2014',
-    title: 'Photos',
+    subtitle: "Jan 9, 2014",
+    title: "Photos",
   },
   {
-    subtitle: 'Jan 17, 2014',
-    title: 'Recipes',
+    subtitle: "Jan 17, 2014",
+    title: "Recipes",
   },
   {
-    subtitle: 'Jan 28, 2014',
-    title: 'Work',
+    subtitle: "Jan 28, 2014",
+    title: "Work",
   },
 ]
 </script>

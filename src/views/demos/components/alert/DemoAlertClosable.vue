@@ -9,7 +9,8 @@ const isAlertVisible = ref(true)
     close-label="Close Alert"
     color="primary"
   >
-    Pudding wafer I love chocolate bar wafer chupa chups wafer. Cake gummies pudding gummies cake.
+    Pudding wafer I love chocolate bar wafer chupa chups wafer. Cake gummies
+    pudding gummies cake.
   </VAlert>
 
   <!-- Button -->

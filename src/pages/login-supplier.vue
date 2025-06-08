@@ -4,18 +4,18 @@
 -->
 
 <script setup>
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
-import { VForm } from 'vuetify/components/VForm'
+import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
+import authV2MaskDark from "@images/pages/misc-mask-dark.png"
+import authV2MaskLight from "@images/pages/misc-mask-light.png"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
+import { VForm } from "vuetify/components/VForm"
 
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
   meta: {
-    layout: 'blank',
+    layout: "blank",
     unauthenticatedOnly: true,
   },
 })
@@ -32,21 +32,21 @@ const errors = ref({
 const refVForm = ref()
 
 const credentials = ref({
-  mobileNumber: '',
+  mobileNumber: "",
 })
-
 
 const hasError = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
-const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
-
+const isRedirectedFromUnauthorizedStatus = ref(
+  route.query.isRedirectedFromUnauthorizedStatus === "true",
+)
 
 const login = async () => {
   IsItWaitingServerResponse.value = true
   try {
-    const res = await $api('/login-supplier', {
-      method: 'POST',
+    const res = await $api("/login-supplier", {
+      method: "POST",
       body: {
         mobileNumber: credentials.value.mobileNumber,
       },
@@ -68,16 +68,14 @@ const login = async () => {
     // useCookie('userData').value = userData
     // useCookie('accessToken').value = accessToken
     await nextTick(() => {
-      router.replace('/two-step-supplier')
+      router.replace("/two-step-supplier")
     })
-  } catch (err) {
-  }
+  } catch (err) {}
 }
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid)
-      login()
+    if (isValid) login()
   })
 }
 </script>
@@ -90,7 +88,8 @@ const onSubmit = () => {
     variant="outlined"
     color="error"
   >
-    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره وارد شوید.
+    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
+    وارد شوید.
   </VSnackbar>
 
   <VSnackbar
@@ -102,7 +101,7 @@ const onSubmit = () => {
   >
     {{ errors.other }}
   </VSnackbar>
-  
+
   <RouterLink to="/">
     <div class="auth-logo d-flex align-center gap-x-3">
       <VNodeRenderer :nodes="themeConfig.app.logo" />
@@ -123,7 +122,7 @@ const onSubmit = () => {
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem;"
+          style="padding-inline: 6.25rem"
         />
 
         <img
@@ -148,7 +147,9 @@ const onSubmit = () => {
       >
         <VCardText>
           <h4 class="text-h4 mb-1">
-            خوش آمدید <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            خوش آمدید
+            <span class="text-capitalize"> {{ themeConfig.app.title }} </span>!
+            👋🏻
           </h4>
 
           <p class="mb-0">
@@ -180,7 +181,7 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"  
+                  :loading="IsItWaitingServerResponse"
                   :disabled="IsItWaitingServerResponse"
                 >
                   ارسال کد تأیید

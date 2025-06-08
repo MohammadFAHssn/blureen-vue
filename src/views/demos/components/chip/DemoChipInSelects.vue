@@ -1,16 +1,12 @@
 <script setup>
-const chips = ref([
-  'Programming',
-  'Playing games',
-  'Sleeping',
-])
+const chips = ref(["Programming", "Playing games", "Sleeping"])
 
 const items = ref([
-  'Streaming',
-  'Eating',
-  'Programming',
-  'Playing games',
-  'Sleeping',
+  "Streaming",
+  "Eating",
+  "Programming",
+  "Playing games",
+  "Sleeping",
 ])
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   isDrawerOpen: {
@@ -8,20 +8,17 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDrawerOpen',
-  'submit',
-])
+const emit = defineEmits(["update:isDrawerOpen", "submit"])
 
 const invoiceBalance = ref()
 const paymentAmount = ref()
-const paymentDate = ref('')
+const paymentDate = ref("")
 const paymentMethod = ref()
-const paymentNote = ref('')
+const paymentNote = ref("")
 
 const onSubmit = () => {
-  emit('update:isDrawerOpen', false)
-  emit('submit', {
+  emit("update:isDrawerOpen", false)
+  emit("submit", {
     invoiceBalance: invoiceBalance.value,
     paymentAmount: paymentAmount.value,
     paymentDate: paymentDate.value,
@@ -31,7 +28,7 @@ const onSubmit = () => {
 }
 
 const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 </script>
 
@@ -92,7 +89,13 @@ const handleDrawerModelValueUpdate = val => {
                   v-model="paymentMethod"
                   label="Select Payment Method"
                   placeholder="Select Payment Method"
-                  :items="['Cash', 'Bank Transfer', 'Debit', 'Credit', 'PayPal']"
+                  :items="[
+                    'Cash',
+                    'Bank Transfer',
+                    'Debit',
+                    'Credit',
+                    'PayPal',
+                  ]"
                 />
               </VCol>
 

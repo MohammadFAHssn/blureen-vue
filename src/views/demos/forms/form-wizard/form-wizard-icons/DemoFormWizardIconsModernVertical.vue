@@ -1,19 +1,19 @@
 <script setup>
 const numberedSteps = [
   {
-    title: 'Account Details',
-    icon: 'tabler-file-description',
-    subtitle: 'Setup account details',
+    title: "Account Details",
+    icon: "tabler-file-description",
+    subtitle: "Setup account details",
   },
   {
-    title: 'Personal Info',
-    icon: 'tabler-user',
-    subtitle: 'Add personal info',
+    title: "Personal Info",
+    icon: "tabler-user",
+    subtitle: "Add personal info",
   },
   {
-    title: 'Social Links',
-    icon: 'tabler-link',
-    subtitle: 'Add social links',
+    title: "Social Links",
+    icon: "tabler-link",
+    subtitle: "Add social links",
   },
 ]
 
@@ -22,18 +22,18 @@ const isPasswordVisible = ref(false)
 const isCPasswordVisible = ref(false)
 
 const formData = ref({
-  username: '',
-  email: '',
-  password: '',
-  cPassword: '',
-  firstName: '',
-  lastName: '',
+  username: "",
+  email: "",
+  password: "",
+  cPassword: "",
+  firstName: "",
+  lastName: "",
   country: undefined,
   language: undefined,
-  twitter: '',
-  facebook: '',
-  googlePlus: '',
-  linkedIn: '',
+  twitter: "",
+  facebook: "",
+  googlePlus: "",
+  linkedIn: "",
 })
 
 const onSubmit = () => {
@@ -110,8 +110,12 @@ const onSubmit = () => {
                       label="Password"
                       placeholder="············"
                       :type="isPasswordVisible ? 'text' : 'password'"
-                      :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                      @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                      :append-inner-icon="
+                        isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                      "
+                      @click:append-inner="
+                        isPasswordVisible = !isPasswordVisible
+                      "
                     />
                   </VCol>
                   <VCol
@@ -123,8 +127,12 @@ const onSubmit = () => {
                       label="Confirm Password"
                       placeholder="············"
                       :type="isCPasswordVisible ? 'text' : 'password'"
-                      :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                      @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
+                      :append-inner-icon="
+                        isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                      "
+                      @click:append-inner="
+                        isCPasswordVisible = !isCPasswordVisible
+                      "
                     />
                   </VCol>
                 </VRow>
@@ -178,7 +186,13 @@ const onSubmit = () => {
                       v-model="formData.language"
                       label="Language"
                       placeholder="Select Language"
-                      :items="['English', 'Spanish', 'French', 'Russian', 'German']"
+                      :items="[
+                        'English',
+                        'Spanish',
+                        'French',
+                        'Russian',
+                        'German',
+                      ]"
                     />
                   </VCol>
                 </VRow>

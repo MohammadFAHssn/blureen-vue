@@ -1,27 +1,27 @@
 <script setup>
 const headers = [
   {
-    title: 'Name',
-    key: 'name',
+    title: "Name",
+    key: "name",
   },
   {
-    title: 'Assigned To',
-    key: 'assignedTo',
+    title: "Assigned To",
+    key: "assignedTo",
     sortable: false,
   },
   {
-    title: 'Created Date',
-    key: 'createdDate',
+    title: "Created Date",
+    key: "createdDate",
     sortable: false,
   },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: "Actions",
+    key: "actions",
     sortable: false,
   },
 ]
 
-const search = ref('')
+const search = ref("")
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -36,40 +36,42 @@ const updateOptions = options => {
 
 const isPermissionDialogVisible = ref(false)
 const isAddPermissionDialogVisible = ref(false)
-const permissionName = ref('')
+const permissionName = ref("")
 
 const colors = {
-  'support': {
-    color: 'info',
-    text: 'Support',
+  support: {
+    color: "info",
+    text: "Support",
   },
-  'users': {
-    color: 'success',
-    text: 'Users',
+  users: {
+    color: "success",
+    text: "Users",
   },
-  'manager': {
-    color: 'warning',
-    text: 'Manager',
+  manager: {
+    color: "warning",
+    text: "Manager",
   },
-  'administrator': {
-    color: 'primary',
-    text: 'Administrator',
+  administrator: {
+    color: "primary",
+    text: "Administrator",
   },
-  'restricted-user': {
-    color: 'error',
-    text: 'Restricted User',
+  "restricted-user": {
+    color: "error",
+    text: "Restricted User",
   },
 }
 
-const { data: permissionsData } = await useApi(createUrl('/apps/permissions', {
-  query: {
-    q: search,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: permissionsData } = await useApi(
+  createUrl("/apps/permissions", {
+    query: {
+      q: search,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const permissions = computed(() => permissionsData.value.permissions)
 const totalPermissions = computed(() => permissionsData.value.totalPermissions)
@@ -98,7 +100,7 @@ const editPermission = name => {
                 { value: 100, title: '100' },
                 { value: -1, title: 'All' },
               ]"
-              style="inline-size: 5.5rem;"
+              style="inline-size: 5.5rem"
               @update:model-value="itemsPerPage = parseInt($event, 10)"
             />
           </div>
@@ -107,7 +109,7 @@ const editPermission = name => {
             <AppTextField
               v-model="search"
               placeholder="Search Permission"
-              style="inline-size: 15.625rem;"
+              style="inline-size: 15.625rem"
             />
             <VBtn
               density="default"

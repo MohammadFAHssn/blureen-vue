@@ -4,8 +4,7 @@ const progressValue = ref(0)
 
 onMounted(() => {
   interval.value = setInterval(() => {
-    if (progressValue.value === 100)
-      return progressValue.value = 0
+    if (progressValue.value === 100) return (progressValue.value = 0)
     progressValue.value += 10
   }, 1000)
 })

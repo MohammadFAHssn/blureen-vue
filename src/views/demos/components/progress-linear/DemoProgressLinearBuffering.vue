@@ -16,8 +16,7 @@ onBeforeUnmount(() => {
   clearInterval(interval.value)
 })
 watch(modelValue, () => {
-  if (modelValue.value < 100)
-    return false
+  if (modelValue.value < 100) return false
   modelValue.value = 0
   bufferValue.value = 10
   startBuffer()

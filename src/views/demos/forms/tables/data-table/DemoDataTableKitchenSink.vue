@@ -1,187 +1,189 @@
 <script setup>
-const {
-  data: productList,
-  error,
-} = await useApi('pages/datatable')
+const { data: productList, error } = await useApi("pages/datatable")
 
-const search = ref('')
+const search = ref("")
 
 // headers
 const headers = [
   {
-    title: 'PRODUCT',
-    key: 'product.name',
+    title: "PRODUCT",
+    key: "product.name",
   },
   {
-    title: 'DATE',
-    key: 'date',
+    title: "DATE",
+    key: "date",
   },
   {
-    title: 'CATEGORY',
-    key: 'product.category',
+    title: "CATEGORY",
+    key: "product.category",
   },
   {
-    title: 'BUYERS',
-    key: 'buyer.name',
+    title: "BUYERS",
+    key: "buyer.name",
   },
   {
-    title: 'PAYMENT',
-    key: 'payment',
+    title: "PAYMENT",
+    key: "payment",
     sortable: false,
   },
   {
-    title: 'STATUS',
-    key: 'status',
+    title: "STATUS",
+    key: "status",
     sortable: false,
   },
   {
-    title: 'DELETE',
-    key: 'delete',
+    title: "DELETE",
+    key: "delete",
     sortable: false,
   },
 ]
 
 const deleteItem = itemId => {
-  if (!productList.value)
-    return
-  const index = productList.value.findIndex(item => item.product.id === itemId)
+  if (!productList.value) return
+
+  const index = productList.value.findIndex(
+    item => item.product.id === itemId,
+  )
 
   productList.value.splice(index, 1)
 }
 
 const categoryIcons = [
   {
-    name: 'Mouse',
-    icon: 'tabler-mouse',
-    color: 'warning',
+    name: "Mouse",
+    icon: "tabler-mouse",
+    color: "warning",
   },
   {
-    name: 'Glass',
-    icon: 'tabler-eyeglass',
-    color: 'primary',
+    name: "Glass",
+    icon: "tabler-eyeglass",
+    color: "primary",
   },
   {
-    name: 'Smart Watch',
-    icon: 'tabler-device-watch',
-    color: 'success',
+    name: "Smart Watch",
+    icon: "tabler-device-watch",
+    color: "success",
   },
   {
-    name: 'Bag',
-    icon: 'tabler-briefcase',
-    color: 'info',
+    name: "Bag",
+    icon: "tabler-briefcase",
+    color: "info",
   },
   {
-    name: 'Storage Device',
-    icon: 'tabler-device-audio-tape',
-    color: 'warning',
+    name: "Storage Device",
+    icon: "tabler-device-audio-tape",
+    color: "warning",
   },
   {
-    name: 'Bluetooth',
-    icon: 'tabler-bluetooth',
-    color: 'error',
+    name: "Bluetooth",
+    icon: "tabler-bluetooth",
+    color: "error",
   },
   {
-    name: 'Gaming',
-    icon: 'tabler-device-gamepad-2',
-    color: 'warning',
+    name: "Gaming",
+    icon: "tabler-device-gamepad-2",
+    color: "warning",
   },
   {
-    name: 'Home',
-    icon: 'tabler-home',
-    color: 'error',
+    name: "Home",
+    icon: "tabler-home",
+    color: "error",
   },
   {
-    name: 'VR',
-    icon: 'tabler-badge-vr',
-    color: 'primary',
+    name: "VR",
+    icon: "tabler-badge-vr",
+    color: "primary",
   },
   {
-    name: 'Shoes',
-    icon: 'tabler-shoe',
-    color: 'success',
+    name: "Shoes",
+    icon: "tabler-shoe",
+    color: "success",
   },
   {
-    name: 'Electronics',
-    icon: 'tabler-cpu',
-    color: 'info',
+    name: "Electronics",
+    icon: "tabler-cpu",
+    color: "info",
   },
   {
-    name: 'Projector',
-    icon: 'tabler-theater',
-    color: 'warning',
+    name: "Projector",
+    icon: "tabler-theater",
+    color: "warning",
   },
   {
-    name: 'iPod',
-    icon: 'tabler-device-airpods',
-    color: 'error',
+    name: "iPod",
+    icon: "tabler-device-airpods",
+    color: "error",
   },
   {
-    name: 'Keyboard',
-    icon: 'tabler-keyboard',
-    color: 'primary',
+    name: "Keyboard",
+    icon: "tabler-keyboard",
+    color: "primary",
   },
   {
-    name: 'Smart Phone',
-    icon: 'tabler-device-mobile',
-    color: 'success',
+    name: "Smart Phone",
+    icon: "tabler-device-mobile",
+    color: "success",
   },
   {
-    name: 'Smart TV',
-    icon: 'tabler-device-tv',
-    color: 'info',
+    name: "Smart TV",
+    icon: "tabler-device-tv",
+    color: "info",
   },
   {
-    name: 'Google Home',
-    icon: 'tabler-brand-google',
-    color: 'warning',
+    name: "Google Home",
+    icon: "tabler-brand-google",
+    color: "warning",
   },
   {
-    name: 'Mac',
-    icon: 'tabler-brand-apple',
-    color: 'error',
+    name: "Mac",
+    icon: "tabler-brand-apple",
+    color: "error",
   },
   {
-    name: 'Headphone',
-    icon: 'tabler-headphones',
-    color: 'primary',
+    name: "Headphone",
+    icon: "tabler-headphones",
+    color: "primary",
   },
   {
-    name: 'iMac',
-    icon: 'tabler-device-imac',
-    color: 'success',
+    name: "iMac",
+    icon: "tabler-device-imac",
+    color: "success",
   },
   {
-    name: 'iPhone',
-    icon: 'tabler-brand-apple',
-    color: 'warning',
+    name: "iPhone",
+    icon: "tabler-brand-apple",
+    color: "warning",
   },
 ]
 
 const resolveStatusColor = status => {
-  if (status === 'Confirmed')
-    return 'primary'
-  if (status === 'Completed')
-    return 'success'
-  if (status === 'Cancelled')
-    return 'error'
+  if (status === "Confirmed") return "primary"
+  if (status === "Completed") return "success"
+  if (status === "Cancelled") return "error"
 }
 
 const categoryIconFilter = categoryName => {
-  const index = categoryIcons.findIndex(category => category.name === categoryName)
+  const index = categoryIcons.findIndex(
+    category => category.name === categoryName,
+  )
+
   if (index !== -1)
-    return [{
-      icon: categoryIcons[index].icon,
-      color: categoryIcons[index].color,
-    }]
-  
-  return [{
-    icon: 'tabler-help-circle',
-    color: 'primary',
-  }]
+    return [
+      {
+        icon: categoryIcons[index].icon,
+        color: categoryIcons[index].color,
+      },
+    ]
+
+  return [
+    {
+      icon: "tabler-help-circle",
+      color: "primary",
+    },
+  ]
 }
 
-if (error.value)
-  console.error(error.value)
+if (error.value) console.error(error.value)
 </script>
 
 <template>
@@ -235,7 +237,9 @@ if (error.value)
       <template #item.product.category="{ item }">
         <div class="d-flex align-center">
           <VAvatar
-            v-for="(category, index) in categoryIconFilter(item.product.category)"
+            v-for="(category, index) in categoryIconFilter(
+              item.product.category,
+            )"
             :key="index"
             size="26"
             :color="category.color"
@@ -278,7 +282,9 @@ if (error.value)
             <span class="text-high-emphasis font-weight-medium">${{ item.payment.paidAmount }}</span>
             <span v-if="item.payment.paidAmount !== item.payment.total">/{{ item.payment.total }}</span>
           </div>
-          <span class="text-xs text-no-wrap">{{ item.payment.receivedPaymentStatus }}</span>
+          <span class="text-xs text-no-wrap">{{
+            item.payment.receivedPaymentStatus
+          }}</span>
         </div>
       </template>
 

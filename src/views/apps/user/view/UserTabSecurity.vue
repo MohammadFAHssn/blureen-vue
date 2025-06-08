@@ -1,60 +1,60 @@
 <script setup>
 const isNewPasswordVisible = ref(false)
 const isConfirmPasswordVisible = ref(false)
-const smsVerificationNumber = ref('+1(968) 819-2547')
+const smsVerificationNumber = ref("+1(968) 819-2547")
 const isTwoFactorDialogOpen = ref(false)
 
 const recentDeviceHeader = [
   {
-    title: 'BROWSER',
-    key: 'browser',
+    title: "BROWSER",
+    key: "browser",
   },
   {
-    title: 'DEVICE',
-    key: 'device',
+    title: "DEVICE",
+    key: "device",
   },
   {
-    title: 'LOCATION',
-    key: 'location',
+    title: "LOCATION",
+    key: "location",
   },
   {
-    title: 'RECENT ACTIVITY',
-    key: 'activity',
+    title: "RECENT ACTIVITY",
+    key: "activity",
   },
 ]
 
 const recentDevices = [
   {
-    browser: ' Chrome on Windows',
-    icon: 'tabler-brand-windows',
-    color: 'info',
-    device: 'HP Spectre 360',
-    location: 'Switzerland',
-    activity: '10, July 2021 20:07',
+    browser: " Chrome on Windows",
+    icon: "tabler-brand-windows",
+    color: "info",
+    device: "HP Spectre 360",
+    location: "Switzerland",
+    activity: "10, July 2021 20:07",
   },
   {
-    browser: 'Chrome on Android',
-    icon: 'tabler-brand-android',
-    color: 'success',
-    device: 'Oneplus 9 Pro',
-    location: 'Dubai',
-    activity: '14, July 2021 15:15',
+    browser: "Chrome on Android",
+    icon: "tabler-brand-android",
+    color: "success",
+    device: "Oneplus 9 Pro",
+    location: "Dubai",
+    activity: "14, July 2021 15:15",
   },
   {
-    browser: 'Chrome on macOS',
-    icon: 'tabler-brand-apple',
-    color: 'secondary',
-    device: 'Apple iMac',
-    location: 'India',
-    activity: '16, July 2021 16:17',
+    browser: "Chrome on macOS",
+    icon: "tabler-brand-apple",
+    color: "secondary",
+    device: "Apple iMac",
+    location: "India",
+    activity: "16, July 2021 16:17",
   },
   {
-    browser: 'Chrome on iPhone',
-    icon: 'tabler-device-mobile',
-    color: 'error',
-    device: 'iPhone 12x',
-    location: 'Australia',
-    activity: '13, July 2021 10:10',
+    browser: "Chrome on iPhone",
+    icon: "tabler-device-mobile",
+    color: "error",
+    device: "iPhone 12x",
+    location: "Australia",
+    activity: "13, July 2021 10:10",
   },
 ]
 </script>
@@ -74,7 +74,7 @@ const recentDevices = [
             text="Minimum 8 characters long, uppercase & symbol"
           />
 
-          <VForm @submit.prevent="() => { }">
+          <VForm @submit.prevent="() => {}">
             <VRow>
               <VCol
                 cols="12"
@@ -84,8 +84,12 @@ const recentDevices = [
                   label="New Password"
                   placeholder="············"
                   :type="isNewPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isNewPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isNewPasswordVisible = !isNewPasswordVisible"
+                  :append-inner-icon="
+                    isNewPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="
+                    isNewPasswordVisible = !isNewPasswordVisible
+                  "
                 />
               </VCol>
               <VCol
@@ -97,8 +101,12 @@ const recentDevices = [
                   autocomplete="confirm-password"
                   placeholder="············"
                   :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                  :append-inner-icon="
+                    isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  @click:append-inner="
+                    isConfirmPasswordVisible = !isConfirmPasswordVisible
+                  "
                 />
               </VCol>
 
@@ -141,7 +149,9 @@ const recentDevices = [
           </AppTextField>
 
           <p class="mb-0 mt-4">
-            Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in. <a
+            Two-factor authentication adds an additional layer of security to
+            your account by requiring more than just a password to log in.
+            <a
               href="javascript:void(0)"
               class="text-decoration-none"
             >Learn more</a>.

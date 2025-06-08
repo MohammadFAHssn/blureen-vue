@@ -18,7 +18,8 @@
           <p class="text-subtitle-1 mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight: 400</span>
+          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight:
+            400</span>
         </VCol>
 
         <VCol
@@ -37,7 +38,8 @@
           <p class="text-subtitle-2 mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.8125rem / line-height: 1.25rem / font-weight: 400</span>
+          <span>font-size: 0.8125rem / line-height: 1.25rem / font-weight:
+            400</span>
         </VCol>
 
         <VCol
@@ -56,7 +58,8 @@
           <p class="text-body-1 mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight: 400</span>
+          <span>font-size: 0.9375rem / line-height: 1.375rem / font-weight:
+            400</span>
         </VCol>
 
         <VCol
@@ -75,7 +78,8 @@
           <p class="text-body-2 mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.8125rem / line-height: 1.25rem / font-weight: 400</span>
+          <span>font-size: 0.8125rem / line-height: 1.25rem / font-weight:
+            400</span>
         </VCol>
 
         <VCol
@@ -94,7 +98,8 @@
           <p class="text-caption mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.8125rem / line-height: 1.125rem / font-weight: 400</span>
+          <span>font-size: 0.8125rem / line-height: 1.125rem / font-weight:
+            400</span>
         </VCol>
 
         <VCol
@@ -131,7 +136,8 @@
           <p class="text-button mb-1">
             Cupcake ipsum dolor sit amet fruitcake donut chocolate.
           </p>
-          <span>font-size: 0.9375rem / line-height: 1.125rem / font-weight: 500</span>
+          <span>font-size: 0.9375rem / line-height: 1.125rem / font-weight:
+            500</span>
         </VCol>
       </VRow>
     </VCardText>

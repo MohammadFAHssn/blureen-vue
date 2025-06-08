@@ -1,6 +1,6 @@
 <script setup>
-import { getSingletonHighlighter } from 'shiki'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { getSingletonHighlighter } from "shiki"
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   title: {
@@ -14,7 +14,7 @@ const props = defineProps({
   codeLanguage: {
     type: String,
     required: false,
-    default: 'markup',
+    default: "markup",
   },
   noPadding: {
     type: Boolean,
@@ -23,26 +23,29 @@ const props = defineProps({
   },
 })
 
-const preferredCodeLanguage = useCookie('preferredCodeLanguage', {
-  default: () => 'ts',
+const preferredCodeLanguage = useCookie("preferredCodeLanguage", {
+  default: () => "ts",
   maxAge: COOKIE_MAX_AGE_1_YEAR,
 })
 
 const isCodeShown = ref(false)
-const { copy, copied } = useClipboard({ source: computed(() => props.code[preferredCodeLanguage.value]) })
+
+const { copy, copied } = useClipboard({
+  source: computed(() => props.code[preferredCodeLanguage.value]),
+})
 
 const highlighter = await getSingletonHighlighter({
-  themes: [
-    'dracula',
-    'dracula-soft',
-  ],
-  langs: ['vue'],
+  themes: ["dracula", "dracula-soft"],
+  langs: ["vue"],
 })
 
-const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.value], {
-  lang: 'vue',
-  theme: 'dracula',
-})
+const codeSnippet = highlighter.codeToHtml(
+  props.code[preferredCodeLanguage.value],
+  {
+    lang: "vue",
+    theme: "dracula",
+  },
+)
 </script>
 
 <template>
@@ -87,7 +90,9 @@ const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.valu
               >
                 <VIcon
                   icon="mdi-language-typescript"
-                  :color="preferredCodeLanguage === 'ts' ? 'primary' : 'secondary'"
+                  :color="
+                    preferredCodeLanguage === 'ts' ? 'primary' : 'secondary'
+                  "
                 />
               </VBtn>
 
@@ -99,7 +104,9 @@ const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.valu
               >
                 <VIcon
                   icon="mdi-language-javascript"
-                  :color="preferredCodeLanguage === 'js' ? 'primary' : 'secondary'"
+                  :color="
+                    preferredCodeLanguage === 'js' ? 'primary' : 'secondary'
+                  "
                 />
               </VBtn>
             </VBtnToggle>
@@ -107,7 +114,7 @@ const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.valu
 
           <div class="position-relative">
             <PerfectScrollbar
-              style="border-radius: 6px;max-block-size: 500px;"
+              style="border-radius: 6px; max-block-size: 500px"
               :options="{ wheelPropagation: false, suppressScrollX: false }"
             >
               <!-- eslint-disable-next-line vue/no-v-html -->
@@ -116,7 +123,11 @@ const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.valu
             <IconBtn
               class="position-absolute app-card-code-copy-icon"
               color="white"
-              @click="() => { copy() }"
+              @click="
+                () => {
+                  copy();
+                }
+              "
             >
               <VIcon
                 :icon="copied ? 'tabler-check' : 'tabler-copy'"
@@ -135,7 +146,9 @@ const codeSnippet = highlighter.codeToHtml(props.code[preferredCodeLanguage.valu
 
 code[class*="language-"],
 pre[class*="language-"] {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   font-size: 14px;
 }
 

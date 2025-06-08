@@ -8,15 +8,16 @@ injectSkinClasses()
 const isFallbackStateActive = ref(false)
 const refLoadingIndicator = ref(null)
 
-watch([
-  isFallbackStateActive,
-  refLoadingIndicator,
-], () => {
-  if (isFallbackStateActive.value && refLoadingIndicator.value)
-    refLoadingIndicator.value.fallbackHandle()
-  if (!isFallbackStateActive.value && refLoadingIndicator.value)
-    refLoadingIndicator.value.resolveHandle()
-}, { immediate: true })
+watch(
+  [isFallbackStateActive, refLoadingIndicator],
+  () => {
+    if (isFallbackStateActive.value && refLoadingIndicator.value)
+      refLoadingIndicator.value.fallbackHandle()
+    if (!isFallbackStateActive.value && refLoadingIndicator.value)
+      refLoadingIndicator.value.resolveHandle()
+  },
+  { immediate: true },
+)
 // !SECTION
 </script>
 
@@ -27,7 +28,7 @@ watch([
     class="layout-wrapper layout-blank"
     data-allow-mismatch
   >
-    <RouterView #="{Component}">
+    <RouterView #="{ Component }">
       <Suspense
         :timeout="0"
         @fallback="isFallbackStateActive = true"

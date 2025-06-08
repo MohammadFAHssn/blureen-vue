@@ -1,40 +1,34 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    25,
-    40,
-    55,
-    70,
-    85,
-    70,
-    55,
-  ],
-}]
+const series = [
+  {
+    data: [25, 40, 55, 70, 85, 70, 55],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const labelSuccessColor = `rgba(${ hexToRgb(currentTheme.success) },0.2)`
-  const labelColor = `rgba(${ hexToRgb(currentTheme['on-surface']) },${ variableTheme['disabled-opacity'] })`
-  
+  const labelSuccessColor = `rgba(${hexToRgb(currentTheme.success)},0.2)`
+  const labelColor = `rgba(${hexToRgb(currentTheme["on-surface"])},${variableTheme["disabled-opacity"]})`
+
   return {
     chart: {
       height: 162,
-      type: 'bar',
+      type: "bar",
       parentHeightOffset: 0,
       toolbar: { show: false },
     },
     plotOptions: {
       bar: {
-        barHeight: '80%',
-        columnWidth: '30%',
-        startingShape: 'rounded',
-        endingShape: 'rounded',
+        barHeight: "80%",
+        columnWidth: "30%",
+        startingShape: "rounded",
+        endingShape: "rounded",
         borderRadius: 6,
         distributed: true,
       },
@@ -61,34 +55,26 @@ const chartOptions = computed(() => {
     dataLabels: { enabled: false },
     legend: { show: false },
     xaxis: {
-      categories: [
-        'M',
-        'T',
-        'W',
-        'T',
-        'F',
-        'S',
-        'S',
-      ],
+      categories: ["M", "T", "W", "T", "F", "S", "S"],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
         style: {
           colors: labelColor,
-          fontSize: '13px',
-          fontFamily: 'Public sans',
+          fontSize: "13px",
+          fontFamily: "Public sans",
         },
       },
     },
     yaxis: { labels: { show: false } },
-    states: { hover: { filter: { type: 'none' } } },
+    states: { hover: { filter: { type: "none" } } },
     responsive: [
       {
         breakpoint: 1640,
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '40%',
+              columnWidth: "40%",
               borderRadius: 6,
             },
           },
@@ -96,18 +82,18 @@ const chartOptions = computed(() => {
       },
       {
         breakpoint: 1471,
-        options: { plotOptions: { bar: { columnWidth: '50%' } } },
+        options: { plotOptions: { bar: { columnWidth: "50%" } } },
       },
       {
         breakpoint: 1350,
-        options: { plotOptions: { bar: { columnWidth: '57%' } } },
+        options: { plotOptions: { bar: { columnWidth: "57%" } } },
       },
       {
         breakpoint: 1032,
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '50%',
+              columnWidth: "50%",
               borderRadius: 4,
             },
           },
@@ -118,7 +104,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '40%',
+              columnWidth: "40%",
               borderRadius: 4,
             },
           },
@@ -129,7 +115,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '50%',
+              columnWidth: "50%",
               borderRadius: 6,
             },
           },
@@ -140,7 +126,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '30%',
+              columnWidth: "30%",
               borderRadius: 4,
             },
           },
@@ -151,7 +137,7 @@ const chartOptions = computed(() => {
         options: {
           plotOptions: {
             bar: {
-              columnWidth: '45%',
+              columnWidth: "45%",
               borderRadius: 4,
             },
           },

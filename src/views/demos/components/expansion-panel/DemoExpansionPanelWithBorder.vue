@@ -16,7 +16,9 @@
       </VExpansionPanelTitle>
 
       <VExpansionPanelText>
-        Sweet roll ice cream chocolate bar. Ice cream croissant sugar plum I love cupcake gingerbread liquorice cake. Bonbon tart caramels marshmallow chocolate cake icing icing danish pie.
+        Sweet roll ice cream chocolate bar. Ice cream croissant sugar plum I
+        love cupcake gingerbread liquorice cake. Bonbon tart caramels
+        marshmallow chocolate cake icing icing danish pie.
       </VExpansionPanelText>
     </VExpansionPanel>
   </VExpansionPanels>

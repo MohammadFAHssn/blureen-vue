@@ -1,25 +1,25 @@
 <script setup>
-import { register } from 'swiper/element/bundle'
-import { useGenerateImageVariant } from '@/@core/composable/useGenerateImageVariant'
-import logo1dark from '@images/front-pages/branding/logo-1-dark.png'
-import logo1light from '@images/front-pages/branding/logo-1-light.png'
-import logo1 from '@images/front-pages/branding/logo-1.png'
-import logo2dark from '@images/front-pages/branding/logo-2-dark.png'
-import logo2light from '@images/front-pages/branding/logo-2-light.png'
-import logo2 from '@images/front-pages/branding/logo-2.png'
-import logo3dark from '@images/front-pages/branding/logo-3-dark.png'
-import logo3light from '@images/front-pages/branding/logo-3-light.png'
-import logo3 from '@images/front-pages/branding/logo-3.png'
-import logo4dark from '@images/front-pages/branding/logo-4-dark.png'
-import logo4light from '@images/front-pages/branding/logo-4-light.png'
-import logo4 from '@images/front-pages/branding/logo-4.png'
-import logo5dark from '@images/front-pages/branding/logo-5-dark.png'
-import logo5light from '@images/front-pages/branding/logo-5-light.png'
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar2 from '@images/avatars/avatar-2.png'
-import avatar3 from '@images/avatars/avatar-3.png'
-import avatar4 from '@images/avatars/avatar-4.png'
-import avatar5 from '@images/avatars/avatar-5.png'
+import { register } from "swiper/element/bundle"
+import { useGenerateImageVariant } from "@/@core/composable/useGenerateImageVariant"
+import logo1dark from "@images/front-pages/branding/logo-1-dark.png"
+import logo1light from "@images/front-pages/branding/logo-1-light.png"
+import logo1 from "@images/front-pages/branding/logo-1.png"
+import logo2dark from "@images/front-pages/branding/logo-2-dark.png"
+import logo2light from "@images/front-pages/branding/logo-2-light.png"
+import logo2 from "@images/front-pages/branding/logo-2.png"
+import logo3dark from "@images/front-pages/branding/logo-3-dark.png"
+import logo3light from "@images/front-pages/branding/logo-3-light.png"
+import logo3 from "@images/front-pages/branding/logo-3.png"
+import logo4dark from "@images/front-pages/branding/logo-4-dark.png"
+import logo4light from "@images/front-pages/branding/logo-4-light.png"
+import logo4 from "@images/front-pages/branding/logo-4.png"
+import logo5dark from "@images/front-pages/branding/logo-5-dark.png"
+import logo5light from "@images/front-pages/branding/logo-5-light.png"
+import avatar1 from "@images/avatars/avatar-1.png"
+import avatar2 from "@images/avatars/avatar-2.png"
+import avatar3 from "@images/avatars/avatar-3.png"
+import avatar4 from "@images/avatars/avatar-4.png"
+import avatar5 from "@images/avatars/avatar-5.png"
 
 register()
 
@@ -31,83 +31,83 @@ const brandLogo5 = useGenerateImageVariant(logo5light, logo5dark)
 
 const reviewData = [
   {
-    desc: 'I\'ve never used a theme as versatile and flexible as Vuexy. It\'s my go to for building dashboard sites on almost any project.',
+    desc: "I've never used a theme as versatile and flexible as Vuexy. It's my go to for building dashboard sites on almost any project.",
     img: logo1,
     rating: 5,
-    name: 'Eugenia Moore',
-    position: 'Founder of Hubspot',
+    name: "Eugenia Moore",
+    position: "Founder of Hubspot",
     avatar: avatar1,
   },
   {
-    desc: 'This template is really clean & well documented. The docs are really easy to understand and it\'s always easy to find a screenshot from their website.',
+    desc: "This template is really clean & well documented. The docs are really easy to understand and it's always easy to find a screenshot from their website.",
     img: logo2,
     rating: 5,
-    name: 'Curtis Fletcher',
-    position: 'Design Lead at Dribbble',
+    name: "Curtis Fletcher",
+    position: "Design Lead at Dribbble",
     avatar: avatar2,
   },
   {
-    desc: 'This template is superior in so many ways. The code, the design, the regular updates, the support.. It\'s the whole package. Excellent Work.',
+    desc: "This template is superior in so many ways. The code, the design, the regular updates, the support.. It's the whole package. Excellent Work.",
     img: logo3,
     rating: 4,
-    name: 'Eugenia Moore',
-    position: 'CTO of Airbnb',
+    name: "Eugenia Moore",
+    position: "CTO of Airbnb",
     avatar: avatar3,
   },
   {
-    desc: 'All the requirements for developers have been taken into consideration, so I\'m able to build any beautiful interface I want.',
+    desc: "All the requirements for developers have been taken into consideration, so I'm able to build any beautiful interface I want.",
     img: logo4,
     rating: 5,
-    name: 'Sara Smith',
-    position: 'Founder of Continental',
+    name: "Sara Smith",
+    position: "Founder of Continental",
     avatar: avatar4,
   },
   {
-    desc: 'Vuexy is awesome, and I particularly enjoy knowing that if I get stuck on something, there is always a helpful community to assist me.',
+    desc: "Vuexy is awesome, and I particularly enjoy knowing that if I get stuck on something, there is always a helpful community to assist me.",
     img: logo3,
     rating: 5,
-    name: 'Tommy haffman',
-    position: 'Founder of Levis',
+    name: "Tommy haffman",
+    position: "Founder of Levis",
     avatar: avatar5,
   },
   {
-    desc: 'I\'ve never used a theme as versatile and flexible as Vuexy. It\'s my go to for building dashboard sites on almost any project.',
+    desc: "I've never used a theme as versatile and flexible as Vuexy. It's my go to for building dashboard sites on almost any project.",
     img: logo1,
     rating: 5,
-    name: 'Eugenia Moore',
-    position: 'Founder of Hubspot',
+    name: "Eugenia Moore",
+    position: "Founder of Hubspot",
     avatar: avatar1,
   },
   {
-    desc: 'Vuexy is awesome, and I particularly enjoy knowing that if I get stuck on something, there is always a helpful community to assist me.',
+    desc: "Vuexy is awesome, and I particularly enjoy knowing that if I get stuck on something, there is always a helpful community to assist me.",
     img: logo2,
     rating: 5,
-    name: 'Tommy haffman',
-    position: 'Founder of Levis',
+    name: "Tommy haffman",
+    position: "Founder of Levis",
     avatar: avatar2,
   },
   {
-    desc: 'This template is superior in so many ways. The code, the design, the regular updates, the support.. It\'s the whole package. Excellent Work.',
+    desc: "This template is superior in so many ways. The code, the design, the regular updates, the support.. It's the whole package. Excellent Work.",
     img: logo3,
     rating: 4,
-    name: 'Eugenia Moore',
-    position: 'CTO of Airbnb',
+    name: "Eugenia Moore",
+    position: "CTO of Airbnb",
     avatar: avatar3,
   },
   {
-    desc: 'All the requirements for developers have been taken into consideration, so I\'m able to build any beautiful interface I want.',
+    desc: "All the requirements for developers have been taken into consideration, so I'm able to build any beautiful interface I want.",
     img: logo4,
     rating: 4,
-    name: 'Sara Smith',
-    position: 'Founder of Continental',
+    name: "Sara Smith",
+    position: "Founder of Continental",
     avatar: avatar4,
   },
   {
-    desc: 'This template is really clean & well documented. The docs are really easy to understand and it\'s always easy to find a screenshot from their website.',
+    desc: "This template is really clean & well documented. The docs are really easy to understand and it's always easy to find a screenshot from their website.",
     img: logo2,
     rating: 5,
-    name: 'Curtis Fletcher',
-    position: 'Design Lead at Dribbble',
+    name: "Curtis Fletcher",
+    position: "Design Lead at Dribbble",
     avatar: avatar5,
   },
 ]
@@ -116,8 +116,7 @@ const customerReviewSwiper = ref(null)
 
 const slide = dir => {
   const swiper = customerReviewSwiper.value?.swiper
-  if (dir === 'prev')
-    swiper.slidePrev()
+  if (dir === "prev") swiper.slidePrev()
   swiper.slideNext()
 }
 </script>
@@ -137,7 +136,7 @@ const slide = dir => {
           >
             <div
               class="headers d-flex justify-center flex-column align-start h-100"
-              style="max-inline-size: 275px;"
+              style="max-inline-size: 275px"
             >
               <VChip
                 label
@@ -237,7 +236,7 @@ const slide = dir => {
                     <VCardText class="pa-6 d-flex flex-column justify-space-between align-start">
                       <img
                         :src="data.img"
-                        style="block-size: 1.375rem;"
+                        style="block-size: 1.375rem"
                         class="mb-3"
                       >
                       <p class="text-body-1">
@@ -298,7 +297,13 @@ const slide = dir => {
             }"
           >
             <swiper-slide
-              v-for="(img, index) in [brandLogo1, brandLogo2, brandLogo3, brandLogo4, brandLogo5]"
+              v-for="(img, index) in [
+                brandLogo1,
+                brandLogo2,
+                brandLogo3,
+                brandLogo4,
+                brandLogo5,
+              ]"
               :key="index"
             >
               <VImg
@@ -318,7 +323,10 @@ const slide = dir => {
 
 swiper-container::part(bullet-active) {
   border-radius: 6px;
-  background-color: rgba(var(--v-theme-on-background), var(--v-disabled-opacity));
+  background-color: rgba(
+    var(--v-theme-on-background),
+    var(--v-disabled-opacity)
+  );
   inline-size: 38px;
 }
 
@@ -372,7 +380,8 @@ swiper-container::part(bullet) {
 
 .section-title::after {
   position: absolute;
-  background: url("../../../assets/images/front-pages/icons/section-title-icon.png") no-repeat left bottom/contain;
+  background: url("../../../assets/images/front-pages/icons/section-title-icon.png")
+    no-repeat left bottom/contain;
   background-size: contain;
   block-size: 100%;
   content: "";

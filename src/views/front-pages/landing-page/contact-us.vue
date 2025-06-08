@@ -1,9 +1,9 @@
 <script setup>
-import ConnectImg from '@images/front-pages/landing-page/contact-customer-service.png'
+import ConnectImg from "@images/front-pages/landing-page/contact-customer-service.png"
 
-const name = ref('')
-const email = ref('')
-const message = ref('')
+const name = ref("")
+const email = ref("")
+const message = ref("")
 </script>
 
 <template>
@@ -47,14 +47,26 @@ const message = ref('')
               >
                 <VImg
                   :src="ConnectImg"
-                  :style="{ borderRadius: '3.75rem 0.375rem 0.375rem 0.375rem' }"
+                  :style="{
+                    borderRadius: '3.75rem 0.375rem 0.375rem 0.375rem',
+                  }"
                 />
                 <VCardText class="pa-4 pb-1">
                   <div class="d-flex justify-space-between flex-wrap gap-y-4">
                     <div
                       v-for="(item, index) in [
-                        { title: 'Email', icon: 'tabler-mail', color: 'primary', value: 'example@gmail.com' },
-                        { title: 'Phone', icon: 'tabler-phone-call', color: 'success', value: '+1234 568 963' },
+                        {
+                          title: 'Email',
+                          icon: 'tabler-mail',
+                          color: 'primary',
+                          value: 'example@gmail.com',
+                        },
+                        {
+                          title: 'Phone',
+                          icon: 'tabler-phone-call',
+                          color: 'success',
+                          value: '+1234 568 963',
+                        },
                       ]"
                       :key="index"
                       class="d-flex gap-x-3 align-center"
@@ -75,7 +87,7 @@ const message = ref('')
 
                       <div>
                         <div class="text-body-1">
-                          {{ item .title }}
+                          {{ item.title }}
                         </div>
                         <h6 class="text-h6">
                           {{ item.value }}
@@ -101,7 +113,9 @@ const message = ref('')
 
               <VCardText>
                 <p class="mb-6">
-                  If you would like to discuss anything related to payment, account, licensing, partnerships, or have pre-sales questions, you’re at the right place.
+                  If you would like to discuss anything related to payment,
+                  account, licensing, partnerships, or have pre-sales questions,
+                  you’re at the right place.
                 </p>
                 <VForm @submit.prevent="() => {}">
                   <VRow>
@@ -165,7 +179,8 @@ const message = ref('')
 
 .section-title::after {
   position: absolute;
-  background: url("../../../assets/images/front-pages/icons/section-title-icon.png") no-repeat left bottom;
+  background: url("../../../assets/images/front-pages/icons/section-title-icon.png")
+    no-repeat left bottom;
   background-size: contain;
   block-size: 100%;
   content: "";

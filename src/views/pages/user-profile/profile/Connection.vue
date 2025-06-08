@@ -8,16 +8,16 @@ const props = defineProps({
 
 const moreList = [
   {
-    title: 'Share connections',
-    value: 'Share connections',
+    title: "Share connections",
+    value: "Share connections",
   },
   {
-    title: 'Suggest edits',
-    value: 'Suggest edits',
+    title: "Suggest edits",
+    value: "Suggest edits",
   },
   {
-    title: 'Report Bug',
-    value: 'Report Bug',
+    title: "Report Bug",
+    value: "Report Bug",
   },
 ]
 </script>
@@ -46,14 +46,16 @@ const moreList = [
           <VListItemTitle class="font-weight-medium">
             {{ data.name }}
           </VListItemTitle>
-          <VListItemSubtitle>{{ data.connections }} Connections</VListItemSubtitle>
+          <VListItemSubtitle>
+            {{ data.connections }} Connections
+          </VListItemSubtitle>
 
           <template #append>
             <VBtn
               icon
               size="38"
               class="rounded"
-              :variant="data.isFriend ? 'elevated' : 'tonal' "
+              :variant="data.isFriend ? 'elevated' : 'tonal'"
             >
               <VIcon
                 size="22"
@@ -65,7 +67,12 @@ const moreList = [
 
         <VListItem>
           <VListItemTitle class="pt-2 text-center">
-            <RouterLink :to="{ name: 'pages-user-profile-tab', params: { tab: 'connections' } }">
+            <RouterLink
+              :to="{
+                name: 'pages-user-profile-tab',
+                params: { tab: 'connections' },
+              }"
+            >
               <p class="mb-0">
                 View all connections
               </p>

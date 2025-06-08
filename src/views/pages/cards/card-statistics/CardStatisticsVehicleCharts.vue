@@ -1,33 +1,33 @@
 <script setup>
 const logisticData = ref([
   {
-    icon: 'tabler-truck',
-    color: 'primary',
-    title: 'On route vehicles',
+    icon: "tabler-truck",
+    color: "primary",
+    title: "On route vehicles",
     value: 42,
     change: 18.2,
     isHover: false,
   },
   {
-    icon: 'tabler-alert-triangle',
-    color: 'warning',
-    title: 'Vehicles with errors',
+    icon: "tabler-alert-triangle",
+    color: "warning",
+    title: "Vehicles with errors",
     value: 8,
     change: -8.7,
     isHover: false,
   },
   {
-    icon: 'tabler-git-fork',
-    color: 'error',
-    title: 'Deviated from route',
+    icon: "tabler-git-fork",
+    color: "error",
+    title: "Deviated from route",
     value: 27,
     change: 4.3,
     isHover: false,
   },
   {
-    icon: 'tabler-clock',
-    color: 'info',
-    title: 'Late vehicles',
+    icon: "tabler-clock",
+    color: "info",
+    title: "Late vehicles",
     value: 13,
     change: -2.5,
     isHover: false,
@@ -47,7 +47,11 @@ const logisticData = ref([
       <div>
         <VCard
           class="logistics-card-statistics cursor-pointer"
-          :style="data.isHover ? `border-block-end-color: rgb(var(--v-theme-${data.color}))` : `border-block-end-color: rgba(var(--v-theme-${data.color}),0.38)`"
+          :style="
+            data.isHover
+              ? `border-block-end-color: rgb(var(--v-theme-${data.color}))`
+              : `border-block-end-color: rgba(var(--v-theme-${data.color}),0.38)`
+          "
           @mouseenter="data.isHover = true"
           @mouseleave="data.isHover = false"
         >
@@ -72,7 +76,7 @@ const logisticData = ref([
             </div>
             <div class="d-flex gap-x-2 align-center">
               <h6 class="text-h6">
-                {{ (data.change > 0) ? '+' : '' }} {{ data.change }}%
+                {{ data.change > 0 ? "+" : "" }} {{ data.change }}%
               </h6>
               <div class="text-disabled">
                 than last week

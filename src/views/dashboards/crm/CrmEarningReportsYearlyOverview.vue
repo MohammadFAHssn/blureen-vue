@@ -1,6 +1,6 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 const currentTab = ref(0)
@@ -9,28 +9,28 @@ const refVueApexChart = ref()
 const chartConfigs = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const labelPrimaryColor = `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`
-  const legendColor = `rgba(${ hexToRgb(currentTheme['on-background']) },${ variableTheme['high-emphasis-opacity'] })`
-  const borderColor = `rgba(${ hexToRgb(String(variableTheme['border-color'])) },${ variableTheme['border-opacity'] })`
-  const labelColor = `rgba(${ hexToRgb(currentTheme['on-surface']) },${ variableTheme['disabled-opacity'] })`
-  
+  const labelPrimaryColor = `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`
+  const legendColor = `rgba(${hexToRgb(currentTheme["on-background"])},${variableTheme["high-emphasis-opacity"]})`
+  const borderColor = `rgba(${hexToRgb(String(variableTheme["border-color"]))},${variableTheme["border-opacity"]})`
+  const labelColor = `rgba(${hexToRgb(currentTheme["on-surface"])},${variableTheme["disabled-opacity"]})`
+
   return [
     {
-      title: 'Orders',
-      icon: 'tabler-shopping-cart',
+      title: "Orders",
+      icon: "tabler-shopping-cart",
       chartOptions: {
         chart: {
           parentHeightOffset: 0,
-          type: 'bar',
+          type: "bar",
           toolbar: { show: false },
         },
         plotOptions: {
           bar: {
-            columnWidth: '32%',
-            borderRadiusApplication: 'end',
+            columnWidth: "32%",
+            borderRadiusApplication: "end",
             borderRadius: 4,
             distributed: true,
-            dataLabels: { position: 'top' },
+            dataLabels: { position: "top" },
           },
         },
         grid: {
@@ -45,7 +45,7 @@ const chartConfigs = computed(() => {
         colors: [
           labelPrimaryColor,
           labelPrimaryColor,
-          `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
+          `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
           labelPrimaryColor,
           labelPrimaryColor,
           labelPrimaryColor,
@@ -56,29 +56,29 @@ const chartConfigs = computed(() => {
         dataLabels: {
           enabled: true,
           formatter(val) {
-            return `${ val }k`
+            return `${val}k`
           },
           offsetY: -25,
           style: {
-            fontSize: '15px',
+            fontSize: "15px",
             colors: [legendColor],
-            fontWeight: '600',
-            fontFamily: 'Public Sans',
+            fontWeight: "600",
+            fontFamily: "Public Sans",
           },
         },
         legend: { show: false },
         tooltip: { enabled: false },
         xaxis: {
           categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
           ],
           axisBorder: {
             show: true,
@@ -88,8 +88,8 @@ const chartConfigs = computed(() => {
           labels: {
             style: {
               colors: labelColor,
-              fontSize: '13px',
-              fontFamily: 'Public Sans',
+              fontSize: "13px",
+              fontFamily: "Public Sans",
             },
           },
         },
@@ -97,12 +97,12 @@ const chartConfigs = computed(() => {
           labels: {
             offsetX: -15,
             formatter(val) {
-              return `${ val / 1 }k`
+              return `${val / 1}k`
             },
             style: {
-              fontSize: '13px',
+              fontSize: "13px",
               colors: labelColor,
-              fontFamily: 'Public Sans',
+              fontFamily: "Public Sans",
             },
             min: 0,
             max: 60000,
@@ -112,12 +112,12 @@ const chartConfigs = computed(() => {
         responsive: [
           {
             breakpoint: 1441,
-            options: { plotOptions: { bar: { columnWidth: '41%' } } },
+            options: { plotOptions: { bar: { columnWidth: "41%" } } },
           },
           {
             breakpoint: 590,
             options: {
-              plotOptions: { bar: { columnWidth: '61%' } },
+              plotOptions: { bar: { columnWidth: "61%" } },
               yaxis: { labels: { show: false } },
               grid: {
                 padding: {
@@ -127,44 +127,36 @@ const chartConfigs = computed(() => {
               },
               dataLabels: {
                 style: {
-                  fontSize: '12px',
-                  fontWeight: '400',
+                  fontSize: "12px",
+                  fontWeight: "400",
                 },
               },
             },
           },
         ],
       },
-      series: [{
-        data: [
-          28,
-          10,
-          45,
-          38,
-          15,
-          30,
-          35,
-          30,
-          8,
-        ],
-      }],
+      series: [
+        {
+          data: [28, 10, 45, 38, 15, 30, 35, 30, 8],
+        },
+      ],
     },
     {
-      title: 'Sales',
-      icon: 'tabler-chart-bar',
+      title: "Sales",
+      icon: "tabler-chart-bar",
       chartOptions: {
         chart: {
           parentHeightOffset: 0,
-          type: 'bar',
+          type: "bar",
           toolbar: { show: false },
         },
         plotOptions: {
           bar: {
-            columnWidth: '32%',
-            borderRadiusApplication: 'end',
+            columnWidth: "32%",
+            borderRadiusApplication: "end",
             borderRadius: 4,
             distributed: true,
-            dataLabels: { position: 'top' },
+            dataLabels: { position: "top" },
           },
         },
         grid: {
@@ -183,36 +175,36 @@ const chartConfigs = computed(() => {
           labelPrimaryColor,
           labelPrimaryColor,
           labelPrimaryColor,
-          `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
+          `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
           labelPrimaryColor,
           labelPrimaryColor,
         ],
         dataLabels: {
           enabled: true,
           formatter(val) {
-            return `${ val }k`
+            return `${val}k`
           },
           offsetY: -25,
           style: {
-            fontSize: '15px',
+            fontSize: "15px",
             colors: [legendColor],
-            fontWeight: '600',
-            fontFamily: 'Public Sans',
+            fontWeight: "600",
+            fontFamily: "Public Sans",
           },
         },
         legend: { show: false },
         tooltip: { enabled: false },
         xaxis: {
           categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
           ],
           axisBorder: {
             show: true,
@@ -222,8 +214,8 @@ const chartConfigs = computed(() => {
           labels: {
             style: {
               colors: labelColor,
-              fontSize: '13px',
-              fontFamily: 'Public Sans',
+              fontSize: "13px",
+              fontFamily: "Public Sans",
             },
           },
         },
@@ -231,12 +223,12 @@ const chartConfigs = computed(() => {
           labels: {
             offsetX: -15,
             formatter(val) {
-              return `${ val / 1 }k`
+              return `${val / 1}k`
             },
             style: {
-              fontSize: '13px',
+              fontSize: "13px",
               colors: labelColor,
-              fontFamily: 'Public Sans',
+              fontFamily: "Public Sans",
             },
             min: 0,
             max: 60000,
@@ -246,17 +238,17 @@ const chartConfigs = computed(() => {
         responsive: [
           {
             breakpoint: 1441,
-            options: { plotOptions: { bar: { columnWidth: '41%' } } },
+            options: { plotOptions: { bar: { columnWidth: "41%" } } },
           },
           {
             breakpoint: 590,
             options: {
-              plotOptions: { bar: { columnWidth: '61%' } },
+              plotOptions: { bar: { columnWidth: "61%" } },
               grid: { padding: { right: 0 } },
               dataLabels: {
                 style: {
-                  fontSize: '12px',
-                  fontWeight: '400',
+                  fontSize: "12px",
+                  fontWeight: "400",
                 },
               },
               yaxis: { labels: { show: false } },
@@ -264,36 +256,28 @@ const chartConfigs = computed(() => {
           },
         ],
       },
-      series: [{
-        data: [
-          35,
-          25,
-          15,
-          40,
-          42,
-          25,
-          48,
-          8,
-          30,
-        ],
-      }],
+      series: [
+        {
+          data: [35, 25, 15, 40, 42, 25, 48, 8, 30],
+        },
+      ],
     },
     {
-      title: 'Profit',
-      icon: 'tabler-currency-dollar',
+      title: "Profit",
+      icon: "tabler-currency-dollar",
       chartOptions: {
         chart: {
           parentHeightOffset: 0,
-          type: 'bar',
+          type: "bar",
           toolbar: { show: false },
         },
         plotOptions: {
           bar: {
-            columnWidth: '32%',
-            borderRadiusApplication: 'end',
+            columnWidth: "32%",
+            borderRadiusApplication: "end",
             borderRadius: 4,
             distributed: true,
-            dataLabels: { position: 'top' },
+            dataLabels: { position: "top" },
           },
         },
         grid: {
@@ -310,7 +294,7 @@ const chartConfigs = computed(() => {
           labelPrimaryColor,
           labelPrimaryColor,
           labelPrimaryColor,
-          `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
+          `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
           labelPrimaryColor,
           labelPrimaryColor,
           labelPrimaryColor,
@@ -319,29 +303,29 @@ const chartConfigs = computed(() => {
         dataLabels: {
           enabled: true,
           formatter(val) {
-            return `${ val }k`
+            return `${val}k`
           },
           offsetY: -25,
           style: {
-            fontSize: '15px',
+            fontSize: "15px",
             colors: [legendColor],
-            fontWeight: '600',
-            fontFamily: 'Public Sans',
+            fontWeight: "600",
+            fontFamily: "Public Sans",
           },
         },
         legend: { show: false },
         tooltip: { enabled: false },
         xaxis: {
           categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
           ],
           axisBorder: {
             show: true,
@@ -351,8 +335,8 @@ const chartConfigs = computed(() => {
           labels: {
             style: {
               colors: labelColor,
-              fontSize: '13px',
-              fontFamily: 'Public Sans',
+              fontSize: "13px",
+              fontFamily: "Public Sans",
             },
           },
         },
@@ -360,12 +344,12 @@ const chartConfigs = computed(() => {
           labels: {
             offsetX: -15,
             formatter(val) {
-              return `${ val / 1 }k`
+              return `${val / 1}k`
             },
             style: {
-              fontSize: '13px',
+              fontSize: "13px",
               colors: labelColor,
-              fontFamily: 'Public Sans',
+              fontFamily: "Public Sans",
             },
             min: 0,
             max: 60000,
@@ -375,17 +359,17 @@ const chartConfigs = computed(() => {
         responsive: [
           {
             breakpoint: 1441,
-            options: { plotOptions: { bar: { columnWidth: '41%' } } },
+            options: { plotOptions: { bar: { columnWidth: "41%" } } },
           },
           {
             breakpoint: 590,
             options: {
-              plotOptions: { bar: { columnWidth: '61%' } },
+              plotOptions: { bar: { columnWidth: "61%" } },
               grid: { padding: { right: 0 } },
               dataLabels: {
                 style: {
-                  fontSize: '12px',
-                  fontWeight: '400',
+                  fontSize: "12px",
+                  fontWeight: "400",
                 },
               },
               yaxis: { labels: { show: false } },
@@ -393,36 +377,28 @@ const chartConfigs = computed(() => {
           },
         ],
       },
-      series: [{
-        data: [
-          10,
-          22,
-          27,
-          33,
-          42,
-          32,
-          27,
-          22,
-          8,
-        ],
-      }],
+      series: [
+        {
+          data: [10, 22, 27, 33, 42, 32, 27, 22, 8],
+        },
+      ],
     },
     {
-      title: 'Income',
-      icon: 'tabler-chart-pie-2',
+      title: "Income",
+      icon: "tabler-chart-pie-2",
       chartOptions: {
         chart: {
           parentHeightOffset: 0,
-          type: 'bar',
+          type: "bar",
           toolbar: { show: false },
         },
         plotOptions: {
           bar: {
-            columnWidth: '32%',
+            columnWidth: "32%",
             borderRadius: 6,
             distributed: true,
-            borderRadiusApplication: 'end',
-            dataLabels: { position: 'top' },
+            borderRadiusApplication: "end",
+            dataLabels: { position: "top" },
           },
         },
         grid: {
@@ -443,34 +419,34 @@ const chartConfigs = computed(() => {
           labelPrimaryColor,
           labelPrimaryColor,
           labelPrimaryColor,
-          `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
+          `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
         ],
         dataLabels: {
           enabled: true,
           formatter(val) {
-            return `${ val }k`
+            return `${val}k`
           },
           offsetY: -25,
           style: {
-            fontSize: '15px',
+            fontSize: "15px",
             colors: [legendColor],
-            fontWeight: '600',
-            fontFamily: 'Public Sans',
+            fontWeight: "600",
+            fontFamily: "Public Sans",
           },
         },
         legend: { show: false },
         tooltip: { enabled: false },
         xaxis: {
           categories: [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
           ],
           axisBorder: {
             show: true,
@@ -480,8 +456,8 @@ const chartConfigs = computed(() => {
           labels: {
             style: {
               colors: labelColor,
-              fontSize: '13px',
-              fontFamily: 'Public Sans',
+              fontSize: "13px",
+              fontFamily: "Public Sans",
             },
           },
         },
@@ -489,12 +465,12 @@ const chartConfigs = computed(() => {
           labels: {
             offsetX: -15,
             formatter(val) {
-              return `${ val / 1 }k`
+              return `${val / 1}k`
             },
             style: {
-              fontSize: '13px',
+              fontSize: "13px",
               colors: labelColor,
-              fontFamily: 'Public Sans',
+              fontFamily: "Public Sans",
             },
             min: 0,
             max: 60000,
@@ -504,16 +480,16 @@ const chartConfigs = computed(() => {
         responsive: [
           {
             breakpoint: 1441,
-            options: { plotOptions: { bar: { columnWidth: '41%' } } },
+            options: { plotOptions: { bar: { columnWidth: "41%" } } },
           },
           {
             breakpoint: 590,
             options: {
-              plotOptions: { bar: { columnWidth: '50%' } },
+              plotOptions: { bar: { columnWidth: "50%" } },
               dataLabels: {
                 style: {
-                  fontSize: '12px',
-                  fontWeight: '400',
+                  fontSize: "12px",
+                  fontWeight: "400",
                 },
               },
               grid: { padding: { right: 0 } },
@@ -522,31 +498,23 @@ const chartConfigs = computed(() => {
           },
         ],
       },
-      series: [{
-        data: [
-          5,
-          9,
-          12,
-          18,
-          20,
-          25,
-          30,
-          36,
-          48,
-        ],
-      }],
+      series: [
+        {
+          data: [5, 9, 12, 18, 20, 25, 30, 36, 48],
+        },
+      ],
     },
   ]
 })
 
 const moreList = [
   {
-    title: 'View More',
-    value: 'View More',
+    title: "View More",
+    value: "View More",
   },
   {
-    title: 'Delete',
-    value: 'Delete',
+    title: "Delete",
+    value: "Delete",
   },
 ]
 </script>
@@ -579,8 +547,12 @@ const moreList = [
           :value="index"
         >
           <div
-            style="block-size: 100px; inline-size: 110px;"
-            :style="isSelected ? 'border-color:rgb(var(--v-theme-primary)) !important' : ''"
+            style="block-size: 100px; inline-size: 110px"
+            :style="
+              isSelected
+                ? 'border-color:rgb(var(--v-theme-primary)) !important'
+                : ''
+            "
             :class="isSelected ? 'border' : 'border border-dashed'"
             class="d-flex flex-column justify-center align-center cursor-pointer rounded py-4 px-5 me-4"
             @click="toggle"
@@ -606,7 +578,7 @@ const moreList = [
         <!-- 👉 slider more -->
         <VSlideGroupItem>
           <div
-            style="block-size: 100px; inline-size: 110px;"
+            style="block-size: 100px; inline-size: 110px"
             class="d-flex flex-column justify-center align-center rounded border border-dashed py-4 px-5"
           >
             <VAvatar

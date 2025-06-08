@@ -1,18 +1,18 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
+import { VForm } from "vuetify/components/VForm"
 
 const numberedSteps = [
   {
-    title: 'Account Details',
-    subtitle: 'Setup Account Details',
+    title: "Account Details",
+    subtitle: "Setup Account Details",
   },
   {
-    title: 'Personal Info',
-    subtitle: 'Add personal info',
+    title: "Personal Info",
+    subtitle: "Add personal info",
   },
   {
-    title: 'Social Links',
-    subtitle: 'Add social links',
+    title: "Social Links",
+    subtitle: "Add social links",
   },
 ]
 
@@ -25,24 +25,24 @@ const refPersonalForm = ref()
 const refSocialLinkForm = ref()
 
 const accountForm = ref({
-  username: '',
-  email: '',
-  password: '',
-  cPassword: '',
+  username: "",
+  email: "",
+  password: "",
+  cPassword: "",
 })
 
 const personalForm = ref({
-  firstName: '',
-  lastName: '',
+  firstName: "",
+  lastName: "",
   country: undefined,
   language: undefined,
 })
 
 const socialForm = ref({
-  twitter: '',
-  facebook: '',
-  googlePlus: '',
-  linkedIn: '',
+  twitter: "",
+  facebook: "",
+  googlePlus: "",
+  linkedIn: "",
 })
 
 const validateAccountForm = () => {
@@ -153,7 +153,9 @@ const validateSocialLinkForm = () => {
                   :rules="[requiredValidator, passwordValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -167,9 +169,17 @@ const validateSocialLinkForm = () => {
                   label="Confirm Password"
                   autocomplete="confirm-password"
                   placeholder="············"
-                  :rules="[requiredValidator, confirmedValidator(accountForm.cPassword, accountForm.password)]"
+                  :rules="[
+                    requiredValidator,
+                    confirmedValidator(
+                      accountForm.cPassword,
+                      accountForm.password,
+                    ),
+                  ]"
                   :type="isCPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
                 />
               </VCol>

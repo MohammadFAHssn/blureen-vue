@@ -1,43 +1,43 @@
 <script setup>
 const languageProgress = [
   {
-    avatar: 'tabler-brand-react',
-    title: 'React is a JavaScript library for building user interfaces',
-    language: 'react',
+    avatar: "tabler-brand-react",
+    title: "React is a JavaScript library for building user interfaces",
+    language: "react",
     amount: 90,
   },
   {
-    avatar: 'tabler-brand-bootstrap',
-    title: 'Bootstrap is an open source toolkit',
-    language: 'bootstrap',
+    avatar: "tabler-brand-bootstrap",
+    title: "Bootstrap is an open source toolkit",
+    language: "bootstrap",
     amount: 80,
   },
   {
-    avatar: 'tabler-brand-vue',
-    title: 'Vue.js is the Progressive JavaScript Framework',
-    language: 'vue',
+    avatar: "tabler-brand-vue",
+    title: "Vue.js is the Progressive JavaScript Framework",
+    language: "vue",
     amount: 65,
   },
   {
-    avatar: 'tabler-brand-angular',
-    title: 'Angular implements Functional Programming concepts',
-    language: 'angular',
+    avatar: "tabler-brand-angular",
+    title: "Angular implements Functional Programming concepts",
+    language: "angular",
     amount: 75,
   },
   {
-    avatar: 'tabler-brand-javascript',
-    title: 'JavaScript is the programming language of the Web',
-    language: 'javascript',
+    avatar: "tabler-brand-javascript",
+    title: "JavaScript is the programming language of the Web",
+    language: "javascript",
     amount: 70,
   },
 ]
 
 const resolveStatusColor = {
-  react: 'info',
-  bootstrap: 'primary',
-  vue: 'success',
-  angular: 'error',
-  javascript: 'warning',
+  react: "info",
+  bootstrap: "primary",
+  vue: "success",
+  angular: "error",
+  javascript: "warning",
 }
 </script>
 

@@ -1,37 +1,31 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 
-const series = [{
-  data: [
-    40,
-    65,
-    50,
-    45,
-    90,
-    55,
-    70,
-  ],
-}]
+const series = [
+  {
+    data: [40, 65, 50, 45, 90, 55, 70],
+  },
+]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  
+
   return {
     chart: {
       parentHeightOffset: 0,
-      type: 'bar',
+      type: "bar",
       toolbar: { show: false },
     },
     plotOptions: {
       bar: {
-        barHeight: '60%',
-        columnWidth: '38%',
-        startingShape: 'rounded',
-        endingShape: 'rounded',
+        barHeight: "60%",
+        columnWidth: "38%",
+        startingShape: "rounded",
+        endingShape: "rounded",
         borderRadius: 4,
         distributed: true,
       },
@@ -46,77 +40,71 @@ const chartOptions = computed(() => {
       },
     },
     colors: [
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
-      `rgba(${ hexToRgb(currentTheme.primary) }, 1)`,
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
-      `rgba(${ hexToRgb(currentTheme.primary) },${ variableTheme['dragged-opacity'] })`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
+      `rgba(${hexToRgb(currentTheme.primary)}, 1)`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
+      `rgba(${hexToRgb(currentTheme.primary)},${variableTheme["dragged-opacity"]})`,
     ],
     dataLabels: { enabled: false },
     legend: { show: false },
     xaxis: {
-      categories: [
-        'Mo',
-        'Tu',
-        'We',
-        'Th',
-        'Fr',
-        'Sa',
-        'Su',
-      ],
+      categories: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
       axisBorder: { show: false },
       axisTicks: { show: false },
       labels: {
         style: {
-          colors: `rgba(${ hexToRgb(currentTheme['on-surface']) },${ variableTheme['disabled-opacity'] })`,
-          fontSize: '13px',
-          fontFamily: 'Public Sans',
+          colors: `rgba(${hexToRgb(currentTheme["on-surface"])},${variableTheme["disabled-opacity"]})`,
+          fontSize: "13px",
+          fontFamily: "Public Sans",
         },
       },
     },
     yaxis: { labels: { show: false } },
     tooltip: { enabled: false },
-    responsive: [{
-      breakpoint: 1025,
-      options: { chart: { height: 199 } },
-    }],
+    responsive: [
+      {
+        breakpoint: 1025,
+        options: { chart: { height: 199 } },
+      },
+    ],
   }
 })
 
 const earningsReports = [
   {
-    color: 'primary',
-    icon: 'tabler-currency-dollar',
-    title: 'Earnings',
-    amount: '$545.69',
-    progress: '55',
+    color: "primary",
+    icon: "tabler-currency-dollar",
+    title: "Earnings",
+    amount: "$545.69",
+    progress: "55",
   },
   {
-    color: 'info',
-    icon: 'tabler-chart-pie-2',
-    title: 'Profit',
-    amount: '$256.34',
-    progress: '25',
+    color: "info",
+    icon: "tabler-chart-pie-2",
+    title: "Profit",
+    amount: "$256.34",
+    progress: "25",
   },
   {
-    color: 'error',
-    icon: 'tabler-brand-paypal',
-    title: 'Expense',
-    amount: '$74.19',
-    progress: '65',
+    color: "error",
+    icon: "tabler-brand-paypal",
+    title: "Expense",
+    amount: "$74.19",
+    progress: "65",
   },
 ]
 
 const moreList = [
   {
-    title: 'View More',
-    value: 'View More',
+    title: "View More",
+    value: "View More",
   },
   {
-    title: 'Delete',
-    value: 'Delete',
+    title: "Delete",
+    value: "Delete",
   },
 ]
 </script>

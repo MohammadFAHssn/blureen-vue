@@ -6,37 +6,37 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(["update:isDialogVisible"])
 
-const selectedPlan = ref('standard')
+const selectedPlan = ref("standard")
 
 const plansList = [
   {
-    desc: 'Standard - $99/month',
-    title: 'Standard',
-    value: 'standard',
+    desc: "Standard - $99/month",
+    title: "Standard",
+    value: "standard",
   },
   {
-    desc: 'Basic - $0/month',
-    title: 'Basic',
-    value: 'basic',
+    desc: "Basic - $0/month",
+    title: "Basic",
+    value: "basic",
   },
   {
-    desc: 'Enterprise - $499/month',
-    title: 'Enterprise',
-    value: 'enterprice',
+    desc: "Enterprise - $499/month",
+    title: "Enterprise",
+    value: "enterprice",
   },
   {
-    desc: 'Company - $999/month',
-    title: 'Company',
-    value: 'company',
+    desc: "Company - $999/month",
+    title: "Company",
+    value: "company",
   },
 ]
 
 const isConfirmDialogVisible = ref(false)
 
 const dialogModelValueUpdate = val => {
-  emit('update:isDialogVisible', val)
+  emit("update:isDialogVisible", val)
 }
 </script>
 
@@ -86,9 +86,7 @@ const dialogModelValueUpdate = val => {
             <h1 class="text-h1 text-primary">
               99
             </h1>
-            <sub class="text-body-2 mt-5">
-              / month
-            </sub>
+            <sub class="text-body-2 mt-5"> / month </sub>
           </div>
           <VBtn
             color="error"

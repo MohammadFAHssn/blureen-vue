@@ -6,21 +6,21 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const formData = ref(props.formData)
 
 const offeredItems = [
-  'iPhone 12 Pro Max',
-  'iPhone 12 Pro',
-  'iPhone 11 Pro Max',
-  'iPhone 11',
-  'iPhone 12 Mini',
-  'OnePlus Nord CE',
+  "iPhone 12 Pro Max",
+  "iPhone 12 Pro",
+  "iPhone 11 Pro Max",
+  "iPhone 11",
+  "iPhone 12 Mini",
+  "OnePlus Nord CE",
 ]
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 
@@ -83,7 +83,10 @@ watch(formData, () => {
               v-model="formData.cartCondition"
               label="Cart Condition"
               placeholder="Select Cart Condition"
-              :items="['Cart must contain all selected Downloads', 'Cart needs one or more of the selected Downloads']"
+              :items="[
+                'Cart must contain all selected Downloads',
+                'Cart needs one or more of the selected Downloads',
+              ]"
             />
           </VCol>
         </VRow>

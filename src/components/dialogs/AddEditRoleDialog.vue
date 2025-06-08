@@ -1,12 +1,12 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
+import { VForm } from "vuetify/components/VForm"
 
 const props = defineProps({
   rolePermissions: {
     type: Object,
     required: false,
     default: () => ({
-      name: '',
+      name: "",
       permissions: [],
     }),
   },
@@ -16,62 +16,59 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDialogVisible',
-  'update:rolePermissions',
-])
+const emit = defineEmits(["update:isDialogVisible", "update:rolePermissions"])
 
 const permissions = ref([
   {
-    name: 'User Management',
+    name: "User Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Content Management',
+    name: "Content Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Disputes Management',
+    name: "Disputes Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Database Management',
+    name: "Database Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Financial Management',
+    name: "Financial Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Reporting',
+    name: "Reporting",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'API Control',
+    name: "API Control",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Repository Management',
+    name: "Repository Management",
     read: false,
     write: false,
     create: false,
   },
   {
-    name: 'Payroll',
+    name: "Payroll",
     read: false,
     write: false,
     create: false,
@@ -79,22 +76,24 @@ const permissions = ref([
 ])
 
 const isSelectAll = ref(false)
-const role = ref('')
+const role = ref("")
 const refPermissionForm = ref()
 
 const checkedCount = computed(() => {
   let counter = 0
   permissions.value.forEach(permission => {
     Object.entries(permission).forEach(([key, value]) => {
-      if (key !== 'name' && value)
-        counter++
+      if (key !== "name" && value) counter++
     })
   })
-  
+
   return counter
 })
 
-const isIndeterminate = computed(() => checkedCount.value > 0 && checkedCount.value < permissions.value.length * 3)
+const isIndeterminate = computed(
+  () =>
+    checkedCount.value > 0 && checkedCount.value < permissions.value.length * 3,
+)
 
 watch(isSelectAll, val => {
   permissions.value = permissions.value.map(permission => ({
@@ -105,29 +104,38 @@ watch(isSelectAll, val => {
   }))
 })
 watch(isIndeterminate, () => {
-  if (!isIndeterminate.value)
-    isSelectAll.value = false
+  if (!isIndeterminate.value) isSelectAll.value = false
 })
-watch(permissions, () => {
-  if (checkedCount.value === permissions.value.length * 3)
-    isSelectAll.value = true
-}, { deep: true })
-watch(() => props, () => {
-  if (props.rolePermissions && props.rolePermissions.permissions.length) {
-    role.value = props.rolePermissions.name
-    permissions.value = permissions.value.map(permission => {
-      const rolePermission = props.rolePermissions?.permissions.find(item => item.name === permission.name)
-      if (rolePermission) {
-        return {
-          ...permission,
-          ...rolePermission,
+watch(
+  permissions,
+  () => {
+    if (checkedCount.value === permissions.value.length * 3)
+      isSelectAll.value = true
+  },
+  { deep: true },
+)
+watch(
+  () => props,
+  () => {
+    if (props.rolePermissions && props.rolePermissions.permissions.length) {
+      role.value = props.rolePermissions.name
+      permissions.value = permissions.value.map(permission => {
+        const rolePermission = props.rolePermissions?.permissions.find(
+          item => item.name === permission.name,
+        )
+
+        if (rolePermission) {
+          return {
+            ...permission,
+            ...rolePermission,
+          }
         }
-      }
-      
-      return permission
-    })
-  }
-})
+
+        return permission
+      })
+    }
+  },
+)
 
 const onSubmit = () => {
   const rolePermissions = {
@@ -135,14 +143,14 @@ const onSubmit = () => {
     permissions: permissions.value,
   }
 
-  emit('update:rolePermissions', rolePermissions)
-  emit('update:isDialogVisible', false)
+  emit("update:rolePermissions", rolePermissions)
+  emit("update:isDialogVisible", false)
   isSelectAll.value = false
   refPermissionForm.value?.reset()
 }
 
 const onReset = () => {
-  emit('update:isDialogVisible', false)
+  emit("update:isDialogVisible", false)
   isSelectAll.value = false
   refPermissionForm.value?.reset()
 }
@@ -161,7 +169,7 @@ const onReset = () => {
       <VCardText>
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
-          {{ props.rolePermissions.name ? 'Edit' : 'Add New' }} Role
+          {{ props.rolePermissions.name ? "Edit" : "Add New" }} Role
         </h4>
         <p class="text-body-1 text-center mb-6">
           Set Role Permissions
@@ -263,7 +271,8 @@ const onReset = () => {
 <style lang="scss">
 .permission-table {
   td {
-    border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-block-end: 1px solid
+      rgba(var(--v-border-color), var(--v-border-opacity));
     padding-block: 0.5rem;
 
     .v-checkbox {

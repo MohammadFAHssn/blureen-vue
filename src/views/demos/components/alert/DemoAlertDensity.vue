@@ -13,7 +13,8 @@
       color="secondary"
       variant="tonal"
     >
-      I'm a comfortable alert with the <strong>variant</strong> prop and a <strong>color</strong> of secondary.
+      I'm a comfortable alert with the <strong>variant</strong> prop and a
+      <strong>color</strong> of secondary.
     </VAlert>
 
     <VAlert

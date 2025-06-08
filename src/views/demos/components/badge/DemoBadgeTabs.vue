@@ -1,16 +1,16 @@
 <script setup>
 const tabs = [
   {
-    badge: '3',
-    content: 'Item One',
+    badge: "3",
+    content: "Item One",
   },
   {
-    badge: '1',
-    content: 'Item Two',
+    badge: "1",
+    content: "Item Two",
   },
   {
-    badge: '2',
-    content: 'Item Three',
+    badge: "2",
+    content: "Item Three",
   },
 ]
 </script>

@@ -82,7 +82,6 @@ const intervalId = setInterval(() => {
   }
 }, 1000)
 
-
 const timeRemaining = computed(() => {
   const totalSeconds = Math.floor(tenderExpiresIn.value / 1000)
 
@@ -210,7 +209,7 @@ onUnmounted(() => clearInterval(intervalId))
       </VRow>
 
       <VRow>
-        <VList style="background-color: rgb(var(--v-theme-background));">
+        <VList style="background-color: rgb(var(--v-theme-background))">
           <VListItem>
             <VListItemTitle class="font-weight-medium">
               مدت زمان باقی‌مانده تا پایان مناقصه:
@@ -271,7 +270,7 @@ onUnmounted(() => clearInterval(intervalId))
                 placeholder="توضیحات"
               />
             </VCardText>
-            
+
             <VDivider />
 
             <VCardText class="custom-v-card-text">
@@ -300,7 +299,7 @@ onUnmounted(() => clearInterval(intervalId))
         <VExpandTransition group>
           <VCol
             v-for="tenderBid in tenderBids.filter(
-              (tenderBid) => isTenderBidsVisible[tenderBid.id]
+              (tenderBid) => isTenderBidsVisible[tenderBid.id],
             )"
             :key="tenderBid.id"
             cols="12"

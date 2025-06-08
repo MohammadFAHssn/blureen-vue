@@ -11,7 +11,9 @@ const isSnackbarVisible = ref(false)
     v-model="isSnackbarVisible"
     vertical
   >
-    Sugar plum chocolate bar halvah sesame snaps apple pie donut croissant marshmallow. Sweet roll donut gummies sesame snaps icing bear claw tiramisu cotton candy.
+    Sugar plum chocolate bar halvah sesame snaps apple pie donut croissant
+    marshmallow. Sweet roll donut gummies sesame snaps icing bear claw tiramisu
+    cotton candy.
 
     <template #actions>
       <VBtn

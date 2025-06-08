@@ -1,24 +1,24 @@
 <script setup>
-import bg1 from '@images/pages/custom-radio-img-1.png'
-import bg2 from '@images/pages/custom-radio-img-2.png'
-import bg3 from '@images/pages/custom-radio-img-3.png'
+import bg1 from "@images/pages/custom-radio-img-1.png"
+import bg2 from "@images/pages/custom-radio-img-2.png"
+import bg3 from "@images/pages/custom-radio-img-3.png"
 
 const radioContent = [
   {
     bgImage: bg1,
-    value: 'basic',
+    value: "basic",
   },
   {
     bgImage: bg2,
-    value: 'premium',
+    value: "premium",
   },
   {
     bgImage: bg3,
-    value: 'enterprise',
+    value: "enterprise",
   },
 ]
 
-const selectedRadio = ref('basic')
+const selectedRadio = ref("basic")
 </script>
 
 <template>

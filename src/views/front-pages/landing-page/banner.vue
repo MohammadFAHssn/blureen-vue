@@ -1,5 +1,5 @@
 <script setup>
-import ctaDashborad from '@images/front-pages/landing-page/cta-dashboard.png'
+import ctaDashborad from "@images/front-pages/landing-page/cta-dashboard.png"
 </script>
 
 <template>
@@ -19,7 +19,7 @@ import ctaDashborad from '@images/front-pages/landing-page/cta-dashboard.png'
           <VBtn
             color="primary"
             :to="{ name: 'front-pages-payment' }"
-            :size="$vuetify.display.smAndUp ? 'large' : 'default' "
+            :size="$vuetify.display.smAndUp ? 'large' : 'default'"
           >
             Get Started
           </VBtn>

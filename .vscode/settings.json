@@ -36,11 +36,7 @@
   "eslint.format.enable": true,
   "eslint.packageManager": "pnpm",
   "stylelint.packageManager": "pnpm",
-  "stylelint.validate": [
-    "css",
-    "scss",
-    "vue"
-  ],
+  "stylelint.validate": ["css", "scss", "vue"],
   "cSpell.words": [
     "addressline",
     "Composables",

@@ -1,8 +1,6 @@
 <template>
   <div class="demo-space-x">
-    <VBtn>
-      Normal Button
-    </VBtn>
+    <VBtn> Normal Button </VBtn>
     <VBtn
       rounded="lg"
       color="secondary"

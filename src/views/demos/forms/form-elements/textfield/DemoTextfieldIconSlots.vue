@@ -1,16 +1,16 @@
 <script setup>
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
 
-const message = ref('Hey!')
+const message = ref("Hey!")
 const loading = ref(false)
 
 const clickMe = () => {
   loading.value = true
-  message.value = 'Wait for it...'
+  message.value = "Wait for it..."
   setTimeout(() => {
     loading.value = false
-    message.value = 'You\'ve clicked me!'
+    message.value = "You've clicked me!"
   }, 2000)
 }
 </script>

@@ -1,42 +1,42 @@
 <script setup>
-const tab = ref('personal-info')
-const firstName = ref('')
-const lastName = ref('')
+const tab = ref("personal-info")
+const firstName = ref("")
+const lastName = ref("")
 const country = ref()
-const birthDate = ref('')
+const birthDate = ref("")
 const phoneNo = ref()
 
 const countryList = [
-  'USA',
-  'Canada',
-  'UK',
-  'Denmark',
-  'Germany',
-  'Iceland',
-  'Israel',
-  'Mexico',
+  "USA",
+  "Canada",
+  "UK",
+  "Denmark",
+  "Germany",
+  "Iceland",
+  "Israel",
+  "Mexico",
 ]
 
 const languageList = [
-  'English',
-  'German',
-  'French',
-  'Spanish',
-  'Portuguese',
-  'Russian',
-  'Korean',
+  "English",
+  "German",
+  "French",
+  "Spanish",
+  "Portuguese",
+  "Russian",
+  "Korean",
 ]
 
-const username = ref('')
-const email = ref('')
-const password = ref('')
-const cPassword = ref('')
-const twitterLink = ref('')
-const facebookLink = ref('')
-const googlePlusLink = ref('')
-const linkedInLink = ref('')
-const instagramLink = ref('')
-const quoraLink = ref('')
+const username = ref("")
+const email = ref("")
+const password = ref("")
+const cPassword = ref("")
+const twitterLink = ref("")
+const facebookLink = ref("")
+const googlePlusLink = ref("")
+const linkedInLink = ref("")
+const instagramLink = ref("")
+const quoraLink = ref("")
 const languages = ref([])
 const isPasswordVisible = ref(false)
 const isCPasswordVisible = ref(false)
@@ -173,7 +173,9 @@ const isCPasswordVisible = ref(false)
                   placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -188,7 +190,9 @@ const isCPasswordVisible = ref(false)
                   autocomplete="confirm-password"
                   placeholder="············"
                   :type="isCPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
                 />
               </VCol>

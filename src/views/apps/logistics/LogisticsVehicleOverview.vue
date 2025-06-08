@@ -1,27 +1,27 @@
 <script setup>
 const vehicleData = [
   {
-    icon: 'tabler-car',
-    title: 'On the way',
-    time: '2hr 10min',
+    icon: "tabler-car",
+    title: "On the way",
+    time: "2hr 10min",
     percentage: 39.7,
   },
   {
-    icon: 'tabler-circle-arrow-down',
-    title: 'Unloading',
-    time: '3hr 15min',
+    icon: "tabler-circle-arrow-down",
+    title: "Unloading",
+    time: "3hr 15min",
     percentage: 28.3,
   },
   {
-    icon: 'tabler-circle-arrow-up',
-    title: 'Loading',
-    time: '1hr 24min',
+    icon: "tabler-circle-arrow-up",
+    title: "Loading",
+    time: "1hr 24min",
     percentage: 17.4,
   },
   {
-    icon: 'tabler-clock',
-    title: 'Waiting',
-    time: '5hr 19min',
+    icon: "tabler-clock",
+    title: "Waiting",
+    time: "5hr 19min",
     percentage: 14.6,
   },
 ]
@@ -36,7 +36,7 @@ const vehicleData = [
     </VCardItem>
     <VCardText>
       <div class="d-flex mb-6">
-        <div style="inline-size: 39.7%;">
+        <div style="inline-size: 39.7%">
           <div class="vehicle-progress-label position-relative mb-6 text-body-1 d-none d-sm-block">
             On the way
           </div>
@@ -51,7 +51,7 @@ const vehicleData = [
             </div>
           </VProgressLinear>
         </div>
-        <div style="inline-size: 28.3%;">
+        <div style="inline-size: 28.3%">
           <div class="vehicle-progress-label position-relative mb-6 text-body-1 d-none d-sm-block">
             Unloading
           </div>
@@ -66,7 +66,7 @@ const vehicleData = [
             </div>
           </VProgressLinear>
         </div>
-        <div style="inline-size: 17.4%;">
+        <div style="inline-size: 17.4%">
           <div class="vehicle-progress-label position-relative mb-6 text-body-1 d-none d-sm-block">
             Loading
           </div>
@@ -81,7 +81,7 @@ const vehicleData = [
             </div>
           </VProgressLinear>
         </div>
-        <div style="inline-size: 14.6%;">
+        <div style="inline-size: 14.6%">
           <div class="vehicle-progress-label position-relative mb-6 text-body-1 d-none d-sm-block">
             Waiting
           </div>
@@ -105,7 +105,7 @@ const vehicleData = [
           >
             <td
               width="70%"
-              style="padding-inline-start: 0 !important;"
+              style="padding-inline-start: 0 !important"
             >
               <div class="d-flex align-center gap-x-2">
                 <VIcon

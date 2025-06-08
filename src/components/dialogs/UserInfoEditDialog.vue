@@ -5,20 +5,20 @@ const props = defineProps({
     required: false,
     default: () => ({
       id: 0,
-      fullName: '',
-      company: '',
-      role: '',
-      username: '',
-      country: '',
-      contact: '',
-      email: '',
-      currentPlan: '',
-      status: '',
-      avatar: '',
+      fullName: "",
+      company: "",
+      role: "",
+      username: "",
+      country: "",
+      contact: "",
+      email: "",
+      currentPlan: "",
+      status: "",
+      avatar: "",
       taskDone: null,
       projectDone: null,
-      taxId: '',
-      language: '',
+      taxId: "",
+      language: "",
     }),
   },
   isDialogVisible: {
@@ -27,30 +27,30 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'submit',
-  'update:isDialogVisible',
-])
+const emit = defineEmits(["submit", "update:isDialogVisible"])
 
 const userData = ref(structuredClone(toRaw(props.userData)))
 const isUseAsBillingAddress = ref(false)
 
-watch(() => props, () => {
-  userData.value = structuredClone(toRaw(props.userData))
-})
+watch(
+  () => props,
+  () => {
+    userData.value = structuredClone(toRaw(props.userData))
+  },
+)
 
 const onFormSubmit = () => {
-  emit('update:isDialogVisible', false)
-  emit('submit', userData.value)
+  emit("update:isDialogVisible", false)
+  emit("submit", userData.value)
 }
 
 const onFormReset = () => {
   userData.value = structuredClone(toRaw(props.userData))
-  emit('update:isDialogVisible', false)
+  emit("update:isDialogVisible", false)
 }
 
 const dialogModelValueUpdate = val => {
-  emit('update:isDialogVisible', val)
+  emit("update:isDialogVisible", val)
 }
 </script>
 

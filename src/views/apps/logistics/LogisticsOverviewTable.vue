@@ -9,52 +9,49 @@ const updateOptions = options => {
   orderBy.value = options.sortBy[0]?.order
 }
 
-const { data: vehiclesData } = await useApi(createUrl('/apps/logistics/vehicles', {
-  query: {
-    page,
-    itemsPerPage,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: vehiclesData } = await useApi(
+  createUrl("/apps/logistics/vehicles", {
+    query: {
+      page,
+      itemsPerPage,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const vehicles = computed(() => vehiclesData.value.vehicles)
 const totalVehicles = computed(() => vehiclesData.value.totalVehicles)
 
 const headers = [
   {
-    title: 'LOCATION',
-    key: 'location',
+    title: "LOCATION",
+    key: "location",
   },
   {
-    title: 'STARTING ROUTE',
-    key: 'startRoute',
+    title: "STARTING ROUTE",
+    key: "startRoute",
   },
   {
-    title: 'ENDING ROUTE',
-    key: 'endRoute',
+    title: "ENDING ROUTE",
+    key: "endRoute",
   },
   {
-    title: 'WARNINGS',
-    key: 'warnings',
+    title: "WARNINGS",
+    key: "warnings",
   },
   {
-    title: 'PROGRESS',
-    key: 'progress',
+    title: "PROGRESS",
+    key: "progress",
   },
 ]
 
 const resolveChipColor = warning => {
-  if (warning === 'No Warnings')
-    return 'success'
-  if (warning === 'fuel problems')
-    return 'primary'
-  if (warning === 'Temperature Not Optimal')
-    return 'warning'
-  if (warning === 'Ecu Not Responding')
-    return 'error'
-  if (warning === 'Oil Leakage')
-    return 'info'
+  if (warning === "No Warnings") return "success"
+  if (warning === "fuel problems") return "primary"
+  if (warning === "Temperature Not Optimal") return "warning"
+  if (warning === "Ecu Not Responding") return "error"
+  if (warning === "Oil Leakage") return "info"
 }
 </script>
 
@@ -124,7 +121,7 @@ const resolveChipColor = warning => {
       <template #item.progress="{ item }">
         <div
           class="d-flex align-center gap-x-4"
-          style="min-inline-size: 240px;"
+          style="min-inline-size: 240px"
         >
           <div class="w-100">
             <VProgressLinear
@@ -134,9 +131,7 @@ const resolveChipColor = warning => {
               :height="8"
             />
           </div>
-          <div>
-            {{ item.progress }}%
-          </div>
+          <div>{{ item.progress }}%</div>
         </div>
       </template>
 

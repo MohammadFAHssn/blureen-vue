@@ -1,8 +1,8 @@
 <script setup>
-import AddNewUserDrawer from '@/views/apps/user/list/AddNewUserDrawer.vue'
+import AddNewUserDrawer from "@/views/apps/user/list/AddNewUserDrawer.vue"
 
 // 👉 Store
-const searchQuery = ref('')
+const searchQuery = ref("")
 const selectedRole = ref()
 const selectedPlan = ref()
 const selectedStatus = ref()
@@ -22,47 +22,46 @@ const updateOptions = options => {
 // Headers
 const headers = [
   {
-    title: 'User',
-    key: 'user',
+    title: "User",
+    key: "user",
   },
   {
-    title: 'Role',
-    key: 'role',
+    title: "Role",
+    key: "role",
   },
   {
-    title: 'Plan',
-    key: 'plan',
+    title: "Plan",
+    key: "plan",
   },
   {
-    title: 'Billing',
-    key: 'billing',
+    title: "Billing",
+    key: "billing",
   },
   {
-    title: 'Status',
-    key: 'status',
+    title: "Status",
+    key: "status",
   },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: "Actions",
+    key: "actions",
     sortable: false,
   },
 ]
 
-const {
-  data: usersData,
-  execute: fetchUsers,
-} = await useApi(createUrl('/apps/users', {
-  query: {
-    q: searchQuery,
-    status: selectedStatus,
-    plan: selectedPlan,
-    role: selectedRole,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: usersData, execute: fetchUsers } = await useApi(
+  createUrl("/apps/users", {
+    query: {
+      q: searchQuery,
+      status: selectedStatus,
+      plan: selectedPlan,
+      role: selectedRole,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const users = computed(() => usersData.value.users)
 const totalUsers = computed(() => usersData.value.totalUsers)
@@ -70,78 +69,75 @@ const totalUsers = computed(() => usersData.value.totalUsers)
 // 👉 search filters
 const roles = [
   {
-    title: 'Admin',
-    value: 'admin',
+    title: "Admin",
+    value: "admin",
   },
   {
-    title: 'Author',
-    value: 'author',
+    title: "Author",
+    value: "author",
   },
   {
-    title: 'Editor',
-    value: 'editor',
+    title: "Editor",
+    value: "editor",
   },
   {
-    title: 'Maintainer',
-    value: 'maintainer',
+    title: "Maintainer",
+    value: "maintainer",
   },
   {
-    title: 'Subscriber',
-    value: 'subscriber',
+    title: "Subscriber",
+    value: "subscriber",
   },
 ]
 
 const resolveUserRoleVariant = role => {
   const roleLowerCase = role.toLowerCase()
-  if (roleLowerCase === 'subscriber')
+  if (roleLowerCase === "subscriber")
     return {
-      color: 'primary',
-      icon: 'tabler-user',
+      color: "primary",
+      icon: "tabler-user",
     }
-  if (roleLowerCase === 'author')
+  if (roleLowerCase === "author")
     return {
-      color: 'warning',
-      icon: 'tabler-settings',
+      color: "warning",
+      icon: "tabler-settings",
     }
-  if (roleLowerCase === 'maintainer')
+  if (roleLowerCase === "maintainer")
     return {
-      color: 'success',
-      icon: 'tabler-chart-donut',
+      color: "success",
+      icon: "tabler-chart-donut",
     }
-  if (roleLowerCase === 'editor')
+  if (roleLowerCase === "editor")
     return {
-      color: 'info',
-      icon: 'tabler-pencil',
+      color: "info",
+      icon: "tabler-pencil",
     }
-  if (roleLowerCase === 'admin')
+  if (roleLowerCase === "admin")
     return {
-      color: 'error',
-      icon: 'tabler-device-laptop',
+      color: "error",
+      icon: "tabler-device-laptop",
     }
-  
+
   return {
-    color: 'primary',
-    icon: 'tabler-user',
+    color: "primary",
+    icon: "tabler-user",
   }
 }
 
 const resolveUserStatusVariant = stat => {
   const statLowerCase = stat.toLowerCase()
-  if (statLowerCase === 'pending')
-    return 'warning'
-  if (statLowerCase === 'active')
-    return 'success'
-  if (statLowerCase === 'inactive')
-    return 'secondary'
-  
-  return 'primary'
+  if (statLowerCase === "pending") return "warning"
+  if (statLowerCase === "active") return "success"
+  if (statLowerCase === "inactive") return "secondary"
+
+  return "primary"
 }
 
 const isAddNewUserDrawerVisible = ref(false)
 
 const addNewUser = async userData => {
-  await $api('/apps/users', {
-    method: 'POST',
+  await $api("/apps/users", {
+    method: "POST",
     body: userData,
   })
 
@@ -150,12 +146,11 @@ const addNewUser = async userData => {
 }
 
 const deleteUser = async id => {
-  await $api(`/apps/users/${ id }`, { method: 'DELETE' })
+  await $api(`/apps/users/${id}`, { method: "DELETE" })
 
   // Delete from selectedRows
   const index = selectedRows.value.findIndex(row => row === id)
-  if (index !== -1)
-    selectedRows.value.splice(index, 1)
+  if (index !== -1) selectedRows.value.splice(index, 1)
 
   // refetch User
   fetchUsers()
@@ -179,7 +174,7 @@ const deleteUser = async id => {
               { value: 100, title: '100' },
               { value: -1, title: 'All' },
             ]"
-            style="inline-size: 5.5rem;"
+            style="inline-size: 5.5rem"
             @update:model-value="itemsPerPage = parseInt($event, 10)"
           />
         </div>
@@ -191,7 +186,7 @@ const deleteUser = async id => {
           <AppTextField
             v-model="searchQuery"
             placeholder="Search User"
-            style="inline-size: 15.625rem;"
+            style="inline-size: 15.625rem"
           />
 
           <!-- 👉 Add user button -->
@@ -201,7 +196,7 @@ const deleteUser = async id => {
             :items="roles"
             clearable
             clear-icon="tabler-x"
-            style="inline-size: 10rem;"
+            style="inline-size: 10rem"
           />
         </div>
       </VCardText>
@@ -232,7 +227,11 @@ const deleteUser = async id => {
             <VAvatar
               size="34"
               :variant="!item.avatar ? 'tonal' : undefined"
-              :color="!item.avatar ? resolveUserRoleVariant(item.role).color : undefined"
+              :color="
+                !item.avatar
+                  ? resolveUserRoleVariant(item.role).color
+                  : undefined
+              "
             >
               <VImg
                 v-if="item.avatar"

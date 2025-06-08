@@ -1,29 +1,29 @@
 <script setup>
-import customWizardAccount from '@images/svg/wizard-account.svg'
-import customWizardAddress from '@images/svg/wizard-address.svg'
-import customWizardPersonal from '@images/svg/wizard-personal.svg'
-import customWizardSocialLink from '@images/svg/wizard-social-link.svg'
-import customWizardSubmit from '@images/svg/wizard-submit.svg'
+import customWizardAccount from "@images/svg/wizard-account.svg"
+import customWizardAddress from "@images/svg/wizard-address.svg"
+import customWizardPersonal from "@images/svg/wizard-personal.svg"
+import customWizardSocialLink from "@images/svg/wizard-social-link.svg"
+import customWizardSubmit from "@images/svg/wizard-submit.svg"
 
 const iconsSteps = [
   {
-    title: 'Account Details',
+    title: "Account Details",
     icon: customWizardAccount,
   },
   {
-    title: 'Personal Info',
+    title: "Personal Info",
     icon: customWizardPersonal,
   },
   {
-    title: 'Address',
+    title: "Address",
     icon: customWizardAddress,
   },
   {
-    title: 'Social Links',
+    title: "Social Links",
     icon: customWizardSocialLink,
   },
   {
-    title: 'Review & Submit',
+    title: "Review & Submit",
     icon: customWizardSubmit,
   },
 ]
@@ -33,22 +33,22 @@ const isPasswordVisible = ref(false)
 const isCPasswordVisible = ref(false)
 
 const formData = ref({
-  username: 'johndoe',
-  email: 'john.doe@email.com',
-  password: 'johndoe@J2',
-  cPassword: 'johndoe@J2',
-  firstName: 'John',
-  lastName: 'Doe',
-  country: 'UK',
-  language: 'English',
-  address: '98 Borough bridge Road, Birmingham',
-  landmark: 'Borough bridge',
-  pincode: '658921',
-  city: 'Birmingham',
-  twitter: 'https://twitter.com/abc',
-  facebook: 'https://facebook.com/abc',
-  googlePlus: 'https://plus.google.com/abc',
-  linkedIn: 'https://linkedin.com/abc',
+  username: "johndoe",
+  email: "john.doe@email.com",
+  password: "johndoe@J2",
+  cPassword: "johndoe@J2",
+  firstName: "John",
+  lastName: "Doe",
+  country: "UK",
+  language: "English",
+  address: "98 Borough bridge Road, Birmingham",
+  landmark: "Borough bridge",
+  pincode: "658921",
+  city: "Birmingham",
+  twitter: "https://twitter.com/abc",
+  facebook: "https://facebook.com/abc",
+  googlePlus: "https://plus.google.com/abc",
+  linkedIn: "https://linkedin.com/abc",
 })
 
 const onSubmit = () => {
@@ -119,7 +119,9 @@ const onSubmit = () => {
                   placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -134,7 +136,9 @@ const onSubmit = () => {
                   autocomplete="confirm-password"
                   placeholder="············"
                   :type="isCPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isCPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isCPasswordVisible = !isCPasswordVisible"
                 />
               </VCol>

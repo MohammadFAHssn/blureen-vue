@@ -1,20 +1,20 @@
 <script setup>
 const checkboxContent = [
   {
-    title: 'Discount',
-    subtitle: '20%',
-    desc: 'Wow! Get 20% off on your next purchase!',
-    value: 'discount',
+    title: "Discount",
+    subtitle: "20%",
+    desc: "Wow! Get 20% off on your next purchase!",
+    value: "discount",
   },
   {
-    title: 'Updates',
-    subtitle: 'Free',
-    desc: 'Get Updates regarding related products.',
-    value: 'updates',
+    title: "Updates",
+    subtitle: "Free",
+    desc: "Get Updates regarding related products.",
+    value: "updates",
   },
 ]
 
-const selectedCheckbox = ref(['discount'])
+const selectedCheckbox = ref(["discount"])
 </script>
 
 <template>

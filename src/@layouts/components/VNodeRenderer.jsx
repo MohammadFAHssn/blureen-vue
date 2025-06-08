@@ -1,5 +1,5 @@
 export const VNodeRenderer = defineComponent({
-  name: 'VNodeRenderer',
+  name: "VNodeRenderer",
   props: {
     nodes: {
       type: [Array, Object],

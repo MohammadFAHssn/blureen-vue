@@ -1,28 +1,28 @@
 <script setup>
 const states = [
   {
-    name: 'Florida',
-    abbr: 'FL',
+    name: "Florida",
+    abbr: "FL",
     id: 1,
   },
   {
-    name: 'Georgia',
-    abbr: 'GA',
+    name: "Georgia",
+    abbr: "GA",
     id: 2,
   },
   {
-    name: 'Nebraska',
-    abbr: 'NE',
+    name: "Nebraska",
+    abbr: "NE",
     id: 3,
   },
   {
-    name: 'California',
-    abbr: 'CA',
+    name: "California",
+    abbr: "CA",
     id: 4,
   },
   {
-    name: 'New York',
-    abbr: 'NY',
+    name: "New York",
+    abbr: "NY",
     id: 5,
   },
 ]
@@ -31,7 +31,7 @@ function customFilter(itemTitle, queryText, item) {
   const textOne = item.raw.name.toLowerCase()
   const textTwo = item.raw.abbr.toLowerCase()
   const searchText = queryText.toLowerCase()
-  
+
   return textOne.includes(searchText) || textTwo.includes(searchText)
 }
 </script>

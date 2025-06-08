@@ -1,5 +1,5 @@
 <script setup>
-import CustomerOrderTable from './CustomerOrderTable.vue'
+import CustomerOrderTable from "./CustomerOrderTable.vue"
 </script>
 
 <template>

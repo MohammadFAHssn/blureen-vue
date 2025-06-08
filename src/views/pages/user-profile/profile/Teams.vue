@@ -8,16 +8,16 @@ const props = defineProps({
 
 const moreList = [
   {
-    title: 'Share connections',
-    value: 'Share connections',
+    title: "Share connections",
+    value: "Share connections",
   },
   {
-    title: 'Suggest edits',
-    value: 'Suggest edits',
+    title: "Suggest edits",
+    value: "Suggest edits",
   },
   {
-    title: 'Report Bug',
-    value: 'Report Bug',
+    title: "Report Bug",
+    value: "Report Bug",
   },
 ]
 </script>

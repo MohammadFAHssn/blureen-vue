@@ -4,7 +4,9 @@
  * webfontloader documentation: https://github.com/typekit/webfontloader
  */
 export async function loadFonts() {
-  const webFontLoader = await import(/* webpackChunkName: "webfontloader" */ 'webfontloader')
+  const webFontLoader = await import(
+    /* webpackChunkName: "webfontloader" */ "webfontloader"
+  )
 
   webFontLoader.load({
     // google: {
@@ -12,8 +14,8 @@ export async function loadFonts() {
     // },
 
     custom: {
-      families: ['Shabnam'],
-      urls: ['/src/assets/fonts/Shabnam/Shabnam.css'],
+      families: ["Shabnam"],
+      urls: ["/src/assets/fonts/Shabnam/Shabnam.css"],
     },
   })
 }

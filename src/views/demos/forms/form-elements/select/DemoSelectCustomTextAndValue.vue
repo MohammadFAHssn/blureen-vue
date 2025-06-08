@@ -1,29 +1,29 @@
 <script setup>
 const selectedOption = ref({
-  state: 'Florida',
-  abbr: 'FL',
+  state: "Florida",
+  abbr: "FL",
 })
 
 const items = [
   {
-    state: 'Florida',
-    abbr: 'FL',
+    state: "Florida",
+    abbr: "FL",
   },
   {
-    state: 'Georgia',
-    abbr: 'GA',
+    state: "Georgia",
+    abbr: "GA",
   },
   {
-    state: 'Nebraska',
-    abbr: 'NE',
+    state: "Nebraska",
+    abbr: "NE",
   },
   {
-    state: 'California',
-    abbr: 'CA',
+    state: "California",
+    abbr: "CA",
   },
   {
-    state: 'New York',
-    abbr: 'NY',
+    state: "New York",
+    abbr: "NY",
   },
 ]
 </script>

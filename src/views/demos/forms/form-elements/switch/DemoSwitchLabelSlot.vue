@@ -5,7 +5,8 @@ const switchMe = ref(false)
 <template>
   <VSwitch v-model="switchMe">
     <template #label>
-      Turn on the progress: <VProgressCircular
+      Turn on the progress:
+      <VProgressCircular
         :indeterminate="switchMe"
         class="ms-2"
       />

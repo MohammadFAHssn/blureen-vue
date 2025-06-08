@@ -1,43 +1,35 @@
 <script setup>
-import usFlag from '@images/icons/countries/us.png'
-import americanExpress from '@images/icons/payments/img/american-express.png'
-import mastercard from '@images/icons/payments/img/mastercard.png'
-import visa from '@images/icons/payments/img/visa-light.png'
+import usFlag from "@images/icons/countries/us.png"
+import americanExpress from "@images/icons/payments/img/american-express.png"
+import mastercard from "@images/icons/payments/img/mastercard.png"
+import visa from "@images/icons/payments/img/visa-light.png"
 
 const currentCardDetails = {
-  number: '1234567890123456',
-  name: 'John Doe',
-  expiry: '12/2028',
-  cvv: '123',
+  number: "1234567890123456",
+  name: "John Doe",
+  expiry: "12/2028",
+  cvv: "123",
   isPrimary: false,
-  type: '',
+  type: "",
 }
 
 const editBillingData = {
-  firstName: 'Gertrude',
-  lastName: 'Jennings',
-  selectedCountry: 'USA',
-  addressLine1: '100 Water Plant Avenue',
-  addressLine2: 'Building 1303 Wake Island',
-  landmark: 'Near Wake Island',
-  contact: '+1(609) 933-44-22',
-  country: 'USA',
-  state: 'Queensland',
+  firstName: "Gertrude",
+  lastName: "Jennings",
+  selectedCountry: "USA",
+  addressLine1: "100 Water Plant Avenue",
+  addressLine2: "Building 1303 Wake Island",
+  landmark: "Near Wake Island",
+  contact: "+1(609) 933-44-22",
+  country: "USA",
+  state: "Queensland",
   zipCode: 403114,
-  city: 'Brisbane',
+  city: "Brisbane",
 }
 
-const show = ref([
-  false,
-  true,
-  false,
-])
+const show = ref([false, true, false])
 
-const paymentShow = ref([
-  false,
-  true,
-  false,
-])
+const paymentShow = ref([false, true, false])
 
 const isEditAddressDialogVisible = ref(false)
 const isCardAddDialogVisible = ref(false)
@@ -46,9 +38,9 @@ const isNewCardAddDialogVisible = ref(false)
 
 const addressData = [
   {
-    title: 'Home',
-    subtitle: '23 Shatinon Mekalan',
-    owner: 'Violet Mendoza',
+    title: "Home",
+    subtitle: "23 Shatinon Mekalan",
+    owner: "Violet Mendoza",
     defaultAddress: true,
     address: ` 23 Shatinon Mekalan,
     <br>
@@ -57,9 +49,9 @@ const addressData = [
     LondonUK`,
   },
   {
-    title: 'Office',
-    subtitle: '45 Rocker Terrace',
-    owner: 'Violet Mendoza',
+    title: "Office",
+    subtitle: "45 Rocker Terrace",
+    owner: "Violet Mendoza",
     defaultAddress: false,
     address: ` 45 Rocker Terrace,
     <br>
@@ -70,9 +62,9 @@ const addressData = [
     UK`,
   },
   {
-    title: 'Family',
-    subtitle: '512 Water Plant',
-    owner: 'Violet Mendoza',
+    title: "Family",
+    subtitle: "512 Water Plant",
+    owner: "Violet Mendoza",
     defaultAddress: false,
     address: ` 512 Water Plant,
     <br>
@@ -84,20 +76,20 @@ const addressData = [
 
 const paymentData = [
   {
-    title: 'Mastercard',
-    subtitle: 'Expires Apr 2028',
+    title: "Mastercard",
+    subtitle: "Expires Apr 2028",
     isDefaultMethod: false,
     image: mastercard,
   },
   {
-    title: 'American Express',
-    subtitle: 'Expires Apr 2028',
+    title: "American Express",
+    subtitle: "Expires Apr 2028",
     isDefaultMethod: false,
     image: americanExpress,
   },
   {
-    title: 'Visa',
-    subtitle: '45 Roker Terrace',
+    title: "Visa",
+    subtitle: "45 Roker Terrace",
     isDefaultMethod: true,
     image: visa,
   },
@@ -117,7 +109,9 @@ const paymentData = [
         <VBtn
           variant="tonal"
           size="small"
-          @click="isNewEditAddressDialogVisible = !isNewEditAddressDialogVisible"
+          @click="
+            isNewEditAddressDialogVisible = !isNewEditAddressDialogVisible
+          "
         >
           Add new Address
         </VBtn>
@@ -130,7 +124,9 @@ const paymentData = [
           <div class="d-flex justify-space-between py-3 gap-y-2 flex-wrap align-center">
             <div class="d-flex align-center gap-x-4">
               <VIcon
-                :icon="show[index] ? 'tabler-chevron-down' : 'tabler-chevron-right'"
+                :icon="
+                  show[index] ? 'tabler-chevron-down' : 'tabler-chevron-right'
+                "
                 class="flip-in-rtl text-high-emphasis"
                 size="24"
                 @click="show[index] = !show[index]"
@@ -155,7 +151,11 @@ const paymentData = [
               </div>
             </div>
             <div class="ms-5">
-              <IconBtn @click="isEditAddressDialogVisible = !isEditAddressDialogVisible">
+              <IconBtn
+                @click="
+                  isEditAddressDialogVisible = !isEditAddressDialogVisible
+                "
+              >
                 <VIcon
                   icon="tabler-edit"
                   class="flip-in-rtl"
@@ -219,7 +219,11 @@ const paymentData = [
           <div class="d-flex justify-space-between py-3 gap-y-2 flex-wrap align-center">
             <div class="d-flex align-center gap-x-4">
               <VIcon
-                :icon="paymentShow[index] ? 'tabler-chevron-down' : 'tabler-chevron-right'"
+                :icon="
+                  paymentShow[index]
+                    ? 'tabler-chevron-down'
+                    : 'tabler-chevron-right'
+                "
                 size="24"
                 class="flip-in-rtl text-high-emphasis"
                 @click="paymentShow[index] = !paymentShow[index]"
@@ -279,37 +283,37 @@ const paymentData = [
                   >
                     <VTable>
                       <tr>
-                        <td>Name </td>
+                        <td>Name</td>
                         <td class="font-weight-medium text-high-emphasis">
                           Violet Mendoza
                         </td>
                       </tr>
                       <tr>
-                        <td>Number </td>
+                        <td>Number</td>
                         <td class="font-weight-medium text-high-emphasis">
                           **** 4487
                         </td>
                       </tr>
                       <tr>
-                        <td>Expires </td>
+                        <td>Expires</td>
                         <td class="font-weight-medium text-high-emphasis">
                           08/2028
                         </td>
                       </tr>
                       <tr>
-                        <td>Type </td>
+                        <td>Type</td>
                         <td class="font-weight-medium text-high-emphasis">
                           Master Card
                         </td>
                       </tr>
                       <tr>
-                        <td>Issuer </td>
+                        <td>Issuer</td>
                         <td class="font-weight-medium text-high-emphasis">
                           VICBANK
                         </td>
                       </tr>
                       <tr>
-                        <td>ID </td>
+                        <td>ID</td>
                         <td class="font-weight-medium text-high-emphasis">
                           DH73DJ8
                         </td>
@@ -322,7 +326,7 @@ const paymentData = [
                   >
                     <VTable>
                       <tr>
-                        <td>Billing </td>
+                        <td>Billing</td>
                         <td class="font-weight-medium text-high-emphasis">
                           United Kingdom
                         </td>

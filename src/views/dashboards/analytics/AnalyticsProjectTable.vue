@@ -1,44 +1,46 @@
 <script setup>
 const projectTableHeaders = [
   {
-    title: 'PROJECT',
-    key: 'project',
+    title: "PROJECT",
+    key: "project",
   },
   {
-    title: 'LEADER',
-    key: 'leader',
+    title: "LEADER",
+    key: "leader",
   },
   {
-    title: 'Team',
-    key: 'team',
+    title: "Team",
+    key: "team",
     sortable: false,
   },
   {
-    title: 'PROGRESS',
-    key: 'progress',
+    title: "PROGRESS",
+    key: "progress",
   },
   {
-    title: 'Action',
-    key: 'Action',
+    title: "Action",
+    key: "Action",
     sortable: false,
   },
 ]
 
-const search = ref('')
+const search = ref("")
 const itemsPerPage = ref(5)
 const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 
-const { data: projectsData } = await useApi(createUrl('/dashboard/analytics/projects', {
-  query: {
-    q: search,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: projectsData } = await useApi(
+  createUrl("/dashboard/analytics/projects", {
+    query: {
+      q: search,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const updateOptions = options => {
   sortBy.value = options.sortBy[0]?.key
@@ -50,16 +52,16 @@ const totalProjects = computed(() => projectsData.value?.totalProjects)
 
 const moreList = [
   {
-    title: 'Download',
-    value: 'Download',
+    title: "Download",
+    value: "Download",
   },
   {
-    title: 'Delete',
-    value: 'Delete',
+    title: "Delete",
+    value: "Delete",
   },
   {
-    title: 'View',
-    value: 'View',
+    title: "View",
+    value: "View",
   },
 ]
 </script>
@@ -70,7 +72,7 @@ const moreList = [
       <VCardTitle>Project List</VCardTitle>
 
       <template #append>
-        <div style="inline-size: 250px;">
+        <div style="inline-size: 250px">
           <AppTextField
             v-model="search"
             placeholder="Search Project"
@@ -97,7 +99,7 @@ const moreList = [
       <template #item.project="{ item }">
         <div
           class="d-flex align-center gap-x-3"
-          style="padding-block: 7px;"
+          style="padding-block: 7px"
         >
           <VAvatar
             :size="34"

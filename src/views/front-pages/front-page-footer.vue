@@ -1,57 +1,57 @@
 <script setup>
-import appleImg from '@images/front-pages/landing-page/apple-icon.png'
-import googlePlayImg from '@images/front-pages/landing-page/google-play-icon.png'
-import footerDarkBg from '@images/front-pages/backgrounds/footer-bg-dark.png'
-import footerLightBg from '@images/front-pages/backgrounds/footer-bg-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import appleImg from "@images/front-pages/landing-page/apple-icon.png"
+import googlePlayImg from "@images/front-pages/landing-page/google-play-icon.png"
+import footerDarkBg from "@images/front-pages/backgrounds/footer-bg-dark.png"
+import footerLightBg from "@images/front-pages/backgrounds/footer-bg-light.png"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
 
 const footerBg = useGenerateImageVariant(footerLightBg, footerDarkBg)
 
 const pagesList = [
   {
-    name: 'Pricing',
-    to: { name: 'front-pages-pricing' },
+    name: "Pricing",
+    to: { name: "front-pages-pricing" },
   },
   {
-    name: 'Payment',
-    to: { name: 'front-pages-payment' },
+    name: "Payment",
+    to: { name: "front-pages-payment" },
     isNew: true,
   },
   {
-    name: 'Checkout',
-    to: { name: 'front-pages-checkout' },
+    name: "Checkout",
+    to: { name: "front-pages-checkout" },
   },
   {
-    name: 'Help Center',
-    to: { name: 'front-pages-help-center' },
+    name: "Help Center",
+    to: { name: "front-pages-help-center" },
   },
   {
-    name: 'Login/Register',
-    to: { name: 'pages-authentication-login-v2' },
+    name: "Login/Register",
+    to: { name: "pages-authentication-login-v2" },
   },
 ]
 
 const demoList = [
   {
-    title: 'Vertical Layout',
-    to: 'https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-1/dashboards/analytics',
+    title: "Vertical Layout",
+    to: "https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-1/dashboards/analytics",
   },
   {
-    title: 'Horizontal Layout',
-    to: 'https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-5/dashboards/analytics',
+    title: "Horizontal Layout",
+    to: "https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-5/dashboards/analytics",
   },
   {
-    title: 'Bordered Layout',
-    to: 'https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-2/dashboards/analytics',
+    title: "Bordered Layout",
+    to: "https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-2/dashboards/analytics",
   },
   {
-    title: 'Semi Dark Layout',
-    to: 'https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-3/dashboards/analytics',
+    title: "Semi Dark Layout",
+    to: "https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-3/dashboards/analytics",
   },
   {
-    title: 'Dark Layout',
-    to: 'https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-4/dashboards/analytics',
+    title: "Dark Layout",
+    to: "https://demos.pixinvent.com/vuexy-vuejs-admin-template/demo-4/dashboards/analytics",
   },
 ]
 </script>
@@ -82,9 +82,14 @@ const demoList = [
 
               <div
                 class="mb-6"
-                :class="$vuetify.theme.current.dark ? 'text-body-1' : 'text-white-variant'"
+                :class="
+                  $vuetify.theme.current.dark
+                    ? 'text-body-1'
+                    : 'text-white-variant'
+                "
               >
-                Most Powerful & Comprehensive 🤩 Vuejs Admin Template with Elegant Material Design & Unique Layouts.
+                Most Powerful & Comprehensive 🤩 Vuejs Admin Template with
+                Elegant Material Design & Unique Layouts.
               </div>
               <VForm class="subscribe-form d-flex align-center">
                 <AppTextField
@@ -108,7 +113,7 @@ const demoList = [
               <h6 class="footer-title text-h6 mb-6">
                 Demos
               </h6>
-              <ul style="list-style: none;">
+              <ul style="list-style: none">
                 <li
                   v-for="(item, index) in demoList"
                   :key="index"
@@ -118,7 +123,11 @@ const demoList = [
                     :href="item.to"
                     target="_blank"
                     rel="noopener noreferrer"
-                    :class="$vuetify.theme.current.dark ? 'text-body-1' : 'text-white-variant'"
+                    :class="
+                      $vuetify.theme.current.dark
+                        ? 'text-body-1'
+                        : 'text-white-variant'
+                    "
                   >
                     {{ item.title }}
                   </a>
@@ -137,14 +146,18 @@ const demoList = [
               <h6 class="footer-title text-h6 mb-6">
                 Pages
               </h6>
-              <ul style="list-style: none;">
+              <ul style="list-style: none">
                 <li
                   v-for="(item, index) in pagesList"
                   :key="index"
                   class="mb-4"
                 >
                   <RouterLink
-                    :class="$vuetify.theme.current.dark ? 'text-body-1' : 'text-white-variant'"
+                    :class="
+                      $vuetify.theme.current.dark
+                        ? 'text-body-1'
+                        : 'text-white-variant'
+                    "
                     class="me-2"
                     :to="item.to"
                   >
@@ -195,12 +208,22 @@ const demoList = [
                         width="34"
                       />
                       <div class="d-flex flex-column justify-content-start">
-                        <div :class="$vuetify.theme.current.dark ? 'text-body-2' : 'text-white-variant text-body-2'">
+                        <div
+                          :class="
+                            $vuetify.theme.current.dark
+                              ? 'text-body-2'
+                              : 'text-white-variant text-body-2'
+                          "
+                        >
                           Download on the
                         </div>
                         <h6
                           class="text-h6 text-start"
-                          :class="$vuetify.theme.current.dark ? 'text-body-1' : 'footer-title'"
+                          :class="
+                            $vuetify.theme.current.dark
+                              ? 'text-body-1'
+                              : 'footer-title'
+                          "
                         >
                           {{ item.store }}
                         </h6>
@@ -228,17 +251,32 @@ const demoList = [
               target="_blank"
               rel="noopener noreferrer"
               class="font-weight-bold ms-1 text-white"
-            >Pixinvent</a>,
-            Made With ❤️ for a better web.
+            >Pixinvent</a>, Made With ❤️ for a better web.
           </div>
 
           <div class="d-flex gap-x-6">
             <template
               v-for="(item, index) in [
-                { title: 'github', icon: 'tabler-brand-github-filled', href: 'https://github.com/pixinvent' },
-                { title: 'facebook', icon: 'tabler-brand-facebook-filled', href: 'https://www.facebook.com/pixinvents/' },
-                { title: 'twitter', icon: 'tabler-brand-twitter-filled', href: 'https://twitter.com/pixinvents' },
-                { title: 'google', icon: 'tabler-brand-youtube-filled', href: 'https://www.youtube.com/channel/UClOcB3o1goJ293ri_Hxpklg' },
+                {
+                  title: 'github',
+                  icon: 'tabler-brand-github-filled',
+                  href: 'https://github.com/pixinvent',
+                },
+                {
+                  title: 'facebook',
+                  icon: 'tabler-brand-facebook-filled',
+                  href: 'https://www.facebook.com/pixinvents/',
+                },
+                {
+                  title: 'twitter',
+                  icon: 'tabler-brand-twitter-filled',
+                  href: 'https://twitter.com/pixinvents',
+                },
+                {
+                  title: 'google',
+                  icon: 'tabler-brand-youtube-filled',
+                  href: 'https://www.youtube.com/channel/UClOcB3o1goJ293ri_Hxpklg',
+                },
               ]"
               :key="index"
             >

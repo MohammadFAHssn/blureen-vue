@@ -7,11 +7,11 @@ const props = defineProps({
   location: {
     type: null,
     required: false,
-    default: 'bottom end',
+    default: "bottom end",
   },
 })
 
-const { locale } = useI18n({ useScope: 'global' })
+const { locale } = useI18n({ useScope: "global" })
 </script>
 
 <template>

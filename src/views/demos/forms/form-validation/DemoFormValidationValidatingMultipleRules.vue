@@ -1,5 +1,5 @@
 <script setup>
-import { VForm } from 'vuetify/components/VForm'
+import { VForm } from "vuetify/components/VForm"
 
 const name = ref()
 const email = ref()
@@ -48,7 +48,9 @@ const isConfirmPasswordVisible = ref(false)
           v-model="password"
           label="Password"
           :type="isPasswordVisible ? 'text' : 'password'"
-          :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+          :append-inner-icon="
+            isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+          "
           placeholder="Enter Password"
           :rules="[requiredValidator, passwordValidator]"
           autocomplete="on"
@@ -67,8 +69,13 @@ const isConfirmPasswordVisible = ref(false)
           :type="isConfirmPasswordVisible ? 'text' : 'password'"
           placeholder="Confirm Password"
           :append-inner-icon="confirmPassword ? 'tabler-eye-off' : 'tabler-eye'"
-          :rules="[requiredValidator, confirmedValidator(confirmPassword, password)]"
-          @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+          :rules="[
+            requiredValidator,
+            confirmedValidator(confirmPassword, password),
+          ]"
+          @click:append-inner="
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+          "
         />
       </VCol>
 

@@ -1,5 +1,5 @@
 <script setup>
-const otp = ref('')
+const otp = ref("")
 </script>
 
 <template>

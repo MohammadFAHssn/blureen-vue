@@ -1,5 +1,5 @@
 <script setup>
-const searchQuery = ref('')
+const searchQuery = ref("")
 const selectedStatus = ref()
 
 // Data table options
@@ -18,110 +18,109 @@ const isLoading = ref(false)
 // 👉 headers
 const headers = [
   {
-    title: '#',
-    key: 'id',
+    title: "#",
+    key: "id",
   },
   {
-    title: 'Status',
-    key: 'trending',
+    title: "Status",
+    key: "trending",
     sortable: false,
   },
   {
-    title: 'Total',
-    key: 'total',
+    title: "Total",
+    key: "total",
   },
   {
-    title: 'Issued Date',
-    key: 'date',
+    title: "Issued Date",
+    key: "date",
   },
   {
-    title: 'Actions',
-    key: 'actions',
+    title: "Actions",
+    key: "actions",
     sortable: false,
   },
 ]
 
-const {
-  data: invoiceData,
-  execute: fetchInvoices,
-} = await useApi(createUrl('/apps/invoice', {
-  query: {
-    q: searchQuery,
-    status: selectedStatus,
-    itemsPerPage,
-    page,
-    sortBy,
-    orderBy,
-  },
-}))
+const { data: invoiceData, execute: fetchInvoices } = await useApi(
+  createUrl("/apps/invoice", {
+    query: {
+      q: searchQuery,
+      status: selectedStatus,
+      itemsPerPage,
+      page,
+      sortBy,
+      orderBy,
+    },
+  }),
+)
 
 const invoices = computed(() => invoiceData.value?.invoices)
 const totalInvoices = computed(() => invoiceData.value?.totalInvoices)
 
 const resolveInvoiceStatusVariantAndIcon = status => {
-  if (status === 'Partial Payment')
+  if (status === "Partial Payment")
     return {
-      variant: 'success',
-      icon: 'tabler-check',
+      variant: "success",
+      icon: "tabler-check",
     }
-  if (status === 'Paid')
+  if (status === "Paid")
     return {
-      variant: 'warning',
-      icon: 'tabler-chart-pie',
+      variant: "warning",
+      icon: "tabler-chart-pie",
     }
-  if (status === 'Downloaded')
+  if (status === "Downloaded")
     return {
-      variant: 'info',
-      icon: 'tabler-arrow-down',
+      variant: "info",
+      icon: "tabler-arrow-down",
     }
-  if (status === 'Draft')
+  if (status === "Draft")
     return {
-      variant: 'primary',
-      icon: 'tabler-folder',
+      variant: "primary",
+      icon: "tabler-folder",
     }
-  if (status === 'Sent')
+  if (status === "Sent")
     return {
-      variant: 'secondary',
-      icon: 'tabler-mail',
+      variant: "secondary",
+      icon: "tabler-mail",
     }
-  if (status === 'Past Due')
+  if (status === "Past Due")
     return {
-      variant: 'error',
-      icon: 'tabler-info-circle',
+      variant: "error",
+      icon: "tabler-info-circle",
     }
-  
+
   return {
-    variant: 'secondary',
-    icon: 'tabler-x',
+    variant: "secondary",
+    icon: "tabler-x",
   }
 }
 
 const computedMoreList = computed(() => {
   return paramId => [
     {
-      title: 'Download',
-      value: 'download',
-      prependIcon: 'tabler-download',
+      title: "Download",
+      value: "download",
+      prependIcon: "tabler-download",
     },
     {
-      title: 'Edit',
-      value: 'edit',
-      prependIcon: 'tabler-pencil',
+      title: "Edit",
+      value: "edit",
+      prependIcon: "tabler-pencil",
       to: {
-        name: 'apps-invoice-edit-id',
+        name: "apps-invoice-edit-id",
         params: { id: paramId },
       },
     },
     {
-      title: 'Duplicate',
-      value: 'duplicate',
-      prependIcon: 'tabler-layers-intersect',
+      title: "Duplicate",
+      value: "duplicate",
+      prependIcon: "tabler-layers-intersect",
     },
   ]
 })
 
 const deleteInvoice = async id => {
-  await $api(`/apps/invoice/${ id }`, { method: 'DELETE' })
+  await $api(`/apps/invoice/${id}`, { method: "DELETE" })
   fetchInvoices()
 }
 </script>
@@ -144,7 +143,7 @@ const deleteInvoice = async id => {
                 { value: 100, title: '100' },
                 { value: -1, title: 'All' },
               ]"
-              style="inline-size: 6.25rem;"
+              style="inline-size: 6.25rem"
               @update:model-value="itemsPerPage = parseInt($event, 10)"
             />
 
@@ -188,12 +187,16 @@ const deleteInvoice = async id => {
               <VAvatar
                 :size="28"
                 v-bind="props"
-                :color="resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant"
+                :color="
+                  resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).variant
+                "
                 variant="tonal"
               >
                 <VIcon
                   :size="16"
-                  :icon="resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).icon"
+                  :icon="
+                    resolveInvoiceStatusVariantAndIcon(item.invoiceStatus).icon
+                  "
                 />
               </VAvatar>
             </template>

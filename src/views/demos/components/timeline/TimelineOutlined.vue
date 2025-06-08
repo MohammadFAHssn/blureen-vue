@@ -1,8 +1,8 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar2 from '@images/avatars/avatar-2.png'
-import avatar3 from '@images/avatars/avatar-3.png'
-import pdf from '@images/icons/project-icons/pdf.png'
+import avatar1 from "@images/avatars/avatar-1.png"
+import avatar2 from "@images/avatars/avatar-2.png"
+import avatar3 from "@images/avatars/avatar-3.png"
+import pdf from "@images/icons/project-icons/pdf.png"
 </script>
 
 <template>
@@ -30,9 +30,7 @@ import pdf from '@images/icons/project-icons/pdf.png'
           </template>
           <!-- 👉 Header -->
           <div class="d-flex justify-space-between align-center gap-2 flex-wrap mb-2">
-            <span class="app-timeline-title">
-              12 Invoices have been paid
-            </span>
+            <span class="app-timeline-title"> 12 Invoices have been paid </span>
             <span class="app-timeline-meta">12 min ago</span>
           </div>
 

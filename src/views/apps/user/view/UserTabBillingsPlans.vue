@@ -1,7 +1,7 @@
 <script setup>
-import americanExpress from '@images/icons/payments/american-express.png'
-import mastercard from '@images/icons/payments/mastercard.png'
-import visa from '@images/icons/payments/visa.png'
+import americanExpress from "@images/icons/payments/american-express.png"
+import mastercard from "@images/icons/payments/mastercard.png"
+import visa from "@images/icons/payments/visa.png"
 
 const isUpgradePlanDialogVisible = ref(false)
 const currentCardDetails = ref()
@@ -16,60 +16,60 @@ const openEditCardDialog = cardDetails => {
 
 const creditCards = [
   {
-    name: 'Tom McBride',
-    number: '4851234567899865',
-    expiry: '12/24',
+    name: "Tom McBride",
+    number: "4851234567899865",
+    expiry: "12/24",
     isPrimary: true,
     isExpired: false,
-    type: 'mastercard',
-    cvv: '123',
+    type: "mastercard",
+    cvv: "123",
     image: mastercard,
   },
   {
-    name: 'Mildred Wagner',
-    number: '5531234567895678',
-    expiry: '02/24',
+    name: "Mildred Wagner",
+    number: "5531234567895678",
+    expiry: "02/24",
     isPrimary: false,
     isExpired: false,
-    type: 'visa',
-    cvv: '456',
+    type: "visa",
+    cvv: "456",
     image: visa,
   },
   {
-    name: 'Lester Jennings',
-    number: '5531234567890002',
-    expiry: '08/20',
+    name: "Lester Jennings",
+    number: "5531234567890002",
+    expiry: "08/20",
     isPrimary: false,
     isExpired: true,
-    type: 'visa',
-    cvv: '456',
+    type: "visa",
+    cvv: "456",
     image: americanExpress,
   },
 ]
 
 const currentAddress = {
-  companyName: 'Pixinvent',
-  billingEmail: 'gertrude@gmail.com',
-  taxID: 'TAX-875623',
-  vatNumber: 'SDF754K77',
-  address: '100 Water Plant Avenue, Building 1303 Wake Island',
-  contact: '+1(609) 933-44-22',
-  country: 'USA',
-  state: 'Queensland',
+  companyName: "Pixinvent",
+  billingEmail: "gertrude@gmail.com",
+  taxID: "TAX-875623",
+  vatNumber: "SDF754K77",
+  address: "100 Water Plant Avenue, Building 1303 Wake Island",
+  contact: "+1(609) 933-44-22",
+  country: "USA",
+  state: "Queensland",
   zipCode: 403114,
 }
 
 const currentBillingAddress = {
-  firstName: 'Shamus',
-  lastName: 'Tuttle',
-  selectedCountry: 'USA',
-  addressLine1: '45 Rocker Terrace',
-  addressLine2: 'Latheronwheel',
-  landmark: 'KW5 8NW, London',
-  contact: '+1 (609) 972-22-22',
-  country: 'USA',
-  city: 'London',
-  state: 'London',
+  firstName: "Shamus",
+  lastName: "Tuttle",
+  selectedCountry: "USA",
+  addressLine1: "45 Rocker Terrace",
+  addressLine2: "Latheronwheel",
+  landmark: "KW5 8NW, London",
+  contact: "+1 (609) 972-22-22",
+  country: "USA",
+  city: "London",
+  state: "London",
   zipCode: 110001,
 }
 </script>
@@ -90,9 +90,7 @@ const currentBillingAddress = {
               <h6 class="text-h6 mb-1">
                 Your Current Plan is Basic
               </h6>
-              <p>
-                A simple start for everyone
-              </p>
+              <p>A simple start for everyone</p>
 
               <h6 class="text-h6 mb-1">
                 Active until Dec 09, 2021
@@ -211,14 +209,27 @@ const currentBillingAddress = {
                   <VChip
                     v-if="card.isPrimary || card.isExpired"
                     label
-                    :color="card.isPrimary ? 'primary' : card.isExpired ? 'error' : 'secondary'"
+                    :color="
+                      card.isPrimary
+                        ? 'primary'
+                        : card.isExpired
+                          ? 'error'
+                          : 'secondary'
+                    "
                     size="small"
                   >
-                    {{ card.isPrimary ? 'Popular' : card.isExpired ? 'Expired' : '' }}
+                    {{
+                      card.isPrimary
+                        ? "Popular"
+                        : card.isExpired
+                          ? "Expired"
+                          : ""
+                    }}
                   </VChip>
                 </div>
                 <div class="text-body-1">
-                  **** **** **** {{ card.number.substring(card.number.length - 4) }}
+                  **** **** ****
+                  {{ card.number.substring(card.number.length - 4) }}
                 </div>
               </div>
 

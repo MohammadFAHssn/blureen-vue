@@ -1,8 +1,5 @@
 <script setup>
-const slidersValues = ref([
-  30,
-  60,
-])
+const slidersValues = ref([30, 60])
 </script>
 
 <template>

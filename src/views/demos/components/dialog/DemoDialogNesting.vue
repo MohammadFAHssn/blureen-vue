@@ -18,7 +18,9 @@ const isDialogTwoShow = ref(false)
 
     <VCard title="Dialog">
       <VCardText>
-        Biscuit fruitcake marshmallow jelly beans jujubes halvah cupcake topping. Chocolate cookie jelly-o toffee tart oat cake. Tart sugar plum gingerbread halvah muffin sweet. Cake halvah tart soufflé pudding.
+        Biscuit fruitcake marshmallow jelly beans jujubes halvah cupcake
+        topping. Chocolate cookie jelly-o toffee tart oat cake. Tart sugar plum
+        gingerbread halvah muffin sweet. Cake halvah tart soufflé pudding.
       </VCardText>
 
       <VCardText class="d-flex justify-end flex-wrap gap-3">

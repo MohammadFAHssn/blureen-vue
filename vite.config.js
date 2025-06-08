@@ -127,7 +127,10 @@ export default defineConfig({
         new URL("./src/assets/styles/", import.meta.url),
       ),
       "@configured-variables": fileURLToPath(
-        new URL("./src/assets/styles/variables/_template.scss", import.meta.url),
+        new URL(
+          "./src/assets/styles/variables/_template.scss",
+          import.meta.url,
+        ),
       ),
       "@db": fileURLToPath(
         new URL("./src/plugins/fake-api/handlers/", import.meta.url),

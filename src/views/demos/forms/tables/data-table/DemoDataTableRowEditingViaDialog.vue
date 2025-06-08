@@ -1,21 +1,21 @@
 <script setup>
-import data from '@/views/demos/forms/tables/data-table/datatable'
+import data from "@/views/demos/forms/tables/data-table/datatable"
 
 const editDialog = ref(false)
 const deleteDialog = ref(false)
 
 const defaultItem = ref({
-  responsiveId: '',
+  responsiveId: "",
   id: -1,
-  avatar: '',
-  fullName: '',
-  post: '',
-  email: '',
-  city: '',
-  startDate: '',
+  avatar: "",
+  fullName: "",
+  post: "",
+  email: "",
+  city: "",
+  startDate: "",
   salary: -1,
-  age: '',
-  experience: '',
+  age: "",
+  experience: "",
   status: -1,
 })
 
@@ -26,23 +26,23 @@ const userList = ref([])
 // status options
 const selectedOptions = [
   {
-    text: 'Current',
+    text: "Current",
     value: 1,
   },
   {
-    text: 'Professional',
+    text: "Professional",
     value: 2,
   },
   {
-    text: 'Rejected',
+    text: "Rejected",
     value: 3,
   },
   {
-    text: 'Resigned',
+    text: "Resigned",
     value: 4,
   },
   {
-    text: 'Applied',
+    text: "Applied",
     value: 5,
   },
 ]
@@ -50,60 +50,60 @@ const selectedOptions = [
 // headers
 const headers = [
   {
-    title: 'NAME',
-    key: 'fullName',
+    title: "NAME",
+    key: "fullName",
   },
   {
-    title: 'EMAIL',
-    key: 'email',
+    title: "EMAIL",
+    key: "email",
   },
   {
-    title: 'DATE',
-    key: 'startDate',
+    title: "DATE",
+    key: "startDate",
   },
   {
-    title: 'SALARY',
-    key: 'salary',
+    title: "SALARY",
+    key: "salary",
   },
   {
-    title: 'AGE',
-    key: 'age',
+    title: "AGE",
+    key: "age",
   },
   {
-    title: 'STATUS',
-    key: 'status',
+    title: "STATUS",
+    key: "status",
   },
   {
-    title: 'ACTIONS',
-    key: 'actions',
+    title: "ACTIONS",
+    key: "actions",
   },
 ]
 
 const resolveStatusVariant = status => {
   if (status === 1)
     return {
-      color: 'primary',
-      text: 'Current',
+      color: "primary",
+      text: "Current",
     }
   else if (status === 2)
     return {
-      color: 'success',
-      text: 'Professional',
+      color: "success",
+      text: "Professional",
     }
   else if (status === 3)
     return {
-      color: 'error',
-      text: 'Rejected',
+      color: "error",
+      text: "Rejected",
     }
   else if (status === 4)
     return {
-      color: 'warning',
-      text: 'Resigned',
+      color: "warning",
+      text: "Resigned",
     }
   else
     return {
-      color: 'info',
-      text: 'Applied',
+      color: "info",
+      text: "Applied",
     }
 }
 
@@ -134,8 +134,7 @@ const closeDelete = () => {
 const save = () => {
   if (editedIndex.value > -1)
     Object.assign(userList.value[editedIndex.value], editedItem.value)
-  else
-    userList.value.push(editedItem.value)
+  else userList.value.push(editedItem.value)
   close()
 }
 

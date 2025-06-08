@@ -1,13 +1,13 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VForm } from 'vuetify/components/VForm'
-import { useCalendarStore } from './useCalendarStore'
-import avatar1 from '@images/avatars/avatar-1.png'
-import avatar2 from '@images/avatars/avatar-2.png'
-import avatar3 from '@images/avatars/avatar-3.png'
-import avatar5 from '@images/avatars/avatar-5.png'
-import avatar6 from '@images/avatars/avatar-6.png'
-import avatar7 from '@images/avatars/avatar-7.png'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { VForm } from "vuetify/components/VForm"
+import { useCalendarStore } from "./useCalendarStore"
+import avatar1 from "@images/avatars/avatar-1.png"
+import avatar2 from "@images/avatars/avatar-2.png"
+import avatar3 from "@images/avatars/avatar-3.png"
+import avatar5 from "@images/avatars/avatar-5.png"
+import avatar6 from "@images/avatars/avatar-6.png"
+import avatar7 from "@images/avatars/avatar-7.png"
 
 // 👉 store
 const props = defineProps({
@@ -22,10 +22,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'update:isDrawerOpen',
-  'addEvent',
-  'updateEvent',
-  'removeEvent',
+  "update:isDrawerOpen",
+  "addEvent",
+  "updateEvent",
+  "removeEvent",
 ])
 
 const store = useCalendarStore()
@@ -44,26 +44,23 @@ const resetEvent = () => {
 watch(() => props.isDrawerOpen, resetEvent)
 
 const removeEvent = () => {
-  emit('removeEvent', String(event.value.id))
+  emit("removeEvent", String(event.value.id))
 
   // Close drawer
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
 }
 
 const handleSubmit = () => {
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
-
       // If id exist on id => Update event
-      if ('id' in event.value)
-        emit('updateEvent', event.value)
+      if ("id" in event.value) emit("updateEvent", event.value)
 
       // Else => add new event
-      else
-        emit('addEvent', event.value)
+      else emit("addEvent", event.value)
 
       // Close drawer
-      emit('update:isDrawerOpen', false)
+      emit("update:isDrawerOpen", false)
     }
   })
 }
@@ -71,35 +68,34 @@ const handleSubmit = () => {
 const guestsOptions = [
   {
     avatar: avatar1,
-    name: 'Jane Foster',
+    name: "Jane Foster",
   },
   {
     avatar: avatar3,
-    name: 'Donna Frank',
+    name: "Donna Frank",
   },
   {
     avatar: avatar5,
-    name: 'Gabrielle Robertson',
+    name: "Gabrielle Robertson",
   },
   {
     avatar: avatar7,
-    name: 'Lori Spears',
+    name: "Lori Spears",
   },
   {
     avatar: avatar6,
-    name: 'Sandy Vega',
+    name: "Sandy Vega",
   },
   {
     avatar: avatar2,
-    name: 'Cheryl May',
+    name: "Cheryl May",
   },
 ]
 
 // 👉 Form
 const onCancel = () => {
-
   // Close drawer
-  emit('update:isDrawerOpen', false)
+  emit("update:isDrawerOpen", false)
   nextTick(() => {
     refForm.value?.reset()
     resetEvent()
@@ -110,29 +106,27 @@ const onCancel = () => {
 const startDateTimePickerConfig = computed(() => {
   const config = {
     enableTime: !event.value.allDay,
-    dateFormat: `Y-m-d${ event.value.allDay ? '' : ' H:i' }`,
+    dateFormat: `Y-m-d${event.value.allDay ? "" : " H:i"}`,
   }
 
-  if (event.value.end)
-    config.maxDate = event.value.end
-  
+  if (event.value.end) config.maxDate = event.value.end
+
   return config
 })
 
 const endDateTimePickerConfig = computed(() => {
   const config = {
     enableTime: !event.value.allDay,
-    dateFormat: `Y-m-d${ event.value.allDay ? '' : ' H:i' }`,
+    dateFormat: `Y-m-d${event.value.allDay ? "" : " H:i"}`,
   }
 
-  if (event.value.start)
-    config.minDate = event.value.start
-  
+  if (event.value.start) config.minDate = event.value.start
+
   return config
 })
 
 const dialogModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 </script>
 
@@ -196,8 +190,8 @@ const dialogModelValueUpdate = val => {
                   placeholder="Select Event Label"
                   :rules="[requiredValidator]"
                   :items="store.availableCalendars"
-                  :item-title="item => item.label"
-                  :item-value="item => item.label"
+                  :item-title="(item) => item.label"
+                  :item-value="(item) => item.label"
                 >
                   <template #selection="{ item }">
                     <div
@@ -259,7 +253,6 @@ const dialogModelValueUpdate = val => {
               <VCol cols="12">
                 <VSwitch
                   id="event-all-day"
-
                   v-model="event.allDay"
                   label="All day"
                 />
@@ -269,7 +262,6 @@ const dialogModelValueUpdate = val => {
               <VCol cols="12">
                 <AppTextField
                   id="event-url"
-
                   v-model="event.url"
                   label="Event URL"
                   placeholder="https://event.com/meeting"
@@ -282,13 +274,12 @@ const dialogModelValueUpdate = val => {
               <VCol cols="12">
                 <AppSelect
                   id="event-guests"
-
                   v-model="event.extendedProps.guests"
                   label="Guests"
                   placeholder="Select guests"
                   :items="guestsOptions"
-                  :item-title="item => item.name"
-                  :item-value="item => item.name"
+                  :item-title="(item) => item.name"
+                  :item-value="(item) => item.name"
                   chips
                   multiple
                   eager
@@ -333,7 +324,7 @@ const dialogModelValueUpdate = val => {
               </VCol>
             </VRow>
           </VForm>
-        <!-- !SECTION -->
+          <!-- !SECTION -->
         </VCardText>
       </VCard>
     </PerfectScrollbar>

@@ -4,14 +4,14 @@ const { y } = useWindowScroll()
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth',
+    behavior: "smooth",
   })
 }
 </script>
 
 <template>
   <VScaleTransition
-    style="transform-origin: center;"
+    style="transform-origin: center"
     class="scroll-to-top d-print-none"
   >
     <VBtn

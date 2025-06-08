@@ -1,7 +1,7 @@
 <script setup>
-import diamond from '@images/svg/Diamond.svg'
-import office from '@images/svg/office.svg'
-import suitcase from '@images/svg/Suitcase.svg'
+import diamond from "@images/svg/Diamond.svg"
+import office from "@images/svg/office.svg"
+import suitcase from "@images/svg/Suitcase.svg"
 
 const props = defineProps({
   formData: {
@@ -10,34 +10,34 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:formData'])
+const emit = defineEmits(["update:formData"])
 
 const propertyRadioContent = [
   {
-    title: 'I am the builder',
-    desc: 'List property as Builder, list your project and get highest reach fast.',
+    title: "I am the builder",
+    desc: "List property as Builder, list your project and get highest reach fast.",
     icon: {
       icon: office,
-      size: '28',
+      size: "28",
     },
-    value: 'builder',
+    value: "builder",
   },
   {
-    title: 'I am the owner',
-    desc: 'Submit property as an Individual. Lease, Rent or Sell at the best price.',
+    title: "I am the owner",
+    desc: "Submit property as an Individual. Lease, Rent or Sell at the best price.",
     icon: {
       icon: diamond,
-      size: '28',
+      size: "28",
     },
-    value: 'owner',
+    value: "owner",
   },
   {
-    title: 'I am the broker',
-    desc: 'Earn highest commission by listing your clients properties at best price.',
-    value: 'broker',
+    title: "I am the broker",
+    desc: "Earn highest commission by listing your clients properties at best price.",
+    value: "broker",
     icon: {
       icon: suitcase,
-      size: '28',
+      size: "28",
     },
   },
 ]
@@ -45,7 +45,7 @@ const propertyRadioContent = [
 const formData = ref(props.formData)
 
 watch(formData, () => {
-  emit('update:formData', formData.value)
+  emit("update:formData", formData.value)
 })
 </script>
 

@@ -4,21 +4,21 @@
 -->
 
 <script setup>
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
-import authV2MaskDark from '@images/pages/misc-mask-dark.png'
-import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
-import { VForm } from 'vuetify/components/VForm'
+import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
+import authV2MaskDark from "@images/pages/misc-mask-dark.png"
+import authV2MaskLight from "@images/pages/misc-mask-light.png"
+import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
+import { themeConfig } from "@themeConfig"
+import { VForm } from "vuetify/components/VForm"
 
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
   meta: {
-    layout: 'blank',
+    layout: "blank",
     unauthenticatedOnly: true,
 
-    // public, 
+    // public,
   },
 })
 
@@ -35,8 +35,8 @@ const errors = ref({
 const refVForm = ref()
 
 const credentials = ref({
-  username: '',
-  password: '',
+  username: "",
+  password: "",
 })
 
 const rememberMe = ref(false)
@@ -44,14 +44,15 @@ const rememberMe = ref(false)
 const hasError = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
-const isRedirectedFromUnauthorizedStatus = ref(route.query.isRedirectedFromUnauthorizedStatus === 'true')
-
+const isRedirectedFromUnauthorizedStatus = ref(
+  route.query.isRedirectedFromUnauthorizedStatus === "true",
+)
 
 const login = async () => {
   IsItWaitingServerResponse.value = true
   try {
-    const res = await $api('/login', {
-      method: 'POST',
+    const res = await $api("/login", {
+      method: "POST",
       body: {
         username: credentials.value.username,
         password: credentials.value.password,
@@ -69,12 +70,12 @@ const login = async () => {
 
     const { accessToken, userData, userAbilityRules } = res
 
-    useCookie('userAbilityRules').value = userAbilityRules
+    useCookie("userAbilityRules").value = userAbilityRules
     ability.update(userAbilityRules)
-    useCookie('userData').value = userData
-    useCookie('accessToken').value = accessToken
+    useCookie("userData").value = userData
+    useCookie("accessToken").value = accessToken
     await nextTick(() => {
-      router.replace(route.query.to ? String(route.query.to) : '/')
+      router.replace(route.query.to ? String(route.query.to) : "/")
     })
   } catch (err) {
     console.error(err)
@@ -83,8 +84,7 @@ const login = async () => {
 
 const onSubmit = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
-    if (isValid)
-      login()
+    if (isValid) login()
   })
 }
 </script>
@@ -97,7 +97,8 @@ const onSubmit = () => {
     variant="outlined"
     color="error"
   >
-    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره وارد شوید.
+    زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
+    وارد شوید.
   </VSnackbar>
 
   <VSnackbar
@@ -130,7 +131,7 @@ const onSubmit = () => {
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem;"
+          style="padding-inline: 6.25rem"
         />
 
         <img
@@ -155,7 +156,9 @@ const onSubmit = () => {
       >
         <VCardText>
           <h4 class="text-h4 mb-1">
-            خوش آمدید <span class="text-capitalize"> {{ themeConfig.app.title }} </span>! 👋🏻
+            خوش آمدید
+            <span class="text-capitalize"> {{ themeConfig.app.title }} </span>!
+            👋🏻
           </h4>
         </VCardText>
 
@@ -189,7 +192,9 @@ const onSubmit = () => {
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="off"
                   :error-messages="errors.password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
@@ -209,7 +214,7 @@ const onSubmit = () => {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"  
+                  :loading="IsItWaitingServerResponse"
                   :disabled="IsItWaitingServerResponse"
                 >
                   ورود

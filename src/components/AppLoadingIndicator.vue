@@ -5,10 +5,7 @@ const isFallbackState = ref(false)
 const interval = ref()
 const showProgress = ref(false)
 
-watch([
-  progressValue,
-  isFallbackState,
-], () => {
+watch([progressValue, isFallbackState], () => {
   if (progressValue.value > 80 && isFallbackState.value)
     progressValue.value = 82
   startBuffer()
@@ -50,7 +47,7 @@ defineExpose({
   <div
     v-if="showProgress"
     class="position-fixed"
-    style="z-index: 9999; inset-block-start: 0; inset-inline: 0 0;"
+    style="z-index: 9999; inset-block-start: 0; inset-inline: 0 0"
   >
     <VProgressLinear
       v-model="progressValue"

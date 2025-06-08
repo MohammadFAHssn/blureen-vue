@@ -1,10 +1,12 @@
 <script setup>
-const router = useRoute('pages-user-profile-tab')
+const router = useRoute("pages-user-profile-tab")
 const projectData = ref([])
 
 const fetchProjectData = async () => {
-  if (router.params.tab === 'projects') {
-    const data = await $api('/pages/profile', { query: { tab: router.params.tab } }).catch(err => console.log(err))
+  if (router.params.tab === "projects") {
+    const data = await $api("/pages/profile", {
+      query: { tab: router.params.tab },
+    }).catch(err => console.log(err))
 
     projectData.value = data
   }
@@ -14,25 +16,25 @@ watch(router, fetchProjectData, { immediate: true })
 
 const moreList = [
   {
-    title: 'Rename Project',
-    value: 'Rename Project',
+    title: "Rename Project",
+    value: "Rename Project",
   },
   {
-    title: 'View Details',
-    value: 'View Details',
+    title: "View Details",
+    value: "View Details",
   },
   {
-    title: 'Add to favorites',
-    value: 'Add to favorites',
+    title: "Add to favorites",
+    value: "Add to favorites",
   },
   {
-    type: 'divider',
-    class: 'my-2',
+    type: "divider",
+    class: "my-2",
   },
   {
-    title: 'Leave Project',
-    value: 'Leave Project',
-    class: 'text-error',
+    title: "Leave Project",
+    value: "Leave Project",
+    class: "text-error",
   },
 ]
 </script>
@@ -58,9 +60,7 @@ const moreList = [
 
           <VCardTitle>{{ data.title }}</VCardTitle>
           <span class="mb-0 text-body-1 d-flex align-center">
-            <div class="font-weight-medium me-1">
-              Client:
-            </div>
+            <div class="font-weight-medium me-1">Client:</div>
             <div>{{ data.client }}</div>
           </span>
 
@@ -78,14 +78,16 @@ const moreList = [
           <div class="d-flex align-center justify-space-between flex-wrap gap-x-2 gap-y-4">
             <div class="px-3 py-2 bg-var-theme-background rounded">
               <h6 class="text-base font-weight-medium">
-                {{ data.budgetSpent }} <span class="text-body-1">/ {{ data.budget }}</span>
+                {{ data.budgetSpent }}
+                <span class="text-body-1">/ {{ data.budget }}</span>
               </h6>
               <div>Total Budget</div>
             </div>
 
             <div>
               <h6 class="text-base font-weight-medium">
-                Start Date: <span class="text-body-1">{{ data.startDate }}</span>
+                Start Date:
+                <span class="text-body-1">{{ data.startDate }}</span>
               </h6>
               <h6 class="text-base font-weight-medium">
                 Deadline: <span class="text-body-1">{{ data.deadline }}</span>
@@ -103,7 +105,8 @@ const moreList = [
         <VCardText>
           <div class="d-flex align-center justify-space-between flex-wrap gap-2">
             <h6 class="text-base font-weight-medium">
-              All Hours: <span class="text-body-1">
+              All Hours:
+              <span class="text-body-1">
                 {{ data.hours }}
               </span>
             </h6>
@@ -119,7 +122,8 @@ const moreList = [
 
           <div class="d-flex align-center justify-space-between flex-wrap text-caption text-medium-emphasis mt-4 mb-2">
             <span>Task: {{ data.tasks }}</span>
-            <span>{{ Math.round((data.completedTask / data.totalTask) * 100) }}% Completed</span>
+            <span>{{ Math.round((data.completedTask / data.totalTask) * 100) }}%
+              Completed</span>
           </div>
           <VProgressLinear
             rounded

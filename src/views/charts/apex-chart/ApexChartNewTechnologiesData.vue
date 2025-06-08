@@ -1,13 +1,16 @@
 <script setup>
-import { useTheme } from 'vuetify'
-import { getScatterChartConfig } from '@core/libs/apex-chart/apexCharConfig'
+import { useTheme } from "vuetify"
+import { getScatterChartConfig } from "@core/libs/apex-chart/apexCharConfig"
 
 const vuetifyTheme = useTheme()
-const scatterChartConfig = computed(() => getScatterChartConfig(vuetifyTheme.current.value))
+
+const scatterChartConfig = computed(() =>
+  getScatterChartConfig(vuetifyTheme.current.value),
+)
 
 const series = [
   {
-    name: 'Angular',
+    name: "Angular",
     data: [
       {
         x: 5.4,
@@ -60,7 +63,7 @@ const series = [
     ],
   },
   {
-    name: 'Vue',
+    name: "Vue",
     data: [
       {
         x: 14,
@@ -117,7 +120,7 @@ const series = [
     ],
   },
   {
-    name: 'React',
+    name: "React",
     data: [
       {
         x: 14,

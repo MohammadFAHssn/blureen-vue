@@ -1,9 +1,9 @@
 <script setup>
-import { register } from 'swiper/element/bundle'
-import swiper21 from '@images/banner/banner-21.jpg'
-import swiper23 from '@images/banner/banner-23.jpg'
-import swiper24 from '@images/banner/banner-24.jpg'
-import swiper32 from '@images/banner/banner-32.jpg'
+import { register } from "swiper/element/bundle"
+import swiper21 from "@images/banner/banner-21.jpg"
+import swiper23 from "@images/banner/banner-23.jpg"
+import swiper24 from "@images/banner/banner-24.jpg"
+import swiper32 from "@images/banner/banner-32.jpg"
 
 register()
 </script>
@@ -20,12 +20,7 @@ register()
     events-prefix="swiper-"
   >
     <swiper-slide
-      v-for="swiperImg in [
-        swiper21,
-        swiper32,
-        swiper23,
-        swiper24,
-      ]"
+      v-for="swiperImg in [swiper21, swiper32, swiper23, swiper24]"
       :key="swiperImg"
     >
       <VImg :src="swiperImg" />

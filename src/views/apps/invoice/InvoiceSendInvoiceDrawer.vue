@@ -1,5 +1,5 @@
 <script setup>
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
   isDrawerOpen: {
@@ -8,14 +8,11 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:isDrawerOpen',
-  'submit',
-])
+const emit = defineEmits(["update:isDrawerOpen", "submit"])
 
-const emailFrom = ref('shelbyComapny@email.com')
-const emailTo = ref('qConsolidated@email.com')
-const invoiceSubject = ref('Invoice of purchased Admin Templates')
+const emailFrom = ref("shelbyComapny@email.com")
+const emailTo = ref("qConsolidated@email.com")
+const invoiceSubject = ref("Invoice of purchased Admin Templates")
 
 const paymentMessage = ref(`Dear Queen Consolidated,
 
@@ -26,8 +23,8 @@ We have generated a new invoice in the amount of $95.59
 We would appreciate payment of this invoice by 05/11/2019`)
 
 const onSubmit = () => {
-  emit('update:isDrawerOpen', false)
-  emit('submit', {
+  emit("update:isDrawerOpen", false)
+  emit("submit", {
     emailFrom: emailFrom.value,
     emailTo: emailTo.value,
     invoiceSubject: invoiceSubject.value,
@@ -36,7 +33,7 @@ const onSubmit = () => {
 }
 
 const handleDrawerModelValueUpdate = val => {
-  emit('update:isDrawerOpen', val)
+  emit("update:isDrawerOpen", val)
 }
 </script>
 
@@ -64,7 +61,6 @@ const handleDrawerModelValueUpdate = val => {
               <VCol cols="12">
                 <AppTextField
                   id="sender-email"
-
                   v-model="emailFrom"
                   label="From"
                   placeholder="sender@email.com"
@@ -73,9 +69,7 @@ const handleDrawerModelValueUpdate = val => {
 
               <VCol cols="12">
                 <AppTextField
-
                   id="receiver-email"
-
                   v-model="emailTo"
                   label="To"
                   placeholder="receiver@email.com"
@@ -85,7 +79,6 @@ const handleDrawerModelValueUpdate = val => {
               <VCol cols="12">
                 <AppTextField
                   id="invoice-subject"
-
                   v-model="invoiceSubject"
                   label="Subject"
                   placeholder="Invoice of purchased Admin Templates"
@@ -95,7 +88,6 @@ const handleDrawerModelValueUpdate = val => {
               <VCol cols="12">
                 <AppTextarea
                   id="payment-message"
-
                   v-model="paymentMessage"
                   rows="10"
                   label="Message"

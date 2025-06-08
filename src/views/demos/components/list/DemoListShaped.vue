@@ -1,16 +1,16 @@
 <script setup>
 const items = [
   {
-    text: 'Cupcake sesame snaps dessert marzipan.',
-    icon: 'tabler-brand-instagram',
+    text: "Cupcake sesame snaps dessert marzipan.",
+    icon: "tabler-brand-instagram",
   },
   {
-    text: 'Jelly beans jelly-o gummi bears chupa chups marshmallow.',
-    icon: 'tabler-brand-facebook',
+    text: "Jelly beans jelly-o gummi bears chupa chups marshmallow.",
+    icon: "tabler-brand-facebook",
   },
   {
-    text: 'Bonbon macaroon gummies pie jelly',
-    icon: 'tabler-brand-twitter',
+    text: "Bonbon macaroon gummies pie jelly",
+    icon: "tabler-brand-twitter",
   },
 ]
 </script>

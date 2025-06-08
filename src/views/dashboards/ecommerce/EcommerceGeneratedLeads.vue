@@ -1,46 +1,33 @@
 <script setup>
-import {
-  useDisplay,
-  useTheme,
-} from 'vuetify'
-import { hexToRgb } from '@layouts/utils'
+import { useDisplay, useTheme } from "vuetify"
+import { hexToRgb } from "@layouts/utils"
 
 const vuetifyTheme = useTheme()
 const display = useDisplay()
 
-const series = [
-  45,
-  58,
-  30,
-  50,
-]
+const series = [45, 58, 30, 50]
 
 const chartOptions = computed(() => {
   const currentTheme = vuetifyTheme.current.value.colors
   const variableTheme = vuetifyTheme.current.value.variables
-  const labelSuccessColor = `rgba(${ hexToRgb(currentTheme.success) },0.2)`
-  const headingColor = `rgba(${ hexToRgb(currentTheme['on-background']) },${ variableTheme['high-emphasis-opacity'] })`
+  const labelSuccessColor = `rgba(${hexToRgb(currentTheme.success)},0.2)`
+  const headingColor = `rgba(${hexToRgb(currentTheme["on-background"])},${variableTheme["high-emphasis-opacity"]})`
 
   const chartColors = {
     donut: {
       series1: currentTheme.success,
-      series2: '#28c76fb3',
-      series3: '#28c76f80',
+      series2: "#28c76fb3",
+      series3: "#28c76f80",
       series4: labelSuccessColor,
     },
   }
-  
+
   return {
     chart: {
       parentHeightOffset: 0,
-      type: 'donut',
+      type: "donut",
     },
-    labels: [
-      'Electronic',
-      'Sports',
-      'Decor',
-      'Fashion',
-    ],
+    labels: ["Electronic", "Sports", "Decor", "Fashion"],
     colors: [
       chartColors.donut.series1,
       chartColors.donut.series2,
@@ -51,7 +38,7 @@ const chartOptions = computed(() => {
     dataLabels: {
       enabled: false,
       formatter(val) {
-        return `${ Number.parseInt(val) }%`
+        return `${Number.parseInt(val)}%`
       },
     },
     legend: { show: false },
@@ -64,36 +51,36 @@ const chartOptions = computed(() => {
         left: -20,
       },
     },
-    states: { hover: { filter: { type: 'none' } } },
+    states: { hover: { filter: { type: "none" } } },
     plotOptions: {
       pie: {
         donut: {
-          size: '70%',
+          size: "70%",
           labels: {
             show: true,
             value: {
-              fontSize: '1.375rem',
-              fontFamily: 'Public Sans',
+              fontSize: "1.375rem",
+              fontFamily: "Public Sans",
               color: headingColor,
               fontWeight: 600,
               offsetY: -15,
               formatter(val) {
-                return `${ Number.parseInt(val) }%`
+                return `${Number.parseInt(val)}%`
               },
             },
             name: {
               offsetY: 20,
-              fontFamily: 'Public Sans',
+              fontFamily: "Public Sans",
             },
             total: {
               show: true,
               showAlways: true,
               color: currentTheme.success,
-              fontSize: '.8125rem',
-              label: 'Total',
-              fontFamily: 'Public Sans',
+              fontSize: ".8125rem",
+              label: "Total",
+              fontFamily: "Public Sans",
               formatter() {
-                return '184'
+                return "184"
               },
             },
           },

@@ -10,10 +10,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits([
-  'update:currentStep',
-  'update:checkout-data',
-])
+const emit = defineEmits(["update:currentStep", "update:checkout-data"])
 
 const selectedDeliveryAddress = computed(() => {
   return props.checkoutData.addresses.filter(address => {
@@ -22,20 +19,20 @@ const selectedDeliveryAddress = computed(() => {
 })
 
 const resolveDeliveryMethod = computed(() => {
-  if (props.checkoutData.deliverySpeed === 'overnight')
+  if (props.checkoutData.deliverySpeed === "overnight")
     return {
-      method: 'Overnight Delivery',
-      desc: 'In 1 business day.',
+      method: "Overnight Delivery",
+      desc: "In 1 business day.",
     }
-  else if (props.checkoutData.deliverySpeed === 'express')
+  else if (props.checkoutData.deliverySpeed === "express")
     return {
-      method: 'Express Delivery',
-      desc: 'Normally in 3-4 business days',
+      method: "Express Delivery",
+      desc: "Normally in 3-4 business days",
     }
   else
     return {
-      method: 'Standard Delivery',
-      desc: 'Normally in 1 Week',
+      method: "Standard Delivery",
+      desc: "Normally in 1 Week",
     }
 })
 </script>
@@ -47,12 +44,19 @@ const resolveDeliveryMethod = computed(() => {
         Thank You! 😇
       </h4>
       <p>
-        Your order <span class="text-body-1 font-weight-medium text-high-emphasis">#1536548131</span> has been placed!
+        Your order
+        <span class="text-body-1 font-weight-medium text-high-emphasis">#1536548131</span>
+        has been placed!
       </p>
       <p class="mb-0">
-        We sent an email to <span class="text-body-1 font-weight-medium text-high-emphasis">john.doe@example.com</span> with your order confirmation and receipt.
+        We sent an email to
+        <span class="text-body-1 font-weight-medium text-high-emphasis">john.doe@example.com</span>
+        with your order confirmation and receipt.
       </p>
-      <p>If the email hasn't arrived within two minutes, please check your spam folder to see if the email was routed there.</p>
+      <p>
+        If the email hasn't arrived within two minutes, please check your spam
+        folder to see if the email was routed there.
+      </p>
       <div class="d-flex align-center gap-2 justify-center">
         <VIcon
           size="20"
@@ -75,9 +79,7 @@ const resolveDeliveryMethod = computed(() => {
             icon="tabler-map-pin"
             size="20"
           />
-          <span class="text-base font-weight-medium">
-            Shipping
-          </span>
+          <span class="text-base font-weight-medium"> Shipping </span>
         </div>
 
         <template
@@ -108,9 +110,7 @@ const resolveDeliveryMethod = computed(() => {
             icon="tabler-credit-card"
             size="20"
           />
-          <span class="text-base font-weight-medium">
-            Billing Address
-          </span>
+          <span class="text-base font-weight-medium"> Billing Address </span>
         </div>
 
         <template
@@ -140,9 +140,7 @@ const resolveDeliveryMethod = computed(() => {
             icon="tabler-ship"
             size="20"
           />
-          <span class="text-base font-weight-medium">
-            Shipping Method
-          </span>
+          <span class="text-base font-weight-medium"> Shipping Method </span>
         </div>
 
         <p class="font-weight-medium">
@@ -181,7 +179,9 @@ const resolveDeliveryMethod = computed(() => {
 
               <div
                 class="d-flex w-100 justify-space-between gap-4"
-                :class="$vuetify.display.width <= 700 ? 'flex-column' : 'flex-row'"
+                :class="
+                  $vuetify.display.width <= 700 ? 'flex-column' : 'flex-row'
+                "
               >
                 <div>
                   <h6 class="text-h6 mb-2">
@@ -189,14 +189,15 @@ const resolveDeliveryMethod = computed(() => {
                   </h6>
                   <div class="text-body-1 mb-2">
                     Sold by:
-                    <span class="d-inline-block text-primary">  {{ item.seller }}</span>
+                    <span class="d-inline-block text-primary">
+                      {{ item.seller }}</span>
                   </div>
                   <VChip
                     :color="item.inStock ? 'success' : 'error'"
                     label
                     size="small"
                   >
-                    {{ item.inStock ? 'In Stock' : 'Out of Stock' }}
+                    {{ item.inStock ? "In Stock" : "Out of Stock" }}
                   </VChip>
                 </div>
 
@@ -204,7 +205,11 @@ const resolveDeliveryMethod = computed(() => {
 
                 <div
                   class="d-flex text-base"
-                  :class="$vuetify.display.width <= 700 ? 'align-self-start' : 'align-self-center'"
+                  :class="
+                    $vuetify.display.width <= 700
+                      ? 'align-self-start'
+                      : 'align-self-center'
+                  "
                 >
                   <div class="text-primary">
                     ${{ item.price }}
@@ -260,7 +265,10 @@ const resolveDeliveryMethod = computed(() => {
           </div>
           <div class="d-flex align-center justify-space-between text-high-emphasis font-weight-medium pa-6">
             <span>Total</span>
-            <span>${{ props.checkoutData.orderAmount + props.checkoutData.deliveryCharges }}.00</span>
+            <span>${{
+              props.checkoutData.orderAmount +
+                props.checkoutData.deliveryCharges
+            }}.00</span>
           </div>
         </div>
       </VCol>

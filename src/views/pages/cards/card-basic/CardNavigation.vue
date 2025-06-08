@@ -1,14 +1,11 @@
 <script setup>
-const navigationTab = ref('Item One')
-const navigationTab2 = ref('Item One')
+const navigationTab = ref("Item One")
+const navigationTab2 = ref("Item One")
 
-const tabItems = [
-  'Item One',
-  'Item Two',
-  'Item Three',
-]
+const tabItems = ["Item One", "Item Two", "Item Three"]
 
-const tabContent = 'Although cards can support multiple actions, UI controls, and an overflow menu, use restraint and remember that cards...'
+const tabContent =
+  "Although cards can support multiple actions, UI controls, and an overflow menu, use restraint and remember that cards..."
 </script>
 
 <template>

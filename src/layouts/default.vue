@@ -1,10 +1,16 @@
 <script setup>
-import { useConfigStore } from '@core/stores/config'
-import { AppContentLayoutNav } from '@layouts/enums'
-import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
+import { useConfigStore } from "@core/stores/config"
+import { AppContentLayoutNav } from "@layouts/enums"
+import { switchToVerticalNavOnLtOverlayNavBreakpoint } from "@layouts/utils"
 
-const DefaultLayoutWithHorizontalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithHorizontalNav.vue'))
-const DefaultLayoutWithVerticalNav = defineAsyncComponent(() => import('./components/DefaultLayoutWithVerticalNav.vue'))
+const DefaultLayoutWithHorizontalNav = defineAsyncComponent(
+  () => import("./components/DefaultLayoutWithHorizontalNav.vue"),
+)
+
+const DefaultLayoutWithVerticalNav = defineAsyncComponent(
+  () => import("./components/DefaultLayoutWithVerticalNav.vue"),
+)
+
 const configStore = useConfigStore()
 
 // ℹ️ This will switch to vertical nav when define breakpoint is reached when in horizontal nav layout
@@ -20,22 +26,27 @@ injectSkinClasses()
 const isFallbackStateActive = ref(false)
 const refLoadingIndicator = ref(null)
 
-watch([
-  isFallbackStateActive,
-  refLoadingIndicator,
-], () => {
-  if (isFallbackStateActive.value && refLoadingIndicator.value)
-    refLoadingIndicator.value.fallbackHandle()
-  if (!isFallbackStateActive.value && refLoadingIndicator.value)
-    refLoadingIndicator.value.resolveHandle()
-}, { immediate: true })
+watch(
+  [isFallbackStateActive, refLoadingIndicator],
+  () => {
+    if (isFallbackStateActive.value && refLoadingIndicator.value)
+      refLoadingIndicator.value.fallbackHandle()
+    if (!isFallbackStateActive.value && refLoadingIndicator.value)
+      refLoadingIndicator.value.resolveHandle()
+  },
+  { immediate: true },
+)
 // !SECTION
 </script>
 
 <template>
   <Component
     v-bind="layoutAttrs"
-    :is="configStore.appContentLayoutNav === AppContentLayoutNav.Vertical ? DefaultLayoutWithVerticalNav : DefaultLayoutWithHorizontalNav"
+    :is="
+      configStore.appContentLayoutNav === AppContentLayoutNav.Vertical
+        ? DefaultLayoutWithVerticalNav
+        : DefaultLayoutWithHorizontalNav
+    "
   >
     <AppLoadingIndicator ref="refLoadingIndicator" />
 
