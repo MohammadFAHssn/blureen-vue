@@ -202,7 +202,7 @@ const isSuccessful = ref(false)
     variant="flat"
     color="error"
   >
-    مشکلی پیش آمده‌است
+    خطایی رخ داده‌است
   </VSnackbar>
 
   <VRow>
@@ -264,7 +264,7 @@ const isSuccessful = ref(false)
               prepend-icon="tabler-edit"
               color="warning"
               @click="
-                router.replace({
+                router.push({
                   name: 'apps-supplier-id',
                   params: { id: 123 },
                 })

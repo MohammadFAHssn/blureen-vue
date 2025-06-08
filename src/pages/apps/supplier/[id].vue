@@ -173,7 +173,7 @@ onUnmounted(() => clearInterval(intervalId))
     variant="flat"
     color="error"
   >
-    مشکلی پیش آمده‌است
+    خطایی رخ داده‌است
   </VSnackbar>
 
   <VSnackbar
