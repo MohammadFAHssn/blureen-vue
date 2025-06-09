@@ -7,24 +7,105 @@ import { themeConfig } from "@themeConfig"
 definePage({
   meta: {
     layout: "blank",
-    public: true,
+    unauthenticatedOnly: true,
   },
 })
 
-const router = useRouter()
-const otp = ref("")
-const isOtpInserted = ref(false)
+defineOptions({
+  beforeRouteEnter(to, from, next) {
+    if (useCookie("otpExpiresAt").value < Math.floor(Date.now() / 1000)) {
+      return next({ name: "login-supplier" })
+    }
+    next()
+  },
+})
 
-const onFinish = () => {
-  isOtpInserted.value = true
-  setTimeout(() => {
-    isOtpInserted.value = false
-    router.push("/")
-  }, 2000)
+const route = useRoute()
+const router = useRouter()
+const ability = useAbility()
+
+const otpCode = ref("")
+const isOtpCodeInserted = ref(false)
+
+const errors = ref({
+  other: undefined,
+})
+
+const hasError = ref(false)
+
+const otpExpiresIn = ref(
+  useCookie("otpExpiresAt").value - Math.floor(Date.now() / 1000),
+)
+
+const intervalId = setInterval(() => {
+  otpExpiresIn.value -= 1
+
+  if (otpExpiresIn.value <= 0) {
+    clearInterval(intervalId)
+    otpExpiresIn.value = 0
+  }
+}, 1000)
+
+const timeRemaining = computed(() => {
+  const totalSeconds = otpExpiresIn.value
+
+  const days = Math.floor(totalSeconds / (3600 * 24))
+  const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  return {
+    minutes: minutes.toString().padStart(2, "0"),
+    seconds: seconds.toString().padStart(2, "0"),
+  }
+})
+
+const onFinish = async () => {
+  isOtpCodeInserted.value = true
+  try {
+    const res = await $api("/verify-supplier-otp", {
+      method: "POST",
+      body: {
+        mobileNumber: route.query.mobileNumber,
+        otpCode: otpCode.value,
+      },
+      onResponseError({ response }) {
+        isOtpCodeInserted.value = false
+        if (response._data.errors) {
+          errors.value = response._data.errors
+        } else {
+          errors.value.other = response._data.message
+          hasError.value = true
+        }
+      },
+    })
+
+    const { accessToken, userData, userAbilityRules } = res
+
+    useCookie("userAbilityRules").value = userAbilityRules
+    ability.update(userAbilityRules)
+    useCookie("userData").value = userData
+    useCookie("accessToken").value = accessToken
+    await nextTick(() => {
+      router.replace(route.query.to ? String(route.query.to) : "/")
+    })
+  } catch (err) {
+    console.error(err)
+  }
 }
 </script>
 
 <template>
+  <VSnackbar
+    v-model="hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ errors.other }}
+  </VSnackbar>
+
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <div class="position-relative my-sm-16">
       <!-- 👉 Top shape -->
@@ -60,15 +141,12 @@ const onFinish = () => {
 
         <VCardText>
           <h4 class="text-h4 mb-1">
-            Two Step Verification 💬
+            احراز هویت دو مرحله‌ای
           </h4>
           <p class="mb-1">
-            We sent a verification code to your mobile. Enter the code from the
-            mobile in the field below.
+            کد تأیید به تلفن همراه شما ارسال شد. لطفاً کد دریافتی را در کادر زیر
+            وارد کنید
           </p>
-          <h6 class="text-h6">
-            ******1234
-          </h6>
         </VCardText>
 
         <VCardText>
@@ -76,36 +154,36 @@ const onFinish = () => {
             <VRow>
               <!-- email -->
               <VCol cols="12">
-                <h6 class="text-body-1">
-                  Type your 6 digit security code
-                </h6>
                 <VOtpInput
-                  v-model="otp"
-                  :disabled="isOtpInserted"
+                  v-model="otpCode"
+                  style="direction: ltr;"
+                  :disabled="isOtpCodeInserted"
                   type="number"
                   class="pa-0"
                   @finish="onFinish"
                 />
               </VCol>
 
-              <!-- reset password -->
               <VCol cols="12">
                 <VBtn
-                  :loading="isOtpInserted"
-                  :disabled="isOtpInserted"
+                  :loading="isOtpCodeInserted"
+                  :disabled="isOtpCodeInserted"
                   block
                   type="submit"
                 >
-                  Verify my account
+                  تأیید
                 </VBtn>
               </VCol>
 
-              <!-- back to login -->
-              <VCol cols="12">
-                <div class="d-flex justify-center align-center flex-wrap">
-                  <span class="me-1">Didn't get the code?</span>
-                  <a href="#">Resend</a>
-                </div>
+              <VCol>
+                <VCol cols="12">
+                  <div class="d-flex justify-center align-center flex-wrap">
+                    <span class="me-1">
+                      {{ timeRemaining.minutes }}:{{ timeRemaining.seconds }}
+                    </span>
+                    <span class="me-1">تا درخواست دوباره</span>
+                  </div>
+                </VCol>
               </VCol>
             </VRow>
           </VForm>
@@ -118,8 +196,8 @@ const onFinish = () => {
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth";
 
-.v-otp-input {
-  .v-otp-input__content {
+.v-otpCode-input {
+  .v-otpCode-input__content {
     padding-inline: 0;
   }
 }

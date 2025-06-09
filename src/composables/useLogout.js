@@ -7,14 +7,20 @@ export const useLogout = async () => {
   // Remove "userData" from cookie
   const userData = useCookie("userData")
 
-  userData.value = null
-
   // Redirect to login page
+  if (userData.value.role.includes("supplier")) {
+    await router.push({
+      path: "/login-supplier",
+      query: { isRedirectedFromUnauthorizedStatus: true },
+    })
+  } else {
+    await router.push({
+      path: "/login",
+      query: { isRedirectedFromUnauthorizedStatus: true },
+    })
+  }
 
-  await router.push({
-    path: "/login",
-    query: { isRedirectedFromUnauthorizedStatus: true },
-  })
+  userData.value = null
 
   // ℹ️ We had to remove abilities in then block because if we don't nav menu items mutation is visible while redirecting user to login page
 

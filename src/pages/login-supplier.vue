@@ -20,6 +20,15 @@ definePage({
   },
 })
 
+defineOptions({
+  beforeRouteEnter(to, from, next) {
+    if (useCookie("otpExpiresAt").value > Math.floor(Date.now() / 1000)) {
+      return next({ name: "two-step-supplier" })
+    }
+    next()
+  },
+})
+
 const route = useRoute()
 const router = useRouter()
 const ability = useAbility()
@@ -61,14 +70,14 @@ const login = async () => {
       },
     })
 
-    const { accessToken, userData, userAbilityRules } = res
+    const { otpExpiresAt } = res
 
-    // useCookie('userAbilityRules').value = userAbilityRules
-    // ability.update(userAbilityRules)
-    // useCookie('userData').value = userData
-    // useCookie('accessToken').value = accessToken
+    useCookie("otpExpiresAt").value = otpExpiresAt
     await nextTick(() => {
-      router.replace("/two-step-supplier")
+      router.replace({
+        path: "/two-step-supplier",
+        query: { mobileNumber: credentials.value.mobileNumber },
+      })
     })
   } catch (err) {}
 }
@@ -122,7 +131,7 @@ const onSubmit = () => {
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem"
+          style="padding-inline: 6.25rem;"
         />
 
         <img

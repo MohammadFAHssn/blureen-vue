@@ -11,11 +11,15 @@ const logout = async () => {
   // Remove "accessToken" from cookie
   useCookie("accessToken").value = null
 
+  // Redirect to login page
+  if (userData.value.role.includes("supplier")) {
+    await router.push("/login-supplier")
+  } else {
+    await router.push("/login")
+  }
+
   // Remove "userData" from cookie
   userData.value = null
-
-  // Redirect to login page
-  await router.push("/login")
 
   // ℹ️ We had to remove abilities in then block because if we don't nav menu items mutation is visible while redirecting user to login page
 
