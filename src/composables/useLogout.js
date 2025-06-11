@@ -9,12 +9,12 @@ export const useLogout = async () => {
 
   // Redirect to login page
   if (userData.value.role.includes("supplier")) {
-    await router.push({
+    await router.replace({
       path: "/login-supplier",
       query: { isRedirectedFromUnauthorizedStatus: true },
     })
   } else {
-    await router.push({
+    await router.replace({
       path: "/login",
       query: { isRedirectedFromUnauthorizedStatus: true },
     })

@@ -13,9 +13,9 @@ const logout = async () => {
 
   // Redirect to login page
   if (userData.value.role.includes("supplier")) {
-    await router.push("/login-supplier")
+    await router.replace("/login-supplier")
   } else {
-    await router.push("/login")
+    await router.replace("/login")
   }
 
   // Remove "userData" from cookie
