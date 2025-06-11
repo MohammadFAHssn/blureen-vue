@@ -43,6 +43,7 @@ const intervalId = setInterval(() => {
   if (otpExpiresIn.value <= 0) {
     clearInterval(intervalId)
     otpExpiresIn.value = 0
+    router.replace("/login-supplier")
   }
 }, 1000)
 
