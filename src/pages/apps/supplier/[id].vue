@@ -6,161 +6,155 @@ definePage({
   },
 })
 
-// const route = useRoute()
-// <div>{{ route.params.id }}</div>
-// const { execute: fetchUsers, data, error } = await useApi(createUrl("/test"))
-
-const products = [
-  {
-    id: 1,
-    name: "دستگاه پمپ چسب آکواریوم",
-    description: "توضیحات",
-    brands: [
-      { id: 1, name: "آذرخش" },
-      { id: 2, name: "شهاب" },
-      { id: 3, name: "پارس" },
-    ],
-    unit: { name: "انس" },
-    requiredQuantity: 50,
-  },
-  {
-    id: 2,
-    name: "الک",
-    description:
-      "توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد. توضیحاتی که طولانی باشد.",
-    brands: [
-      // { id: 1, name: "طهماسب" },
-      // { id: 2, name: "دولک" },
-    ],
-    unit: { name: "کیلوگرم" },
-    requiredQuantity: 100,
-  },
-  {
-    id: 3,
-    name: "فوم عایق صدا 5 سانتی ( شونه تخم مرغی)",
-    description: "توضیحات",
-    brands: [{ id: 1, name: "ایگو" }],
-    unit: { name: "متر" },
-    requiredQuantity: 1,
-  },
-  {
-    id: 4,
-    name: "درزگیر",
-    description: "",
-    brands: [
-      { id: 1, name: "ضد" },
-      { id: 2, name: "آسمان" },
-    ],
-    unit: { name: "رأس" },
-    requiredQuantity: 1000,
-  },
-]
-
-const supplier = { id: 1, name: "امید ترمه گستر یزد شهاب" }
-
-const tenderBids = ref([])
-
-const isTenderBidsVisible = ref([])
-
-const isSendTenderBidsPending = ref([])
+const route = useRoute()
+const router = useRouter()
 
 const hasError = ref(false)
+const tenderBidsOfSupplier = ref()
+const tenderExpiresIn = ref()
+let timeRemaining
+const paymentTerms = ref("cash")
+const creditDescription = ref("")
+const invoiceType = ref("taxInvoice")
+const HaveTenderBidsBeenSent = ref([])
+const isSendTenderBidPending = ref([])
 const isSuccessful = ref(false)
 
-const paymentTerms = ref()
-const invoiceType = ref()
+let supplier
+let tender
 
-const tenderExpiresAt = 1748869346842
-const tenderExpiresIn = ref(tenderExpiresAt - Date.now())
+const startCountDown = () => {
+  const tenderExpiresAt = data.value.data.tenderSupplier.end_date
 
-const intervalId = setInterval(() => {
-  tenderExpiresIn.value -= 1000
+  tenderExpiresIn.value = tenderExpiresAt - Math.floor(Date.now() / 1000)
 
-  if (tenderExpiresIn.value <= 0) {
-    clearInterval(intervalId)
-    tenderExpiresIn.value = 0
+  const intervalId = setInterval(() => {
+    tenderExpiresIn.value -= 1
+
+    if (tenderExpiresIn.value <= 0) {
+      clearInterval(intervalId)
+      tenderExpiresIn.value = 0
+    }
+  }, 1000)
+
+  timeRemaining = computed(() => {
+    const totalSeconds = tenderExpiresIn.value
+
+    const days = Math.floor(totalSeconds / (3600 * 24))
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+
+    return {
+      days,
+      hours: hours.toString().padStart(2, "0"),
+      minutes: minutes.toString().padStart(2, "0"),
+      seconds: seconds.toString().padStart(2, "0"),
+    }
+  })
+}
+
+const tenderBidsOfOtherSuppliers = (tender_product_id, brand) => {
+  if (brand) {
+    return tender.filter(
+      t =>
+        t.tender_product_id === tender_product_id && t.brand_id === brand.id,
+    )[0]
+  } else {
+    return tender.filter(t => t.tender_product_id === tender_product_id)[0]
   }
-}, 1000)
+}
 
-const timeRemaining = computed(() => {
-  const totalSeconds = Math.floor(tenderExpiresIn.value / 1000)
-
-  const days = Math.floor(totalSeconds / (3600 * 24))
-  const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const seconds = Math.floor(totalSeconds % 60)
-
-  return {
-    days,
-    hours: hours.toString().padStart(2, "0"),
-    minutes: minutes.toString().padStart(2, "0"),
-    seconds: seconds.toString().padStart(2, "0"),
+const bidPriceColor = (index, length) => {
+  if (length === 1) {
+    return "#00ff00"
   }
-})
 
-const sendTenderBid = async tenderBidId => {
-  const tenderBid = tenderBids.value.find(
-    tenderBid => tenderBid.id === tenderBidId,
+  const red = Math.round((255 * index) / (length - 1))
+  const green = Math.round(255 * (1 - index / (length - 1)))
+  const blue = 0
+
+  return (
+    "#" +
+    [red, green, blue]
+      .map(x => {
+        const hex = x.toString(16)
+
+        return hex.length === 1 ? "0" + hex : hex
+      })
+      .join("")
   )
+}
 
-  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {
+const sendTenderBid = async tenderBid => {
+  if (!tenderBid.bid_price || !tenderBid.bid_quantity) {
     return
   }
 
-  isSendTenderBidsPending.value[tenderBidId] = true
+  isSendTenderBidPending.value[tenderBid.id] = true
+  try {
+    const res = await $api(
+      import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM +
+        "/tenderDetail/store-supplier-bids",
+      {
+        method: "POST",
+        body: {
+          id: tenderBid.id,
+          bid_price: tenderBid.bid_price,
+          bid_quantity: tenderBid.bid_quantity,
+          bid_description: tenderBid.bid_description,
+          payment_terms: paymentTerms.value,
+          payment_terms_description: creditDescription.value,
+          invoice_type: invoiceType.value,
+        },
+        onResponseError({ response }) {
+          isSendTenderBidPending.value[tenderBid.id] = false
+          if (response._data.errors) {
+            errors.value = response._data.errors
+          } else {
+            isSendTenderBidPending.value[tenderBid.id] = false
+            hasError.value = true
+          }
+        },
+      },
+    )
 
-  await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (tenderBidId === 2) {
-        hasError.value = true
-        isSendTenderBidsPending.value[tenderBidId] = false
-
-        return reject(false)
-      } else {
-        return resolve(true)
-      }
-    }, 1000)
-  })
-
-  isSendTenderBidsPending.value[tenderBidId] = false
-  isTenderBidsVisible.value[tenderBidId] = false
-  isSuccessful.value = true
+    isSendTenderBidPending.value[tenderBid.id] = false
+    HaveTenderBidsBeenSent.value[tenderBid.id] = true
+    isSuccessful.value = true
+  } catch (err) {
+    console.error(err)
+  }
 }
 
-onMounted(() => {
-  // start init tenderBids
-  let initialTenderBids = []
-  let id = 1
+const { data, error } = await useApi(
+  createUrl(
+    import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM +
+      "/tenderDetail/get-by-token?token=" +
+      route.params.id,
+  ),
+)
 
-  products.forEach(product => {
-    if (!product.brands.length) {
-      initialTenderBids.push({
-        id: id++,
-        product,
-        brand: {},
-        bidPrice: "",
-        bidQuantity: "",
-        description: "",
-      })
-    }
-    isTenderBidsVisible.value[id] = true
-    product.brands.forEach(brand => {
-      initialTenderBids.push({
-        id: id++,
-        product,
-        brand,
-        bidPrice: "",
-        bidQuantity: "",
-        description: "",
-      })
-      isTenderBidsVisible.value[id] = true
+hasError.value = !!error.value
+
+if (hasError.value) {
+  setTimeout(() => {
+    router.replace({
+      name: "login-supplier",
     })
-  })
+  }, 2000)
+} else {
+  tender = data.value.data.tenderDetails
 
-  tenderBids.value = initialTenderBids
+  supplier = {
+    id: data.value.data.tenderSupplier.supplier_id,
+    name: data.value.data.tenderSupplier.supplier_name,
+  }
 
-  // end init tenderBids
-})
+  tenderBidsOfSupplier.value = data.value.data.tenderSupplier.supplier_bids
+
+  startCountDown()
+}
 
 onUnmounted(() => clearInterval(intervalId))
 </script>
@@ -173,7 +167,8 @@ onUnmounted(() => clearInterval(intervalId))
     variant="flat"
     color="error"
   >
-    خطایی رخ داده‌است
+    {{ error.message }}
+    ، در حال انتقال به پنل تأمین‌کننده ...
   </VSnackbar>
 
   <VSnackbar
@@ -209,7 +204,7 @@ onUnmounted(() => clearInterval(intervalId))
       </VRow>
 
       <VRow>
-        <VList style="background-color: rgb(var(--v-theme-background))">
+        <VList style="background-color: rgb(var(--v-theme-background));">
           <VListItem>
             <VListItemTitle class="font-weight-medium">
               مدت زمان باقی‌مانده تا پایان مناقصه:
@@ -283,11 +278,11 @@ onUnmounted(() => clearInterval(intervalId))
               >
                 <VRadio
                   label="فاکتور رسمی"
-                  value="cash"
+                  value="taxInvoice"
                 />
                 <VRadio
                   label="فاکتور فروشگاهی"
-                  value="credit"
+                  value="commercialInvoice"
                 />
               </VRadioGroup>
             </VCardText>
@@ -298,8 +293,8 @@ onUnmounted(() => clearInterval(intervalId))
       <VRow>
         <VExpandTransition group>
           <VCol
-            v-for="tenderBid in tenderBids.filter(
-              (tenderBid) => isTenderBidsVisible[tenderBid.id],
+            v-for="tenderBid in tenderBidsOfSupplier.filter(
+              (tenderBid) => !HaveTenderBidsBeenSent[tenderBid.id],
             )"
             :key="tenderBid.id"
             cols="12"
@@ -309,24 +304,56 @@ onUnmounted(() => clearInterval(intervalId))
             <VCard>
               <VCardTitle class="custom-v-card-title">
                 {{
-                  tenderBid.product.name +
-                    (tenderBid.brand.name ? ` (${tenderBid.brand.name})` : "")
+                  tenderBid.tender_product.product.name +
+                    (tenderBid.brand ? ` (${tenderBid.brand.name})` : "")
                 }}
               </VCardTitle>
 
               <VCardText>
-                {{ tenderBid.product.description }}
+                {{ tenderBid.tender_product.expert_description }}
+              </VCardText>
+
+              <VCardText>
+                <VCard variant="outlined">
+                  <VCardText>
+                    قیمت‌های پیشنهادی از سایر تأمین‌کنندگان (ریال):
+                  </VCardText>
+
+                  <VCardText class="d-flex flex-wrap gap-x-4 gap-y-2">
+                    <VChip
+                      v-for="(bid, index) in tenderBidsOfOtherSuppliers(
+                        tenderBid.tender_product_id,
+                        tenderBid.brand,
+                      )?.bids"
+                      :key="bid.supplierId"
+                      :variant="
+                        bid.supplierId === supplier.id ? 'flat' : 'outlined'
+                      "
+                      :color="
+                        bidPriceColor(
+                          index,
+                          tenderBidsOfOtherSuppliers(
+                            tenderBid.tender_product_id,
+                            tenderBid.brand,
+                          ).bids.length,
+                        )
+                      "
+                    >
+                      {{ bid.bidPrice }}
+                    </VChip>
+                  </VCardText>
+                </VCard>
               </VCardText>
 
               <VCardText>
                 <VForm
                   validate-on="submit lazy"
-                  @submit.prevent="sendTenderBid(tenderBid.id)"
+                  @submit.prevent="sendTenderBid(tenderBid)"
                 >
                   <VRow>
                     <VCol cols="12">
                       <AppTextField
-                        v-model="tenderBid.bidPrice"
+                        v-model="tenderBid.bid_price"
                         label="قیمت"
                         type="number"
                         prepend-inner-icon="tabler-coin"
@@ -337,19 +364,21 @@ onUnmounted(() => clearInterval(intervalId))
 
                     <VCol cols="12">
                       <AppTextField
-                        v-model="tenderBid.bidQuantity"
+                        v-model="tenderBid.bid_quantity"
                         label="تعداد"
                         type="number"
                         prepend-inner-icon="tabler-scale"
-                        :suffix="tenderBid.product.unit.name"
-                        :placeholder="`مقدار مورد نیاز: ${tenderBid.product.requiredQuantity}`"
+                        :suffix="
+                          tenderBid.tender_product.product.counting_unit.UntName
+                        "
+                        :placeholder="`مقدار مورد نیاز: ${tenderBid.tender_product.quantity_required}`"
                         :rules="[requiredValidator]"
                       />
                     </VCol>
 
                     <VCol cols="12">
                       <AppTextarea
-                        v-model="tenderBid.description"
+                        v-model="tenderBid.bid_description"
                         label="توضیحات"
                         rows="3"
                       />
@@ -358,7 +387,7 @@ onUnmounted(() => clearInterval(intervalId))
                     <VCol cols="12">
                       <VBtn
                         type="submit"
-                        :loading="isSendTenderBidsPending[tenderBid.id]"
+                        :loading="isSendTenderBidPending[tenderBid.id]"
                       >
                         <VIcon icon="tabler-send" />
                         ارسال
