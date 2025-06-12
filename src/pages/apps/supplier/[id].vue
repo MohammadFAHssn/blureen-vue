@@ -9,141 +9,138 @@ definePage({
 const route = useRoute()
 const router = useRouter()
 
+// --- Constants ---
+const API_BASE_PATH = import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM
+
+// --- Reactive State ---
 const hasError = ref(false)
-const tenderBids = ref([])
-const tenderExpiresIn = ref()
-let timeRemaining
-const HaveTenderBidsBeenSent = ref([])
-const isSendTenderBidPending = ref([])
+const errorMessage = ref("")
 const isSuccessful = ref(false)
 
-let supplier
+const tenderExpiresIn = ref(0)
+
 let tender
+let supplier
+const tenderBids = ref([]) // Holds the list of products/items to bid on
+
+const paymentTerms = ref("cash")
+const creditDescription = ref("")
+const invoiceType = ref("taxInvoice")
+
+const HaveTenderBidsBeenSent = ref([])
+const isSendTenderBidPending = ref([])
+
+let intervalId = null
+
+
 
 const startCountDown = () => {
-  const tenderExpiresAt = data.value.data.tenderExpiresAt
+  tenderExpiresIn.value = Math.max(
+    0,
+    tender.tenderExpiresAt - Math.floor(Date.now() / 1000),
+  )
 
-  tenderExpiresIn.value = tenderExpiresAt - Math.floor(Date.now() / 1000)
-
-  const intervalId = setInterval(() => {
+  intervalId = setInterval(() => {
     tenderExpiresIn.value -= 1
-
-    if (tenderExpiresIn.value <= 0) {
-      clearInterval(intervalId)
-      tenderExpiresIn.value = 0
+    if (tenderExpiresIn.value === 0) {
+      router.replace({ name: "login-supplier" })
     }
   }, 1000)
-
-  timeRemaining = computed(() => {
-    const totalSeconds = tenderExpiresIn.value
-
-    const days = Math.floor(totalSeconds / (3600 * 24))
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600)
-    const minutes = Math.floor((totalSeconds % 3600) / 60)
-    const seconds = totalSeconds % 60
-
-    return {
-      days,
-      hours: hours.toString().padStart(2, "0"),
-      minutes: minutes.toString().padStart(2, "0"),
-      seconds: seconds.toString().padStart(2, "0"),
-    }
-  })
 }
 
-
 const bidPriceColor = (index, length) => {
-  if (length === 1) {
-    return "#00ff00"
-  }
+  if (length <= 1) return "success" // Use theme color names or hex
 
-  const red = Math.round((255 * index) / (length - 1))
-  const green = Math.round(255 * (1 - index / (length - 1)))
-  const blue = 0
+  const ratio = index / (length - 1)
+  const red = Math.round(255 * ratio)
+  const green = Math.round(255 * (1 - ratio))
 
-  return (
-    "#" +
-    [red, green, blue]
-      .map(x => {
-        const hex = x.toString(16)
-
-        return hex.length === 1 ? "0" + hex : hex
-      })
-      .join("")
-  )
+  return `#${red.toString(16).padStart(2, "0")}${green
+    .toString(16)
+    .padStart(2, "0")}00`
 }
 
 const sendTenderBid = async tenderBid => {
-  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {
+  if (!tenderBid.bidPrice && !tenderBid.bidQuantity) {
     return
   }
 
   isSendTenderBidPending.value[tenderBid.id] = true
-  try {
-    const res = await $api(
-      import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM +
-        "/tenderDetail/store-supplier-bids",
-      {
-        method: "POST",
-        body: {
-          id: tenderBid.id,
-          bid_price: tenderBid.bidPrice,
-          bid_quantity: tenderBid.bidQuantity,
-          bid_description: tenderBid.bidDescription,
-          payment_terms: tenderBid.paymentTerms,
-          payment_terms_description: tenderBid.creditDescription,
-          invoice_type: tenderBid.invoiceType,
-        },
-        onResponseError({ response }) {
-          isSendTenderBidPending.value[tenderBid.id] = false
-          if (response._data.errors) {
-            errors.value = response._data.errors
-          } else {
-            isSendTenderBidPending.value[tenderBid.id] = false
-            hasError.value = true
-          }
-        },
-      },
-    )
 
-    isSendTenderBidPending.value[tenderBid.id] = false
+  try {
+    await $api(`${API_BASE_PATH}/tenderDetail/store-supplier-bids`, {
+      method: "POST",
+      body: {
+        id: tenderBid.id, // ID of the tender_bid item (product line)
+        bid_price: tenderBid.bidPrice,
+        bid_quantity: tenderBid.bidQuantity,
+        bid_description: tenderBid.bidDescription || "",
+
+        payment_terms: paymentTerms.value,
+        payment_terms_description:
+          paymentTerms.value === "credit" ? creditDescription.value : "",
+        invoice_type: invoiceType.value,
+      },
+      onResponseError({ response }) {
+        hasError.value = true
+        errorMessage.value =
+          response._data.message || "خطا در دریافت اطلاعات مناقصه."
+      },
+    })
+
     HaveTenderBidsBeenSent.value[tenderBid.id] = true
     isSuccessful.value = true
   } catch (err) {
     console.error(err)
+  } finally {
+    isSendTenderBidPending.value[tenderBid.id] = false
   }
 }
 
-const { data, error } = await useApi(
+const { data: apiData, error: apiError } = await useApi(
   createUrl(
-    import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM +
-      "/tenderDetail/get-by-token?token=" +
-      route.params.id,
+    `${API_BASE_PATH}/tenderDetail/get-by-token?token=${route.params.id}`,
   ),
 )
 
-hasError.value = !!error.value
-
-if (hasError.value) {
+if (apiError.value) {
+  hasError.value = true
+  errorMessage.value =
+    apiError.value.message || "خطا در دریافت اطلاعات مناقصه."
   setTimeout(() => {
-    router.replace({
-      name: "login-supplier",
-    })
+    router.replace({ name: "login-supplier" })
   }, 2000)
-} else {
-  tender = data.value.data
-
-  supplier = {
-    id: tender.supplier.id,
-    name: tender.supplier.name,
-  }
-
-  tenderBids.value = tender.tenderBids
-
-  startCountDown()
 }
 
-onUnmounted(() => clearInterval(intervalId))
+tender = apiData.value.data
+supplier = {
+  id: apiData.value.data.supplier.id,
+  name: apiData.value.data.supplier.name,
+}
+
+tenderBids.value = apiData.value.data.tenderBids || []
+
+startCountDown()
+
+// --- Computed Properties ---
+const timeRemaining = computed(() => {
+  const totalSeconds = tenderExpiresIn.value
+  const days = Math.floor(totalSeconds / 86400)
+  const hours = Math.floor((totalSeconds % 86400) / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  return {
+    days,
+    hours: hours.toString().padStart(2, "0"),
+    minutes: minutes.toString().padStart(2, "0"),
+    seconds: seconds.toString().padStart(2, "0"),
+  }
+})
+
+onUnmounted(() => {
+  clearInterval(intervalId)
+})
 </script>
 
 <template>
@@ -154,7 +151,7 @@ onUnmounted(() => clearInterval(intervalId))
     variant="flat"
     color="error"
   >
-    {{ error.message }}
+    {{ errorMessage }}
     ، در حال انتقال به پنل تأمین‌کننده ...
   </VSnackbar>
 
@@ -232,7 +229,7 @@ onUnmounted(() => clearInterval(intervalId))
                 شرایط پرداخت
               </VLabel>
               <VRadioGroup
-                v-model="tenderBids[0].paymentTerms"
+                v-model="paymentTerms"
                 inline
               >
                 <VRadio
@@ -246,8 +243,8 @@ onUnmounted(() => clearInterval(intervalId))
               </VRadioGroup>
 
               <AppTextField
-                v-if="tenderBids[0].paymentTerms === 'credit'"
-                v-model="tenderBids[0].creditDescription"
+                v-if="paymentTerms === 'credit'"
+                v-model="creditDescription"
                 type="text"
                 placeholder="توضیحات"
               />
@@ -260,7 +257,7 @@ onUnmounted(() => clearInterval(intervalId))
                 نوع فاکتور
               </VLabel>
               <VRadioGroup
-                v-model="tenderBids[0].invoiceType"
+                v-model="invoiceType"
                 inline
               >
                 <VRadio
