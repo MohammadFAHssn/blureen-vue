@@ -10,12 +10,9 @@ const route = useRoute()
 const router = useRouter()
 
 const hasError = ref(false)
-const tenderBidsOfSupplier = ref()
+const tenderBids = ref([])
 const tenderExpiresIn = ref()
 let timeRemaining
-const paymentTerms = ref("cash")
-const creditDescription = ref("")
-const invoiceType = ref("taxInvoice")
 const HaveTenderBidsBeenSent = ref([])
 const isSendTenderBidPending = ref([])
 const isSuccessful = ref(false)
@@ -24,7 +21,7 @@ let supplier
 let tender
 
 const startCountDown = () => {
-  const tenderExpiresAt = data.value.data.tenderSupplier.end_date
+  const tenderExpiresAt = data.value.data.tenderExpiresAt
 
   tenderExpiresIn.value = tenderExpiresAt - Math.floor(Date.now() / 1000)
 
@@ -54,16 +51,6 @@ const startCountDown = () => {
   })
 }
 
-const tenderBidsOfOtherSuppliers = (tender_product_id, brand) => {
-  if (brand) {
-    return tender.filter(
-      t =>
-        t.tender_product_id === tender_product_id && t.brand_id === brand.id,
-    )[0]
-  } else {
-    return tender.filter(t => t.tender_product_id === tender_product_id)[0]
-  }
-}
 
 const bidPriceColor = (index, length) => {
   if (length === 1) {
@@ -87,7 +74,7 @@ const bidPriceColor = (index, length) => {
 }
 
 const sendTenderBid = async tenderBid => {
-  if (!tenderBid.bid_price || !tenderBid.bid_quantity) {
+  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {
     return
   }
 
@@ -100,12 +87,12 @@ const sendTenderBid = async tenderBid => {
         method: "POST",
         body: {
           id: tenderBid.id,
-          bid_price: tenderBid.bid_price,
-          bid_quantity: tenderBid.bid_quantity,
-          bid_description: tenderBid.bid_description,
-          payment_terms: paymentTerms.value,
-          payment_terms_description: creditDescription.value,
-          invoice_type: invoiceType.value,
+          bid_price: tenderBid.bidPrice,
+          bid_quantity: tenderBid.bidQuantity,
+          bid_description: tenderBid.bidDescription,
+          payment_terms: tenderBid.paymentTerms,
+          payment_terms_description: tenderBid.creditDescription,
+          invoice_type: tenderBid.invoiceType,
         },
         onResponseError({ response }) {
           isSendTenderBidPending.value[tenderBid.id] = false
@@ -144,14 +131,14 @@ if (hasError.value) {
     })
   }, 2000)
 } else {
-  tender = data.value.data.tenderDetails
+  tender = data.value.data
 
   supplier = {
-    id: data.value.data.tenderSupplier.supplier_id,
-    name: data.value.data.tenderSupplier.supplier_name,
+    id: tender.supplier.id,
+    name: tender.supplier.name,
   }
 
-  tenderBidsOfSupplier.value = data.value.data.tenderSupplier.supplier_bids
+  tenderBids.value = tender.tenderBids
 
   startCountDown()
 }
@@ -245,7 +232,7 @@ onUnmounted(() => clearInterval(intervalId))
                 شرایط پرداخت
               </VLabel>
               <VRadioGroup
-                v-model="paymentTerms"
+                v-model="tenderBids[0].paymentTerms"
                 inline
               >
                 <VRadio
@@ -259,8 +246,8 @@ onUnmounted(() => clearInterval(intervalId))
               </VRadioGroup>
 
               <AppTextField
-                v-if="paymentTerms === 'credit'"
-                v-model="creditDescription"
+                v-if="tenderBids[0].paymentTerms === 'credit'"
+                v-model="tenderBids[0].creditDescription"
                 type="text"
                 placeholder="توضیحات"
               />
@@ -273,7 +260,7 @@ onUnmounted(() => clearInterval(intervalId))
                 نوع فاکتور
               </VLabel>
               <VRadioGroup
-                v-model="invoiceType"
+                v-model="tenderBids[0].invoiceType"
                 inline
               >
                 <VRadio
@@ -293,7 +280,7 @@ onUnmounted(() => clearInterval(intervalId))
       <VRow>
         <VExpandTransition group>
           <VCol
-            v-for="tenderBid in tenderBidsOfSupplier.filter(
+            v-for="tenderBid in tenderBids.filter(
               (tenderBid) => !HaveTenderBidsBeenSent[tenderBid.id],
             )"
             :key="tenderBid.id"
@@ -304,13 +291,13 @@ onUnmounted(() => clearInterval(intervalId))
             <VCard>
               <VCardTitle class="custom-v-card-title">
                 {{
-                  tenderBid.tender_product.product.name +
+                  tenderBid.tenderProduct.product.name +
                     (tenderBid.brand ? ` (${tenderBid.brand.name})` : "")
                 }}
               </VCardTitle>
 
               <VCardText>
-                {{ tenderBid.tender_product.expert_description }}
+                {{ tenderBid.tenderProduct.purchaseExpertDescription }}
               </VCardText>
 
               <VCardText>
@@ -321,10 +308,7 @@ onUnmounted(() => clearInterval(intervalId))
 
                   <VCardText class="d-flex flex-wrap gap-x-4 gap-y-2">
                     <VChip
-                      v-for="(bid, index) in tenderBidsOfOtherSuppliers(
-                        tenderBid.tender_product_id,
-                        tenderBid.brand,
-                      )?.bids"
+                      v-for="(bid, index) in tenderBid.bidOfOtherSuppliers"
                       :key="bid.supplierId"
                       :variant="
                         bid.supplierId === supplier.id ? 'flat' : 'outlined'
@@ -332,10 +316,7 @@ onUnmounted(() => clearInterval(intervalId))
                       :color="
                         bidPriceColor(
                           index,
-                          tenderBidsOfOtherSuppliers(
-                            tenderBid.tender_product_id,
-                            tenderBid.brand,
-                          ).bids.length,
+                          tenderBid.bidOfOtherSuppliers.length,
                         )
                       "
                     >
@@ -353,7 +334,7 @@ onUnmounted(() => clearInterval(intervalId))
                   <VRow>
                     <VCol cols="12">
                       <AppTextField
-                        v-model="tenderBid.bid_price"
+                        v-model="tenderBid.bidPrice"
                         label="قیمت"
                         type="number"
                         prepend-inner-icon="tabler-coin"
@@ -364,21 +345,21 @@ onUnmounted(() => clearInterval(intervalId))
 
                     <VCol cols="12">
                       <AppTextField
-                        v-model="tenderBid.bid_quantity"
+                        v-model="tenderBid.bidQuantity"
                         label="تعداد"
                         type="number"
                         prepend-inner-icon="tabler-scale"
                         :suffix="
-                          tenderBid.tender_product.product.counting_unit.UntName
+                          tenderBid.tenderProduct.product.counting_unit.UntName
                         "
-                        :placeholder="`مقدار مورد نیاز: ${tenderBid.tender_product.quantity_required}`"
+                        :placeholder="`مقدار مورد نیاز: ${tenderBid.tenderProduct.quantityRequired}`"
                         :rules="[requiredValidator]"
                       />
                     </VCol>
 
                     <VCol cols="12">
                       <AppTextarea
-                        v-model="tenderBid.bid_description"
+                        v-model="tenderBid.bidDescription"
                         label="توضیحات"
                         rows="3"
                       />
