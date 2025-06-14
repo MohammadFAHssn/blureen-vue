@@ -12,7 +12,7 @@ const router = useRouter()
 // --- Constants ---
 const API_BASE_PATH = import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM
 
-// --- Reactive State ---
+// --- States ---
 const hasError = ref(false)
 const errorMessage = ref("")
 const isSuccessful = ref(false)
@@ -21,7 +21,7 @@ const tenderExpiresIn = ref(0)
 
 let tender
 let supplier
-const tenderBids = ref([]) // Holds the list of products/items to bid on
+const tenderBids = ref([])
 
 const paymentTerms = ref("cash")
 const creditDescription = ref("")
@@ -32,7 +32,7 @@ const isSendTenderBidPending = ref([])
 
 let intervalId = null
 
-
+// Methods
 
 const startCountDown = () => {
   tenderExpiresIn.value = Math.max(
@@ -84,7 +84,7 @@ const sendTenderBid = async tenderBid => {
       onResponseError({ response }) {
         hasError.value = true
         errorMessage.value =
-          response._data.message || "خطا در دریافت اطلاعات مناقصه."
+          response._data.message || "خطا در ارسال پیشنهاد."
       },
     })
 
@@ -96,6 +96,8 @@ const sendTenderBid = async tenderBid => {
     isSendTenderBidPending.value[tenderBid.id] = false
   }
 }
+
+// 
 
 const { data: apiData, error: apiError } = await useApi(
   createUrl(
