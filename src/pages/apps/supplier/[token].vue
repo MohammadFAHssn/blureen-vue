@@ -101,7 +101,7 @@ const sendTenderBid = async tenderBid => {
 
 const { data: apiData, error: apiError } = await useApi(
   createUrl(
-    `${API_BASE_PATH}/tenderDetail/get-by-token?token=${route.params.id}`,
+    `${API_BASE_PATH}/tenderDetail/get-by-token?token=${route.params.token}`,
   ),
 )
 

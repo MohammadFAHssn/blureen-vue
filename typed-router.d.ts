@@ -21,7 +21,7 @@ declare module 'vue-router/auto-routes' {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
     'apps-roles': RouteRecordInfo<'apps-roles', '/apps/roles', Record<never, never>, Record<never, never>>,
-    'apps-supplier-id': RouteRecordInfo<'apps-supplier-id', '/apps/supplier/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'apps-supplier-token': RouteRecordInfo<'apps-supplier-token', '/apps/supplier/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
     'apps-supplier-list': RouteRecordInfo<'apps-supplier-list', '/apps/supplier/list', Record<never, never>, Record<never, never>>,
     'apps-supplier-tender-active-tenders': RouteRecordInfo<'apps-supplier-tender-active-tenders', '/apps/supplier/tender/active-tenders', Record<never, never>, Record<never, never>>,
     'apps-supplier-tender-tender-history': RouteRecordInfo<'apps-supplier-tender-tender-history', '/apps/supplier/tender/tender-history', Record<never, never>, Record<never, never>>,
