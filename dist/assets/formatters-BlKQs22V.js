@@ -1,0 +1,1 @@
+const r="/assets/avatar-3-BxDW4ia1.png",n="/assets/avatar-4-CtU30128.png",e="/assets/avatar-5-CmycerLe.png",c=a=>a?a.split(" ").map(t=>t.charAt(0).toUpperCase()).join(""):"";export{c as a,n as b,e as c,r as d};
