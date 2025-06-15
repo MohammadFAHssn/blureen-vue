@@ -31,33 +31,4 @@ const tenders = apiData.value.data
   >
     {{ errorMessage }}
   </VSnackbar>
-
-  <VRow>
-    <VCol
-      v-for="tender in tenders"
-      :key="tender.id"
-      cols="12"
-      md="6"
-      lg="4"
-    >
-      <VCard class="text-center">
-        <VCardItem>
-          <VCardTitle>{{ tender.title }}</VCardTitle>
-        </VCardItem>
-
-        <VCardText class="justify-center">
-          <VBtn
-            @click="
-              router.push({
-                name: 'apps-supplier-token',
-                params: { token: tender.token },
-              })
-            "
-          >
-            ورود به مناقصه
-          </VBtn>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
 </template>
