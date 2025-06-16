@@ -15,7 +15,7 @@ export async function loadFonts() {
 
     custom: {
       families: ["Shabnam"],
-      urls: ["/src/assets/fonts/Shabnam/Shabnam.css"],
+      urls: [new URL('/src/assets/fonts/Shabnam/Shabnam.css', import.meta.url)],
     },
   })
 }
