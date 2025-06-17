@@ -5,7 +5,9 @@ export const $api = ofetch.create({
   credentials: "omit",
   async onRequest({ options }) {
     const accessToken = useCookie("accessToken").value
-    if (accessToken)
+    if (accessToken) {
       options.headers.append("Authorization", `Bearer ${accessToken}`)
+      options.headers.append("X-Requested-With", "XMLHttpRequest")
+    }
   },
 })
