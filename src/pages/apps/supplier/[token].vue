@@ -292,7 +292,7 @@ onUnmounted(() => {
                 <VCardTitle class="custom-v-card-title">
                   {{
                     tenderBid.tenderProduct.product.name +
-                      (tenderBid.brand ? ` (${tenderBid.brand.name})` : "")
+                      (tenderBid.tenderProduct.brand ? ` (${tenderBid.tenderProduct.brand.name})` : "")
                   }}
                 </VCardTitle>
               </VCardItem>
