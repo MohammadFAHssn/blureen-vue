@@ -114,15 +114,17 @@ if (apiError.value) {
   }, 2000)
 }
 
-tender = apiData.value.data
-supplier = {
-  id: apiData.value.data.supplier.id,
-  name: apiData.value.data.supplier.name,
+if (apiData.value) {
+  tender = apiData.value.data
+  supplier = {
+    id: apiData.value.data.supplier.id,
+    name: apiData.value.data.supplier.name,
+  }
+  
+  tenderBids.value = apiData.value.data.tenderBids || []
+  
+  startCountDown()
 }
-
-tenderBids.value = apiData.value.data.tenderBids || []
-
-startCountDown()
 
 // --- Computed Properties ---
 const timeRemaining = computed(() => {
@@ -167,7 +169,10 @@ onUnmounted(() => {
     ارسال شد
   </VSnackbar>
 
-  <main class="layout-page-content">
+  <main
+    v-if="apiData"
+    class="layout-page-content"
+  >
     <div>
       <VRow>
         <VCol>
