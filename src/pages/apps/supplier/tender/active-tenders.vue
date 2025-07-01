@@ -9,7 +9,7 @@ const userData = useCookie("userData")
 
 const { data: apiData, error: apiError } = await useApi(
   createUrl(
-    `${API_BASE_PATH}/tenderSMS/get-active-tenders-by-supplierId?supplier_id=${userData.value.id}`,
+    `${API_BASE_PATH}/tenderSMS/get-active-tenders-by-supplierId?supplierId=${userData.value.id}`,
   ),
 )
 
