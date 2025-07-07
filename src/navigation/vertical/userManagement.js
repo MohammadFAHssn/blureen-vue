@@ -21,6 +21,8 @@ export default [
   {
     title: "Roles & Permissions",
     icon: { icon: "tabler-lock" },
+
+    // TODO: Add actions and subjects for roles and permissions
     children: [
       {
         title: "Roles",
