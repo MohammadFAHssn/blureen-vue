@@ -4,7 +4,6 @@ import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 const router = useRouter()
 const ability = useAbility()
 
-// TODO: Get type from backend
 const userData = useCookie("userData")
 
 const logout = async () => {
