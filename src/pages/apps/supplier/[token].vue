@@ -309,7 +309,7 @@ onUnmounted(() => {
               <VCardText>
                 <VCard variant="outlined">
                   <VCardText>
-                    قیمت‌های پیشنهادی از سایر تأمین‌کنندگان (ریال):
+                    قیمت‌های پیشنهادی از سایر تأمین‌کنندگان (تومان):
                   </VCardText>
 
                   <VCardText class="d-flex flex-wrap gap-x-4 gap-y-2">
@@ -344,7 +344,7 @@ onUnmounted(() => {
                         label="قیمت"
                         type="number"
                         prepend-inner-icon="tabler-coin"
-                        suffix="ریال"
+                        suffix="تومان"
                         :rules="[requiredValidator]"
                       />
                     </VCol>
