@@ -5,13 +5,6 @@ export default [
     subject: "Suppliers-Navbar",
   },
   {
-    title: "Supplier List",
-    icon: { icon: "tabler-users" },
-    to: "apps-supplier-list",
-    action: "read",
-    subject: "Supplier",
-  },
-  {
     title: "Tender",
     icon: { icon: "tabler-gavel" },
     action: "see",
