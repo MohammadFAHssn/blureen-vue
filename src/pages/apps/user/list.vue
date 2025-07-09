@@ -1,6 +1,11 @@
 <script setup>
 import Active from "@/plugins/ag-grid/components/Active.vue"
 
+// states
+const users = ref([])
+const hasError = ref(false)
+const errorMessage = ref("")
+
 // ----- start ag-grid -----
 
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
@@ -54,17 +59,18 @@ const rowData = computed(() =>
 
 // ----- end ag-grid -----
 
-const {
-  execute: fetchUsers,
-  data,
-  error,
-} = await useApi(
+const { data: apiData, error: apiError } = await useApi(
   createUrl("/get?fields[roles]=name&include=roles&model=base.user"),
 )
 
-const hasError = computed(() => Boolean(error.value))
+if (apiError.value) {
+  hasError.value = true
+  errorMessage.value = apiError.value.message || "خطایی رخ داده است"
+}
 
-const users = computed(() => data.value?.data)
+if (apiData.value) {
+  users.value = apiData.value.data
+}
 </script>
 
 <template>
@@ -75,15 +81,15 @@ const users = computed(() => data.value?.data)
     variant="outlined"
     color="error"
   >
-    خطایی رخ داده‌است
+    {{ errorMessage }}
   </VSnackbar>
 
   <section
-    v-if="!hasError"
+    v-if="apiData"
     class="ag-grid-sec"
   >
     <AgGridVue
-      style="block-size: 100%; inline-size: 100%"
+      style="block-size: 100%; inline-size: 100%;"
       :column-defs="columnDefs"
       :row-data="rowData"
       :default-col-def="defaultColDef"
