@@ -47,7 +47,7 @@ const columnDefs = ref([
 const rowData = computed(() =>
   users.value?.map(user => {
     return {
-      personnelCode: user.personnel_code,
+      personnelCode: parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
       roles: user.roles?.map(role => role.name),
