@@ -1,13 +1,13 @@
 <script setup>
-import avatar3 from "@images/avatars/avatar-3.png"
-import avatar4 from "@images/avatars/avatar-4.png"
-import avatar5 from "@images/avatars/avatar-5.png"
-import paypal from "@images/cards/paypal-rounded.png"
+// import avatar3 from "@images/avatars/avatar-3.png"
+// import avatar4 from "@images/avatars/avatar-4.png"
+// import avatar5 from "@images/avatars/avatar-5.png"
+// import paypal from "@images/cards/paypal-rounded.png"
 
 const notifications = ref([
   {
     id: 1,
-    img: avatar4,
+    img: "avatar4",
     title: "Congratulation Flora! 🎉",
     subtitle: "Won the monthly best seller badge",
     time: "Today",
@@ -23,7 +23,7 @@ const notifications = ref([
   },
   {
     id: 3,
-    img: avatar5,
+    img: "avatar5",
     title: "New message received 👋🏻",
     subtitle: "You have 10 unread messages",
     time: "11 Aug",
@@ -31,7 +31,7 @@ const notifications = ref([
   },
   {
     id: 4,
-    img: paypal,
+    img: "paypal",
     title: "PayPal",
     subtitle: "Received Payment",
     time: "25 May",
@@ -40,7 +40,7 @@ const notifications = ref([
   },
   {
     id: 5,
-    img: avatar3,
+    img: "avatar3",
     title: "Received Order 📦",
     subtitle: "New order received from john",
     time: "19 Mar",

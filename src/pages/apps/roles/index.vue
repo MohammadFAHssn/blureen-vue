@@ -1,6 +1,6 @@
 <script setup>
-import RoleCards from "@/views/apps/roles/RoleCards.vue"
-import UserList from "@/views/apps/roles/UserList.vue"
+// import RoleCards from "@/views/apps/roles/RoleCards.vue"
+// import UserList from "@/views/apps/roles/UserList.vue"
 </script>
 
 <template>
@@ -18,7 +18,7 @@ import UserList from "@/views/apps/roles/UserList.vue"
 
     <!-- 👉 Roles Cards -->
     <VCol cols="12">
-      <RoleCards />
+      <!-- <RoleCards /> -->
     </VCol>
 
     <VCol cols="12">
@@ -33,7 +33,7 @@ import UserList from "@/views/apps/roles/UserList.vue"
 
     <VCol cols="12">
       <!-- 👉 User List  -->
-      <UserList />
+      <!-- <UserList /> -->
     </VCol>
   </VRow>
 </template>
