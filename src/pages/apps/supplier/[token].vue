@@ -69,6 +69,7 @@ const sendTenderBid = async tenderBid => {
 
   try {
     await $api(`${API_BASE_PATH}/tenderDetail/store-supplier-bids`, {
+      baseURL: "",
       method: "POST",
       body: {
         id: tenderBid.id, // ID of the tender_bid item (product line)
