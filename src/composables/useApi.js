@@ -10,7 +10,14 @@ export const useApi = createFetch({
   },
   options: {
     refetch: true,
-    async beforeFetch({ options }) {
+    async beforeFetch({ url, options }) {
+
+      if (options.skipBaseUrl) {
+        console.log(url)
+        url = url.replace("/api", "")
+        console.log(url)
+      } 
+
       const accessToken = useCookie("accessToken").value
       if (accessToken) {
         options.headers = {
@@ -19,7 +26,7 @@ export const useApi = createFetch({
         }
       }
 
-      return { options }
+      return { url, options }
     },
     afterFetch(ctx) {
       const { data, response } = ctx
