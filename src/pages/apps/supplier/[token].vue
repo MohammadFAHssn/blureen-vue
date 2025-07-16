@@ -9,9 +9,6 @@ definePage({
 const route = useRoute()
 const router = useRouter()
 
-// --- Constants ---
-const API_BASE_PATH = import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM
-
 // --- States ---
 const hasError = ref(false)
 const errorMessage = ref("")
@@ -68,7 +65,7 @@ const sendTenderBid = async tenderBid => {
   isSendTenderBidPending.value[tenderBid.id] = true
 
   try {
-    await $api(`${API_BASE_PATH}/tenderDetail/store-supplier-bids`, {
+    await $api("/commerce/tender/submit-bid", {
       method: "POST",
       body: {
         id: tenderBid.id, // ID of the tender_bid item (product line)
@@ -100,9 +97,7 @@ const sendTenderBid = async tenderBid => {
 // 
 
 const { data: apiData, error: apiError } = await useApi(
-  createUrl(
-    `${API_BASE_PATH}/tenderDetail/get-by-token?token=${route.params.token}`,
-  ),
+  createUrl("/commerce/tender/get-by-token?token=" + route.params.token),
 )
 
 if (apiError.value) {

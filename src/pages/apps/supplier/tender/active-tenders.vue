@@ -1,21 +1,18 @@
 <script setup>
 const router = useRouter()
 
-// --- Constants ---
-const API_BASE_PATH = import.meta.env.VITE_API_LEGACY_INTEGRATED_SYSTEM
-
 //
 const userData = useCookie("userData")
 
 const { data: apiData, error: apiError } = await useApi(
   createUrl(
-    `${API_BASE_PATH}/tenderSMS/get-active-tenders-by-supplierId?supplierId=${userData.value.id}`,
+    `/commerce/tender/get-actives?supplier_id=${userData.value.username}`,
   ),
 )
 
 if (apiError.value) {
   hasError.value = true
-  errorMessage.value = apiError.value.message || "خطا در دریافت اطلاعات."
+  errorMessage.value = apiError.value.message || "خطایی رخ داده‌است."
 }
 
 const tenders = apiData.value.data
