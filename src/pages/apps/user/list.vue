@@ -65,7 +65,7 @@ const { data: apiData, error: apiError } = await useApi(
 
 if (apiError.value) {
   hasError.value = true
-  errorMessage.value = apiError.value.message || "خطایی رخ داده است"
+  errorMessage.value = apiError.value.message || "خطایی رخ داده است."
 }
 
 if (apiData.value) {

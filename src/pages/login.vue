@@ -108,7 +108,7 @@ const onSubmit = () => {
     variant="outlined"
     color="error"
   >
-    خطایی رخ داده‌است
+    خطایی رخ داده‌است.
   </VSnackbar>
 
   <RouterLink to="/">
