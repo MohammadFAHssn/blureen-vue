@@ -103,7 +103,6 @@ const { data: apiData, error: apiError } = await useApi(
   createUrl(
     `${API_BASE_PATH}/tenderDetail/get-by-token?token=${route.params.token}`,
   ),
-  { skipBaseUrl: true },
 )
 
 if (apiError.value) {
