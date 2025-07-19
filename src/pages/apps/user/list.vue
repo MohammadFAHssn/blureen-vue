@@ -60,7 +60,7 @@ const rowData = computed(() =>
 // ----- end ag-grid -----
 
 const { data: apiData, error: apiError } = await useApi(
-  createUrl("/get?fields[roles]=name&include=roles&model=base.user"),
+  createUrl("/base/user?fields[roles]=name&include=roles"),
 )
 
 if (apiError.value) {
