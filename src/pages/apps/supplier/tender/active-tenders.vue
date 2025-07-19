@@ -4,6 +4,12 @@ const router = useRouter()
 //
 const userData = useCookie("userData")
 
+// --- States ---
+const hasError = ref(false)
+const errorMessage = ref("")
+
+let tenders
+
 const { data: apiData, error: apiError } = await useApi(
   createUrl(
     `/commerce/tender/get-actives?supplier_id=${userData.value.username}`,
@@ -15,7 +21,9 @@ if (apiError.value) {
   errorMessage.value = apiError.value.message || "خطایی رخ داده‌است."
 }
 
-const tenders = apiData.value.data
+if (apiData.value) {
+  tenders = apiData.value.data
+}
 </script>
 
 <template>
@@ -29,7 +37,7 @@ const tenders = apiData.value.data
     {{ errorMessage }}
   </VSnackbar>
 
-  <VRow>
+  <VRow v-if="apiData">
     <VCol
       v-for="tender in tenders"
       :key="tender.id"
