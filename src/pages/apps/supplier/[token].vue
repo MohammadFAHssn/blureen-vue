@@ -58,7 +58,7 @@ const bidPriceColor = (index, length) => {
 }
 
 const sendTenderBid = async tenderBid => {
-  if (!tenderBid.bidPrice && !tenderBid.bidQuantity) {
+  if (!tenderBid.bidPrice || !tenderBid.bidQuantity) {
     return
   }
 
