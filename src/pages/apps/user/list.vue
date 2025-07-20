@@ -1,5 +1,4 @@
 <script setup>
-import Active from "@/plugins/ag-grid/components/Active.vue"
 
 // states
 const users = ref([])
@@ -32,16 +31,6 @@ const columnDefs = ref([
     cellStyle: { display: "flex", "align-items": "center" },
   },
   { headerName: "شماره تلفن", field: "mobileNumber", flex: 2 },
-  {
-    headerName: "وضعیت",
-    field: "active",
-    flex: 1,
-    cellRenderer: Active,
-    filterParams: {
-      cellRenderer: Active,
-    },
-    cellStyle: { display: "flex", "align-items": "center" },
-  },
 ])
 
 const rowData = computed(() =>
@@ -52,7 +41,6 @@ const rowData = computed(() =>
       lastName: user.last_name,
       roles: user.roles?.map(role => role.name),
       mobileNumber: user.mobile_number,
-      active: user.active,
     }
   }),
 )
