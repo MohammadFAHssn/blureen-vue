@@ -1,5 +1,4 @@
 <script setup>
-
 // states
 const uiState = reactive({
   hasError: false,
@@ -59,7 +58,7 @@ const fetchUsers = async () => {
     users.value = data.value.data
   } catch (e) {
     uiState.hasError = true
-    uiState.errorMessage = e.message || "خطا در دریافت کاربران"
+    uiState.errorMessage = "خطا در دریافت کاربران"
   }
 }
 
