@@ -100,6 +100,8 @@ const rowData = computed(() => {
     {{ uiState.errorMessage }}
   </VSnackbar>
 
+  <RelationManagerDialog v-model:is-dialog-visible="uiState.isEditAccessDialogVisible" />
+
   <section class="ag-grid-sec">
     <AgGridVue
       :theme="theme"
