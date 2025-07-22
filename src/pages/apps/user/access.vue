@@ -3,6 +3,7 @@
 const uiState = reactive({
   hasError: false,
   errorMessage: "",
+  isEditAccessDialogVisible: false,
 })
 
 const rowUserAccess = ref([])
@@ -30,6 +31,21 @@ const defaultColDef = ref({
 
 const onGridReady = params => {
   gridApi.value = params.api
+}
+
+const getContextMenuItems = params => {
+  return params.node.field === "user"
+    ? [
+      {
+        icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+        name: "ویرایش دسترسی",
+        action: () => {
+          uiState.isEditAccessDialogVisible = true
+        },
+      },
+      ...params.defaultItems,
+    ]
+    : [...params.defaultItems]
 }
 
 // ----- end ag-grid -----
@@ -96,6 +112,7 @@ const rowData = computed(() => {
       :locale-text="AG_GRID_LOCALE_IR"
       :theme="theme"
       row-group-panel-show="always"
+      :get-context-menu-items="getContextMenuItems"
       @grid-ready="onGridReady"
     />
   </section>
