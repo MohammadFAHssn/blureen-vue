@@ -72,11 +72,11 @@ const fetchUserAccess = async () => {
 await fetchUserAccess()
 
 const rowData = computed(() => {
-  let userAccess2 = []
+  let userAccess = []
   rowUserAccess.value.map(user => {
     user.roles.map(role =>
       role.permissions.map(permission =>
-        userAccess2.push({
+        userAccess.push({
           user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
           role: role.name,
           permission: permission.name,
@@ -85,7 +85,7 @@ const rowData = computed(() => {
     )
   })
 
-  return userAccess2
+  return userAccess
 })
 </script>
 
@@ -102,17 +102,17 @@ const rowData = computed(() => {
 
   <section class="ag-grid-sec">
     <AgGridVue
+      :theme="theme"
       style="block-size: 100%; inline-size: 100%;"
       :column-defs="columnDefs"
       :row-data="rowData"
       :default-col-def="defaultColDef"
-      :enable-rtl="true"
       :row-numbers="true"
+      :enable-rtl="true"
       :pagination="true"
-      :locale-text="AG_GRID_LOCALE_IR"
-      :theme="theme"
       row-group-panel-show="always"
       :get-context-menu-items="getContextMenuItems"
+      :locale-text="AG_GRID_LOCALE_IR"
       @grid-ready="onGridReady"
     />
   </section>
