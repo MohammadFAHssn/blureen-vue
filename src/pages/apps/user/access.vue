@@ -7,6 +7,8 @@ const uiState = reactive({
 })
 
 const rowUserAccess = ref([])
+const selectedUser = ref({})
+const selectedUserRoles = ref([])
 
 // ----- start ag-grid -----
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
@@ -40,6 +42,11 @@ const getContextMenuItems = params => {
         icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
         name: "ویرایش دسترسی",
         action: () => {
+          const personnelCode = params.value.split("-")[0].trim()
+
+          updateSelectedUser(personnelCode)
+          updateSelectedUserRoles()
+
           uiState.isEditAccessDialogVisible = true
         },
       },
@@ -67,6 +74,21 @@ const fetchUserAccess = async () => {
     uiState.hasError = true
     uiState.errorMessage = "خطا در دریافت دسترسی کاربران"
   }
+}
+
+const updateSelectedUser = personnelCode => {
+  selectedUser.value = rowUserAccess.value.find(
+    user => user.personnel_code === personnelCode,
+  )
+}
+
+const updateSelectedUserRoles = () => {
+  selectedUserRoles.value = selectedUser.value.roles.map(role => {
+    return {
+      id: role.id,
+      name: role.name,
+    }
+  })
 }
 
 await fetchUserAccess()
@@ -100,7 +122,13 @@ const rowData = computed(() => {
     {{ uiState.errorMessage }}
   </VSnackbar>
 
-  <RelationManagerDialog v-model:is-dialog-visible="uiState.isEditAccessDialogVisible" />
+  <RelationManagerDialog
+    v-if="uiState.isEditAccessDialogVisible"
+    v-model:is-dialog-visible="uiState.isEditAccessDialogVisible"
+    :title="'دسترسی ' + selectedUser.first_name + ' ' + selectedUser.last_name + ' (' + selectedUser.personnel_code + ')'"
+    :items="selectedUserRoles"
+    :selected="selectedUserRoles"
+  />
 
   <section class="ag-grid-sec">
     <AgGridVue
