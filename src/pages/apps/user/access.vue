@@ -7,6 +7,7 @@ const uiState = reactive({
 })
 
 const rowUserAccess = ref([])
+const roles = ref([])
 const selectedUsers = ref([])
 const selectedUserRoles = ref([])
 
@@ -97,6 +98,28 @@ const fetchUserAccess = async () => {
   }
 }
 
+const fetchRoles = async () => {
+  try {
+    const { data, error } = await useApi(
+      createUrl(
+        "/base/role?include=permissions",
+      ),
+    )
+
+    if (error.value) throw error.value
+
+    roles.value = data.value.data.map(role => {
+      return {
+        id: role.id,
+        name: role.name,
+      }
+    })
+  } catch (e) {
+    uiState.hasError = true
+    uiState.errorMessage = "خطا در دریافت لیست نقش‌ها"
+  }
+}
+
 const updateSelectedUsers = personnelCodes => {
   selectedUsers.value = []
   personnelCodes.forEach(personnelCode => {
@@ -119,6 +142,7 @@ const updateSelectedUserRoles = () => {
   }
 }
 
+fetchRoles()
 await fetchUserAccess()
 
 const rowData = computed(() => {
@@ -170,11 +194,7 @@ const rowData = computed(() => {
             selectedUsers[0].personnel_code +
             ')')
     "
-    :items="[
-      { id: 1, name: 'Super Admin' },
-      { id: 2, name: 'admin' },
-      { id: 3, name: 'supplier' },
-    ]"
+    :items="roles"
     :selected="selectedUserRoles"
   />
 
