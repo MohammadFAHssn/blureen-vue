@@ -45,20 +45,18 @@ const defaultColDef = ref({
 })
 
 const getContextMenuItems = params => {
+  if (!params.node.isSelected())
+  {
+    params.api.deselectAll()
+    params.node.setSelected(true)
+  }
+
   const selectedNodes = params.api.getSelectedNodes()
 
   let selectedUsersPersonnelCode = []
   selectedNodes.forEach(node => {
     selectedUsersPersonnelCode.push(node.groupValue.split("-")[0].trim())
   })
-
-  if (
-    params.column.colId === "ag-Grid-AutoColumn" &&
-    params.node.field === "user" &&
-    selectedUsersPersonnelCode.length === 0
-  ) {
-    selectedUsersPersonnelCode = [params.value.split("-")[0].trim()]
-  }
 
   return selectedUsersPersonnelCode.length
     ? [
