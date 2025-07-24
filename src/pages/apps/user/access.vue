@@ -7,7 +7,7 @@ const uiState = reactive({
 })
 
 const rowUserAccess = ref([])
-const selectedUser = ref({})
+const selectedUsers = ref([])
 const selectedUserRoles = ref([])
 
 // ----- start ag-grid -----
@@ -17,6 +17,18 @@ import { AgGridVue } from "ag-grid-vue3"
 const { theme } = useAGGridTheme()
 
 const gridApi = ref(null)
+
+const onGridReady = params => {
+  gridApi.value = params.api
+}
+
+const rowSelection = ref({
+  mode: "multiRow",
+  enableClickSelection: true,
+  selectAll: "filtered",
+
+  isRowSelectable: rowNode => rowNode.field === "user",
+})
 
 const columnDefs = ref([
   { headerName: "کاربر", field: "user" },
@@ -31,22 +43,31 @@ const defaultColDef = ref({
   filter: true,
 })
 
-const onGridReady = params => {
-  gridApi.value = params.api
-}
-
 const getContextMenuItems = params => {
-  return params.node.field === "user"
+  const selectedNodes = params.api.getSelectedNodes()
+
+  let selectedUsersPersonnelCode = []
+  selectedNodes.forEach(node => {
+    selectedUsersPersonnelCode.push(node.groupValue.split("-")[0].trim())
+  })
+
+  if (
+    params.column.colId === "ag-Grid-AutoColumn" &&
+    params.node.field === "user" &&
+    selectedUsersPersonnelCode.length === 0
+  ) {
+    selectedUsersPersonnelCode = [params.value.split("-")[0].trim()]
+  }
+
+  return selectedUsersPersonnelCode.length
     ? [
       {
         icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
         name: "ویرایش دسترسی",
         action: () => {
-          const personnelCode = params.value.split("-")[0].trim()
-
-          updateSelectedUser(personnelCode)
+          updateSelectedUsers(selectedUsersPersonnelCode)
           updateSelectedUserRoles()
-
+  
           uiState.isEditAccessDialogVisible = true
         },
       },
@@ -76,19 +97,26 @@ const fetchUserAccess = async () => {
   }
 }
 
-const updateSelectedUser = personnelCode => {
-  selectedUser.value = rowUserAccess.value.find(
-    user => user.personnel_code === personnelCode,
-  )
+const updateSelectedUsers = personnelCodes => {
+  selectedUsers.value = []
+  personnelCodes.forEach(personnelCode => {
+    selectedUsers.value.push(
+      rowUserAccess.value.find(user => user.personnel_code === personnelCode),
+    )
+  })
 }
 
 const updateSelectedUserRoles = () => {
-  selectedUserRoles.value = selectedUser.value.roles.map(role => {
-    return {
-      id: role.id,
-      name: role.name,
-    }
-  })
+  if (selectedUsers.value.length > 1) {
+    selectedUserRoles.value = []
+  } else {
+    selectedUserRoles.value = selectedUsers.value[0].roles.map(role => {
+      return {
+        id: role.id,
+        name: role.name,
+      }
+    })
+  }
 }
 
 await fetchUserAccess()
@@ -96,15 +124,21 @@ await fetchUserAccess()
 const rowData = computed(() => {
   let userAccess = []
   rowUserAccess.value.map(user => {
-    user.roles.map(role =>
+    user.roles.map(role => {
+      if (isEmpty(role.permissions)) {
+        userAccess.push({
+          user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
+          role: role.name,
+        })
+      }
       role.permissions.map(permission =>
         userAccess.push({
           user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
           role: role.name,
           permission: permission.name,
         }),
-      ),
-    )
+      )
+    })
   })
 
   return userAccess
@@ -125,8 +159,22 @@ const rowData = computed(() => {
   <RelationManagerDialog
     v-if="uiState.isEditAccessDialogVisible"
     v-model:is-dialog-visible="uiState.isEditAccessDialogVisible"
-    :title="'دسترسی ' + selectedUser.first_name + ' ' + selectedUser.last_name + ' (' + selectedUser.personnel_code + ')'"
-    :items="selectedUserRoles"
+    :title="
+      'دسترسی ' +
+        (selectedUsers.length > 1
+          ? 'کاربران'
+          : selectedUsers[0].first_name +
+            ' ' +
+            selectedUsers[0].last_name +
+            ' (' +
+            selectedUsers[0].personnel_code +
+            ')')
+    "
+    :items="[
+      { id: 1, name: 'Super Admin' },
+      { id: 2, name: 'admin' },
+      { id: 3, name: 'supplier' },
+    ]"
     :selected="selectedUserRoles"
   />
 
@@ -138,6 +186,8 @@ const rowData = computed(() => {
       :row-data="rowData"
       :default-col-def="defaultColDef"
       :row-numbers="true"
+      :cell-selection="true"
+      :row-selection="rowSelection"
       :enable-rtl="true"
       :pagination="true"
       row-group-panel-show="always"
