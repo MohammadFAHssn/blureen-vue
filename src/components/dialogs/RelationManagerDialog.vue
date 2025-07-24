@@ -4,6 +4,21 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+
+  items: {
+    type: Array,
+    required: true,
+  },
+
+  selected: {
+    type: Array,
+    required: true,
+  },
+
+  title: {
+    type: String,
+    required: true,
+  },
 })
 
 const emit = defineEmits(["update:isDialogVisible"])
@@ -12,36 +27,18 @@ const dialogVisibleUpdate = val => {
   emit("update:isDialogVisible", val)
 }
 
-import { computed, ref, watch } from "vue"
-
-const items = [
-  {
-    text: "Nature",
-    icon: "mdi-nature",
-  },
-  {
-    text: "Nightlife",
-    icon: "mdi-glass-wine",
-  },
-  {
-    text: "November",
-    icon: "mdi-calendar-range",
-  },
-  {
-    text: "Portland",
-    icon: "mdi-map-marker",
-  },
-  {
-    text: "Biking",
-    icon: "mdi-bike",
-  },
-]
+const items = props.items
 
 const searchField = ref()
 
 const loading = ref(false)
 const search = ref("")
-const selected = ref([])
+
+const selected = ref(
+  items.filter(item => {
+    return props.selected.some(selectedItem => selectedItem.id === item.id)
+  }),
+)
 
 const allSelected = computed(() => {
   return selected.value.length === items.length
@@ -52,7 +49,7 @@ const categories = computed(() => {
   if (!_search) return items
 
   return items.filter(item => {
-    const text = item.text.toLowerCase()
+    const text = item.name.toLowerCase()
 
     return text.indexOf(_search) > -1
   })
@@ -71,7 +68,7 @@ watch(selected, () => {
   search.value = ""
 })
 
-function next() {
+function save() {
   loading.value = true
   setTimeout(() => {
     search.value = ""
@@ -95,12 +92,7 @@ function next() {
         color="transparent"
         flat
       >
-        <VToolbarTitle>Photo Info</VToolbarTitle>
-
-        <VBtn
-          icon="mdi-magnify"
-          @click="searchField.focus()"
-        />
+        <VToolbarTitle>{{ title }}</VToolbarTitle>
       </VToolbar>
 
       <VContainer>
@@ -110,7 +102,7 @@ function next() {
         >
           <VCol
             v-for="(selection, i) in selections"
-            :key="selection.text"
+            :key="selection.id"
             class="py-1 pe-0"
             cols="auto"
           >
@@ -120,11 +112,12 @@ function next() {
               @click:close="selected.splice(i, 1)"
             >
               <VIcon
+                v-if="selection.icon"
                 :icon="selection.icon"
                 start
               />
 
-              {{ selection.text }}
+              {{ selection.name }}
             </VChip>
           </VCol>
 
@@ -149,18 +142,19 @@ function next() {
         <template v-for="item in categories">
           <VListItem
             v-if="!selected.includes(item)"
-            :key="item.text"
+            :key="item.id"
             :disabled="loading"
             @click="selected.push(item)"
           >
             <template #prepend>
               <VIcon
+                v-if="item.icon"
                 :disabled="loading"
                 :icon="item.icon"
               />
             </template>
 
-            <VListItemTitle v-text="item.text" />
+            <VListItemTitle v-text="item.name" />
           </VListItem>
         </template>
       </VList>
@@ -171,13 +165,12 @@ function next() {
         <VSpacer />
 
         <VBtn
-          :disabled="!selected.length"
           :loading="loading"
           color="purple"
           variant="text"
-          @click="next"
+          @click="save"
         >
-          Next
+          ذخیره
         </VBtn>
       </VCardActions>
     </VCard>
