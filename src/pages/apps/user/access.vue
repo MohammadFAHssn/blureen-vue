@@ -11,6 +11,10 @@ const roles = ref([])
 const selectedUsers = ref([])
 const selectedUserRoles = ref([])
 
+const pendingState = reactive({
+  roles: false,
+})
+
 // ----- start ag-grid -----
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
 import { AgGridVue } from "ag-grid-vue3"
@@ -97,12 +101,15 @@ const fetchUserAccess = async () => {
 }
 
 const fetchRoles = async () => {
+  pendingState.roles = true
   try {
     const { data, error } = await useApi(
       createUrl(
         "/base/role?include=permissions",
       ),
     )
+
+    pendingState.roles = false
 
     if (error.value) throw error.value
 
@@ -192,6 +199,7 @@ const rowData = computed(() => {
             selectedUsers[0].personnel_code +
             ')')
     "
+    :is-fetch-items-pending="pendingState.roles"
     :items="roles"
     :selected="selectedUserRoles"
   />

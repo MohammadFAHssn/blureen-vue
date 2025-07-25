@@ -5,6 +5,11 @@ const props = defineProps({
     required: true,
   },
 
+  isFetchItemsPending: {
+    type: Boolean,
+    default: false,
+  },
+
   items: {
     type: Array,
     required: true,
@@ -137,6 +142,14 @@ function save() {
       </VContainer>
 
       <VDivider v-if="!allSelected" />
+
+      <template v-if="isFetchItemsPending">
+        <VSkeletonLoader
+          v-for="i in 3"
+          :key="i"
+          type="list-item"
+        />
+      </template>
 
       <VList>
         <template v-for="item in categories">
