@@ -24,6 +24,7 @@ declare module 'vue-router/auto-routes' {
     'apps-supplier-token': RouteRecordInfo<'apps-supplier-token', '/apps/supplier/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
     'apps-supplier-tender-active-tenders': RouteRecordInfo<'apps-supplier-tender-active-tenders', '/apps/supplier/tender/active-tenders', Record<never, never>, Record<never, never>>,
     'apps-supplier-tender-tender-history': RouteRecordInfo<'apps-supplier-tender-tender-history', '/apps/supplier/tender/tender-history', Record<never, never>, Record<never, never>>,
+    'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,

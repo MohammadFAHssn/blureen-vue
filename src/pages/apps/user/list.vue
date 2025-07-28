@@ -1,23 +1,23 @@
 <script setup>
-
 // states
+const uiState = reactive({
+  hasError: false,
+  errorMessage: "",
+})
+
 const users = ref([])
-const hasError = ref(false)
-const errorMessage = ref("")
 
 // ----- start ag-grid -----
-
+//  TODO: make theses globally
+import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
 import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
+import { AgGridVue } from "ag-grid-vue3"
 
 const { theme } = useAGGridTheme()
 
-import MultiValuedCell from "@/plugins/ag-grid/components/MultiValuedCell.vue"
-import { AgGridVue } from "ag-grid-vue3"
-import { computed } from "vue"
-
-const defaultColDef = {
+const defaultColDef = ref({
   filter: true,
-}
+})
 
 const columnDefs = ref([
   { headerName: "کد پرسنلی", field: "personnelCode", flex: 1 },
@@ -47,35 +47,36 @@ const rowData = computed(() =>
 
 // ----- end ag-grid -----
 
-const { data: apiData, error: apiError } = await useApi(
-  createUrl("/base/user?fields[roles]=name&include=roles"),
-)
+const fetchUsers = async () => {
+  try {
+    const { data, error } = await useApi(
+      createUrl("/base/user?fields[roles]=name&include=roles"),
+    )
 
-if (apiError.value) {
-  hasError.value = true
-  errorMessage.value = apiError.value.message || "خطایی رخ داده است."
+    if (error.value) throw error.value
+
+    users.value = data.value.data
+  } catch (e) {
+    uiState.hasError = true
+    uiState.errorMessage = "خطا در دریافت کاربران"
+  }
 }
 
-if (apiData.value) {
-  users.value = apiData.value.data
-}
+await fetchUsers()
 </script>
 
 <template>
   <VSnackbar
-    v-model="hasError"
+    v-model="uiState.hasError"
     :timeout="2000"
     location="center"
     variant="outlined"
     color="error"
   >
-    {{ errorMessage }}
+    {{ uiState.errorMessage }}
   </VSnackbar>
 
-  <section
-    v-if="apiData"
-    class="ag-grid-sec"
-  >
+  <section class="ag-grid-sec">
     <AgGridVue
       style="block-size: 100%; inline-size: 100%;"
       :column-defs="columnDefs"

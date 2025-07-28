@@ -1,43 +1,50 @@
 <script setup>
 const router = useRouter()
 
-//
+// 
 const userData = useCookie("userData")
 
 // --- States ---
-const hasError = ref(false)
-const errorMessage = ref("")
 
-let tenders
+const uiState = reactive({
+  hasError: false,
+  errorMessage: "",
+})
 
-const { data: apiData, error: apiError } = await useApi(
-  createUrl(
-    `/commerce/tender/get-actives?supplier_id=${userData.value.username}`,
-  ),
-)
+const tenders = ref([])
 
-if (apiError.value) {
-  hasError.value = true
-  errorMessage.value = apiError.value.message || "خطایی رخ داده‌است."
+// --- Methods ---
+const fetchTenders = async () => {
+  try {
+    const { data, error } = await useApi(
+      createUrl("/commerce/tender/get-actives?supplier_id=" + userData.value.username),
+    )
+
+    if (error.value) throw error.value
+
+    tenders.value = data.value.data
+
+  } catch (e) {
+    uiState.hasError = true
+    uiState.errorMessage = e.message || "خطا در دریافت مناقصات فعال"
+  }
 }
 
-if (apiData.value) {
-  tenders = apiData.value.data
-}
+await fetchTenders()
 </script>
 
 <template>
   <VSnackbar
-    v-model="hasError"
+    v-model="uiState.hasError"
     :timeout="2000"
     location="center"
     variant="flat"
     color="error"
   >
-    {{ errorMessage }}
+    {{ uiState.errorMessage }}
   </VSnackbar>
 
-  <VRow v-if="apiData">
+  <VRow>
     <VCol
       v-for="tender in tenders"
       :key="tender.id"

@@ -31,7 +31,6 @@ defineOptions({
 
 const route = useRoute()
 const router = useRouter()
-const ability = useAbility()
 
 const errors = ref({
   mobileNumber: undefined,
