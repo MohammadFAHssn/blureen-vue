@@ -145,11 +145,11 @@ const updateSelectedUserRoles = () => {
 const onUserRolesChange = async newUserRoles => {
   pendingState.updatingUserRoles = true
   try {
-    await $api("/base/user-roles/update", {
+    await $api("/base/user-role/update", {
       method: "POST",
       body: {
         userId: selectedUsers.value[0].id,
-        roleId: newUserRoles.map(role => role.id),
+        roleIds: newUserRoles.map(role => role.id),
       },
       onResponseError({ response }) {
         pendingState.updatingUserRoles = false
