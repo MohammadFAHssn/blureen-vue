@@ -12,7 +12,8 @@ const selectedUsers = ref([])
 const selectedUserRoles = ref([])
 
 const pendingState = reactive({
-  roles: false,
+  fetchingRoles: false,
+  updatingUserRoles: false,
 })
 
 // ----- start ag-grid -----
@@ -49,8 +50,7 @@ const defaultColDef = ref({
 })
 
 const getContextMenuItems = params => {
-  if (!params.node.isSelected())
-  {
+  if (!params.node.isSelected()) {
     params.api.deselectAll()
     params.node.setSelected(true)
   }
@@ -70,7 +70,7 @@ const getContextMenuItems = params => {
         action: () => {
           updateSelectedUsers(selectedUsersPersonnelCode)
           updateSelectedUserRoles()
-  
+
           uiState.isEditAccessDialogVisible = true
         },
       },
@@ -95,31 +95,26 @@ const fetchUserAccess = async () => {
 
     rowUserAccess.value = data.value.data
   } catch (e) {
+    console.error("Error fetching user access:", e)
     uiState.hasError = true
     uiState.errorMessage = "خطا در دریافت دسترسی کاربران"
   }
 }
 
 const fetchRoles = async () => {
-  pendingState.roles = true
+  pendingState.fetchingRoles = true
   try {
     const { data, error } = await useApi(
-      createUrl(
-        "/base/role?include=permissions",
-      ),
+      createUrl("/base/role?include=permissions"),
     )
 
-    pendingState.roles = false
+    pendingState.fetchingRoles = false
 
     if (error.value) throw error.value
 
-    roles.value = data.value.data.map(role => {
-      return {
-        id: role.id,
-        name: role.name,
-      }
-    })
+    roles.value = data.value.data
   } catch (e) {
+    console.error("Error fetching roles:", e)
     uiState.hasError = true
     uiState.errorMessage = "خطا در دریافت لیست نقش‌ها"
   }
@@ -147,12 +142,54 @@ const updateSelectedUserRoles = () => {
   }
 }
 
+const onUserRolesChange = async newUserRoles => {
+  pendingState.updatingUserRoles = true
+  try {
+    await $api("/base/user-roles/update", {
+      method: "POST",
+      body: {
+        userId: selectedUsers.value[0].id,
+        roleId: newUserRoles.map(role => role.id),
+      },
+      onResponseError({ response }) {
+        pendingState.updatingUserRoles = false
+        uiState.hasError = true
+        uiState.errorMessage =
+          response._data.message || "خطا در بروزرسانی دسترسی‌ها"
+      },
+    })
+
+    pendingState.updatingUserRoles = false
+    uiState.isEditAccessDialogVisible = false
+    UpdateUserRoles(newUserRoles)
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+const UpdateUserRoles = newUserRoles => {
+  rowUserAccess.value = rowUserAccess.value.map(user => {
+    if (user.id === selectedUsers.value[0].id) {
+      user.roles = newUserRoles.map(role =>
+        roles.value.find(r => r.id === role.id),
+      )
+    }
+
+    return user
+  })
+}
+
 fetchRoles()
 await fetchUserAccess()
 
 const rowData = computed(() => {
   let userAccess = []
   rowUserAccess.value.map(user => {
+    if (isEmpty(user.roles)) {
+      userAccess.push({
+        user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
+      })
+    }
     user.roles.map(role => {
       if (isEmpty(role.permissions)) {
         userAccess.push({
@@ -199,9 +236,11 @@ const rowData = computed(() => {
             selectedUsers[0].personnel_code +
             ')')
     "
-    :is-fetch-items-pending="pendingState.roles"
+    :is-fetch-items-pending="pendingState.fetchingRoles"
     :items="roles"
     :selected="selectedUserRoles"
+    :loading="pendingState.updatingUserRoles"
+    @change="onUserRolesChange"
   />
 
   <section class="ag-grid-sec">
@@ -211,11 +250,11 @@ const rowData = computed(() => {
       :column-defs="columnDefs"
       :row-data="rowData"
       :default-col-def="defaultColDef"
-      :row-numbers="true"
-      :cell-selection="true"
+      row-numbers
+      cell-selection
       :row-selection="rowSelection"
-      :enable-rtl="true"
-      :pagination="true"
+      enable-rtl
+      pagination
       row-group-panel-show="always"
       :get-context-menu-items="getContextMenuItems"
       :locale-text="AG_GRID_LOCALE_IR"

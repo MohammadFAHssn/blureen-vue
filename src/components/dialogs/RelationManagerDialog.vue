@@ -7,7 +7,7 @@ const props = defineProps({
 
   isFetchItemsPending: {
     type: Boolean,
-    default: false,
+    required: true,
   },
 
   items: {
@@ -24,9 +24,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
+  loading: {
+    type: Boolean,
+    required: true,
+  },
 })
 
-const emit = defineEmits(["update:isDialogVisible"])
+const emit = defineEmits(["update:isDialogVisible", "change"])
 
 const dialogVisibleUpdate = val => {
   emit("update:isDialogVisible", val)
@@ -36,11 +41,10 @@ const items = props.items
 
 const searchField = ref()
 
-const loading = ref(false)
 const search = ref("")
 
 const selected = ref(
-  items.filter(item => {
+  items.filter(item => {      
     return props.selected.some(selectedItem => selectedItem.id === item.id)
   }),
 )
@@ -74,12 +78,7 @@ watch(selected, () => {
 })
 
 function save() {
-  loading.value = true
-  setTimeout(() => {
-    search.value = ""
-    selected.value = []
-    loading.value = false
-  }, 2000)
+  emit("change", selected.value)
 }
 </script>
 
