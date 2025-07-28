@@ -1,1 +1,0 @@
-const n=r=>r==null,e=r=>Array.isArray(r)&&r.length===0,i=r=>n(r)||e(r)||r===!1?"پر کردن این فیلد الزامی است":!!String(r).trim().length||"پر کردن این فیلد الزامی است",s=r=>{const t=String(r);return/^09\d{9}$/.test(t)||"شماره تلفن معتبر نیست"};export{s as m,i as r};
