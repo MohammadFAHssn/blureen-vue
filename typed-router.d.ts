@@ -19,6 +19,7 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
     'apps-roles': RouteRecordInfo<'apps-roles', '/apps/roles', Record<never, never>, Record<never, never>>,
     'apps-supplier-token': RouteRecordInfo<'apps-supplier-token', '/apps/supplier/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
