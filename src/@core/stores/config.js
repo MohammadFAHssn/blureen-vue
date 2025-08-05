@@ -1,7 +1,7 @@
-import { storeToRefs } from "pinia"
-import { useTheme } from "vuetify"
 import { cookieRef, useLayoutConfigStore } from "@layouts/stores/config"
 import { themeConfig } from "@themeConfig"
+import { storeToRefs } from "pinia"
+import { useTheme } from "vuetify"
 
 // SECTION Store
 export const useConfigStore = defineStore("config", () => {
@@ -64,16 +64,16 @@ export const initConfigStore = () => {
   const configStore = useConfigStore()
 
   watch([() => configStore.theme, userPreferredColorScheme], () => {
-    vuetifyTheme.global.name.value =
+    vuetifyTheme.change(
       configStore.theme === "system"
         ? userPreferredColorScheme.value === "dark"
           ? "dark"
           : "light"
-        : configStore.theme
+        : configStore.theme)
   })
   onMounted(() => {
     if (configStore.theme === "system")
-      vuetifyTheme.global.name.value = userPreferredColorScheme.value
+      vuetifyTheme.change(userPreferredColorScheme.value)
   })
 }
 // !SECTION
