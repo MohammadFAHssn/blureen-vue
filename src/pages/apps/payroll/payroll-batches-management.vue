@@ -1,4 +1,10 @@
 <script setup>
+definePage({
+  meta: {
+    layoutWrapperClasses: "layout-content-height-fixed",
+  },
+})
+
 import PayrollBatchCreateDialog from "@/views/apps/payroll/PayrollBatchCreateDialog.vue"
 
 // states
@@ -11,12 +17,11 @@ const pendingState = reactive({
 })
 
 const onCreatePayrollBatch = async payload => {
-
   const formData = new FormData()
 
   formData.append("month", Number(payload.payrollBatchDate.split("/")[1]))
   formData.append("year", Number(payload.payrollBatchDate.split("/")[0]))
-  
+
   formData.append("file", payload.payrollBatchFile)
 
   pendingState.createPayrollBatch = true
@@ -43,34 +48,47 @@ const onCreatePayrollBatch = async payload => {
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="outlined"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
+  <VLayout class="app-layout">
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="outlined"
+      color="error"
+    >
+      {{ uiState.errorMessage }}
+    </VSnackbar>
 
-  <PayrollBatchCreateDialog
-    v-if="uiState.isPayrollBatchCreateDialogVisible"
-    v-model:is-dialog-visible="uiState.isPayrollBatchCreateDialogVisible"
-    :loading="pendingState.createPayrollBatch"
-    @submit="onCreatePayrollBatch"
-  />
-
-  <VApp>
-    <VFab
-      app
-      icon="tabler-plus"
-      size="x-large"
-      @click="uiState.isPayrollBatchCreateDialogVisible = true"
+    <PayrollBatchCreateDialog
+      v-if="uiState.isPayrollBatchCreateDialogVisible"
+      v-model:is-dialog-visible="uiState.isPayrollBatchCreateDialogVisible"
+      :loading="pendingState.createPayrollBatch"
+      @submit="onCreatePayrollBatch"
     />
-  </VApp>
+
+    <VApp>
+      <VFab
+        app
+        icon="tabler-plus"
+        size="x-large"
+        @click="uiState.isPayrollBatchCreateDialogVisible = true"
+      />
+    </VApp>
+  </VLayout>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "@styles/variables/vuetify";
+@use "@core/scss/base/mixins";
+
+.app-layout {
+  @include mixins.elevation(vuetify.$card-elevation);
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+}
+
 .v-application {
   max-block-size: 100%;
   min-block-size: 100%;

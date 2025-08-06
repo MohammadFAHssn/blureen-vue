@@ -127,13 +127,9 @@ const verticalNavAttrs = computed(() => {
   block-size: 100%;
 
   .layout-content-wrapper {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto 1fr auto;
-
-    // display: flex;
-    // flex-direction: column;
-    // flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     min-block-size: 100dvh;
     transition: padding-inline-start 0.2s ease-in-out;
     will-change: padding-inline-start;
@@ -225,9 +221,5 @@ const verticalNavAttrs = computed(() => {
       }
     }
   }
-}
-
-.page-content-container {
-  block-size: 100%;
 }
 </style>

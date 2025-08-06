@@ -1,4 +1,10 @@
 <script setup>
+definePage({
+  meta: {
+    layoutWrapperClasses: "layout-content-height-fixed",
+  },
+})
+
 // states
 const uiState = reactive({
   hasError: false,
@@ -212,58 +218,71 @@ const rowData = computed(() => {
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="outlined"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
+  <VLayout class="app-layout">
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="outlined"
+      color="error"
+    >
+      {{ uiState.errorMessage }}
+    </VSnackbar>
 
-  <RelationManagerDialog
-    v-if="uiState.isEditAccessDialogVisible"
-    v-model:is-dialog-visible="uiState.isEditAccessDialogVisible"
-    :title="
-      'دسترسی ' +
-        (selectedUsers.length > 1
-          ? 'کاربران'
-          : selectedUsers[0].first_name +
-            ' ' +
-            selectedUsers[0].last_name +
-            ' (' +
-            selectedUsers[0].personnel_code +
-            ')')
-    "
-    :is-fetch-items-pending="pendingState.fetchingRoles"
-    :items="roles"
-    :selected="selectedUserRoles"
-    :loading="pendingState.updatingUserRoles"
-    @change="onUserRolesChange"
-  />
-
-  <section class="ag-grid-sec">
-    <AgGridVue
-      :theme="theme"
-      style="block-size: 100%; inline-size: 100%;"
-      :column-defs="columnDefs"
-      :row-data="rowData"
-      :default-col-def="defaultColDef"
-      row-numbers
-      cell-selection
-      :row-selection="rowSelection"
-      enable-rtl
-      pagination
-      row-group-panel-show="always"
-      :get-context-menu-items="getContextMenuItems"
-      :locale-text="AG_GRID_LOCALE_IR"
-      @grid-ready="onGridReady"
+    <RelationManagerDialog
+      v-if="uiState.isEditAccessDialogVisible"
+      v-model:is-dialog-visible="uiState.isEditAccessDialogVisible"
+      :title="
+        'دسترسی ' +
+          (selectedUsers.length > 1
+            ? 'کاربران'
+            : selectedUsers[0].first_name +
+              ' ' +
+              selectedUsers[0].last_name +
+              ' (' +
+              selectedUsers[0].personnel_code +
+              ')')
+      "
+      :is-fetch-items-pending="pendingState.fetchingRoles"
+      :items="roles"
+      :selected="selectedUserRoles"
+      :loading="pendingState.updatingUserRoles"
+      @change="onUserRolesChange"
     />
-  </section>
+
+    <section class="ag-grid-sec">
+      <AgGridVue
+        :theme="theme"
+        style="block-size: 100%; inline-size: 100%;"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :default-col-def="defaultColDef"
+        row-numbers
+        cell-selection
+        :row-selection="rowSelection"
+        enable-rtl
+        pagination
+        row-group-panel-show="always"
+        :get-context-menu-items="getContextMenuItems"
+        :locale-text="AG_GRID_LOCALE_IR"
+        @grid-ready="onGridReady"
+      />
+    </section>
+  </VLayout>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "@styles/variables/vuetify";
+@use "@core/scss/base/mixins";
+
+.app-layout {
+  @include mixins.elevation(vuetify.$card-elevation);
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+}
+
 .ag-grid-sec {
   block-size: 100%;
 }

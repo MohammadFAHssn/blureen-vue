@@ -1,4 +1,10 @@
 <script setup>
+definePage({
+  meta: {
+    layoutWrapperClasses: "layout-content-height-fixed",
+  },
+})
+
 // states
 const uiState = reactive({
   hasError: false,
@@ -57,6 +63,7 @@ const fetchUsers = async () => {
 
     users.value = data.value.data
   } catch (e) {
+    console.error("Error fetching users:", e)
     uiState.hasError = true
     uiState.errorMessage = "خطا در دریافت کاربران"
   }
@@ -66,32 +73,45 @@ await fetchUsers()
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="outlined"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
+  <VLayout class="app-layout">
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="outlined"
+      color="error"
+    >
+      {{ uiState.errorMessage }}
+    </VSnackbar>
 
-  <section class="ag-grid-sec">
-    <AgGridVue
-      style="block-size: 100%; inline-size: 100%;"
-      :column-defs="columnDefs"
-      :row-data="rowData"
-      :default-col-def="defaultColDef"
-      :enable-rtl="true"
-      :row-numbers="true"
-      :pagination="true"
-      :locale-text="AG_GRID_LOCALE_IR"
-      :theme="theme"
-    />
-  </section>
+    <section class="ag-grid-sec">
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%;"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :default-col-def="defaultColDef"
+        enable-rtl
+        row-numbers
+        pagination
+        :locale-text="AG_GRID_LOCALE_IR"
+        :theme="theme"
+      />
+    </section>
+  </VLayout>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+@use "@styles/variables/vuetify";
+@use "@core/scss/base/mixins";
+
+.app-layout {
+  @include mixins.elevation(vuetify.$card-elevation);
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+}
+
 .ag-grid-sec {
   block-size: 100%;
 }
