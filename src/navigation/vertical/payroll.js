@@ -5,6 +5,13 @@ export default [
     subject: "Payroll-Navbar",
   },
   {
+    title: "Payroll Slip",
+    icon: { icon: "tabler-file-dollar" },
+    action: "use",
+    subject: "app",
+    to: "apps-payroll-payroll-slip",
+  },
+  {
     title: "Payroll Batches Management",
     icon: { icon: "tabler-settings-dollar" },
     action: "read",

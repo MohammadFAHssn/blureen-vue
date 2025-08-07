@@ -19,7 +19,11 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-payroll-base': RouteRecordInfo<'apps-payroll-base', '/apps/payroll/base', Record<never, never>, Record<never, never>>,
+    'apps-payroll-cluade': RouteRecordInfo<'apps-payroll-cluade', '/apps/payroll/cluade', Record<never, never>, Record<never, never>>,
+    'apps-payroll-gemeni': RouteRecordInfo<'apps-payroll-gemeni', '/apps/payroll/gemeni', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
+    'apps-payroll-payroll-slip': RouteRecordInfo<'apps-payroll-payroll-slip', '/apps/payroll/payroll-slip', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
     'apps-roles': RouteRecordInfo<'apps-roles', '/apps/roles', Record<never, never>, Record<never, never>>,
     'apps-supplier-token': RouteRecordInfo<'apps-supplier-token', '/apps/supplier/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
