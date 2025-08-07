@@ -1,5 +1,5 @@
 <script setup>
-import { getSingletonHighlighter } from "shiki"
+import { createHighlighter } from "shiki"
 import { PerfectScrollbar } from "vue3-perfect-scrollbar"
 
 const props = defineProps({
@@ -34,7 +34,7 @@ const { copy, copied } = useClipboard({
   source: computed(() => props.code[preferredCodeLanguage.value]),
 })
 
-const highlighter = await getSingletonHighlighter({
+const highlighter = await createHighlighter({
   themes: ["dracula", "dracula-soft"],
   langs: ["vue"],
 })
@@ -114,7 +114,7 @@ const codeSnippet = highlighter.codeToHtml(
 
           <div class="position-relative">
             <PerfectScrollbar
-              style="border-radius: 6px; max-block-size: 500px"
+              style="border-radius: 6px; max-block-size: 500px;"
               :options="{ wheelPropagation: false, suppressScrollX: false }"
             >
               <!-- eslint-disable-next-line vue/no-v-html -->
@@ -147,8 +147,14 @@ const codeSnippet = highlighter.codeToHtml(
 code[class*="language-"],
 pre[class*="language-"] {
   font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+    ui-monospace,
+ SFMono-Regular,
+ Menlo,
+ Monaco,
+ Consolas,
+ "Liberation Mono",
+    "Courier New",
+ monospace;
   font-size: 14px;
 }
 

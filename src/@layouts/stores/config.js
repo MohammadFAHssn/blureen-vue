@@ -12,6 +12,9 @@ export const cookieRef = (key, defaultValue) => {
 export const useLayoutConfigStore = defineStore("layoutConfig", () => {
   const route = useRoute()
 
+  // 👉 Window Scroll - Move here to avoid lifecycle issues
+  const { y: windowScrollY } = useWindowScroll()
+
   // 👉 Navbar Type
   const navbarType = ref(layoutConfig.navbar.type)
 
@@ -77,8 +80,6 @@ export const useLayoutConfigStore = defineStore("layoutConfig", () => {
 
   // 👉 Layout Classes
   const _layoutClasses = computed(() => {
-    const { y: windowScrollY } = useWindowScroll()
-
     return [
       `layout-nav-type-${appContentLayoutNav.value}`,
       `layout-navbar-${navbarType.value}`,

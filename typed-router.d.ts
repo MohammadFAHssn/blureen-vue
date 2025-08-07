@@ -19,9 +19,6 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'apps-payroll-base': RouteRecordInfo<'apps-payroll-base', '/apps/payroll/base', Record<never, never>, Record<never, never>>,
-    'apps-payroll-cluade': RouteRecordInfo<'apps-payroll-cluade', '/apps/payroll/cluade', Record<never, never>, Record<never, never>>,
-    'apps-payroll-gemeni': RouteRecordInfo<'apps-payroll-gemeni', '/apps/payroll/gemeni', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-slip': RouteRecordInfo<'apps-payroll-payroll-slip', '/apps/payroll/payroll-slip', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
@@ -37,4 +34,88 @@ declare module 'vue-router/auto-routes' {
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
     'two-step-supplier': RouteRecordInfo<'two-step-supplier', '/two-step-supplier', Record<never, never>, Record<never, never>>,
   }
+
+  /**
+   * Route file to route info map by unplugin-vue-router.
+   * Used by the volar plugin to automatically type useRoute()
+   *
+   * Each key is a file path relative to the project root with 2 properties:
+   * - routes: union of route names of the possible routes when in this page (passed to useRoute<...>())
+   * - views: names of nested views (can be passed to <RouterView name="...">)
+   *
+   * @internal
+   */
+  export interface _RouteFileInfoMap {
+    'src/pages/[...error].vue': {
+      routes: '$error'
+      views: never
+    }
+    'src/pages/apps/payroll/payroll-batches-management.vue': {
+      routes: 'apps-payroll-payroll-batches-management'
+      views: never
+    }
+    'src/pages/apps/payroll/payroll-slip.vue': {
+      routes: 'apps-payroll-payroll-slip'
+      views: never
+    }
+    'src/pages/apps/permissions/index.vue': {
+      routes: 'apps-permissions'
+      views: never
+    }
+    'src/pages/apps/roles/index.vue': {
+      routes: 'apps-roles'
+      views: never
+    }
+    'src/pages/apps/supplier/[token].vue': {
+      routes: 'apps-supplier-token'
+      views: never
+    }
+    'src/pages/apps/supplier/tender/active-tenders.vue': {
+      routes: 'apps-supplier-tender-active-tenders'
+      views: never
+    }
+    'src/pages/apps/supplier/tender/tender-history.vue': {
+      routes: 'apps-supplier-tender-tender-history'
+      views: never
+    }
+    'src/pages/apps/user/access.vue': {
+      routes: 'apps-user-access'
+      views: never
+    }
+    'src/pages/apps/user/list.vue': {
+      routes: 'apps-user-list'
+      views: never
+    }
+    'src/pages/dashboards/crm.vue': {
+      routes: 'dashboards-crm'
+      views: never
+    }
+    'src/pages/login.vue': {
+      routes: 'login'
+      views: never
+    }
+    'src/pages/login-supplier.vue': {
+      routes: 'login-supplier'
+      views: never
+    }
+    'src/pages/not-authorized.vue': {
+      routes: 'not-authorized'
+      views: never
+    }
+    'src/pages/two-step-supplier.vue': {
+      routes: 'two-step-supplier'
+      views: never
+    }
+  }
+
+  /**
+   * Get a union of possible route names in a certain route component file.
+   * Used by the volar plugin to automatically type useRoute()
+   *
+   * @internal
+   */
+  export type _RouteNamesForFilePath<FilePath extends string> =
+    _RouteFileInfoMap extends Record<FilePath, infer Info>
+      ? Info['routes']
+      : keyof RouteNamedMap
 }
