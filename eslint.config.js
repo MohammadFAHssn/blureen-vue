@@ -29,11 +29,6 @@ export default antfu(
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 
-      // Indentation and spacing
-      'style/comma-spacing': ['error', { before: false, after: true }],
-      'style/key-spacing': ['error', { afterColon: true }],
-      'style/indent': ['error', 2],
-
       // Vue specific rules
       'vue/first-attribute-linebreak': [
         'error',
@@ -69,22 +64,6 @@ export default antfu(
       // TypeScript rules (only for TS files)
       'ts/consistent-type-definitions': ['error', 'interface'],
       'ts/consistent-type-imports': 'error',
-
-      // Import rules
-      'import/order': [
-        'error',
-        {
-          groups: [
-            'builtin',
-            'external',
-            'internal',
-            'parent',
-            'sibling',
-            'index',
-          ],
-          'newlines-between': 'never',
-        },
-      ],
 
       // Disable some rules from @antfu/eslint-config
       'antfu/no-top-level-await': 'off',
