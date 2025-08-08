@@ -14,10 +14,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:selectedRadio"])
+const emit = defineEmits(['update:selectedRadio'])
 
-const updateSelectedOption = value => {
-  if (value !== null) emit("update:selectedRadio", value)
+function updateSelectedOption(value) {
+  if (value !== null) emit('update:selectedRadio', value)
 }
 </script>
 
@@ -38,22 +38,16 @@ const updateSelectedOption = value => {
           class="custom-input custom-radio rounded cursor-pointer w-100"
           :class="props.selectedRadio === item.value ? 'active' : ''"
         >
-          <slot
-            name="content"
-            :item="item"
-          >
+          <slot name="content" :item="item">
             <template v-if="typeof item.bgImage === 'object'">
-              <Component
-                :is="item.bgImage"
-                class="custom-radio-image"
-              />
+              <Component :is="item.bgImage" class="custom-radio-image" />
             </template>
             <img
               v-else
               :src="item.bgImage"
               alt="bg-img"
               class="custom-radio-image"
-            >
+            />
           </slot>
 
           <VRadio
@@ -68,10 +62,7 @@ const updateSelectedOption = value => {
           :for="`custom-radio-with-img-${item.value}`"
           class="cursor-pointer"
         >
-          <slot
-            name="label"
-            :label="item.label"
-          >
+          <slot name="label" :label="item.label">
             {{ item.label }}
           </slot>
         </VLabel>

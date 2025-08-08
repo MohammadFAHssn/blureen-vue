@@ -10,24 +10,24 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:isDialogVisible", "submit"])
+const emit = defineEmits(['update:isDialogVisible', 'submit'])
 
 const phoneNumber = ref(structuredClone(toRaw(props.mobileNumber)))
 
-const formSubmit = () => {
+function formSubmit() {
   if (phoneNumber.value) {
-    emit("submit", phoneNumber.value)
-    emit("update:isDialogVisible", false)
+    emit('submit', phoneNumber.value)
+    emit('update:isDialogVisible', false)
   }
 }
 
-const resetPhoneNumber = () => {
+function resetPhoneNumber() {
   phoneNumber.value = structuredClone(toRaw(props.mobileNumber))
-  emit("update:isDialogVisible", false)
+  emit('update:isDialogVisible', false)
 }
 
-const dialogModelValueUpdate = val => {
-  emit("update:isDialogVisible", val)
+function dialogModelValueUpdate(val) {
+  emit('update:isDialogVisible', val)
 }
 </script>
 
@@ -43,9 +43,7 @@ const dialogModelValueUpdate = val => {
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h5 class="text-h5 mb-2">
-          Verify Your Mobile Number for SMS
-        </h5>
+        <h5 class="text-h5 mb-2">Verify Your Mobile Number for SMS</h5>
         <p class="text-body-1 mb-6">
           Enter your mobile phone number with country code and we will send you
           a verification code.
@@ -62,23 +60,12 @@ const dialogModelValueUpdate = val => {
           />
 
           <div class="d-flex flex-wrap justify-end gap-4">
-            <VBtn
-              color="secondary"
-              variant="tonal"
-              @click="resetPhoneNumber"
-            >
+            <VBtn color="secondary" variant="tonal" @click="resetPhoneNumber">
               Cancel
             </VBtn>
-            <VBtn
-              type="submit"
-              @click="formSubmit"
-            >
+            <VBtn type="submit" @click="formSubmit">
               continue
-              <VIcon
-                end
-                icon="tabler-arrow-right"
-                class="flip-in-rtl"
-              />
+              <VIcon end icon="tabler-arrow-right" class="flip-in-rtl" />
             </VBtn>
           </div>
         </VForm>

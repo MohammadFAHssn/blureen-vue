@@ -1,4 +1,4 @@
-export const defineThemeConfig = userConfig => {
+export function defineThemeConfig(userConfig) {
   return {
     themeConfig: userConfig,
     layoutConfig: {

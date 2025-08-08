@@ -1,6 +1,6 @@
-import { layoutConfig } from "@layouts/config"
-import { AppContentLayoutNav } from "@layouts/enums"
-import { useLayoutConfigStore } from "@layouts/stores/config"
+import { layoutConfig } from '@layouts/config'
+import { AppContentLayoutNav } from '@layouts/enums'
+import { useLayoutConfigStore } from '@layouts/stores/config'
 
 export const openGroups = ref([])
 
@@ -8,7 +8,7 @@ export const openGroups = ref([])
  * Return nav link props to use
  // @param {Object, String} item navigation routeName or route Object provided in navigation data
  */
-export const getComputedNavLinkToProp = computed(() => link => {
+export const getComputedNavLinkToProp = computed(() => (link) => {
   const props = {
     target: link.target,
     rel: link.rel,
@@ -17,7 +17,7 @@ export const getComputedNavLinkToProp = computed(() => link => {
   // If route is string => it assumes string is route name => Create route object from route name
   // If route is not string => It assumes it's route object => returns passed route object
   if (link.to)
-    props.to = typeof link.to === "string" ? { name: link.to } : link.to
+    props.to = typeof link.to === 'string' ? { name: link.to } : link.to
   else props.href = link.href
 
   return props
@@ -29,9 +29,9 @@ export const getComputedNavLinkToProp = computed(() => link => {
  * IF link is object it will resolve the object and will return the link
  // @param {Object, String} link navigation link object/string
  */
-export const resolveNavLinkRouteName = (link, router) => {
+export function resolveNavLinkRouteName(link, router) {
   if (!link.to) return null
-  if (typeof link.to === "string") return link.to
+  if (typeof link.to === 'string') return link.to
 
   return router.resolve(link.to).name
 }
@@ -40,7 +40,7 @@ export const resolveNavLinkRouteName = (link, router) => {
  * Check if nav-link is active
  * @param {object} link nav-link object
  */
-export const isNavLinkActive = (link, router) => {
+export function isNavLinkActive(link, router) {
   // Matched routes array of current route
   const matchedRoutes = router.currentRoute.value.matched
 
@@ -48,7 +48,7 @@ export const isNavLinkActive = (link, router) => {
   const resolveRoutedName = resolveNavLinkRouteName(link, router)
   if (!resolveRoutedName) return false
 
-  return matchedRoutes.some(route => {
+  return matchedRoutes.some((route) => {
     return (
       route.name === resolveRoutedName ||
       route.meta.navActiveLink === resolveRoutedName
@@ -60,23 +60,24 @@ export const isNavLinkActive = (link, router) => {
  * Check if nav group is active
  * @param {Array} children Group children
  */
-export const isNavGroupActive = (children, router) =>
-  children.some(child => {
+export function isNavGroupActive(children, router) {
+  return children.some((child) => {
     // If child have children => It's group => Go deeper(recursive)
-    if ("children" in child) return isNavGroupActive(child.children, router)
+    if ('children' in child) return isNavGroupActive(child.children, router)
 
     // else it's link => Check for matched Route
     return isNavLinkActive(child, router)
   })
+}
 
 /**
  * Change `dir` attribute based on direction
  * @param dir 'ltr' | 'rtl'
  */
-export const _setDirAttr = dir => {
+export function _setDirAttr(dir) {
   // Check if document exists for SSR
-  if (typeof document !== "undefined")
-    document.documentElement.setAttribute("dir", dir)
+  if (typeof document !== 'undefined')
+    document.documentElement.setAttribute('dir', dir)
 }
 
 /**
@@ -84,24 +85,24 @@ export const _setDirAttr = dir => {
  * @param key i18n translation key
  * @param tag tag to wrap the translation with
  */
-export const getDynamicI18nProps = (key, tag = "span") => {
+export function getDynamicI18nProps(key, tag = 'span') {
   if (!layoutConfig.app.i18n.enable) return {}
 
   return {
     keypath: key,
     tag,
-    scope: "global",
+    scope: 'global',
   }
 }
-export const switchToVerticalNavOnLtOverlayNavBreakpoint = () => {
+export function switchToVerticalNavOnLtOverlayNavBreakpoint() {
   const configStore = useLayoutConfigStore()
 
   /*
         ℹ️ This is flag will hold nav type need to render when switching between lgAndUp from mdAndDown window width
-  
+
         Requirement: When we nav is set to `horizontal` and we hit the `mdAndDown` breakpoint nav type shall change to `vertical` nav
         Now if we go back to `lgAndUp` breakpoint from `mdAndDown` how we will know which was previous nav type in large device?
-  
+
         Let's assign value of `appContentLayoutNav` as default value of lgAndUpNav. Why 🤔?
           If template is viewed in lgAndUp
             We will assign `appContentLayoutNav` value to `lgAndUpNav` because at this point both constant is same
@@ -119,7 +120,7 @@ export const switchToVerticalNavOnLtOverlayNavBreakpoint = () => {
       */
   watch(
     () => configStore.appContentLayoutNav,
-    value => {
+    (value) => {
       if (!configStore.isLessThanOverlayNavBreakpoint) lgAndUpNav.value = value
     },
   )
@@ -131,7 +132,7 @@ export const switchToVerticalNavOnLtOverlayNavBreakpoint = () => {
       */
   watch(
     () => configStore.isLessThanOverlayNavBreakpoint,
-    val => {
+    (val) => {
       configStore.appContentLayoutNav = val
         ? AppContentLayoutNav.Vertical
         : lgAndUpNav.value
@@ -144,7 +145,7 @@ export const switchToVerticalNavOnLtOverlayNavBreakpoint = () => {
  * Convert Hex color to rgb
  * @param hex
  */
-export const hexToRgb = hex => {
+export function hexToRgb(hex) {
   // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
 
@@ -162,14 +163,14 @@ export const hexToRgb = hex => {
 /**
  *RGBA color to Hex color with / without opacity
  */
-export const rgbaToHex = (rgba, forceRemoveAlpha = false) => {
+export function rgbaToHex(rgba, forceRemoveAlpha = false) {
   return `#${rgba
-    .replace(/^rgba?\(|\s+|\)$/g, "") // Get's rgba / rgb string values
-    .split(",") // splits them at ","
+    .replace(/^rgba?\(|\s+|\)$/g, '') // Get's rgba / rgb string values
+    .split(',') // splits them at ","
     .filter((string, index) => !forceRemoveAlpha || index !== 3)
-    .map(string => Number.parseFloat(string)) // Converts them to numbers
+    .map((string) => Number.parseFloat(string)) // Converts them to numbers
     .map((number, index) => (index === 3 ? Math.round(number * 255) : number)) // Converts alpha to 255 number
-    .map(number => number.toString(16)) // Converts numbers to hex
-    .map(string => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
-    .join("")}`
+    .map((number) => number.toString(16)) // Converts numbers to hex
+    .map((string) => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
+    .join('')}`
 }

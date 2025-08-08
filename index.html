@@ -58,26 +58,26 @@
     <script type="module" src="/src/main.js"></script>
     <script>
       const loaderColor =
-        localStorage.getItem("vuexy-initial-loader-bg") || "#FFFFFF";
+        localStorage.getItem('vuexy-initial-loader-bg') || '#FFFFFF'
       const primaryColor =
-        localStorage.getItem("vuexy-initial-loader-color") || "#7367F0";
+        localStorage.getItem('vuexy-initial-loader-color') || '#7367F0'
 
       if (loaderColor)
         document.documentElement.style.setProperty(
-          "--initial-loader-bg",
+          '--initial-loader-bg',
           loaderColor,
-        );
+        )
       if (loaderColor)
         document.documentElement.style.setProperty(
-          "--initial-loader-bg",
+          '--initial-loader-bg',
           loaderColor,
-        );
+        )
 
       if (primaryColor)
         document.documentElement.style.setProperty(
-          "--initial-loader-color",
+          '--initial-loader-color',
           primaryColor,
-        );
+        )
     </script>
   </body>
 </html>

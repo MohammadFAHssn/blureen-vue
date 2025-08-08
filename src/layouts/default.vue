@@ -1,14 +1,14 @@
 <script setup>
-import { useConfigStore } from "@core/stores/config"
-import { AppContentLayoutNav } from "@layouts/enums"
-import { switchToVerticalNavOnLtOverlayNavBreakpoint } from "@layouts/utils"
+import { useConfigStore } from '@core/stores/config'
+import { AppContentLayoutNav } from '@layouts/enums'
+import { switchToVerticalNavOnLtOverlayNavBreakpoint } from '@layouts/utils'
 
 const DefaultLayoutWithHorizontalNav = defineAsyncComponent(
-  () => import("./components/DefaultLayoutWithHorizontalNav.vue"),
+  () => import('./components/DefaultLayoutWithHorizontalNav.vue'),
 )
 
 const DefaultLayoutWithVerticalNav = defineAsyncComponent(
-  () => import("./components/DefaultLayoutWithVerticalNav.vue"),
+  () => import('./components/DefaultLayoutWithVerticalNav.vue'),
 )
 
 const configStore = useConfigStore()
@@ -64,5 +64,5 @@ watch(
 
 <style lang="scss">
 // As we are using `layouts` plugin we need its styles to be imported
-@use "@layouts/styles/default-layout";
+@use '@layouts/styles/default-layout';
 </style>

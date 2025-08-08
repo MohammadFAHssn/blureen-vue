@@ -7,11 +7,11 @@ const props = defineProps({
   location: {
     type: null,
     required: false,
-    default: "bottom end",
+    default: 'bottom end',
   },
 })
 
-const { locale } = useI18n({ useScope: "global" })
+const { locale } = useI18n({ useScope: 'global' })
 </script>
 
 <template>
@@ -26,10 +26,7 @@ const { locale } = useI18n({ useScope: "global" })
       width="175"
     >
       <!-- List -->
-      <VList
-        :selected="[locale]"
-        color="primary"
-      >
+      <VList :selected="[locale]" color="primary">
         <!-- List item -->
         <VListItem
           v-for="lang in props.languages"

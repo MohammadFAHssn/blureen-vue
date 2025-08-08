@@ -1,20 +1,20 @@
-import { useTheme } from "vuetify"
-
 import {
   colorSchemeDarkBlue,
   colorSchemeLight,
   themeQuartz,
-} from "ag-grid-community"
+} from 'ag-grid-community'
 
-export const useAGGridTheme = () => {
+import { useTheme } from 'vuetify'
+
+export function useAGGridTheme() {
   const { global } = useTheme()
 
   const persianThemeQuartz = themeQuartz.withParams({
-    fontFamily: "Shabnam",
+    fontFamily: 'Shabnam',
   })
 
   const theme = computed(() =>
-    global.name.value === "light"
+    global.name.value === 'light'
       ? persianThemeQuartz.withPart(colorSchemeLight)
       : persianThemeQuartz.withPart(colorSchemeDarkBlue),
   )

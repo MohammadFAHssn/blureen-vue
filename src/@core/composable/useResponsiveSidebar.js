@@ -1,6 +1,6 @@
-import { useDisplay } from "vuetify"
+import { useDisplay } from 'vuetify'
 
-export const useResponsiveLeftSidebar = (mobileBreakpoint = undefined) => {
+export function useResponsiveLeftSidebar(mobileBreakpoint = undefined) {
   const { mdAndDown, name: currentBreakpoint } = useDisplay()
   const _mobileBreakpoint = mobileBreakpoint || mdAndDown
   const isLeftSidebarOpen = ref(true)

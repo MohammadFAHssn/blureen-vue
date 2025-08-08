@@ -12,7 +12,7 @@ const props = defineProps({
   direction: {
     type: String,
     required: false,
-    default: "horizontal",
+    default: 'horizontal',
   },
   iconSize: {
     type: [String, Number],
@@ -27,26 +27,26 @@ const props = defineProps({
   align: {
     type: String,
     required: false,
-    default: "default",
+    default: 'default',
   },
 })
 
-const emit = defineEmits(["update:currentStep"])
+const emit = defineEmits(['update:currentStep'])
 
 const currentStep = ref(props.currentStep || 0)
 
 const activeOrCompletedStepsClasses = computed(
-  () => index =>
+  () => (index) =>
     index < currentStep.value
-      ? "stepper-steps-completed"
+      ? 'stepper-steps-completed'
       : index === currentStep.value
-        ? "stepper-steps-active"
-        : "",
+        ? 'stepper-steps-active'
+        : '',
 )
 
 const isHorizontalAndNotLastStep = computed(
-  () => index =>
-    props.direction === "horizontal" && props.items.length - 1 !== index,
+  () => (index) =>
+    props.direction === 'horizontal' && props.items.length - 1 !== index,
 )
 
 // check if validation is enabled
@@ -59,9 +59,10 @@ watchEffect(() => {
     props.currentStep !== undefined &&
     props.currentStep < props.items.length &&
     props.currentStep >= 0
-  )
+  ) {
     currentStep.value = props.currentStep
-  emit("update:currentStep", currentStep.value)
+  }
+  emit('update:currentStep', currentStep.value)
 })
 </script>
 
@@ -112,10 +113,7 @@ watchEffect(() => {
                 <p class="stepper-title font-weight-medium mb-0">
                   {{ item.title }}
                 </p>
-                <p
-                  v-if="item.subtitle"
-                  class="stepper-subtitle mb-0"
-                >
+                <p v-if="item.subtitle" class="stepper-subtitle mb-0">
                   {{ item.subtitle }}
                 </p>
               </div>
@@ -141,8 +139,8 @@ watchEffect(() => {
                 <VAvatar
                   v-if="
                     !isValidationEnabled ||
-                      props.isActiveStepValid ||
-                      index !== currentStep
+                    props.isActiveStepValid ||
+                    index !== currentStep
                   "
                   size="38"
                   rounded
@@ -157,16 +155,8 @@ watchEffect(() => {
                   </h5>
                 </VAvatar>
 
-                <VAvatar
-                  v-else
-                  color="error"
-                  size="38"
-                  rounded
-                >
-                  <VIcon
-                    icon="tabler-alert-circle"
-                    size="22"
-                  />
+                <VAvatar v-else color="error" size="38" rounded>
+                  <VIcon icon="tabler-alert-circle" size="22" />
                 </VAvatar>
               </template>
 
@@ -180,10 +170,7 @@ watchEffect(() => {
                 size="38"
                 rounded
               >
-                <h5
-                  class="text-h5"
-                  style="color: rgb(var(--v-theme-primary))"
-                >
+                <h5 class="text-h5" style="color: rgb(var(--v-theme-primary))">
                   {{ index + 1 }}
                 </h5>
               </VAvatar>
@@ -208,10 +195,7 @@ watchEffect(() => {
               v-if="isHorizontalAndNotLastStep(index)"
               class="stepper-step-line stepper-chevron-indicator mx-6"
             >
-              <VIcon
-                icon="tabler-chevron-right"
-                size="20"
-              />
+              <VIcon icon="tabler-chevron-right" size="20" />
             </div>
           </div>
         </template>
@@ -222,7 +206,7 @@ watchEffect(() => {
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/mixins" as templateMixins;
+@use '@core/scss/template/mixins' as templateMixins;
 
 .app-stepper {
   // 👉 stepper step with bg color
@@ -252,7 +236,7 @@ watchEffect(() => {
         .stepper-icon {
           @include templateMixins.custom-elevation(
             var(--v-theme-primary),
-            "sm"
+            'sm'
           );
 
           background-color: rgb(var(--v-theme-primary));
@@ -337,11 +321,11 @@ watchEffect(() => {
     /* stylelint-disable-next-line no-descending-specificity */
     .stepper-steps-active {
       .v-avatar.bg-primary {
-        @include templateMixins.custom-elevation(var(--v-theme-primary), "sm");
+        @include templateMixins.custom-elevation(var(--v-theme-primary), 'sm');
       }
 
       .v-avatar.bg-error {
-        @include templateMixins.custom-elevation(var(--v-theme-error), "sm");
+        @include templateMixins.custom-elevation(var(--v-theme-error), 'sm');
       }
     }
 

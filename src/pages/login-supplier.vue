@@ -1,31 +1,31 @@
 <!--
   Admin Email: admin@demo.com / Pass: admin
-  Client Email: client@demo.com / Pass: client 
+  Client Email: client@demo.com / Pass: client
 -->
 
 <script setup>
-import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
-import authV2MaskDark from "@images/pages/misc-mask-dark.png"
-import authV2MaskLight from "@images/pages/misc-mask-light.png"
-import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
-import { themeConfig } from "@themeConfig"
-import { VForm } from "vuetify/components/VForm"
+import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
+import authV2MaskDark from '@images/pages/misc-mask-dark.png'
+import authV2MaskLight from '@images/pages/misc-mask-light.png'
+import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import { themeConfig } from '@themeConfig'
+import { VForm } from 'vuetify/components/VForm'
+
+defineOptions({
+  beforeRouteEnter(to, from, next) {
+    if (useCookie('otpExpiresAt').value > Math.floor(Date.now() / 1000)) {
+      return next({ name: 'two-step-supplier' })
+    }
+    next()
+  },
+})
 
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
   meta: {
-    layout: "blank",
+    layout: 'blank',
     unauthenticatedOnly: true,
-  },
-})
-
-defineOptions({
-  beforeRouteEnter(to, from, next) {
-    if (useCookie("otpExpiresAt").value > Math.floor(Date.now() / 1000)) {
-      return next({ name: "two-step-supplier" })
-    }
-    next()
   },
 })
 
@@ -40,21 +40,21 @@ const errors = ref({
 const refVForm = ref()
 
 const credentials = ref({
-  mobileNumber: "",
+  mobileNumber: '',
 })
 
 const hasError = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(
-  route.query.isRedirectedFromUnauthorizedStatus === "true",
+  route.query.isRedirectedFromUnauthorizedStatus === 'true',
 )
 
-const login = async () => {
+async function login() {
   IsItWaitingServerResponse.value = true
   try {
-    const res = await $api("/login-supplier", {
-      method: "POST",
+    const res = await $api('/login-supplier', {
+      method: 'POST',
       body: {
         mobileNumber: credentials.value.mobileNumber,
       },
@@ -71,17 +71,17 @@ const login = async () => {
 
     const { otpExpiresAt } = res
 
-    useCookie("otpExpiresAt").value = otpExpiresAt
+    useCookie('otpExpiresAt').value = otpExpiresAt
     await nextTick(() => {
       router.replace({
-        path: "/two-step-supplier",
+        path: '/two-step-supplier',
         query: { mobileNumber: credentials.value.mobileNumber },
       })
     })
   } catch (err) {}
 }
 
-const onSubmit = () => {
+function onSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) login()
   })
@@ -119,18 +119,12 @@ const onSubmit = () => {
     </div>
   </RouterLink>
 
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
-  >
-    <VCol
-      md="8"
-      class="d-none d-md-flex"
-    >
+  <VRow no-gutters class="auth-wrapper bg-surface">
+    <VCol md="8" class="d-none d-md-flex">
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem;"
+          style="padding-inline: 6.25rem"
         />
 
         <img
@@ -139,7 +133,7 @@ const onSubmit = () => {
           alt="auth-footer-mask"
           height="280"
           width="100"
-        >
+        />
       </div>
     </VCol>
 
@@ -148,11 +142,7 @@ const onSubmit = () => {
       md="4"
       class="auth-card-v2 d-flex align-center justify-center"
     >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
+      <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
           <h4 class="text-h4 mb-1">
             خوش آمدید
@@ -204,5 +194,5 @@ const onSubmit = () => {
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/pages/page-auth";
+@use '@core/scss/template/pages/page-auth';
 </style>

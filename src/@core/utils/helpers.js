@@ -1,26 +1,27 @@
 // 👉 IsEmpty
-export const isEmpty = value => {
-  if (value === null || value === undefined || value === "") return true
+export function isEmpty(value) {
+  if (value === null || value === undefined || value === '') return true
 
   return !!(Array.isArray(value) && value.length === 0)
 }
 
 // 👉 IsNullOrUndefined
-export const isNullOrUndefined = value => {
+export function isNullOrUndefined(value) {
   return value === null || value === undefined
 }
 
 // 👉 IsEmptyArray
-export const isEmptyArray = arr => {
+export function isEmptyArray(arr) {
   return Array.isArray(arr) && arr.length === 0
 }
 
 // 👉 IsObject
-export const isObject = obj =>
-  obj !== null && !!obj && typeof obj === "object" && !Array.isArray(obj)
+export function isObject(obj) {
+  return obj !== null && !!obj && typeof obj === 'object' && !Array.isArray(obj)
+}
 
 // 👉 IsToday
-export const isToday = date => {
+export function isToday(date) {
   const today = new Date()
 
   return (

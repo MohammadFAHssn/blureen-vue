@@ -1,13 +1,13 @@
-import { useStorage } from "@vueuse/core"
-import { useTheme } from "vuetify"
-import { useConfigStore } from "@core/stores/config"
-import { cookieRef, namespaceConfig } from "@layouts/stores/config"
-import { themeConfig } from "@themeConfig"
+import { useConfigStore } from '@core/stores/config'
+import { cookieRef, namespaceConfig } from '@layouts/stores/config'
+import { themeConfig } from '@themeConfig'
+import { useStorage } from '@vueuse/core'
+import { useTheme } from 'vuetify'
 
-const _syncAppRtl = () => {
+function _syncAppRtl() {
   const configStore = useConfigStore()
-  const storedLang = cookieRef("language", null)
-  const { locale } = useI18n({ useScope: "global" })
+  const storedLang = cookieRef('language', null)
+  const { locale } = useI18n({ useScope: 'global' })
 
   // TODO: Handle case where i18n can't read persisted value
   if (locale.value !== storedLang.value && storedLang.value)
@@ -16,10 +16,10 @@ const _syncAppRtl = () => {
   // watch and change lang attribute of html on language change
   watch(
     locale,
-    val => {
+    (val) => {
       // Update lang attribute of html tag
-      if (typeof document !== "undefined")
-        document.documentElement.setAttribute("lang", val)
+      if (typeof document !== 'undefined')
+        document.documentElement.setAttribute('lang', val)
 
       // Store selected language in cookie
       storedLang.value = val
@@ -29,7 +29,7 @@ const _syncAppRtl = () => {
         themeConfig.app.i18n.langConfig &&
         themeConfig.app.i18n.langConfig.length
       ) {
-        themeConfig.app.i18n.langConfig.forEach(lang => {
+        themeConfig.app.i18n.langConfig.forEach((lang) => {
           if (lang.i18nLang === storedLang.value)
             configStore.isAppRTL = lang.isRTL
         })
@@ -39,19 +39,19 @@ const _syncAppRtl = () => {
   )
 }
 
-const _handleSkinChanges = () => {
+function _handleSkinChanges() {
   const { themes } = useTheme()
   const configStore = useConfigStore()
 
   // Create skin default color so that we can revert back to original (default skin) color when switch to default skin from bordered skin
-  Object.values(themes.value).forEach(t => {
-    t.colors["skin-default-background"] = t.colors.background
-    t.colors["skin-default-surface"] = t.colors.surface
+  Object.values(themes.value).forEach((t) => {
+    t.colors['skin-default-background'] = t.colors.background
+    t.colors['skin-default-surface'] = t.colors.surface
   })
   watch(
     () => configStore.skin,
-    val => {
-      Object.values(themes.value).forEach(t => {
+    (val) => {
+      Object.values(themes.value).forEach((t) => {
         t.colors.background = t.colors[`skin-${val}-background`]
         t.colors.surface = t.colors[`skin-${val}-surface`]
       })
@@ -68,23 +68,23 @@ const _handleSkinChanges = () => {
 
     With this we will be able to show correct background color for the initial loader even before vue identify the current theme.
   */
-const _syncInitialLoaderTheme = () => {
+function _syncInitialLoaderTheme() {
   const vuetifyTheme = useTheme()
 
   watch(
     () => useConfigStore().theme,
     () => {
       // ℹ️ We are not using theme.current.colors.surface because watcher is independent and when this watcher is ran `theme` computed is not updated
-      useStorage(namespaceConfig("initial-loader-bg"), null).value =
+      useStorage(namespaceConfig('initial-loader-bg'), null).value =
         vuetifyTheme.current.value.colors.surface
-      useStorage(namespaceConfig("initial-loader-color"), null).value =
+      useStorage(namespaceConfig('initial-loader-color'), null).value =
         vuetifyTheme.current.value.colors.primary
     },
     { immediate: true },
   )
 }
 
-const initCore = () => {
+function initCore() {
   _syncInitialLoaderTheme()
   _handleSkinChanges()
 

@@ -14,10 +14,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:selectedRadio"])
+const emit = defineEmits(['update:selectedRadio'])
 
-const updateSelectedOption = value => {
-  if (value !== null) emit("update:selectedRadio", value)
+function updateSelectedOption(value) {
+  if (value !== null) emit('update:selectedRadio', value)
 }
 </script>
 
@@ -40,10 +40,7 @@ const updateSelectedOption = value => {
         >
           <slot :item="item">
             <div class="d-flex flex-column align-center text-center gap-2">
-              <VIcon
-                v-bind="item.icon"
-                class="text-high-emphasis"
-              />
+              <VIcon v-bind="item.icon" class="text-high-emphasis" />
               <h6 class="text-h6">
                 {{ item.title }}
               </h6>

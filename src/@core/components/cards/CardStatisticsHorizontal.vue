@@ -7,7 +7,7 @@ const props = defineProps({
   color: {
     type: String,
     required: false,
-    default: "primary",
+    default: 'primary',
   },
   icon: {
     type: String,
@@ -34,16 +34,8 @@ const props = defineProps({
         </div>
       </div>
 
-      <VAvatar
-        :color="props.color"
-        :size="42"
-        rounded
-        variant="tonal"
-      >
-        <VIcon
-          :icon="props.icon"
-          size="26"
-        />
+      <VAvatar :color="props.color" :size="42" rounded variant="tonal">
+        <VIcon :icon="props.icon" size="26" />
       </VAvatar>
     </VCardText>
   </VCard>

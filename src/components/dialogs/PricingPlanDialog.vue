@@ -6,10 +6,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:isDialogVisible"])
+const emit = defineEmits(['update:isDialogVisible'])
 
-const dialogVisibleUpdate = val => {
-  emit("update:isDialogVisible", val)
+function dialogVisibleUpdate(val) {
+  emit('update:isDialogVisible', val)
 }
 </script>
 

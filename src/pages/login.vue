@@ -1,21 +1,21 @@
 <!--
   Admin Email: admin@demo.com / Pass: admin
-  Client Email: client@demo.com / Pass: client 
+  Client Email: client@demo.com / Pass: client
 -->
 
 <script setup>
-import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
-import authV2MaskDark from "@images/pages/misc-mask-dark.png"
-import authV2MaskLight from "@images/pages/misc-mask-light.png"
-import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
-import { themeConfig } from "@themeConfig"
-import { VForm } from "vuetify/components/VForm"
+import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
+import authV2MaskDark from '@images/pages/misc-mask-dark.png'
+import authV2MaskLight from '@images/pages/misc-mask-light.png'
+import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import { themeConfig } from '@themeConfig'
+import { VForm } from 'vuetify/components/VForm'
 
 const authThemeMask = useGenerateImageVariant(authV2MaskLight, authV2MaskDark)
 
 definePage({
   meta: {
-    layout: "blank",
+    layout: 'blank',
     unauthenticatedOnly: true,
 
     // public,
@@ -35,8 +35,8 @@ const errors = ref({
 const refVForm = ref()
 
 const credentials = ref({
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 })
 
 const rememberMe = ref(false)
@@ -45,14 +45,14 @@ const hasError = ref(false)
 const IsItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(
-  route.query.isRedirectedFromUnauthorizedStatus === "true",
+  route.query.isRedirectedFromUnauthorizedStatus === 'true',
 )
 
-const login = async () => {
+async function login() {
   IsItWaitingServerResponse.value = true
   try {
-    const res = await $api("/login", {
-      method: "POST",
+    const res = await $api('/login', {
+      method: 'POST',
       body: {
         username: credentials.value.username,
         password: credentials.value.password,
@@ -71,23 +71,23 @@ const login = async () => {
     const { accessToken, userData, userAbilityRules } = res
 
     userAbilityRules.push({
-      action: "use",
-      subject: "app",
+      action: 'use',
+      subject: 'app',
     })
 
-    useCookie("userAbilityRules").value = userAbilityRules
+    useCookie('userAbilityRules').value = userAbilityRules
     ability.update(userAbilityRules)
-    useCookie("userData").value = userData
-    useCookie("accessToken").value = accessToken
+    useCookie('userData').value = userData
+    useCookie('accessToken').value = accessToken
     await nextTick(() => {
-      router.replace(route.query.to ? String(route.query.to) : "/")
+      router.replace(route.query.to ? String(route.query.to) : '/')
     })
   } catch (err) {
     console.error(err)
   }
 }
 
-const onSubmit = () => {
+function onSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) login()
   })
@@ -125,18 +125,12 @@ const onSubmit = () => {
     </div>
   </RouterLink>
 
-  <VRow
-    no-gutters
-    class="auth-wrapper bg-surface"
-  >
-    <VCol
-      md="8"
-      class="d-none d-md-flex"
-    >
+  <VRow no-gutters class="auth-wrapper bg-surface">
+    <VCol md="8" class="d-none d-md-flex">
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem;"
+          style="padding-inline: 6.25rem"
         />
 
         <img
@@ -145,7 +139,7 @@ const onSubmit = () => {
           alt="auth-footer-mask"
           height="280"
           width="100"
-        >
+        />
       </div>
     </VCol>
 
@@ -154,11 +148,7 @@ const onSubmit = () => {
       md="4"
       class="auth-card-v2 d-flex align-center justify-center"
     >
-      <VCard
-        flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-4"
-      >
+      <VCard flat :max-width="500" class="mt-12 mt-sm-0 pa-4">
         <VCardText>
           <h4 class="text-h4 mb-1">
             خوش آمدید
@@ -203,11 +193,10 @@ const onSubmit = () => {
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
-                <div class="d-flex align-center flex-wrap justify-space-between my-6">
-                  <VCheckbox
-                    v-model="rememberMe"
-                    label="مرا به خاطر بسپار"
-                  />
+                <div
+                  class="d-flex align-center flex-wrap justify-space-between my-6"
+                >
+                  <VCheckbox v-model="rememberMe" label="مرا به خاطر بسپار" />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
                     :to="{ name: 'login' }"
@@ -234,5 +223,5 @@ const onSubmit = () => {
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/pages/page-auth";
+@use '@core/scss/template/pages/page-auth';
 </style>

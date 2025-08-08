@@ -7,7 +7,7 @@ const props = defineProps({
   color: {
     type: String,
     required: false,
-    default: "primary",
+    default: 'primary',
   },
   icon: {
     type: String,
@@ -43,10 +43,7 @@ const props = defineProps({
         rounded
         class="mb-2"
       >
-        <VIcon
-          :icon="props.icon"
-          size="26"
-        />
+        <VIcon :icon="props.icon" size="26" />
       </VAvatar>
 
       <h5 class="text-h5">

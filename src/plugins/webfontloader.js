@@ -5,7 +5,7 @@
  */
 export async function loadFonts() {
   const webFontLoader = await import(
-    /* webpackChunkName: "webfontloader" */ "webfontloader"
+    /* webpackChunkName: "webfontloader" */ 'webfontloader'
   )
 
   webFontLoader.load({
@@ -14,8 +14,8 @@ export async function loadFonts() {
     // },
 
     custom: {
-      families: ["Shabnam"],
-      urls: ["/fonts/Shabnam/Shabnam.css"],
+      families: ['Shabnam'],
+      urls: ['/fonts/Shabnam/Shabnam.css'],
     },
   })
 }

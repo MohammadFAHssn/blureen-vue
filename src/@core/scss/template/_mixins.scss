@@ -1,5 +1,5 @@
-@use "sass:map";
-@use "@configured-variables" as variables;
+@use 'sass:map';
+@use '@configured-variables' as variables;
 
 @mixin custom-elevation($color, $size) {
   box-shadow: (

@@ -1,16 +1,16 @@
 <script setup>
 const themes = [
   {
-    name: "light",
-    icon: "tabler-sun-high",
+    name: 'light',
+    icon: 'tabler-sun-high',
   },
   {
-    name: "dark",
-    icon: "tabler-moon-stars",
+    name: 'dark',
+    icon: 'tabler-moon-stars',
   },
   {
-    name: "system",
-    icon: "tabler-device-desktop-analytics",
+    name: 'system',
+    icon: 'tabler-device-desktop-analytics',
   },
 ]
 </script>

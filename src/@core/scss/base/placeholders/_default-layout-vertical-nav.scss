@@ -1,6 +1,6 @@
-@use "@configured-variables" as variables;
-@use "misc";
-@use "@core/scss/base/mixins";
+@use '@configured-variables' as variables;
+@use 'misc';
+@use '@core/scss/base/mixins';
 
 %default-layout-vertical-nav-scrolled-sticky-elevated-nav {
   background-color: rgb(var(--v-theme-surface));
@@ -36,7 +36,7 @@
       variables.$layout-vertical-nav-navbar-height +
         variables.$vertical-nav-floating-navbar-top + 0.5rem
     );
-    content: "";
+    content: '';
     inset-block-start: -(variables.$vertical-nav-floating-navbar-top);
     inset-inline: 0 0;
     /* stylelint-disable property-no-vendor-prefix */

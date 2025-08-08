@@ -1,12 +1,12 @@
 <script setup>
-import { layoutConfig } from "@layouts"
-import { can } from "@layouts/plugins/casl"
-import { useLayoutConfigStore } from "@layouts/stores/config"
+import { layoutConfig } from '@layouts'
+import { can } from '@layouts/plugins/casl'
+import { useLayoutConfigStore } from '@layouts/stores/config'
 import {
   getComputedNavLinkToProp,
   getDynamicI18nProps,
   isNavLinkActive,
-} from "@layouts/utils"
+} from '@layouts/utils'
 
 const props = defineProps({
   item: {

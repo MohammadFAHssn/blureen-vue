@@ -1,19 +1,19 @@
-@use "@configured-variables" as variables;
-@use "@core/scss/base/placeholders" as *;
-@use "@core/scss/template/placeholders" as *;
-@use "misc";
-@use "@core/scss/base/mixins";
+@use '@configured-variables' as variables;
+@use '@core/scss/base/placeholders' as *;
+@use '@core/scss/template/placeholders' as *;
+@use 'misc';
+@use '@core/scss/base/mixins';
 
-$header: ".layout-navbar";
+$header: '.layout-navbar';
 
 @if variables.$layout-vertical-nav-navbar-is-contained {
-  $header: ".layout-navbar .navbar-content-container";
+  $header: '.layout-navbar .navbar-content-container';
 }
 
 .layout-wrapper.layout-nav-type-vertical {
   // SECTION  Layout Navbar
   // 👉 Elevated navbar
-  @if variables.$vertical-nav-navbar-style == "elevated" {
+  @if variables.$vertical-nav-navbar-style == 'elevated' {
     // Add transition
     #{$header} {
       transition:
@@ -36,7 +36,7 @@ $header: ".layout-navbar";
       /* ℹ️ This html selector with not selector is required when:
         dialog is opened and window don't have any scroll. This removes window-scrolled class from layout and our style broke
     */
-      html.v-overlay-scroll-blocked:not([style*="--v-body-scroll-y: 0px;"])
+      html.v-overlay-scroll-blocked:not([style*='--v-body-scroll-y: 0px;'])
         .layout-navbar-sticky,
       &.window-scrolled.layout-navbar-sticky {
         #{$header} {
@@ -52,7 +52,7 @@ $header: ".layout-navbar";
   }
 
   // 👉 Floating navbar
-  @else if variables.$vertical-nav-navbar-style == "floating" {
+  @else if variables.$vertical-nav-navbar-style == 'floating' {
     // ℹ️ Regardless of navbar is contained or not => Apply overlay to .layout-navbar
     .layout-navbar {
       &.navbar-blur {

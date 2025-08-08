@@ -1,14 +1,18 @@
 <script setup>
+// ----- start ag-grid -----
+import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
+import { AgGridVue } from 'ag-grid-vue3'
+
 definePage({
   meta: {
-    layoutWrapperClasses: "layout-content-height-fixed",
+    layoutWrapperClasses: 'layout-content-height-fixed',
   },
 })
 
 // states
 const uiState = reactive({
   hasError: false,
-  errorMessage: "",
+  errorMessage: '',
   isEditAccessDialogVisible: false,
 })
 
@@ -22,30 +26,26 @@ const pendingState = reactive({
   updatingUserRoles: false,
 })
 
-// ----- start ag-grid -----
-import { AG_GRID_LOCALE_IR } from "@ag-grid-community/locale"
-import { AgGridVue } from "ag-grid-vue3"
-
 const { theme } = useAGGridTheme()
 
 const gridApi = ref(null)
 
-const onGridReady = params => {
+function onGridReady(params) {
   gridApi.value = params.api
 }
 
 const rowSelection = ref({
-  mode: "multiRow",
+  mode: 'multiRow',
   enableClickSelection: true,
-  selectAll: "filtered",
+  selectAll: 'filtered',
 
-  isRowSelectable: rowNode => rowNode.field === "user",
+  isRowSelectable: rowNode => rowNode.field === 'user',
 })
 
 const columnDefs = ref([
-  { headerName: "کاربر", field: "user" },
-  { headerName: "نقش", field: "role" },
-  { headerName: "مجوز", field: "permission" },
+  { headerName: 'کاربر', field: 'user' },
+  { headerName: 'نقش', field: 'role' },
+  { headerName: 'مجوز', field: 'permission' },
 ])
 
 const defaultColDef = ref({
@@ -55,7 +55,7 @@ const defaultColDef = ref({
   filter: true,
 })
 
-const getContextMenuItems = params => {
+function getContextMenuItems(params) {
   if (!params.node.isSelected()) {
     params.api.deselectAll()
     params.node.setSelected(true)
@@ -63,16 +63,16 @@ const getContextMenuItems = params => {
 
   const selectedNodes = params.api.getSelectedNodes()
 
-  let selectedUsersPersonnelCode = []
-  selectedNodes.forEach(node => {
-    selectedUsersPersonnelCode.push(node.groupValue.split("-")[0].trim())
+  const selectedUsersPersonnelCode = []
+  selectedNodes.forEach((node) => {
+    selectedUsersPersonnelCode.push(node.groupValue.split('-')[0].trim())
   })
 
   return selectedUsersPersonnelCode.length
     ? [
       {
         icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
-        name: "ویرایش دسترسی",
+        name: 'ویرایش دسترسی',
         action: () => {
           updateSelectedUsers(selectedUsersPersonnelCode)
           updateSelectedUserRoles()
@@ -89,29 +89,30 @@ const getContextMenuItems = params => {
 
 // ----- Methods -----
 
-const fetchUserAccess = async () => {
+async function fetchUserAccess() {
   try {
     const { data, error } = await useApi(
       createUrl(
-        "/base/user?fields[users]=id,personnel_code,first_name,last_name&fields[roles]=id,name&fields[roles.permissions]=name&include=roles.permissions",
+        '/base/user?fields[users]=id,personnel_code,first_name,last_name&fields[roles]=id,name&fields[roles.permissions]=name&include=roles.permissions',
       ),
     )
 
     if (error.value) throw error.value
 
     rowUserAccess.value = data.value.data
-  } catch (e) {
-    console.error("Error fetching user access:", e)
+  }
+  catch (e) {
+    console.error('Error fetching user access:', e)
     uiState.hasError = true
-    uiState.errorMessage = "خطا در دریافت دسترسی کاربران"
+    uiState.errorMessage = 'خطا در دریافت دسترسی کاربران'
   }
 }
 
-const fetchRoles = async () => {
+async function fetchRoles() {
   pendingState.fetchingRoles = true
   try {
     const { data, error } = await useApi(
-      createUrl("/base/role?include=permissions"),
+      createUrl('/base/role?include=permissions'),
     )
 
     pendingState.fetchingRoles = false
@@ -119,27 +120,29 @@ const fetchRoles = async () => {
     if (error.value) throw error.value
 
     roles.value = data.value.data
-  } catch (e) {
-    console.error("Error fetching roles:", e)
+  }
+  catch (e) {
+    console.error('Error fetching roles:', e)
     uiState.hasError = true
-    uiState.errorMessage = "خطا در دریافت لیست نقش‌ها"
+    uiState.errorMessage = 'خطا در دریافت لیست نقش‌ها'
   }
 }
 
-const updateSelectedUsers = personnelCodes => {
+function updateSelectedUsers(personnelCodes) {
   selectedUsers.value = []
-  personnelCodes.forEach(personnelCode => {
+  personnelCodes.forEach((personnelCode) => {
     selectedUsers.value.push(
       rowUserAccess.value.find(user => user.personnel_code === personnelCode),
     )
   })
 }
 
-const updateSelectedUserRoles = () => {
+function updateSelectedUserRoles() {
   if (selectedUsers.value.length > 1) {
     selectedUserRoles.value = []
-  } else {
-    selectedUserRoles.value = selectedUsers.value[0].roles.map(role => {
+  }
+  else {
+    selectedUserRoles.value = selectedUsers.value[0].roles.map((role) => {
       return {
         id: role.id,
         name: role.name,
@@ -148,11 +151,11 @@ const updateSelectedUserRoles = () => {
   }
 }
 
-const onUserRolesChange = async newUserRoles => {
+async function onUserRolesChange(newUserRoles) {
   pendingState.updatingUserRoles = true
   try {
-    await $api("/base/user-role/update", {
-      method: "POST",
+    await $api('/base/user-role/update', {
+      method: 'POST',
       body: {
         userId: selectedUsers.value[0].id,
         roleIds: newUserRoles.map(role => role.id),
@@ -160,21 +163,22 @@ const onUserRolesChange = async newUserRoles => {
       onResponseError({ response }) {
         pendingState.updatingUserRoles = false
         uiState.hasError = true
-        uiState.errorMessage =
-          response._data.message || "خطا در بروزرسانی دسترسی‌ها"
+        uiState.errorMessage
+          = response._data.message || 'خطا در بروزرسانی دسترسی‌ها'
       },
     })
 
     pendingState.updatingUserRoles = false
     uiState.isEditAccessDialogVisible = false
     UpdateUserRoles(newUserRoles)
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }
 
-const UpdateUserRoles = newUserRoles => {
-  rowUserAccess.value = rowUserAccess.value.map(user => {
+function UpdateUserRoles(newUserRoles) {
+  rowUserAccess.value = rowUserAccess.value.map((user) => {
     if (user.id === selectedUsers.value[0].id) {
       user.roles = newUserRoles.map(role =>
         roles.value.find(r => r.id === role.id),
@@ -189,14 +193,14 @@ fetchRoles()
 await fetchUserAccess()
 
 const rowData = computed(() => {
-  let userAccess = []
-  rowUserAccess.value.map(user => {
+  const userAccess = []
+  rowUserAccess.value.map((user) => {
     if (isEmpty(user.roles)) {
       userAccess.push({
         user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
       })
     }
-    user.roles.map(role => {
+    user.roles.map((role) => {
       if (isEmpty(role.permissions)) {
         userAccess.push({
           user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
@@ -232,17 +236,13 @@ const rowData = computed(() => {
     <RelationManagerDialog
       v-if="uiState.isEditAccessDialogVisible"
       v-model:is-dialog-visible="uiState.isEditAccessDialogVisible"
-      :title="
-        'دسترسی ' +
-          (selectedUsers.length > 1
-            ? 'کاربران'
-            : selectedUsers[0].first_name +
-              ' ' +
-              selectedUsers[0].last_name +
-              ' (' +
-              selectedUsers[0].personnel_code +
-              ')')
-      "
+      :title="`دسترسی ${
+        selectedUsers.length > 1
+          ? 'کاربران'
+          : `${selectedUsers[0].first_name} ${selectedUsers[0].last_name} (${
+            selectedUsers[0].personnel_code
+          })`
+      }`"
       :is-fetch-items-pending="pendingState.fetchingRoles"
       :items="roles"
       :selected="selectedUserRoles"
@@ -272,8 +272,8 @@ const rowData = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@use "@styles/variables/vuetify";
-@use "@core/scss/base/mixins";
+@use '@styles/variables/vuetify';
+@use '@core/scss/base/mixins';
 
 .app-layout {
   @include mixins.elevation(vuetify.$card-elevation);

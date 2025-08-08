@@ -4,12 +4,12 @@ const props = defineProps({
     type: Object,
     required: false,
     default: () => ({
-      number: "",
-      name: "",
-      expiry: "",
-      cvv: "",
+      number: '',
+      name: '',
+      expiry: '',
+      cvv: '',
       isPrimary: false,
-      type: "",
+      type: '',
     }),
   },
   isDialogVisible: {
@@ -18,7 +18,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["submit", "update:isDialogVisible"])
+const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
 const cardDetails = ref(structuredClone(toRaw(props.cardDetails)))
 
@@ -29,12 +29,12 @@ watch(
   },
 )
 
-const formSubmit = () => {
-  emit("submit", cardDetails.value)
+function formSubmit() {
+  emit('submit', cardDetails.value)
 }
 
-const dialogModelValueUpdate = val => {
-  emit("update:isDialogVisible", val)
+function dialogModelValueUpdate(val) {
+  emit('update:isDialogVisible', val)
 }
 </script>
 
@@ -52,14 +52,14 @@ const dialogModelValueUpdate = val => {
       <VCardItem class="text-center">
         <VCardTitle>
           <h4 class="text-h4 mb-2">
-            {{ props.cardDetails.name ? "Edit Card" : "Add New Card" }}
+            {{ props.cardDetails.name ? 'Edit Card' : 'Add New Card' }}
           </h4>
         </VCardTitle>
         <p class="text-body-1 mb-0">
           {{
             props.cardDetails.name
-              ? "Edit your saved card details"
-              : "Add card for future billing"
+              ? 'Edit your saved card details'
+              : 'Add card for future billing'
           }}
         </p>
       </VCardItem>
@@ -78,10 +78,7 @@ const dialogModelValueUpdate = val => {
             </VCol>
 
             <!-- 👉 Card Name -->
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="12" md="6">
               <AppTextField
                 v-model="cardDetails.name"
                 label="Name"
@@ -90,10 +87,7 @@ const dialogModelValueUpdate = val => {
             </VCol>
 
             <!-- 👉 Card Expiry -->
-            <VCol
-              cols="12"
-              md="3"
-            >
+            <VCol cols="12" md="3">
               <AppTextField
                 v-model="cardDetails.expiry"
                 label="Expiry Date"
@@ -102,10 +96,7 @@ const dialogModelValueUpdate = val => {
             </VCol>
 
             <!-- 👉 Card CVV -->
-            <VCol
-              cols="12"
-              md="3"
-            >
+            <VCol cols="12" md="3">
               <AppTextField
                 v-model="cardDetails.cvv"
                 type="number"
@@ -123,15 +114,8 @@ const dialogModelValueUpdate = val => {
             </VCol>
 
             <!-- 👉 Card actions -->
-            <VCol
-              cols="12"
-              class="text-center"
-            >
-              <VBtn
-                class="me-4"
-                type="submit"
-                @click="formSubmit"
-              >
+            <VCol cols="12" class="text-center">
+              <VBtn class="me-4" type="submit" @click="formSubmit">
                 Submit
               </VBtn>
               <VBtn

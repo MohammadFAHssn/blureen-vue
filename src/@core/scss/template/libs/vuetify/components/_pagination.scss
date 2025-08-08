@@ -1,6 +1,6 @@
 /* stylelint-disable no-descending-specificity */
-@use "@core/scss/template/mixins" as templateMixins;
-@use "@configured-variables" as variables;
+@use '@core/scss/template/mixins' as templateMixins;
+@use '@configured-variables' as variables;
 
 // 👉 Pagination
 .v-pagination {
@@ -75,9 +75,9 @@
   .v-pagination__list {
     @each $color-name in variables.$theme-colors-name {
       &:has(
-          .v-pagination__item.v-pagination__item--is-active
-            .v-btn.text-#{$color-name}
-        ) {
+        .v-pagination__item.v-pagination__item--is-active
+          .v-btn.text-#{$color-name}
+      ) {
         .v-pagination__item {
           .v-btn {
             &:hover {
@@ -94,7 +94,7 @@
 
     .v-pagination__item--is-active {
       .v-btn {
-        &:not([class*="text-"]) {
+        &:not([class*='text-']) {
           color: rgb(var(--v-theme-primary));
 
           &:not(.v-btn--variant-outlined) {
@@ -122,7 +122,7 @@
               &:focus {
                 @include templateMixins.custom-elevation(
                   var(--v-theme-#{$color-name}),
-                  "sm"
+                  'sm'
                 );
               }
 

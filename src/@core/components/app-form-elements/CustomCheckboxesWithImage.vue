@@ -14,11 +14,11 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:selectedCheckbox"])
+const emit = defineEmits(['update:selectedCheckbox'])
 
-const updateSelectedOption = value => {
-  if (typeof value !== "boolean" && value !== null)
-    emit("update:selectedCheckbox", value)
+function updateSelectedOption(value) {
+  if (typeof value !== 'boolean' && value !== null)
+    emit('update:selectedCheckbox', value)
 }
 </script>
 
@@ -44,11 +44,7 @@ const updateSelectedOption = value => {
             @update:model-value="updateSelectedOption"
           />
         </div>
-        <img
-          :src="item.bgImage"
-          alt="bg-img"
-          class="custom-checkbox-image"
-        >
+        <img :src="item.bgImage" alt="bg-img" class="custom-checkbox-image" />
       </VLabel>
 
       <VLabel
@@ -56,10 +52,7 @@ const updateSelectedOption = value => {
         :for="`custom-checkbox-with-img-${item.value}`"
         class="cursor-pointer"
       >
-        <slot
-          name="label"
-          :label="item.label"
-        >
+        <slot name="label" :label="item.label">
           {{ item.label }}
         </slot>
       </VLabel>

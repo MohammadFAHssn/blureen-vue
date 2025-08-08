@@ -2,14 +2,14 @@ import {
   CategoryScale,
   Chart as ChartJS,
   Legend,
-  LineElement,
   LinearScale,
+  LineElement,
   PointElement,
   Title,
   Tooltip,
-} from "chart.js"
-import { defineComponent } from "vue"
-import { Line } from "vue-chartjs"
+} from 'chart.js'
+import { defineComponent } from 'vue'
+import { Line } from 'vue-chartjs'
 
 ChartJS.register(
   Title,
@@ -21,11 +21,11 @@ ChartJS.register(
   CategoryScale,
 )
 export default defineComponent({
-  name: "LineChart",
+  name: 'LineChart',
   props: {
     chartId: {
       type: String,
-      default: "line-chart",
+      default: 'line-chart',
     },
     width: {
       type: Number,
@@ -36,7 +36,7 @@ export default defineComponent({
       default: 400,
     },
     cssClasses: {
-      default: "",
+      default: '',
       type: String,
     },
     styles: {

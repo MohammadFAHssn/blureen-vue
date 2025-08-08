@@ -2,7 +2,7 @@
 // --- Meta ---
 definePage({
   meta: {
-    layout: "blank",
+    layout: 'blank',
     public: true,
   },
 })
@@ -19,22 +19,22 @@ const tenderExpiresIn = ref(0)
 
 const uiState = reactive({
   hasError: false,
-  errorMessage: "",
+  errorMessage: '',
   isSuccessful: false,
   HaveTenderBidsBeenSent: [],
   isSendTenderBidPending: [],
 })
 
 const formState = reactive({
-  paymentTerms: "cash",
-  creditDescription: "",
-  invoiceType: "taxInvoice",
+  paymentTerms: 'cash',
+  creditDescription: '',
+  invoiceType: 'taxInvoice',
 })
 
 let intervalId = null
 
 // --- Methods ---
-const startCountDown = () => {
+function startCountDown() {
   tenderExpiresIn.value = Math.max(
     0,
     tender.value.tenderExpiresAt - Math.floor(Date.now() / 1000),
@@ -43,45 +43,44 @@ const startCountDown = () => {
   intervalId = setInterval(() => {
     tenderExpiresIn.value--
     if (tenderExpiresIn.value <= 0) {
-      router.replace({ name: "login-supplier" })
+      router.replace({ name: 'login-supplier' })
     }
   }, 1000)
 }
 
-const bidPriceColor = (index, length) => {
-  if (length <= 1) return "#28a745"
+function bidPriceColor(index, length) {
+  if (length <= 1) return '#28a745'
   const hue = 120 - (index / (length - 1)) * 120
 
   return `hsl(${hue}, 100%, 50%)`
 }
 
-const sendTenderBid = async tenderBid => {
+async function sendTenderBid(tenderBid) {
   const { id, bidPrice, bidQuantity, bidDescription } = tenderBid
   if (!bidPrice || !bidQuantity) return
 
   uiState.isSendTenderBidPending[id] = true
 
   try {
-    await $api("/commerce/tender/submit-bid", {
-      method: "POST",
+    await $api('/commerce/tender/submit-bid', {
+      method: 'POST',
 
       // TODO: we should send the token
       body: {
         id,
         bid_price: bidPrice,
         bid_quantity: bidQuantity,
-        bid_description: bidDescription || "",
+        bid_description: bidDescription || '',
         payment_terms: formState.paymentTerms,
         payment_terms_description:
-          formState.paymentTerms === "credit"
+          formState.paymentTerms === 'credit'
             ? formState.creditDescription
-            : "",
+            : '',
         invoice_type: formState.invoiceType,
       },
       onResponseError({ response }) {
         uiState.hasError = true
-        uiState.errorMessage =
-          response._data.message || "خطا در ارسال پیشنهاد"
+        uiState.errorMessage = response._data.message || 'خطا در ارسال پیشنهاد'
       },
     })
 
@@ -94,10 +93,10 @@ const sendTenderBid = async tenderBid => {
   }
 }
 
-const fetchTenderData = async () => {
+async function fetchTenderData() {
   try {
     const { data, error } = await useApi(
-      createUrl("/commerce/tender/get-by-token?token=" + route.params.token),
+      createUrl(`/commerce/tender/get-by-token?token=${route.params.token}`),
     )
 
     if (error.value) throw error.value
@@ -109,9 +108,9 @@ const fetchTenderData = async () => {
     startCountDown()
   } catch (e) {
     uiState.hasError = true
-    uiState.errorMessage = e.message || "خطا در دریافت اطلاعات مناقصه"
+    uiState.errorMessage = e.message || 'خطا در دریافت اطلاعات مناقصه'
     setTimeout(() => {
-      router.replace({ name: "login-supplier" })
+      router.replace({ name: 'login-supplier' })
     }, 2000)
   }
 }
@@ -127,9 +126,9 @@ const timeRemaining = computed(() => {
 
   return {
     days,
-    hours: hours.toString().padStart(2, "0"),
-    minutes: minutes.toString().padStart(2, "0"),
-    seconds: seconds.toString().padStart(2, "0"),
+    hours: hours.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0'),
   }
 })
 
@@ -159,10 +158,7 @@ onUnmounted(() => {
     ارسال شد!
   </VSnackbar>
 
-  <main
-    v-if="tender"
-    class="layout-page-content"
-  >
+  <main v-if="tender" class="layout-page-content">
     <VRow>
       <VCol>
         <div class="text-wrap mb-2">
@@ -180,7 +176,7 @@ onUnmounted(() => {
     </VRow>
 
     <VRow>
-      <VList style="background-color: rgb(var(--v-theme-background));">
+      <VList style="background-color: rgb(var(--v-theme-background))">
         <VListItem>
           <template #prepend>
             <VAvatar
@@ -208,28 +204,13 @@ onUnmounted(() => {
     </VRow>
 
     <VRow>
-      <VCol
-        cols="12"
-        md="6"
-        lg="4"
-      >
+      <VCol cols="12" md="6" lg="4">
         <VCard>
           <VCardText class="custom-v-card-text">
-            <VLabel class="mb-2">
-              شرایط پرداخت
-            </VLabel>
-            <VRadioGroup
-              v-model="formState.paymentTerms"
-              inline
-            >
-              <VRadio
-                label="نقدی"
-                value="cash"
-              />
-              <VRadio
-                label="شرایطی"
-                value="credit"
-              />
+            <VLabel class="mb-2"> شرایط پرداخت </VLabel>
+            <VRadioGroup v-model="formState.paymentTerms" inline>
+              <VRadio label="نقدی" value="cash" />
+              <VRadio label="شرایطی" value="credit" />
             </VRadioGroup>
             <AppTextField
               v-if="formState.paymentTerms === 'credit'"
@@ -242,21 +223,10 @@ onUnmounted(() => {
           <VDivider />
 
           <VCardText class="custom-v-card-text">
-            <VLabel class="mb-2">
-              نوع فاکتور
-            </VLabel>
-            <VRadioGroup
-              v-model="formState.invoiceType"
-              inline
-            >
-              <VRadio
-                label="فاکتور رسمی"
-                value="taxInvoice"
-              />
-              <VRadio
-                label="فاکتور فروشگاهی"
-                value="commercialInvoice"
-              />
+            <VLabel class="mb-2"> نوع فاکتور </VLabel>
+            <VRadioGroup v-model="formState.invoiceType" inline>
+              <VRadio label="فاکتور رسمی" value="taxInvoice" />
+              <VRadio label="فاکتور فروشگاهی" value="commercialInvoice" />
             </VRadioGroup>
           </VCardText>
         </VCard>

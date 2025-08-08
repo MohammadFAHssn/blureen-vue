@@ -1,22 +1,22 @@
 <script setup>
-import authV1BottomShape from "@images/svg/auth-v1-bottom-shape.svg?raw"
-import authV1TopShape from "@images/svg/auth-v1-top-shape.svg?raw"
-import { VNodeRenderer } from "@layouts/components/VNodeRenderer"
-import { themeConfig } from "@themeConfig"
-
-definePage({
-  meta: {
-    layout: "blank",
-    unauthenticatedOnly: true,
-  },
-})
+import authV1BottomShape from '@images/svg/auth-v1-bottom-shape.svg?raw'
+import authV1TopShape from '@images/svg/auth-v1-top-shape.svg?raw'
+import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
+import { themeConfig } from '@themeConfig'
 
 defineOptions({
   beforeRouteEnter(to, from, next) {
-    if (useCookie("otpExpiresAt").value < Math.floor(Date.now() / 1000)) {
-      return next({ name: "login-supplier" })
+    if (useCookie('otpExpiresAt').value < Math.floor(Date.now() / 1000)) {
+      return next({ name: 'login-supplier' })
     }
     next()
+  },
+})
+
+definePage({
+  meta: {
+    layout: 'blank',
+    unauthenticatedOnly: true,
   },
 })
 
@@ -24,7 +24,7 @@ const route = useRoute()
 const router = useRouter()
 const ability = useAbility()
 
-const otpCode = ref("")
+const otpCode = ref('')
 const isOtpCodeInserted = ref(false)
 
 const errors = ref({
@@ -34,7 +34,7 @@ const errors = ref({
 const hasError = ref(false)
 
 const otpExpiresIn = ref(
-  useCookie("otpExpiresAt").value - Math.floor(Date.now() / 1000),
+  useCookie('otpExpiresAt').value - Math.floor(Date.now() / 1000),
 )
 
 const intervalId = setInterval(() => {
@@ -43,7 +43,7 @@ const intervalId = setInterval(() => {
   if (otpExpiresIn.value <= 0) {
     clearInterval(intervalId)
     otpExpiresIn.value = 0
-    router.replace("/login-supplier")
+    router.replace('/login-supplier')
   }
 }, 1000)
 
@@ -54,16 +54,16 @@ const timeRemaining = computed(() => {
   const seconds = totalSeconds % 60
 
   return {
-    minutes: minutes.toString().padStart(2, "0"),
-    seconds: seconds.toString().padStart(2, "0"),
+    minutes: minutes.toString().padStart(2, '0'),
+    seconds: seconds.toString().padStart(2, '0'),
   }
 })
 
-const onFinish = async () => {
+async function onFinish() {
   isOtpCodeInserted.value = true
   try {
-    const res = await $api("/verify-supplier-otp", {
-      method: "POST",
+    const res = await $api('/verify-supplier-otp', {
+      method: 'POST',
       body: {
         mobileNumber: route.query.mobileNumber,
         otpCode: otpCode.value,
@@ -81,12 +81,12 @@ const onFinish = async () => {
 
     const { accessToken, userData, userAbilityRules } = res
 
-    useCookie("userAbilityRules").value = userAbilityRules
+    useCookie('userAbilityRules').value = userAbilityRules
     ability.update(userAbilityRules)
-    useCookie("userData").value = userData
-    useCookie("accessToken").value = accessToken
+    useCookie('userData').value = userData
+    useCookie('accessToken').value = accessToken
     await nextTick(() => {
-      router.replace(route.query.to ? String(route.query.to) : "/")
+      router.replace(route.query.to ? String(route.query.to) : '/')
     })
   } catch (err) {
     console.error(err)
@@ -139,9 +139,7 @@ const onFinish = async () => {
         </VCardItem>
 
         <VCardText>
-          <h4 class="text-h4 mb-1">
-            احراز هویت دو مرحله‌ای
-          </h4>
+          <h4 class="text-h4 mb-1">احراز هویت دو مرحله‌ای</h4>
           <p class="mb-1">
             کد تأیید به تلفن همراه شما ارسال شد. لطفاً کد دریافتی را در کادر زیر
             وارد کنید
@@ -155,7 +153,7 @@ const onFinish = async () => {
               <VCol cols="12">
                 <VOtpInput
                   v-model="otpCode"
-                  style="direction: ltr;"
+                  style="direction: ltr"
                   :disabled="isOtpCodeInserted"
                   type="number"
                   class="pa-0"
@@ -193,7 +191,7 @@ const onFinish = async () => {
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/pages/page-auth";
+@use '@core/scss/template/pages/page-auth';
 
 .v-otpCode-input {
   .v-otpCode-input__content {

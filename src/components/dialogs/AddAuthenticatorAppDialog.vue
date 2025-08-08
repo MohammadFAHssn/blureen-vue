@@ -1,5 +1,5 @@
 <script setup>
-import themeselectionQr from "@images/pages/themeselection-qr.png"
+import themeselectionQr from '@images/pages/themeselection-qr.png'
 
 const props = defineProps({
   authCode: {
@@ -12,20 +12,20 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:isDialogVisible", "submit"])
+const emit = defineEmits(['update:isDialogVisible', 'submit'])
 
 const authCode = ref(structuredClone(toRaw(props.authCode)))
 
-const formSubmit = () => {
+function formSubmit() {
   if (authCode.value) {
-    emit("submit", authCode.value)
-    emit("update:isDialogVisible", false)
+    emit('submit', authCode.value)
+    emit('update:isDialogVisible', false)
   }
 }
 
-const resetAuthCode = () => {
+function resetAuthCode() {
   authCode.value = structuredClone(toRaw(props.authCode))
-  emit("update:isDialogVisible", false)
+  emit('update:isDialogVisible', false)
 }
 </script>
 
@@ -41,12 +41,8 @@ const resetAuthCode = () => {
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-6">
-          Add Authenticator App
-        </h4>
-        <h5 class="text-h5 mb-2">
-          Authenticator Apps
-        </h5>
+        <h4 class="text-h4 text-center mb-6">Add Authenticator App</h4>
+        <h5 class="text-h5 mb-2">Authenticator Apps</h5>
 
         <p class="text-body-1 mb-6">
           Using an authenticator app like Google Authenticator, Microsoft
@@ -55,11 +51,7 @@ const resetAuthCode = () => {
         </p>
 
         <div class="mb-6">
-          <VImg
-            width="150"
-            :src="themeselectionQr"
-            class="mx-auto"
-          />
+          <VImg width="150" :src="themeselectionQr" class="mx-auto" />
         </div>
 
         <VAlert
@@ -78,24 +70,13 @@ const resetAuthCode = () => {
           />
 
           <div class="d-flex justify-end flex-wrap gap-4">
-            <VBtn
-              color="secondary"
-              variant="tonal"
-              @click="resetAuthCode"
-            >
+            <VBtn color="secondary" variant="tonal" @click="resetAuthCode">
               Cancel
             </VBtn>
 
-            <VBtn
-              type="submit"
-              @click="formSubmit"
-            >
+            <VBtn type="submit" @click="formSubmit">
               Continue
-              <VIcon
-                end
-                icon="tabler-arrow-right"
-                class="flip-in-rtl"
-              />
+              <VIcon end icon="tabler-arrow-right" class="flip-in-rtl" />
             </VBtn>
           </div>
         </VForm>

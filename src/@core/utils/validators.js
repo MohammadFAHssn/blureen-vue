@@ -1,46 +1,50 @@
-import { isEmpty, isEmptyArray, isNullOrUndefined } from "./helpers"
+import { isEmpty, isEmptyArray, isNullOrUndefined } from './helpers'
 
 // 👉 Required Validator
-export const requiredValidator = value => {
+export function requiredValidator(value) {
   if (isNullOrUndefined(value) || isEmptyArray(value) || value === false)
-    return "پر کردن این فیلد الزامی است"
+    return 'پر کردن این فیلد الزامی است'
 
-  return !!String(value).trim().length || "پر کردن این فیلد الزامی است"
+  return !!String(value).trim().length || 'پر کردن این فیلد الزامی است'
 }
 
 // 👉 Email Validator
-export const emailValidator = value => {
+export function emailValidator(value) {
   if (isEmpty(value)) return true
 
   const re =
     /^(?:[^<>()[\]\\.,;:\s@"]+(?:\.[^<>()[\]\\.,;:\s@"]+)*|".+")@(?:\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\]|(?:[a-z\-\d]+\.)+[a-z]{2,})$/i
 
-  if (Array.isArray(value))
+  if (Array.isArray(value)) {
     return (
-      value.every(val => re.test(String(val))) ||
-      "The Email field must be a valid email"
+      value.every((val) => re.test(String(val))) ||
+      'The Email field must be a valid email'
     )
+  }
 
-  return re.test(String(value)) || "The Email field must be a valid email"
+  return re.test(String(value)) || 'The Email field must be a valid email'
 }
 
 // 👉 Password Validator
-export const passwordValidator = password => {
+export function passwordValidator(password) {
   const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/
   const validPassword = regExp.test(password)
 
   return (
     validPassword ||
-    "Field must contain at least one uppercase, lowercase, special character and digit with min 8 chars"
+    'Field must contain at least one uppercase, lowercase, special character and digit with min 8 chars'
   )
 }
 
 // 👉 Confirm Password Validator
-export const confirmedValidator = (value, target) =>
-  value === target || "The Confirm Password field confirmation does not match"
+export function confirmedValidator(value, target) {
+  return (
+    value === target || 'The Confirm Password field confirmation does not match'
+  )
+}
 
 // 👉 Between Validator
-export const betweenValidator = (value, min, max) => {
+export function betweenValidator(value, min, max) {
   const valueAsNumber = Number(value)
 
   return (
@@ -50,48 +54,49 @@ export const betweenValidator = (value, min, max) => {
 }
 
 // 👉 Integer Validator
-export const integerValidator = value => {
+export function integerValidator(value) {
   if (isEmpty(value)) return true
-  if (Array.isArray(value))
+  if (Array.isArray(value)) {
     return (
-      value.every(val => /^-?\d+$/.test(String(val))) ||
-      "This field must be an integer"
+      value.every((val) => /^-?\d+$/.test(String(val))) ||
+      'This field must be an integer'
     )
+  }
 
-  return /^-?\d+$/.test(String(value)) || "This field must be an integer"
+  return /^-?\d+$/.test(String(value)) || 'This field must be an integer'
 }
 
 // 👉 Regex Validator
-export const regexValidator = (value, regex) => {
+export function regexValidator(value, regex) {
   if (isEmpty(value)) return true
   let regeX = regex
-  if (typeof regeX === "string") regeX = new RegExp(regeX)
+  if (typeof regeX === 'string') regeX = new RegExp(regeX)
   if (Array.isArray(value))
-    return value.every(val => regexValidator(val, regeX))
+    return value.every((val) => regexValidator(val, regeX))
 
-  return regeX.test(String(value)) || "The Regex field format is invalid"
+  return regeX.test(String(value)) || 'The Regex field format is invalid'
 }
 
 // 👉 Alpha Validator
-export const alphaValidator = value => {
+export function alphaValidator(value) {
   if (isEmpty(value)) return true
 
   return (
     /^[A-Z]*$/i.test(String(value)) ||
-    "The Alpha field may only contain alphabetic characters"
+    'The Alpha field may only contain alphabetic characters'
   )
 }
 
 // 👉 URL Validator
-export const urlValidator = value => {
+export function urlValidator(value) {
   if (isEmpty(value)) return true
   const re = /^https?:\/\/[^\s$.?#].\S*$/
 
-  return re.test(String(value)) || "URL is invalid"
+  return re.test(String(value)) || 'URL is invalid'
 }
 
 // 👉 Length Validator
-export const lengthValidator = (value, length) => {
+export function lengthValidator(value, length) {
   if (isEmpty(value)) return true
 
   return (
@@ -101,16 +106,16 @@ export const lengthValidator = (value, length) => {
 }
 
 // 👉 Alpha-dash Validator
-export const alphaDashValidator = value => {
+export function alphaDashValidator(value) {
   if (isEmpty(value)) return true
   const valueAsString = String(value)
 
-  return /^[\w-]*$/.test(valueAsString) || "All Character are not valid"
+  return /^[\w-]*$/.test(valueAsString) || 'All Character are not valid'
 }
 
 // 👉 Mobile Number Validator
-export const mobileNumberValidator = value => {
+export function mobileNumberValidator(value) {
   const valueAsString = String(value)
 
-  return /^09\d{9}$/.test(valueAsString) || "شماره تلفن معتبر نیست"
+  return /^09\d{9}$/.test(valueAsString) || 'شماره تلفن معتبر نیست'
 }

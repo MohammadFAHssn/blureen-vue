@@ -1,20 +1,20 @@
 <script setup>
-import { PerfectScrollbar } from "vue3-perfect-scrollbar"
-import { VNodeRenderer } from "./VNodeRenderer"
-import { layoutConfig } from "@layouts"
+import { layoutConfig } from '@layouts'
 import {
   VerticalNavGroup,
   VerticalNavLink,
   VerticalNavSectionTitle,
-} from "@layouts/components"
-import { useLayoutConfigStore } from "@layouts/stores/config"
-import { injectionKeyIsVerticalNavHovered } from "@layouts/symbols"
+} from '@layouts/components'
+import { useLayoutConfigStore } from '@layouts/stores/config'
+import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { VNodeRenderer } from './VNodeRenderer'
 
 const props = defineProps({
   tag: {
     type: null,
     required: false,
-    default: "aside",
+    default: 'aside',
   },
   navItems: {
     type: null,
@@ -37,14 +37,14 @@ provide(injectionKeyIsVerticalNavHovered, isHovered)
 
 const configStore = useLayoutConfigStore()
 
-const resolveNavItemComponent = item => {
-  if ("heading" in item) return VerticalNavSectionTitle
-  if ("children" in item) return VerticalNavGroup
+function resolveNavItemComponent(item) {
+  if ('heading' in item) return VerticalNavSectionTitle
+  if ('children' in item) return VerticalNavGroup
 
   return VerticalNavLink
 }
 
-/*ℹ️ Close overlay side when route is changed
+/* ℹ️ Close overlay side when route is changed
 Close overlay vertical nav when link is clicked
 */
 const route = useRoute()
@@ -58,10 +58,11 @@ watch(
 
 const isVerticalNavScrolled = ref(false)
 
-const updateIsVerticalNavScrolled = val =>
-  (isVerticalNavScrolled.value = val)
+function updateIsVerticalNavScrolled(val) {
+  return (isVerticalNavScrolled.value = val)
+}
 
-const handleNavScroll = evt => {
+function handleNavScroll(evt) {
   isVerticalNavScrolled.value = evt.target.scrollTop > 0
 }
 
@@ -86,17 +87,11 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
     <!-- 👉 Header -->
     <div class="nav-header">
       <slot name="nav-header">
-        <RouterLink
-          to="/"
-          class="app-logo app-title-wrapper"
-        >
+        <RouterLink to="/" class="app-logo app-title-wrapper">
           <VNodeRenderer :nodes="layoutConfig.app.logo" />
 
           <Transition name="vertical-nav-app-title">
-            <h1
-              v-show="!hideTitleAndIcon"
-              class="app-logo-title"
-            >
+            <h1 v-show="!hideTitleAndIcon" class="app-logo-title">
               {{ layoutConfig.app.title }}
             </h1>
           </Transition>
@@ -178,8 +173,8 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
 </style>
 
 <style lang="scss">
-@use "@configured-variables" as variables;
-@use "@layouts/styles/mixins";
+@use '@configured-variables' as variables;
+@use '@layouts/styles/mixins';
 
 // 👉 Vertical Nav
 .layout-vertical-nav {

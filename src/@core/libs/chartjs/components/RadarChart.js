@@ -7,9 +7,9 @@ import {
   RadialLinearScale,
   Title,
   Tooltip,
-} from "chart.js"
-import { defineComponent } from "vue"
-import { Radar } from "vue-chartjs"
+} from 'chart.js'
+import { defineComponent } from 'vue'
+import { Radar } from 'vue-chartjs'
 
 ChartJS.register(
   Title,
@@ -21,11 +21,11 @@ ChartJS.register(
   Filler,
 )
 export default defineComponent({
-  name: "RadarChart",
+  name: 'RadarChart',
   props: {
     chartId: {
       type: String,
-      default: "radar-chart",
+      default: 'radar-chart',
     },
     width: {
       type: Number,
@@ -36,7 +36,7 @@ export default defineComponent({
       default: 400,
     },
     cssClasses: {
-      default: "",
+      default: '',
       type: String,
     },
     styles: {

@@ -1,11 +1,11 @@
 <script setup>
-import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 
 const props = defineProps({
   togglerIcon: {
     type: String,
     required: false,
-    default: "tabler-layout-grid-add",
+    default: 'tabler-layout-grid-add',
   },
   shortcuts: {
     type: Array,
@@ -20,30 +20,18 @@ const router = useRouter()
   <IconBtn>
     <VIcon :icon="props.togglerIcon" />
 
-    <VMenu
-      activator="parent"
-      offset="12px"
-      location="bottom end"
-    >
+    <VMenu activator="parent" offset="12px" location="bottom end">
       <VCard
         :width="$vuetify.display.smAndDown ? 330 : 380"
         max-height="560"
         class="d-flex flex-column"
       >
         <VCardItem class="py-3">
-          <h6 class="text-base font-weight-medium">
-            Shortcuts
-          </h6>
+          <h6 class="text-base font-weight-medium">Shortcuts</h6>
 
           <template #append>
-            <IconBtn
-              size="small"
-              color="high-emphasis"
-            >
-              <VIcon
-                size="20"
-                icon="tabler-plus"
-              />
+            <IconBtn size="small" color="high-emphasis">
+              <VIcon size="20" icon="tabler-plus" />
             </IconBtn>
           </template>
         </VCardItem>
@@ -60,15 +48,8 @@ const router = useRouter()
               :class="(index + 1) % 2 ? 'border-e' : ''"
               @click="router.push(shortcut.to)"
             >
-              <VAvatar
-                variant="tonal"
-                size="50"
-              >
-                <VIcon
-                  size="26"
-                  color="high-emphasis"
-                  :icon="shortcut.icon"
-                />
+              <VAvatar variant="tonal" size="50">
+                <VIcon size="26" color="high-emphasis" :icon="shortcut.icon" />
               </VAvatar>
 
               <h6 class="text-base font-weight-medium mt-3 mb-0">

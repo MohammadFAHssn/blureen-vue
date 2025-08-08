@@ -14,10 +14,10 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:page"])
+const emit = defineEmits(['update:page'])
 
-const updatePage = value => {
-  emit("update:page", value)
+function updatePage(value) {
+  emit('update:page', value)
 }
 </script>
 
@@ -25,7 +25,9 @@ const updatePage = value => {
   <div>
     <VDivider />
 
-    <div class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 px-6 py-3">
+    <div
+      class="d-flex align-center justify-sm-space-between justify-center flex-wrap gap-3 px-6 py-3"
+    >
       <p class="text-disabled mb-0">
         {{ paginationMeta({ page, itemsPerPage }, totalItems) }}
       </p>

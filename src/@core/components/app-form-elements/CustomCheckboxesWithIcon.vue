@@ -14,11 +14,11 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:selectedCheckbox"])
+const emit = defineEmits(['update:selectedCheckbox'])
 
-const updateSelectedOption = value => {
-  if (typeof value !== "boolean" && value !== null)
-    emit("update:selectedCheckbox", value)
+function updateSelectedOption(value) {
+  if (typeof value !== 'boolean' && value !== null)
+    emit('update:selectedCheckbox', value)
 }
 </script>
 
@@ -38,10 +38,7 @@ const updateSelectedOption = value => {
       >
         <slot :item="item">
           <div class="d-flex flex-column align-center text-center gap-2">
-            <VIcon
-              v-bind="item.icon"
-              class="text-high-emphasis"
-            />
+            <VIcon v-bind="item.icon" class="text-high-emphasis" />
 
             <h6 class="cr-title text-base">
               {{ item.title }}

@@ -1,6 +1,6 @@
 <script setup>
-import { createHighlighter } from "shiki"
-import { PerfectScrollbar } from "vue3-perfect-scrollbar"
+import { createHighlighter } from 'shiki'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 
 const props = defineProps({
   title: {
@@ -14,7 +14,7 @@ const props = defineProps({
   codeLanguage: {
     type: String,
     required: false,
-    default: "markup",
+    default: 'markup',
   },
   noPadding: {
     type: Boolean,
@@ -23,8 +23,8 @@ const props = defineProps({
   },
 })
 
-const preferredCodeLanguage = useCookie("preferredCodeLanguage", {
-  default: () => "ts",
+const preferredCodeLanguage = useCookie('preferredCodeLanguage', {
+  default: () => 'ts',
   maxAge: COOKIE_MAX_AGE_1_YEAR,
 })
 
@@ -35,15 +35,15 @@ const { copy, copied } = useClipboard({
 })
 
 const highlighter = await createHighlighter({
-  themes: ["dracula", "dracula-soft"],
-  langs: ["vue"],
+  themes: ['dracula', 'dracula-soft'],
+  langs: ['vue'],
 })
 
 const codeSnippet = highlighter.codeToHtml(
   props.code[preferredCodeLanguage.value],
   {
-    lang: "vue",
-    theme: "dracula",
+    lang: 'vue',
+    theme: 'dracula',
   },
 )
 </script>
@@ -60,10 +60,7 @@ const codeSnippet = highlighter.codeToHtml(
           :class="isCodeShown ? '' : 'text-disabled'"
           @click="isCodeShown = !isCodeShown"
         >
-          <VIcon
-            size="20"
-            icon="tabler-code"
-          />
+          <VIcon size="20" icon="tabler-code" />
         </IconBtn>
       </template>
     </VCardItem>
@@ -114,7 +111,7 @@ const codeSnippet = highlighter.codeToHtml(
 
           <div class="position-relative">
             <PerfectScrollbar
-              style="border-radius: 6px; max-block-size: 500px;"
+              style="border-radius: 6px; max-block-size: 500px"
               :options="{ wheelPropagation: false, suppressScrollX: false }"
             >
               <!-- eslint-disable-next-line vue/no-v-html -->
@@ -125,7 +122,7 @@ const codeSnippet = highlighter.codeToHtml(
               color="white"
               @click="
                 () => {
-                  copy();
+                  copy()
                 }
               "
             >
@@ -142,24 +139,18 @@ const codeSnippet = highlighter.codeToHtml(
 </template>
 
 <style lang="scss">
-@use "@styles/variables/vuetify";
+@use '@styles/variables/vuetify';
 
-code[class*="language-"],
-pre[class*="language-"] {
+code[class*='language-'],
+pre[class*='language-'] {
   font-family:
-    ui-monospace,
- SFMono-Regular,
- Menlo,
- Monaco,
- Consolas,
- "Liberation Mono",
-    "Courier New",
- monospace;
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   font-size: 14px;
 }
 
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
   border-radius: vuetify.$card-border-radius;
   max-block-size: 500px;
 }

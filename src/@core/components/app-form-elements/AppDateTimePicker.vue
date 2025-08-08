@@ -1,15 +1,18 @@
 <script setup>
-import FlatPickr from "vue-flatpickr-component"
-import { useTheme } from "vuetify"
+import { useConfigStore } from '@core/stores/config'
+import FlatPickr from 'vue-flatpickr-component'
+import { useTheme } from 'vuetify'
 import {
-  VField,
   filterFieldProps,
   makeVFieldProps,
-} from "vuetify/lib/components/VField/VField"
-import { VInput, makeVInputProps } from "vuetify/lib/components/VInput/VInput"
+  VField,
+} from 'vuetify/lib/components/VField/VField'
+import { makeVInputProps, VInput } from 'vuetify/lib/components/VInput/VInput'
+import { filterInputAttrs } from 'vuetify/lib/util/helpers'
 
-import { filterInputAttrs } from "vuetify/lib/util/helpers"
-import { useConfigStore } from "@core/stores/config"
+defineOptions({
+  inheritAttrs: false,
+})
 
 const props = defineProps({
   autofocus: Boolean,
@@ -22,30 +25,26 @@ const props = defineProps({
   suffix: String,
   type: {
     type: String,
-    default: "text",
+    default: 'text',
   },
   modelModifiers: Object,
   ...makeVInputProps({
-    density: "comfortable",
-    hideDetails: "auto",
+    density: 'comfortable',
+    hideDetails: 'auto',
   }),
   ...makeVFieldProps({
-    variant: "outlined",
-    color: "primary",
+    variant: 'outlined',
+    color: 'primary',
   }),
 })
 
 const emit = defineEmits([
-  "click:control",
-  "mousedown:control",
-  "update:focused",
-  "update:modelValue",
-  "click:clear",
+  'click:control',
+  'mousedown:control',
+  'update:focused',
+  'update:modelValue',
+  'click:clear',
 ])
-
-defineOptions({
-  inheritAttrs: false,
-})
 
 const configStore = useConfigStore()
 const attrs = useAttrs()
@@ -60,7 +59,7 @@ const isInlinePicker = ref(false)
 // flat picker prop manipulation
 if (compAttrs.config && compAttrs.config.inline) {
   isInlinePicker.value = compAttrs.config.inline
-  Object.assign(compAttrs, { altInputClass: "inlinePicker" })
+  Object.assign(compAttrs, { altInputClass: 'inlinePicker' })
 }
 compAttrs.config = {
   ...compAttrs.config,
@@ -70,11 +69,11 @@ compAttrs.config = {
     '<i class="tabler-chevron-right v-icon" style="font-size: 20px; height: 20px; width: 20px;"></i>',
 }
 
-const onClear = el => {
+function onClear(el) {
   el.stopPropagation()
   nextTick(() => {
-    emit("update:modelValue", "")
-    emit("click:clear", el)
+    emit('update:modelValue', '')
+    emit('click:clear', el)
   })
 }
 
@@ -82,10 +81,10 @@ const vuetifyTheme = useTheme()
 const vuetifyThemesName = Object.keys(vuetifyTheme.themes.value)
 
 // Themes class added to flat-picker component for light and dark support
-const updateThemeClassInCalendar = () => {
+function updateThemeClassInCalendar() {
   // ℹ️ Flatpickr don't render it's instance in mobile and device simulator
   if (!refFlatPicker.value.fp.calendarContainer) return
-  vuetifyThemesName.forEach(t => {
+  vuetifyThemesName.forEach((t) => {
     refFlatPicker.value.fp.calendarContainer.classList.remove(`v-theme--${t}`)
   })
   refFlatPicker.value.fp.calendarContainer.classList.add(
@@ -98,8 +97,8 @@ onMounted(() => {
   updateThemeClassInCalendar()
 })
 
-const emitModelValue = val => {
-  emit("update:modelValue", val)
+function emitModelValue(val) {
+  emit('update:modelValue', val)
 }
 
 watch(
@@ -151,7 +150,9 @@ const elementId = computed(() => {
       class="position-relative v-text-field"
       :style="props.style"
     >
-      <template #default="{ id, isDirty, isValid, isDisabled, isReadonly, validate }">
+      <template
+        #default="{ id, isDirty, isValid, isDisabled, isReadonly, validate }"
+      >
         <!-- v-field -->
         <VField
           v-bind="{ ...fieldProps, label: undefined }"
@@ -178,8 +179,8 @@ const elementId = computed(() => {
                 :disabled="isReadonly.value"
                 @on-open="isCalendarOpen = true"
                 @on-close="
-                  isCalendarOpen = false;
-                  validate();
+                  isCalendarOpen = false
+                  validate()
                 "
                 @update:model-value="emitModelValue"
               />
@@ -192,7 +193,7 @@ const elementId = computed(() => {
                 :readonly="isReadonly.value"
                 class="flat-picker-custom-style h-100 w-100"
                 type="text"
-              >
+              />
             </div>
           </template>
         </VField>
@@ -213,11 +214,11 @@ const elementId = computed(() => {
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/mixins" as templateMixins;
+@use '@core/scss/template/mixins' as templateMixins;
 
 /* stylelint-disable no-descending-specificity */
-@use "flatpickr/dist/flatpickr.css";
-@use "@core/scss/base/mixins";
+@use 'flatpickr/dist/flatpickr.css';
+@use '@core/scss/base/mixins';
 
 .flat-picker-custom-style {
   position: absolute;
@@ -237,7 +238,7 @@ $body-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
 $disabled-color: rgba(var(--v-theme-on-background), var(--v-disabled-opacity));
 
 // hide the input when your picker is inline
-input[altinputclass="inlinePicker"] {
+input[altinputclass='inlinePicker'] {
   display: none;
 }
 
@@ -305,7 +306,7 @@ input[altinputclass="inlinePicker"] {
       background: rgb(var(--v-theme-primary));
       color: rgb(var(--v-theme-on-primary));
 
-      @include templateMixins.custom-elevation(var(--v-theme-primary), "sm");
+      @include templateMixins.custom-elevation(var(--v-theme-primary), 'sm');
     }
 
     &.inRange,
@@ -320,11 +321,11 @@ input[altinputclass="inlinePicker"] {
     }
 
     &.startRange {
-      @include templateMixins.custom-elevation(var(--v-theme-primary), "sm");
+      @include templateMixins.custom-elevation(var(--v-theme-primary), 'sm');
     }
 
     &.endRange {
-      @include templateMixins.custom-elevation(var(--v-theme-primary), "sm");
+      @include templateMixins.custom-elevation(var(--v-theme-primary), 'sm');
     }
 
     &.startRange,

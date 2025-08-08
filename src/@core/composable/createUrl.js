@@ -1,7 +1,7 @@
-import { stringifyQuery } from "ufo"
+import { stringifyQuery } from 'ufo'
 
-export const createUrl = (url, options) =>
-  computed(() => {
+export function createUrl(url, options) {
+  return computed(() => {
     if (!options?.query) return toValue(url)
     const _url = toValue(url)
     const _query = toValue(options?.query)
@@ -10,5 +10,6 @@ export const createUrl = (url, options) =>
       Object.entries(_query).map(([key, val]) => [key, toValue(val)]),
     )
 
-    return `${_url}${queryObj ? `?${stringifyQuery(queryObj)}` : ""}`
+    return `${_url}${queryObj ? `?${stringifyQuery(queryObj)}` : ''}`
   })
+}

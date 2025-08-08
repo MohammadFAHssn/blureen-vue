@@ -1,4 +1,4 @@
-@use "sass:map";
+@use 'sass:map';
 
 /* 👉 Shadow opacities */
 $shadow-key-umbra-opacity-custom: var(--v-shadow-key-umbra-opacity);
@@ -8,7 +8,7 @@ $shadow-key-ambient-opacity-custom: var(--v-shadow-key-ambient-opacity);
 /* 👉 Card transition properties */
 $card-transition-property-custom: box-shadow, opacity;
 
-@forward "vuetify/settings" with (
+@forward 'vuetify/settings' with (
   // 👉 General settings
   $color-pack: false !default,
 
@@ -55,5 +55,5 @@ $card-transition-property-custom: box-shadow, opacity;
   $overlay-opacity: 1 !default,
 
   // 👉 VContainer
-  $container-max-widths: ("xl": 1440px, "xxl": 1440px) !default
+  $container-max-widths: ('xl': 1440px, 'xxl': 1440px) !default
 );

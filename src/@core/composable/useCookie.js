@@ -1,16 +1,16 @@
 // Ported from [Nuxt](https://github.com/nuxt/nuxt/blob/main/packages/nuxt/src/app/composables/cookie.ts)
-import { parse, serialize } from "cookie-es"
-import { destr } from "destr"
+import { parse, serialize } from 'cookie-es'
+import { destr } from 'destr'
 
 const CookieDefaults = {
-  path: "/",
+  path: '/',
   watch: true,
-  decode: val => destr(decodeURIComponent(val)),
-  encode: val =>
-    encodeURIComponent(typeof val === "string" ? val : JSON.stringify(val)),
+  decode: (val) => destr(decodeURIComponent(val)),
+  encode: (val) =>
+    encodeURIComponent(typeof val === 'string' ? val : JSON.stringify(val)),
 }
 
-export const useCookie = (name, _opts) => {
+export function useCookie(name, _opts) {
   const opts = { ...CookieDefaults, ...(_opts || {}) }
   const cookies = parse(document.cookie, opts)
   const cookie = ref(cookies[name] ?? opts.default?.())

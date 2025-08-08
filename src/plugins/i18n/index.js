@@ -1,20 +1,20 @@
-import { createI18n } from "vue-i18n"
-import { cookieRef } from "@layouts/stores/config"
-import { themeConfig } from "@themeConfig"
+import { cookieRef } from '@layouts/stores/config'
+import { themeConfig } from '@themeConfig'
+import { createI18n } from 'vue-i18n'
 
 const messages = Object.fromEntries(
-  Object.entries(import.meta.glob("./locales/*.json", { eager: true })).map(
+  Object.entries(import.meta.glob('./locales/*.json', { eager: true })).map(
     ([key, value]) => [key.slice(10, -5), value.default],
   ),
 )
 
 let _i18n = null
-export const getI18n = () => {
+export function getI18n() {
   if (_i18n === null) {
     _i18n = createI18n({
       legacy: false,
-      locale: cookieRef("language", themeConfig.app.i18n.defaultLocale).value,
-      fallbackLocale: "en",
+      locale: cookieRef('language', themeConfig.app.i18n.defaultLocale).value,
+      fallbackLocale: 'en',
       messages,
     })
   }

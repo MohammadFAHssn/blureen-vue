@@ -1,5 +1,5 @@
-@use "sass:map";
-@use "@styles/variables/vuetify.scss";
+@use 'sass:map';
+@use '@styles/variables/vuetify.scss';
 
 @mixin elevation($z, $important: false) {
   box-shadow:
@@ -18,7 +18,7 @@
     border-radius: inherit;
     background: currentcolor;
     block-size: 100%;
-    content: "";
+    content: '';
     inline-size: 100%;
     inset: 0;
     opacity: 0;
@@ -30,7 +30,7 @@
 
 @mixin bordered-skin(
   $component,
-  $border-property: "border",
+  $border-property: 'border',
   $important: false
 ) {
   #{$component} {

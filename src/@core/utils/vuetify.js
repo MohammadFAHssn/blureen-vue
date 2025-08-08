@@ -1,16 +1,16 @@
-import { cookieRef } from "@layouts/stores/config"
+import { cookieRef } from '@layouts/stores/config'
 
-export const resolveVuetifyTheme = defaultTheme => {
+export function resolveVuetifyTheme(defaultTheme) {
   const cookieColorScheme = cookieRef(
-    "color-scheme",
-    usePreferredDark().value ? "dark" : "light",
+    'color-scheme',
+    usePreferredDark().value ? 'dark' : 'light',
   )
 
-  const storedTheme = cookieRef("theme", defaultTheme).value
+  const storedTheme = cookieRef('theme', defaultTheme).value
 
-  return storedTheme === "system"
-    ? cookieColorScheme.value === "dark"
-      ? "dark"
-      : "light"
+  return storedTheme === 'system'
+    ? cookieColorScheme.value === 'dark'
+      ? 'dark'
+      : 'light'
     : storedTheme
 }

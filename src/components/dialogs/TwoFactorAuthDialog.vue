@@ -8,46 +8,46 @@ const props = defineProps({
   smsCode: {
     type: String,
     required: false,
-    default: "",
+    default: '',
   },
   authAppCode: {
     type: String,
     required: false,
-    default: "",
+    default: '',
   },
 })
 
-const emit = defineEmits(["update:isDialogVisible"])
+const emit = defineEmits(['update:isDialogVisible'])
 
 const authMethods = [
   {
-    icon: "tabler-settings",
-    title: "Authenticator Apps",
-    desc: "Get code from an app like Google Authenticator or Microsoft Authenticator.",
-    value: "authApp",
+    icon: 'tabler-settings',
+    title: 'Authenticator Apps',
+    desc: 'Get code from an app like Google Authenticator or Microsoft Authenticator.',
+    value: 'authApp',
   },
   {
-    icon: "tabler-message",
-    title: "SMS",
-    desc: "We will send a code via SMS if you need to use your backup login method.",
-    value: "sms",
+    icon: 'tabler-message',
+    title: 'SMS',
+    desc: 'We will send a code via SMS if you need to use your backup login method.',
+    value: 'sms',
   },
 ]
 
-const selectedMethod = ref("authApp")
+const selectedMethod = ref('authApp')
 const isAuthAppDialogVisible = ref(false)
 const isSmsDialogVisible = ref(false)
 
-const openSelectedMethodDialog = () => {
-  if (selectedMethod.value === "authApp") {
+function openSelectedMethodDialog() {
+  if (selectedMethod.value === 'authApp') {
     isAuthAppDialogVisible.value = true
     isSmsDialogVisible.value = false
-    emit("update:isDialogVisible", false)
+    emit('update:isDialogVisible', false)
   }
-  if (selectedMethod.value === "sms") {
+  if (selectedMethod.value === 'sms') {
     isAuthAppDialogVisible.value = false
     isSmsDialogVisible.value = true
-    emit("update:isDialogVisible", false)
+    emit('update:isDialogVisible', false)
   }
 }
 </script>
@@ -65,9 +65,7 @@ const openSelectedMethodDialog = () => {
       <VCardText>
         <!-- 👉 Title -->
         <div class="mb-6">
-          <h4 class="text-h4 text-center mb-2">
-            Select Authentication Method
-          </h4>
+          <h4 class="text-h4 text-center mb-2">Select Authentication Method</h4>
           <p class="text-body-1 text-center mb-6">
             You also need to select a method by which the proxy authenticates to
             the directory serve.
@@ -98,9 +96,7 @@ const openSelectedMethodDialog = () => {
         </div>
 
         <div class="d-flex gap-4 justify-center">
-          <VBtn @click="openSelectedMethodDialog">
-            submit
-          </VBtn>
+          <VBtn @click="openSelectedMethodDialog"> submit </VBtn>
           <VBtn
             color="secondary"
             variant="tonal"

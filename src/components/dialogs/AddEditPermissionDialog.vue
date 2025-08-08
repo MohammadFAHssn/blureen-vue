@@ -7,22 +7,22 @@ const props = defineProps({
   permissionName: {
     type: String,
     required: false,
-    default: "",
+    default: '',
   },
 })
 
-const emit = defineEmits(["update:isDialogVisible", "update:permissionName"])
+const emit = defineEmits(['update:isDialogVisible', 'update:permissionName'])
 
-const currentPermissionName = ref("")
+const currentPermissionName = ref('')
 
-const onReset = () => {
-  emit("update:isDialogVisible", false)
-  currentPermissionName.value = ""
+function onReset() {
+  emit('update:isDialogVisible', false)
+  currentPermissionName.value = ''
 }
 
-const onSubmit = () => {
-  emit("update:isDialogVisible", false)
-  emit("update:permissionName", currentPermissionName.value)
+function onSubmit() {
+  emit('update:isDialogVisible', false)
+  emit('update:permissionName', currentPermissionName.value)
 }
 
 watch(
@@ -46,23 +46,18 @@ watch(
       <VCardText>
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
-          {{ props.permissionName ? "Edit" : "Add" }} Permission
+          {{ props.permissionName ? 'Edit' : 'Add' }} Permission
         </h4>
         <p class="text-body-1 text-center mb-6">
-          {{ props.permissionName ? "Edit" : "Add" }} permission as per your
+          {{ props.permissionName ? 'Edit' : 'Add' }} permission as per your
           requirements.
         </p>
 
         <!-- 👉 Form -->
         <VForm>
-          <VAlert
-            type="warning"
-            title="Warning!"
-            variant="tonal"
-            class="mb-6"
-          >
+          <VAlert type="warning" title="Warning!" variant="tonal" class="mb-6">
             <template #text>
-              By {{ props.permissionName ? "editing" : "adding" }} the
+              By {{ props.permissionName ? 'editing' : 'adding' }} the
               permission name, you might break the system permissions
               functionality.
             </template>
@@ -76,7 +71,7 @@ watch(
             />
 
             <VBtn @click="onSubmit">
-              {{ props.permissionName ? "Update" : "Add" }}
+              {{ props.permissionName ? 'Update' : 'Add' }}
             </VBtn>
           </div>
 

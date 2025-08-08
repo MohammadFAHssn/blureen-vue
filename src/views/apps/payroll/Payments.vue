@@ -43,17 +43,12 @@ const payments = [
   <VCard>
     <VCardItem class="pa-4 pb-0">
       <VCardTitle>پرداخت‌ها</VCardTitle>
-      <VCardSubtitle>
-        ریال
-      </VCardSubtitle>
+      <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
     <VCardText class="pa-4">
       <VList class="card-list">
-        <VListItem
-          v-for="payment in payments"
-          :key="payment.title"
-        >
+        <VListItem v-for="payment in payments" :key="payment.title">
           <VListItemTitle>
             {{ payment.title }}
           </VListItemTitle>
@@ -63,7 +58,7 @@ const payments = [
               <div class="text-body-1">
                 {{ payment.count }}
               </div>
-              <div :class="`text-${payment.statsColor} text-sm` ">
+              <div :class="`text-${payment.statsColor} text-sm`">
                 {{ payment.stats }}
               </div>
             </div>

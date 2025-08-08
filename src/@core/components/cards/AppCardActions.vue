@@ -1,4 +1,8 @@
 <script setup>
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps({
   collapsed: {
     type: Boolean,
@@ -39,16 +43,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  "collapsed",
-  "refresh",
-  "trash",
-  "initialLoad",
-  "update:loading",
+  'collapsed',
+  'refresh',
+  'trash',
+  'initialLoad',
+  'update:loading',
 ])
-
-defineOptions({
-  inheritAttrs: false,
-})
 
 const _loading = ref(false)
 
@@ -58,7 +58,7 @@ const $loading = computed({
   },
   set(value) {
     props.loading !== undefined
-      ? emit("update:loading", value)
+      ? emit('update:loading', value)
       : (_loading.value = value)
   },
 })
@@ -67,26 +67,26 @@ const isContentCollapsed = ref(props.collapsed)
 const isCardRemoved = ref(false)
 
 // stop loading
-const stopLoading = () => {
+function stopLoading() {
   $loading.value = false
 }
 
 // trigger collapse
-const triggerCollapse = () => {
+function triggerCollapse() {
   isContentCollapsed.value = !isContentCollapsed.value
-  emit("collapsed", isContentCollapsed.value)
+  emit('collapsed', isContentCollapsed.value)
 }
 
 // trigger refresh
-const triggerRefresh = () => {
+function triggerRefresh() {
   $loading.value = true
-  emit("refresh", stopLoading)
+  emit('refresh', stopLoading)
 }
 
 // trigger removal
-const triggeredRemove = () => {
+function triggeredRemove() {
   isCardRemoved.value = true
-  emit("trash")
+  emit('trash')
 }
 </script>
 
@@ -114,7 +114,7 @@ const triggeredRemove = () => {
               <IconBtn
                 v-if="
                   (!(actionRemove || actionRefresh) || actionCollapsed) &&
-                    !noActions
+                  !noActions
                 "
                 @click="triggerCollapse"
               >
@@ -134,28 +134,22 @@ const triggeredRemove = () => {
               <IconBtn
                 v-if="
                   (!(actionRemove || actionCollapsed) || actionRefresh) &&
-                    !noActions
+                  !noActions
                 "
                 @click="triggerRefresh"
               >
-                <VIcon
-                  size="20"
-                  icon="tabler-refresh"
-                />
+                <VIcon size="20" icon="tabler-refresh" />
               </IconBtn>
 
               <!-- 👉 Close button -->
               <IconBtn
                 v-if="
                   (!(actionRefresh || actionCollapsed) || actionRemove) &&
-                    !noActions
+                  !noActions
                 "
                 @click="triggeredRemove"
               >
-                <VIcon
-                  size="20"
-                  icon="tabler-x"
-                />
+                <VIcon size="20" icon="tabler-x" />
               </IconBtn>
             </div>
             <!-- !SECTION -->
@@ -164,10 +158,7 @@ const triggeredRemove = () => {
 
         <!-- 👉 card content -->
         <VExpandTransition>
-          <div
-            v-show="!isContentCollapsed"
-            class="v-card-content"
-          >
+          <div v-show="!isContentCollapsed" class="v-card-content">
             <slot />
           </div>
         </VExpandTransition>

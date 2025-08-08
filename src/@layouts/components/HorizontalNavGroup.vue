@@ -1,9 +1,13 @@
 <script setup>
-import { layoutConfig } from "@layouts"
-import { HorizontalNavLink, HorizontalNavPopper } from "@layouts/components"
-import { canViewNavMenuGroup } from "@layouts/plugins/casl"
-import { useLayoutConfigStore } from "@layouts/stores/config"
-import { getDynamicI18nProps, isNavGroupActive } from "@layouts/utils"
+import { layoutConfig } from '@layouts'
+import { HorizontalNavLink, HorizontalNavPopper } from '@layouts/components'
+import { canViewNavMenuGroup } from '@layouts/plugins/casl'
+import { useLayoutConfigStore } from '@layouts/stores/config'
+import { getDynamicI18nProps, isNavGroupActive } from '@layouts/utils'
+
+defineOptions({
+  name: 'HorizontalNavGroup',
+})
 
 const props = defineProps({
   item: {
@@ -22,16 +26,12 @@ const props = defineProps({
   },
 })
 
-defineOptions({
-  name: "HorizontalNavGroup",
-})
-
 const route = useRoute()
 const router = useRouter()
 const configStore = useLayoutConfigStore()
 const isGroupActive = ref(false)
 
-/*Watch for route changes, more specifically route path. Do note that this won't trigger if route's query is updated.
+/* Watch for route changes, more specifically route path. Do note that this won't trigger if route's query is updated.
 
 updates isActive & isOpen based on active state of group.
 */

@@ -1,9 +1,9 @@
-@use "@core/scss/base/placeholders" as *;
-@use "@core/scss/template/placeholders" as *;
-@use "@configured-variables" as variables;
-@use "@layouts/styles/mixins" as layoutsMixins;
-@use "@core/scss/base/mixins";
-@use "vuetify/lib/styles/tools/states" as vuetifyStates;
+@use '@core/scss/base/placeholders' as *;
+@use '@core/scss/template/placeholders' as *;
+@use '@configured-variables' as variables;
+@use '@layouts/styles/mixins' as layoutsMixins;
+@use '@core/scss/base/mixins';
+@use 'vuetify/lib/styles/tools/states' as vuetifyStates;
 
 .layout-horizontal-nav {
   @extend %nav;
@@ -107,7 +107,7 @@
         &::after {
           position: absolute;
           block-size: variables.$horizontal-nav-popper-content-top;
-          content: "";
+          content: '';
           inline-size: 100%;
           inset-block-start: 100%;
           inset-inline-start: 0;
@@ -145,7 +145,7 @@
     &.sub-item {
       &.active {
         @include mixins.selected-states(
-          "> .popper-triggerer > .nav-group-label::before"
+          '> .popper-triggerer > .nav-group-label::before'
         );
       }
 
@@ -188,7 +188,7 @@
 
       &:not(.active) {
         @include mixins.selected-states(
-          "> .popper-triggerer > .nav-group-label::before"
+          '> .popper-triggerer > .nav-group-label::before'
         );
       }
     }

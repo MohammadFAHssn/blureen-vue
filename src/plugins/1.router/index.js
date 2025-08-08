@@ -7,7 +7,7 @@ import { setupGuards } from './guards'
 // اگر لازم داری می‌تونی این تابع را حذف کنی؛ setupLayouts مستقیم روی آرایه جواب می‌دهد.
 function recursiveLayouts(route) {
   if (route.children) return route
-  
+
   return setupLayouts([route])[0]
 }
 
@@ -25,7 +25,7 @@ const router = createRouter({
   routes, // ← دیگه extendRoutes نداریم
   scrollBehavior(to) {
     if (to.hash) return { el: to.hash, behavior: 'smooth', top: 60 }
-    
+
     return { top: 0 }
   },
 })

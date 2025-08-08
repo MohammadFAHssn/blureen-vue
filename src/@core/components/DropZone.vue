@@ -1,29 +1,29 @@
 <script setup>
-import { useDropZone, useFileDialog, useObjectUrl } from "@vueuse/core"
+import { useDropZone, useFileDialog, useObjectUrl } from '@vueuse/core'
 
 const dropZoneRef = ref()
 const fileData = ref([])
-const { open, onChange } = useFileDialog({ accept: "image/*" })
+const { open, onChange } = useFileDialog({ accept: 'image/*' })
 function onDrop(DroppedFiles) {
-  DroppedFiles?.forEach(file => {
-    if (file.type.slice(0, 6) !== "image/") {
+  DroppedFiles?.forEach((file) => {
+    if (file.type.slice(0, 6) !== 'image/') {
       // eslint-disable-next-line no-alert
-      alert("Only image files are allowed")
+      alert('Only image files are allowed')
 
       return
     }
     fileData.value.push({
       file,
-      url: useObjectUrl(file).value ?? "",
+      url: useObjectUrl(file).value ?? '',
     })
   })
 }
-onChange(selectedFiles => {
+onChange((selectedFiles) => {
   if (!selectedFiles) return
   for (const file of selectedFiles) {
     fileData.value.push({
       file,
-      url: useObjectUrl(file).value ?? "",
+      url: useObjectUrl(file).value ?? '',
     })
   }
 })
@@ -33,32 +33,18 @@ useDropZone(dropZoneRef, onDrop)
 <template>
   <div class="flex">
     <div class="w-full h-auto relative">
-      <div
-        ref="dropZoneRef"
-        class="cursor-pointer"
-        @click="() => open()"
-      >
+      <div ref="dropZoneRef" class="cursor-pointer" @click="() => open()">
         <div
           v-if="fileData.length === 0"
           class="d-flex flex-column justify-center align-center gap-y-2 pa-12 drop-zone rounded"
         >
-          <IconBtn
-            variant="tonal"
-            class="rounded-sm"
-          >
+          <IconBtn variant="tonal" class="rounded-sm">
             <VIcon icon="tabler-upload" />
           </IconBtn>
-          <h4 class="text-h4">
-            Drag and drop your image here.
-          </h4>
+          <h4 class="text-h4">Drag and drop your image here.</h4>
           <span class="text-disabled">or</span>
 
-          <VBtn
-            variant="tonal"
-            size="small"
-          >
-            Browse Images
-          </VBtn>
+          <VBtn variant="tonal" size="small"> Browse Images </VBtn>
         </div>
 
         <div
@@ -66,19 +52,10 @@ useDropZone(dropZoneRef, onDrop)
           class="d-flex justify-center align-center gap-3 pa-8 drop-zone flex-wrap"
         >
           <VRow class="match-height w-100">
-            <template
-              v-for="(item, index) in fileData"
-              :key="index"
-            >
-              <VCol
-                cols="12"
-                sm="4"
-              >
+            <template v-for="(item, index) in fileData" :key="index">
+              <VCol cols="12" sm="4">
                 <VCard :ripple="false">
-                  <VCardText
-                    class="d-flex flex-column"
-                    @click.stop
-                  >
+                  <VCardText class="d-flex flex-column" @click.stop>
                     <VImg
                       :src="item.url"
                       width="200px"

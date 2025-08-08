@@ -1,15 +1,15 @@
 <script setup>
-import { useGenerateImageVariant } from "@core/composable/useGenerateImageVariant"
-import misc404 from "@images/pages/404.png"
-import miscMaskDark from "@images/pages/misc-mask-dark.png"
-import miscMaskLight from "@images/pages/misc-mask-light.png"
+import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
+import misc404 from '@images/pages/404.png'
+import miscMaskDark from '@images/pages/misc-mask-dark.png'
+import miscMaskLight from '@images/pages/misc-mask-light.png'
 
 const authThemeMask = useGenerateImageVariant(miscMaskLight, miscMaskDark)
 
 definePage({
-  alias: "/pages/misc/not-found/:error(.*)",
+  alias: '/pages/misc/not-found/:error(.*)',
   meta: {
-    layout: "blank",
+    layout: 'blank',
     public: true,
   },
 })
@@ -23,12 +23,7 @@ definePage({
       description="We couldn't find the page you are looking for."
     />
 
-    <VBtn
-      to="/"
-      class="mb-11"
-    >
-      Back to Home
-    </VBtn>
+    <VBtn to="/" class="mb-11"> Back to Home </VBtn>
 
     <!-- 👉 Image -->
     <div class="misc-avatar w-100 text-center">
@@ -45,10 +40,10 @@ definePage({
       :src="authThemeMask"
       alt="misc-footer-img"
       height="320"
-    >
+    />
   </div>
 </template>
 
 <style lang="scss">
-@use "@core/scss/template/pages/misc.scss";
+@use '@core/scss/template/pages/misc.scss';
 </style>

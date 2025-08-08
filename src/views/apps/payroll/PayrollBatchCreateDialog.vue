@@ -11,9 +11,9 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["submit", "update:isDialogVisible"])
+const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
-const constants = inject("constants")
+const constants = inject('constants')
 
 // states
 const payrollBatchDate = ref(null)
@@ -23,19 +23,19 @@ const payrollBatchFile = ref(null)
 //
 
 const fileInputRules = [
-  fileList => {
+  (fileList) => {
     // if no file is selected yet
     if (!fileList.length) {
       return true
     }
 
-    const extension = fileList[0].name.split(".").pop().toLowerCase()
-    if (extension !== "xlsx" && extension !== "xls") {
-      return "لطفا یک فایل اکسل معتبر انتخاب کنید!"
+    const extension = fileList[0].name.split('.').pop().toLowerCase()
+    if (extension !== 'xlsx' && extension !== 'xls') {
+      return 'لطفا یک فایل اکسل معتبر انتخاب کنید!'
     }
 
     if (fileList[0].size > constants.MAX_FILE_SIZE) {
-      return "حجم فایل باید کمتر از 5 مگابایت باشد!"
+      return 'حجم فایل باید کمتر از 5 مگابایت باشد!'
     }
 
     return true
@@ -43,15 +43,15 @@ const fileInputRules = [
 ]
 
 const datePickerRules = [
-  () => !!payrollBatchDate.value || "لطفا دوره فیش را انتخاب کنید!",
+  () => !!payrollBatchDate.value || 'لطفا دوره فیش را انتخاب کنید!',
 ]
 
 // methods
 
-const onFormSubmit = () => {
+function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      emit("submit", {
+      emit('submit', {
         payrollBatchDate: payrollBatchDate.value,
         payrollBatchFile: payrollBatchFile.value,
       })
@@ -59,13 +59,13 @@ const onFormSubmit = () => {
   })
 }
 
-const onFormReset = () => {
+function onFormReset() {
   // userData.value = structuredClone(toRaw(props.userData))
-  emit("update:isDialogVisible", false)
+  emit('update:isDialogVisible', false)
 }
 
-const dialogModelValueUpdate = val => {
-  emit("update:isDialogVisible", val)
+function dialogModelValueUpdate(val) {
+  emit('update:isDialogVisible', val)
 }
 </script>
 
@@ -81,9 +81,7 @@ const dialogModelValueUpdate = val => {
     <VCard class="pa-sm-10 pa-2">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h5 text-center mb-2">
-          افزودن فیش حقوقی جدید
-        </h4>
+        <h4 class="text-h5 text-center mb-2">افزودن فیش حقوقی جدید</h4>
 
         <!-- 👉 Form -->
         <VForm
@@ -93,14 +91,8 @@ const dialogModelValueUpdate = val => {
           @submit.prevent="onFormSubmit"
         >
           <VRow>
-            <VCol
-              cols="12"
-              md="6"
-            >
-              <VInput
-                :rules="datePickerRules"
-                :disabled="loading"
-              >
+            <VCol cols="12" md="6">
+              <VInput :rules="datePickerRules" :disabled="loading">
                 <PersianDatetimePicker
                   v-model="payrollBatchDate"
                   :disabled="loading"
@@ -111,10 +103,7 @@ const dialogModelValueUpdate = val => {
               </VInput>
             </VCol>
 
-            <VCol
-              cols="12"
-              md="6"
-            >
+            <VCol cols="12" md="6">
               <VFileInput
                 v-model="payrollBatchFile"
                 :disabled="loading"
@@ -125,10 +114,7 @@ const dialogModelValueUpdate = val => {
             </VCol>
 
             <!-- 👉 Submit and Cancel -->
-            <VCol
-              cols="12"
-              class="d-flex flex-wrap justify-center gap-4"
-            >
+            <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
               <VBtn
                 type="submit"
                 :disabled="loading"
@@ -138,11 +124,7 @@ const dialogModelValueUpdate = val => {
                 ذخیره
               </VBtn>
 
-              <VBtn
-                color="secondary"
-                variant="tonal"
-                @click="onFormReset"
-              >
+              <VBtn color="secondary" variant="tonal" @click="onFormReset">
                 انصراف
               </VBtn>
             </VCol>

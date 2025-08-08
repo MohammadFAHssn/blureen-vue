@@ -1,10 +1,10 @@
 <script setup>
-import { HorizontalNav } from "@layouts/components"
+import { HorizontalNav } from '@layouts/components'
 
 // ℹ️ Using import from `@layouts` causing build to hangup
 
 // import { useLayouts } from '@layouts'
-import { useLayoutConfigStore } from "@layouts/stores/config"
+import { useLayoutConfigStore } from '@layouts/stores/config'
 
 const props = defineProps({
   navItems: {
@@ -54,9 +54,9 @@ const configStore = useLayoutConfigStore()
 </template>
 
 <style lang="scss">
-@use "@configured-variables" as variables;
-@use "@layouts/styles/placeholders";
-@use "@layouts/styles/mixins";
+@use '@configured-variables' as variables;
+@use '@layouts/styles/placeholders';
+@use '@layouts/styles/mixins';
 
 .layout-wrapper {
   &.layout-nav-type-horizontal {

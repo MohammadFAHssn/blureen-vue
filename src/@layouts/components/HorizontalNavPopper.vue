@@ -1,7 +1,7 @@
 <script setup>
-import { computePosition, flip, offset, shift } from "@floating-ui/dom"
-import { useLayoutConfigStore } from "@layouts/stores/config"
-import { themeConfig } from "@themeConfig"
+import { computePosition, flip, offset, shift } from '@floating-ui/dom'
+import { useLayoutConfigStore } from '@layouts/stores/config'
+import { themeConfig } from '@themeConfig'
 
 const props = defineProps({
   popperInlineEnd: {
@@ -12,12 +12,12 @@ const props = defineProps({
   tag: {
     type: String,
     required: false,
-    default: "div",
+    default: 'div',
   },
   contentContainerTag: {
     type: String,
     required: false,
-    default: "div",
+    default: 'div',
   },
   isRtl: {
     type: Boolean,
@@ -30,10 +30,10 @@ const refPopperContainer = ref()
 const refPopper = ref()
 
 const popperContentStyles = ref({
-  left: "0px",
-  top: "0px",
+  left: '0px',
+  top: '0px',
 
-  /*ℹ️ Why we are not using fixed positioning?
+  /* ℹ️ Why we are not using fixed positioning?
 
 `position: fixed` doesn't work as expected when some CSS properties like `transform` is applied on its parent element.
 Docs: https://developer.mozilla.org/en-US/docs/Web/CSS/position#values <= See `fixed` value description
@@ -49,7 +49,7 @@ NOTE: This issue starts from third level children (Top Level > Sub item > Sub it
   // strategy: 'fixed',
 })
 
-const updatePopper = async () => {
+async function updatePopper() {
   if (refPopperContainer.value !== undefined && refPopper.value !== undefined) {
     const { x, y } = await computePosition(
       refPopperContainer.value,
@@ -57,24 +57,24 @@ const updatePopper = async () => {
       {
         placement: props.popperInlineEnd
           ? props.isRtl
-            ? "left-start"
-            : "right-start"
-          : "bottom-start",
+            ? 'left-start'
+            : 'right-start'
+          : 'bottom-start',
         middleware: [
           ...(configStore.horizontalNavPopoverOffset
             ? [offset(configStore.horizontalNavPopoverOffset)]
             : []),
           flip({
-            boundary: document.querySelector("body"),
+            boundary: document.querySelector('body'),
             padding: { bottom: 16 },
           }),
           shift({
-            boundary: document.querySelector("body"),
+            boundary: document.querySelector('body'),
             padding: { bottom: 16 },
           }),
         ],
 
-        /*ℹ️ Why we are not using fixed positioning?
+        /* ℹ️ Why we are not using fixed positioning?
 
 `position: fixed` doesn't work as expected when some CSS properties like `transform` is applied on its parent element.
 Docs: https://developer.mozilla.org/en-US/docs/Web/CSS/position#values <= See `fixed` value description
@@ -97,11 +97,11 @@ NOTE: This issue starts from third level children (Top Level > Sub item > Sub it
 }
 
 until(() => configStore.horizontalNavType)
-  .toMatch(type => type === "static")
+  .toMatch((type) => type === 'static')
   .then(() => {
-    useEventListener("scroll", updatePopper)
+    useEventListener('scroll', updatePopper)
 
-    /*ℹ️ Why we are not using fixed positioning?
+    /* ℹ️ Why we are not using fixed positioning?
 
 `position: fixed` doesn't work as expected when some CSS properties like `transform` is applied on its parent element.
 Docs: https://developer.mozilla.org/en-US/docs/Web/CSS/position#values <= See `fixed` value description
@@ -119,12 +119,12 @@ NOTE: This issue starts from third level children (Top Level > Sub item > Sub it
 
 const isContentShown = ref(false)
 
-const showContent = () => {
+function showContent() {
   isContentShown.value = true
   updatePopper()
 }
 
-const hideContent = () => {
+function hideContent() {
   isContentShown.value = false
 }
 
@@ -178,7 +178,9 @@ watch(() => route.fullPath, hideContent)
     </template>
 
     <!-- 👉 CSS Transition -->
-    <template v-else-if="typeof themeConfig.horizontalNav.transition === 'string'">
+    <template
+      v-else-if="typeof themeConfig.horizontalNav.transition === 'string'"
+    >
       <Transition :name="themeConfig.horizontalNav.transition">
         <div
           v-show="isContentShown"

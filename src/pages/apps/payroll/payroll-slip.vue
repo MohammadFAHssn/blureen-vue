@@ -3,13 +3,10 @@ import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
 
-
 <template>
   <section class="payroll-slip-container">
     <section class="payroll-slip-a4-page">
-      <h1 class="text-center">
-        گروه کارخانجات شیشه اردکان
-      </h1>
+      <h1 class="text-center">گروه کارخانجات شیشه اردکان</h1>
 
       <h2 class="text-center">
         فیش حقوقی

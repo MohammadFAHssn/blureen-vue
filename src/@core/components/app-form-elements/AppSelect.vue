@@ -1,6 +1,6 @@
 <script setup>
 defineOptions({
-  name: "AppSelect",
+  name: 'AppSelect',
   inheritAttrs: false,
 })
 
@@ -16,10 +16,7 @@ const label = computed(() => useAttrs().label)
 </script>
 
 <template>
-  <div
-    class="app-select flex-grow-1"
-    :class="$attrs.class"
-  >
+  <div class="app-select flex-grow-1" :class="$attrs.class">
     <VLabel
       v-if="label"
       :for="elementId"
@@ -44,14 +41,8 @@ const label = computed(() => useAttrs().label)
         },
       }"
     >
-      <template
-        v-for="(_, name) in $slots"
-        #[name]="slotProps"
-      >
-        <slot
-          :name="name"
-          v-bind="slotProps || {}"
-        />
+      <template v-for="(_, name) in $slots" #[name]="slotProps">
+        <slot :name="name" v-bind="slotProps || {}" />
       </template>
     </VSelect>
   </div>

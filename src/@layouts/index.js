@@ -1,9 +1,9 @@
-import { layoutConfig } from "@layouts/config"
-import { cookieRef, useLayoutConfigStore } from "@layouts/stores/config"
-import { _setDirAttr } from "@layouts/utils"
+import { layoutConfig } from '@layouts/config'
+import { cookieRef, useLayoutConfigStore } from '@layouts/stores/config'
+import { _setDirAttr } from '@layouts/utils'
 
 // 🔌 Plugin
-export const createLayouts = userConfig => {
+export function createLayouts(userConfig) {
   return () => {
     const configStore = useLayoutConfigStore()
 
@@ -39,27 +39,27 @@ export const createLayouts = userConfig => {
     // Reactive Values (Store)
     configStore.$patch({
       appContentLayoutNav: cookieRef(
-        "appContentLayoutNav",
+        'appContentLayoutNav',
         userConfig.app?.contentLayoutNav ?? layoutConfig.app.contentLayoutNav,
       ).value,
       appContentWidth: cookieRef(
-        "appContentWidth",
+        'appContentWidth',
         userConfig.app?.contentWidth ?? layoutConfig.app.contentWidth,
       ).value,
       footerType: cookieRef(
-        "footerType",
+        'footerType',
         userConfig.footer?.type ?? layoutConfig.footer.type,
       ).value,
       navbarType: cookieRef(
-        "navbarType",
+        'navbarType',
         userConfig.navbar?.type ?? layoutConfig.navbar.type,
       ).value,
       isNavbarBlurEnabled: cookieRef(
-        "isNavbarBlurEnabled",
+        'isNavbarBlurEnabled',
         userConfig.navbar?.navbarBlur ?? layoutConfig.navbar.navbarBlur,
       ).value,
       isVerticalNavCollapsed: cookieRef(
-        "isVerticalNavCollapsed",
+        'isVerticalNavCollapsed',
         userConfig.verticalNav?.isVerticalNavCollapsed ??
           layoutConfig.verticalNav.isVerticalNavCollapsed,
       ).value,
@@ -67,14 +67,14 @@ export const createLayouts = userConfig => {
       // isAppRTL: userConfig.app?.isRTL ?? config.app.isRTL,
       // isLessThanOverlayNavBreakpoint: false,
       horizontalNavType: cookieRef(
-        "horizontalNavType",
+        'horizontalNavType',
         userConfig.horizontalNav?.type ?? layoutConfig.horizontalNav.type,
       ).value,
     })
 
     // _setDirAttr(config.app.isRTL ? 'rtl' : 'ltr')
-    _setDirAttr(configStore.isAppRTL ? "rtl" : "ltr")
+    _setDirAttr(configStore.isAppRTL ? 'rtl' : 'ltr')
   }
 }
-export * from "./components"
+export * from './components'
 export { layoutConfig }

@@ -1,27 +1,27 @@
 <script setup>
 const headers = [
   {
-    title: "Name",
-    key: "name",
+    title: 'Name',
+    key: 'name',
   },
   {
-    title: "Assigned To",
-    key: "assignedTo",
+    title: 'Assigned To',
+    key: 'assignedTo',
     sortable: false,
   },
   {
-    title: "Created Date",
-    key: "createdDate",
+    title: 'Created Date',
+    key: 'createdDate',
     sortable: false,
   },
   {
-    title: "Actions",
-    key: "actions",
+    title: 'Actions',
+    key: 'actions',
     sortable: false,
   },
 ]
 
-const search = ref("")
+const search = ref('')
 
 // Data table options
 const itemsPerPage = ref(10)
@@ -29,40 +29,40 @@ const page = ref(1)
 const sortBy = ref()
 const orderBy = ref()
 
-const updateOptions = options => {
+function updateOptions(options) {
   sortBy.value = options.sortBy[0]?.key
   orderBy.value = options.sortBy[0]?.order
 }
 
 const isPermissionDialogVisible = ref(false)
 const isAddPermissionDialogVisible = ref(false)
-const permissionName = ref("")
+const permissionName = ref('')
 
 const colors = {
   support: {
-    color: "info",
-    text: "Support",
+    color: 'info',
+    text: 'Support',
   },
   users: {
-    color: "success",
-    text: "Users",
+    color: 'success',
+    text: 'Users',
   },
   manager: {
-    color: "warning",
-    text: "Manager",
+    color: 'warning',
+    text: 'Manager',
   },
   administrator: {
-    color: "primary",
-    text: "Administrator",
+    color: 'primary',
+    text: 'Administrator',
   },
-  "restricted-user": {
-    color: "error",
-    text: "Restricted User",
+  'restricted-user': {
+    color: 'error',
+    text: 'Restricted User',
   },
 }
 
 const { data: permissionsData } = await useApi(
-  createUrl("/apps/permissions", {
+  createUrl('/apps/permissions', {
     query: {
       q: search,
       itemsPerPage,
@@ -76,7 +76,7 @@ const { data: permissionsData } = await useApi(
 const permissions = computed(() => permissionsData.value.permissions)
 const totalPermissions = computed(() => permissionsData.value.totalPermissions)
 
-const editPermission = name => {
+function editPermission(name) {
   isPermissionDialogVisible.value = true
   permissionName.value = name
 }
@@ -86,11 +86,11 @@ const editPermission = name => {
   <VRow>
     <VCol cols="12">
       <VCard>
-        <VCardText class="d-flex align-center justify-space-between flex-wrap gap-4">
+        <VCardText
+          class="d-flex align-center justify-space-between flex-wrap gap-4"
+        >
           <div class="d-flex gap-2 align-center">
-            <p class="text-body-1 mb-0">
-              Show
-            </p>
+            <p class="text-body-1 mb-0">Show</p>
             <AppSelect
               :model-value="itemsPerPage"
               :items="[
@@ -178,16 +178,10 @@ const editPermission = name => {
               variant="text"
               @click="editPermission(item.name)"
             >
-              <VIcon
-                size="22"
-                icon="tabler-edit"
-              />
+              <VIcon size="22" icon="tabler-edit" />
             </VBtn>
             <IconBtn>
-              <VIcon
-                icon="tabler-dots-vertical"
-                size="22"
-              />
+              <VIcon icon="tabler-dots-vertical" size="22" />
             </IconBtn>
           </template>
         </VDataTableServer>
@@ -197,7 +191,9 @@ const editPermission = name => {
         v-model:is-dialog-visible="isPermissionDialogVisible"
         v-model:permission-name="permissionName"
       />
-      <AddEditPermissionDialog v-model:is-dialog-visible="isAddPermissionDialogVisible" />
+      <AddEditPermissionDialog
+        v-model:is-dialog-visible="isAddPermissionDialogVisible"
+      />
     </VCol>
   </VRow>
 </template>

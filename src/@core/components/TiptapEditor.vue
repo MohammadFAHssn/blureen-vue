@@ -1,9 +1,9 @@
 <script setup>
-import { Placeholder } from "@tiptap/extension-placeholder"
-import { TextAlign } from "@tiptap/extension-text-align"
-import { Underline } from "@tiptap/extension-underline"
-import { StarterKit } from "@tiptap/starter-kit"
-import { EditorContent, useEditor } from "@tiptap/vue-3"
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { Underline } from '@tiptap/extension-underline'
+import { StarterKit } from '@tiptap/starter-kit'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
 
 const props = defineProps({
   modelValue: {
@@ -16,7 +16,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(['update:modelValue'])
 
 const editorRef = ref()
 
@@ -25,16 +25,16 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     TextAlign.configure({
-      types: ["heading", "paragraph"],
+      types: ['heading', 'paragraph'],
     }),
     Placeholder.configure({
-      placeholder: props.placeholder ?? "Write something here...",
+      placeholder: props.placeholder ?? 'Write something here...',
     }),
     Underline,
   ],
   onUpdate() {
     if (!editor.value) return
-    emit("update:modelValue", editor.value.getHTML())
+    emit('update:modelValue', editor.value.getHTML())
   },
 })
 
@@ -81,10 +81,7 @@ watch(
         :color="editor.isActive('italic') ? 'primary' : 'default'"
         @click="editor.chain().focus().toggleItalic().run()"
       >
-        <VIcon
-          icon="tabler-italic"
-          class="font-weight-medium"
-        />
+        <VIcon icon="tabler-italic" class="font-weight-medium" />
       </IconBtn>
 
       <IconBtn
@@ -144,10 +141,7 @@ watch(
 
     <VDivider />
 
-    <EditorContent
-      ref="editorRef"
-      :editor="editor"
-    />
+    <EditorContent ref="editorRef" :editor="editor" />
   </div>
 </template>
 

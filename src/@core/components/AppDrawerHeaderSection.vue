@@ -6,7 +6,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["cancel"])
+const emit = defineEmits(['cancel'])
 </script>
 
 <template>
@@ -18,14 +18,8 @@ const emit = defineEmits(["cancel"])
 
     <slot name="beforeClose" />
 
-    <IconBtn
-      size="small"
-      @click="$emit('cancel', $event)"
-    >
-      <VIcon
-        size="24"
-        icon="tabler-x"
-      />
+    <IconBtn size="small" @click="$emit('cancel', $event)">
+      <VIcon size="24" icon="tabler-x" />
     </IconBtn>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
-import { VerticalNav } from "@layouts/components"
-import { useLayoutConfigStore } from "@layouts/stores/config"
+import { VerticalNav } from '@layouts/components'
+import { useLayoutConfigStore } from '@layouts/stores/config'
 
 const props = defineProps({
   navItems: {
@@ -32,12 +32,13 @@ watch(windowWidth, () => {
   if (
     !configStore.isLessThanOverlayNavBreakpoint &&
     isLayoutOverlayVisible.value
-  )
+  ) {
     isLayoutOverlayVisible.value = false
+  }
 })
 
 const verticalNavAttrs = computed(() => {
-  const vNavAttrs = toRef(props, "verticalNavAttrs")
+  const vNavAttrs = toRef(props, 'verticalNavAttrs')
 
   const {
     wrapper: verticalNavWrapper,
@@ -110,7 +111,7 @@ const verticalNavAttrs = computed(() => {
       :class="[{ visible: isLayoutOverlayVisible }]"
       @click="
         () => {
-          isLayoutOverlayVisible = !isLayoutOverlayVisible;
+          isLayoutOverlayVisible = !isLayoutOverlayVisible
         }
       "
     />
@@ -118,9 +119,9 @@ const verticalNavAttrs = computed(() => {
 </template>
 
 <style lang="scss">
-@use "@configured-variables" as variables;
-@use "@layouts/styles/placeholders";
-@use "@layouts/styles/mixins";
+@use '@configured-variables' as variables;
+@use '@layouts/styles/placeholders';
+@use '@layouts/styles/mixins';
 
 .layout-wrapper.layout-nav-type-vertical {
   // TODO(v2): Check why we need height in vertical nav & min-height in horizontal nav

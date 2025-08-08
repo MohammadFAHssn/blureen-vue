@@ -1,5 +1,5 @@
 // placeholders
-@use "@configured-variables" as variables;
+@use '@configured-variables' as variables;
 
 %boxed-content {
   inline-size: 100%;
@@ -8,7 +8,7 @@
 
   @at-root #{&}-spacing {
     // TODO: Use grid gutter variable here;
-    padding-inline: 1.5rem
+    padding-inline: 1.5rem;
   }
 }
 

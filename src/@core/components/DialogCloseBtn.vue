@@ -3,12 +3,12 @@ const props = defineProps({
   icon: {
     type: String,
     required: false,
-    default: "tabler-x",
+    default: 'tabler-x',
   },
   iconSize: {
     type: String,
     required: false,
-    default: "20",
+    default: '20',
   },
 })
 </script>
@@ -20,9 +20,6 @@ const props = defineProps({
     :ripple="false"
     class="v-dialog-close-btn"
   >
-    <VIcon
-      :icon="props.icon"
-      :size="props.iconSize"
-    />
+    <VIcon :icon="props.icon" :size="props.iconSize" />
   </IconBtn>
 </template>

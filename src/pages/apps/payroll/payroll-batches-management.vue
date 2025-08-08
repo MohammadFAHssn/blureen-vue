@@ -1,11 +1,11 @@
 <script setup>
+import PayrollBatchCreateDialog from '@/views/apps/payroll/PayrollBatchCreateDialog.vue'
+
 definePage({
   meta: {
-    layoutWrapperClasses: "layout-content-height-fixed",
+    layoutWrapperClasses: 'layout-content-height-fixed',
   },
 })
-
-import PayrollBatchCreateDialog from "@/views/apps/payroll/PayrollBatchCreateDialog.vue"
 
 // states
 const uiState = reactive({
@@ -16,24 +16,24 @@ const pendingState = reactive({
   createPayrollBatch: false,
 })
 
-const onCreatePayrollBatch = async payload => {
+async function onCreatePayrollBatch(payload) {
   const formData = new FormData()
 
-  formData.append("month", Number(payload.payrollBatchDate.split("/")[1]))
-  formData.append("year", Number(payload.payrollBatchDate.split("/")[0]))
+  formData.append('month', Number(payload.payrollBatchDate.split('/')[1]))
+  formData.append('year', Number(payload.payrollBatchDate.split('/')[0]))
 
-  formData.append("file", payload.payrollBatchFile)
+  formData.append('file', payload.payrollBatchFile)
 
   pendingState.createPayrollBatch = true
   try {
-    await $api("/payroll/payroll-batch/create", {
-      method: "POST",
+    await $api('/payroll/payroll-batch/create', {
+      method: 'POST',
       body: formData,
       onResponseError({ response }) {
         pendingState.createPayrollBatch = false
         uiState.hasError = true
         uiState.errorMessage =
-          response._data.message || "خطا در ایجاد فیش حقوقی"
+          response._data.message || 'خطا در ایجاد فیش حقوقی'
       },
     })
 
@@ -78,8 +78,8 @@ const onCreatePayrollBatch = async payload => {
 </template>
 
 <style lang="scss" scoped>
-@use "@styles/variables/vuetify";
-@use "@core/scss/base/mixins";
+@use '@styles/variables/vuetify';
+@use '@core/scss/base/mixins';
 
 .app-layout {
   @include mixins.elevation(vuetify.$card-elevation);
