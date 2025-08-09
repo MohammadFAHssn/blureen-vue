@@ -252,7 +252,7 @@ const deductions = [
 </script>
 
 <template>
-  <VCard>
+  <VCard class="deductions-card">
     <VCardItem class="pa-4 pb-0">
       <template #prepend>
         <VAvatar
@@ -287,7 +287,22 @@ const deductions = [
 </template>
 
 <style lang="scss" scoped>
+@use '@core/scss/base/mixins' as mixins;
+
 .card-list {
   --v-card-list-gap: 1rem;
+}
+
+.deductions-card {
+  border-block: 2px solid rgb(var(--v-theme-error));
+
+  &:hover {
+    border-block-width: 3px;
+    margin-block: -1px;
+
+    @include mixins.elevation(8);
+
+    transition: all 0.1s ease-out;
+  }
 }
 </style>

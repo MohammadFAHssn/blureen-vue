@@ -142,7 +142,7 @@ const payments = [
 </script>
 
 <template>
-  <VCard>
+  <VCard class="payments-card">
     <VCardItem class="pa-4 pb-0">
       <template #prepend>
         <VAvatar
@@ -180,7 +180,22 @@ const payments = [
 </template>
 
 <style lang="scss" scoped>
+@use '@core/scss/base/mixins' as mixins;
+
 .card-list {
   --v-card-list-gap: 1rem;
+}
+
+.payments-card {
+  border-block: 2px solid rgb(var(--v-theme-success));
+
+  &:hover {
+    border-block-width: 3px;
+    margin-block: -1px;
+
+    @include mixins.elevation(8);
+
+    transition: all 0.1s ease-out;
+  }
 }
 </style>
