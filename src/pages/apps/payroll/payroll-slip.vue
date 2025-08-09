@@ -26,15 +26,15 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       </VRow>
 
       <VRow>
-        <VCol cols="4">
+        <VCol cols="4" class="pt-0 pl-0">
           <Payments />
         </VCol>
 
-        <VCol cols="4">
+        <VCol cols="4" class="pt-0 pl-0">
           <Deductions />
         </VCol>
 
-        <VCol cols="4">
+        <VCol cols="4" class="pt-0">
           <OtherDetails />
         </VCol>
       </VRow>
