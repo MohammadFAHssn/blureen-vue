@@ -188,14 +188,5 @@ const payments = [
 
 .payments-card {
   border-block: 2px solid rgb(var(--v-theme-success));
-
-  &:hover {
-    border-block-width: 3px;
-    margin-block: -1px;
-
-    @include mixins.elevation(8);
-
-    transition: all 0.1s ease-out;
-  }
 }
 </style>
