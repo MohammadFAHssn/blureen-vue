@@ -19,7 +19,6 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'apps-payroll-base': RouteRecordInfo<'apps-payroll-base', '/apps/payroll/base', Record<never, never>, Record<never, never>>,
     'apps-payroll-cluade': RouteRecordInfo<'apps-payroll-cluade', '/apps/payroll/cluade', Record<never, never>, Record<never, never>>,
     'apps-payroll-gemeni': RouteRecordInfo<'apps-payroll-gemeni', '/apps/payroll/gemeni', Record<never, never>, Record<never, never>>,
     'apps-payroll-gpt5': RouteRecordInfo<'apps-payroll-gpt5', '/apps/payroll/gpt5', Record<never, never>, Record<never, never>>,
@@ -52,10 +51,6 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/[...error].vue': {
       routes: '$error'
-      views: never
-    }
-    'src/pages/apps/payroll/base.vue': {
-      routes: 'apps-payroll-base'
       views: never
     }
     'src/pages/apps/payroll/cluade.vue': {
