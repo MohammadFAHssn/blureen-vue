@@ -61,7 +61,8 @@ async function login() {
         IsItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
-        } else {
+        }
+        else {
           IsItWaitingServerResponse.value = false
           hasError.value = true
         }
@@ -70,6 +71,7 @@ async function login() {
 
     const { accessToken, userData, userAbilityRules } = res
 
+    // TODO: suppliers !!!
     userAbilityRules.push({
       action: 'use',
       subject: 'app',
@@ -82,7 +84,8 @@ async function login() {
     await nextTick(() => {
       router.replace(route.query.to ? String(route.query.to) : '/')
     })
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }
@@ -130,7 +133,7 @@ function onSubmit() {
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem"
+          style="padding-inline: 6.25rem;"
         />
 
         <img
@@ -193,9 +196,7 @@ function onSubmit() {
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
-                <div
-                  class="d-flex align-center flex-wrap justify-space-between my-6"
-                >
+                <div class="d-flex align-center flex-wrap justify-space-between my-6">
                   <VCheckbox v-model="rememberMe" label="مرا به خاطر بسپار" />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
