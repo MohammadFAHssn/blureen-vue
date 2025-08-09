@@ -1,6 +1,7 @@
 <script setup>
 import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
+import OtherDetails from '@/views/apps/payroll/OtherDetails.vue'
 import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
 
@@ -31,6 +32,10 @@ import Payments from '@/views/apps/payroll/Payments.vue'
 
         <VCol cols="4">
           <Deductions />
+        </VCol>
+
+        <VCol cols="4">
+          <OtherDetails />
         </VCol>
       </VRow>
     </section>
