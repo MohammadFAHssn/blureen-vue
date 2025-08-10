@@ -1,13 +1,28 @@
 <script setup>
-import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
-import OtherDetails from '@/views/apps/payroll/OtherDetails.vue'
-import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
 
 <template>
-  <section class="payroll-slip-container">
-    <section class="payroll-slip-a4-page">
+  <VRow>
+    <VCol>
+      <p class="text-lg font-weight-bold mb-1">
+        گروه کارخانجات شیشه اردکان
+      </p>
+
+      <p class="text-lg mb-0">
+        فیش حقوقی فروردین 1404
+      </p>
+    </VCol>
+  </VRow>
+
+  <VRow>
+    <VCol>
+      <EmployeeInfo />
+    </VCol>
+  </VRow>
+
+  <!-- <section class="payroll-slip-container">
+    <section class="payroll-slip-a4-page pa-4">
       <h1 class="text-center">
         گروه کارخانجات شیشه اردکان
       </h1>
@@ -21,7 +36,39 @@ import Payments from '@/views/apps/payroll/Payments.vue'
 
       <VRow>
         <VCol>
-          <EmployeeInfo />
+          <VCard>
+            <VCardText class="d-flex pa-4 align-center">
+              <div class="me-auto">
+                <p class="d-flex">
+                  <VIcon color="primary" icon="tabler-user" size="22" />
+                  <span class="ms-3">نام و نام خانوادگی:</span>
+                  <span class="ms-3">محمد حسنی احمدآبادی</span>
+                </p>
+
+                <p class="d-flex mb-0">
+                  <VIcon color="primary" icon="tabler-id" size="22" />
+                  <span class="ms-3">کد پرسنلی:</span>
+                  <span class="ms-3">6649</span>
+                </p>
+              </div>
+
+              <VDivider vertical inset />
+
+              <div class="ms-auto">
+                <p class="d-flex">
+                  <VIcon color="primary" icon="tabler-building" size="22" />
+                  <span class="ms-3">واحد:</span>
+                  <span class="ms-3">برنامه‌نویسی</span>
+                </p>
+
+                <p class="d-flex mb-0">
+                  <VIcon color="primary" icon="tabler-star" size="22" />
+                  <span class="ms-3">گروه:</span>
+                  <span class="ms-3">10</span>
+                </p>
+              </div>
+            </VCardText>
+          </VCard>
         </VCol>
       </VRow>
 
@@ -90,29 +137,12 @@ import Payments from '@/views/apps/payroll/Payments.vue'
           </VCard>
         </VCol>
       </VRow>
+
+      <VRow>
+        <VCol cols="4" class="pt-0 pl-0">
+          <Bonuses />
+        </VCol>
+      </VRow>
     </section>
-  </section>
+  </section> -->
 </template>
-
-<style scoped>
-.payroll-slip-a4-page {
-  overflow: hidden;
-  block-size: 297mm;
-  inline-size: 210mm;
-}
-
-.payroll-slip-container {
-  overflow: auto;
-}
-
-h1 {
-  font-size: 17.28pt;
-}
-
-h2 {
-  font-size: 14.4pt;
-
-  /* ! */
-  margin-block-end: 10pt;
-}
-</style>
