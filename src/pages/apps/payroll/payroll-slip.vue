@@ -1,5 +1,6 @@
 <script setup>
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
+import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
 
 <template>
@@ -18,6 +19,19 @@ import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
   <VRow>
     <VCol>
       <EmployeeInfo />
+    </VCol>
+  </VRow>
+
+  <VRow>
+    <VCol
+      cols="12"
+      sm="12"
+      md="6"
+      lg="6"
+      xl="4"
+      xxl="3"
+    >
+      <Payments />
     </VCol>
   </VRow>
 

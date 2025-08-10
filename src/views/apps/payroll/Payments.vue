@@ -66,84 +66,84 @@ const payments = [
     percentChange: '1.2%-',
     statsColor: 'error',
   },
-  // {
-  //   label: 'حق پست',
-  //   amount: '1,800,000',
-  //   percentChange: '2.1%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'ماندگاری حق پست',
-  //   amount: '450,000',
-  //   percentChange: '0.4%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'محیط کار (سختی کار)',
-  //   amount: '2,100,000',
-  //   percentChange: '2.5%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'ماندگاری محیط کار(سختی کار)',
-  //   amount: '525,000',
-  //   percentChange: '0.6%-',
-  //   statsColor: 'error',
-  // },
-  // {
-  //   label: 'حق پست جدید',
-  //   amount: '1,950,000',
-  //   percentChange: '2.2%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'ماندگاری پست جدید',
-  //   amount: '487,500',
-  //   percentChange: '0.5%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'پاداش مدیریت',
-  //   amount: '15,000,000',
-  //   percentChange: '10.0%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'ماندگاری پاداش مدیریت',
-  //   amount: '3,750,000',
-  //   percentChange: '2.5%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'حق ماموریت',
-  //   amount: '3,200,000',
-  //   percentChange: '3.0%-',
-  //   statsColor: 'error',
-  // },
-  // {
-  //   label: 'پرداختی معوق',
-  //   amount: '7,800,000',
-  //   percentChange: '5.0%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'سایر مزایا',
-  //   amount: '450,000',
-  //   percentChange: '0.8%+',
-  //   statsColor: 'success',
-  // },
-  // {
-  //   label: 'رتبه بندی',
-  //   amount: '4,500,000',
-  //   percentChange: '4.1%+',
-  //   statsColor: 'success',
-  // },
+  {
+    label: 'حق پست',
+    amount: '1,800,000',
+    percentChange: '2.1%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'ماندگاری حق پست',
+    amount: '450,000',
+    percentChange: '0.4%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'محیط کار (سختی کار)',
+    amount: '2,100,000',
+    percentChange: '2.5%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'ماندگاری محیط کار(سختی کار)',
+    amount: '1,000,000,000',
+    percentChange: '99.99%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'حق پست جدید',
+    amount: '1,950,000',
+    percentChange: '2.2%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'ماندگاری پست جدید',
+    amount: '487,500',
+    percentChange: '0.5%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'پاداش مدیریت',
+    amount: '15,000,000',
+    percentChange: '10.0%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'ماندگاری پاداش مدیریت',
+    amount: '3,750,000',
+    percentChange: '2.5%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'حق ماموریت',
+    amount: '3,200,000',
+    percentChange: '3.0%-',
+    statsColor: 'error',
+  },
+  {
+    label: 'پرداختی معوق',
+    amount: '7,800,000',
+    percentChange: '5.0%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'سایر مزایا',
+    amount: '450,000',
+    percentChange: '0.8%+',
+    statsColor: 'success',
+  },
+  {
+    label: 'رتبه بندی',
+    amount: '4,500,000',
+    percentChange: '4.1%+',
+    statsColor: 'success',
+  },
 ]
 </script>
 
 <template>
   <VCard class="payments-card">
-    <VCardItem class="pa-4 pb-0">
+    <VCardItem class="pa-3">
       <template #prepend>
         <VAvatar
           color="success"
@@ -156,10 +156,14 @@ const payments = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
-    <VCardText class="pa-4">
-      <VList class="card-list">
-        <VListItem v-for="payment in payments" :key="payment.label">
-          <VListItemTitle>
+    <VCardText class="pa-3 pt-0">
+      <VList>
+        <VListItem
+          v-for="payment in payments"
+          :key="payment.label"
+          class="pa-2"
+        >
+          <VListItemTitle class="text-wrap">
             {{ payment.label }}
           </VListItemTitle>
 
@@ -180,12 +184,6 @@ const payments = [
 </template>
 
 <style lang="scss" scoped>
-@use '@core/scss/base/mixins' as mixins;
-
-.card-list {
-  --v-card-list-gap: 1rem;
-}
-
 .payments-card {
   border-block: 2px solid rgb(var(--v-theme-success));
 }

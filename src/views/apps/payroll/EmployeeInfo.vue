@@ -98,7 +98,7 @@
               مدت کارکرد
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              13200
+              13200 دقیقه
             </p>
           </div>
         </VCol>
