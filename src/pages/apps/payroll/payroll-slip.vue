@@ -1,4 +1,5 @@
 <script setup>
+import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
@@ -33,9 +34,19 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     >
       <Payments />
     </VCol>
-  </VRow>
 
-  <!-- <section class="payroll-slip-container">
+    <VCol
+      cols="12"
+      sm="12"
+      md="6"
+      lg="6"
+      xl="4"
+      xxl="3"
+    >
+      <Deductions />
+    </VCol>
+
+    <!-- <section class="payroll-slip-container">
     <section class="payroll-slip-a4-page pa-4">
       <h1 class="text-center">
         گروه کارخانجات شیشه اردکان
@@ -159,4 +170,5 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       </VRow>
     </section>
   </section> -->
+  </VRow>
 </template>

@@ -253,7 +253,7 @@ const deductions = [
 
 <template>
   <VCard class="deductions-card">
-    <VCardItem class="pa-4 pb-0">
+    <VCardItem class="pa-3">
       <template #prepend>
         <VAvatar
           color="error"
@@ -266,10 +266,14 @@ const deductions = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
-    <VCardText class="pa-4">
-      <VList class="card-list">
-        <VListItem v-for="deduction in deductions" :key="deduction.label">
-          <VListItemTitle>
+    <VCardText class="pa-3 pt-0">
+      <VList>
+        <VListItem
+          v-for="deduction in deductions"
+          :key="deduction.label"
+          class="pa-2"
+        >
+          <VListItemTitle class="text-wrap">
             {{ deduction.label }}
           </VListItemTitle>
 
@@ -287,12 +291,6 @@ const deductions = [
 </template>
 
 <style lang="scss" scoped>
-@use '@core/scss/base/mixins' as mixins;
-
-.card-list {
-  --v-card-list-gap: 1rem;
-}
-
 .deductions-card {
   border-block: 2px solid rgb(var(--v-theme-error));
 }
