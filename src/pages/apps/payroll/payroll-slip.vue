@@ -1,6 +1,7 @@
 <script setup>
 import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
+import OverTime from '@/views/apps/payroll/OverTime.vue'
 import Payments from '@/views/apps/payroll/Payments.vue'
 </script>
 
@@ -33,6 +34,17 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xxl="3"
     >
       <Payments />
+    </VCol>
+
+    <VCol
+      cols="12"
+      sm="12"
+      md="6"
+      lg="6"
+      xl="4"
+      xxl="3"
+    >
+      <OverTime />
     </VCol>
 
     <VCol
