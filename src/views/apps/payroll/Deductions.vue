@@ -287,6 +287,25 @@ const deductions = [
         </VListItem>
       </VList>
     </VCardText>
+
+    <VCardText>
+      <VCard variant="tonal" color="error">
+        <VCardItem class="pa-3 pb-0">
+          <VCardTitle>جمع کسورات</VCardTitle>
+        </VCardItem>
+
+        <VCardText class="pa-3">
+          <div class="d-flex align-center justify-space-between">
+            <h6 class="text-h6 text-center">
+              12,500,000
+            </h6>
+            <div class="text-sm text-error">
+              +1.6%
+            </div>
+          </div>
+        </VCardText>
+      </VCard>
+    </VCardText>
   </VCard>
 </template>
 
