@@ -184,7 +184,7 @@ const payments = [
 
   <VCard variant="tonal" color="success">
     <VCardItem class="pa-3 pb-0">
-      <VCardTitle>جمع ناخالص پرداختی‌ها</VCardTitle>
+      <VCardTitle>جمع پرداختی‌ها</VCardTitle>
     </VCardItem>
 
     <VCardText class="pa-3">
