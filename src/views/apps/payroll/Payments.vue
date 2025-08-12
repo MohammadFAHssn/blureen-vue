@@ -4,13 +4,13 @@ const payments = [
     label: 'حقوق پایه',
     amount: '35,485,962',
     percentChange: '4.2%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'حق اولاد',
     amount: '1,523,489',
     percentChange: '1.8%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'حق مسکن',
@@ -22,13 +22,13 @@ const payments = [
     label: 'خواربار',
     amount: '1,100,000',
     percentChange: '2.3%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'حق تأهل',
     amount: '5,000,000',
     percentChange: '3.1%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'نوبت کاری 10%',
@@ -40,25 +40,25 @@ const payments = [
     label: 'نوبت کاری 15%',
     amount: '387,481',
     percentChange: '1.6%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'شب کاری 35%',
     amount: '904,123',
     percentChange: '4.5%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'بن کارگری',
     amount: '1,250,000',
     percentChange: '0.9%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'پایه سنوات',
     amount: '750,000',
     percentChange: '0.7%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'مزد سنوات',
@@ -70,49 +70,49 @@ const payments = [
     label: 'حق پست',
     amount: '1,800,000',
     percentChange: '2.1%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'ماندگاری حق پست',
     amount: '450,000',
     percentChange: '0.4%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'محیط کار (سختی کار)',
     amount: '2,100,000',
     percentChange: '2.5%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'ماندگاری محیط کار(سختی کار)',
     amount: '1,000,000,000',
     percentChange: '99.99%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'حق پست جدید',
     amount: '1,950,000',
     percentChange: '2.2%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'ماندگاری پست جدید',
     amount: '487,500',
     percentChange: '0.5%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'پاداش مدیریت',
     amount: '15,000,000',
     percentChange: '10.0%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'ماندگاری پاداش مدیریت',
     amount: '3,750,000',
     percentChange: '2.5%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'حق ماموریت',
@@ -124,19 +124,19 @@ const payments = [
     label: 'پرداختی معوق',
     amount: '7,800,000',
     percentChange: '5.0%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'سایر مزایا',
     amount: '450,000',
     percentChange: '0.8%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
   {
     label: 'رتبه بندی',
     amount: '4,500,000',
     percentChange: '4.1%+',
-    statsColor: 'success',
+    statsColor: 'teal',
   },
 ]
 </script>
@@ -146,7 +146,7 @@ const payments = [
     <VCardItem class="pa-3">
       <template #prepend>
         <VAvatar
-          color="success"
+          color="teal"
           variant="tonal"
           rounded
           icon="tabler-cash-banknote-plus"
@@ -182,7 +182,7 @@ const payments = [
     </VCardText>
   </VCard>
 
-  <VCard variant="tonal" color="success">
+  <VCard variant="tonal" color="teal">
     <VCardItem class="pa-3 pb-0">
       <VCardTitle>جمع پرداختی‌ها</VCardTitle>
     </VCardItem>
@@ -192,7 +192,7 @@ const payments = [
         <h6 class="text-h6 text-center">
           12,500,000
         </h6>
-        <div class="text-sm text-success">
+        <div class="text-sm text-teal">
           +1.6%
         </div>
       </div>
@@ -202,6 +202,6 @@ const payments = [
 
 <style lang="scss" scoped>
 .payments-card {
-  border-block: 2px solid rgb(var(--v-theme-success));
+  border-block: 2px solid rgb(var(--v-theme-teal));
 }
 </style>
