@@ -142,7 +142,7 @@ const payments = [
 </script>
 
 <template>
-  <VCard class="payments-card mb-3">
+  <VCard class="payments-card">
     <VCardItem class="pa-3">
       <template #prepend>
         <VAvatar
@@ -180,22 +180,24 @@ const payments = [
         </VListItem>
       </VList>
     </VCardText>
-  </VCard>
 
-  <VCard variant="tonal" color="teal">
-    <VCardItem class="pa-3 pb-0">
-      <VCardTitle>جمع پرداختی‌ها</VCardTitle>
-    </VCardItem>
+    <VCardText>
+      <VCard variant="tonal" color="teal">
+        <VCardItem class="pa-3 pb-0">
+          <VCardTitle>جمع پرداختی‌ها</VCardTitle>
+        </VCardItem>
 
-    <VCardText class="pa-3">
-      <div class="d-flex align-center justify-space-between">
-        <h6 class="text-h6 text-center">
-          12,500,000
-        </h6>
-        <div class="text-sm text-teal">
-          +1.6%
-        </div>
-      </div>
+        <VCardText class="pa-3">
+          <div class="d-flex align-center justify-space-between">
+            <h6 class="text-h6 text-center">
+              12,500,000
+            </h6>
+            <div class="text-sm text-teal">
+              +1.6%
+            </div>
+          </div>
+        </VCardText>
+      </VCard>
     </VCardText>
   </VCard>
 </template>
