@@ -64,7 +64,7 @@ const allowanceDeductions = {
           icon="tabler-medal"
         />
       </template>
-      <VCardTitle>فوق‌العاده</VCardTitle>
+      <VCardTitle>فوق‌العاده پرداخت‌ها</VCardTitle>
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
@@ -173,7 +173,7 @@ const allowanceDeductions = {
     <VCardText>
       <VCard variant="tonal" color="light-green">
         <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع فوق‌العاده</VCardTitle>
+          <VCardTitle>جمع فوق‌العاده پرداخت‌ها</VCardTitle>
         </VCardItem>
 
         <VCardText class="pa-3">

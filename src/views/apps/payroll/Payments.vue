@@ -152,7 +152,7 @@ const payments = [
           icon="tabler-cash-banknote-plus"
         />
       </template>
-      <VCardTitle>پرداخت‌ها</VCardTitle>
+      <VCardTitle>پایه پرداخت‌ها</VCardTitle>
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
@@ -184,7 +184,7 @@ const payments = [
     <VCardText>
       <VCard variant="tonal" color="teal">
         <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع پرداختی‌ها</VCardTitle>
+          <VCardTitle>جمع پایه پرداخت‌ها</VCardTitle>
         </VCardItem>
 
         <VCardText class="pa-3">
