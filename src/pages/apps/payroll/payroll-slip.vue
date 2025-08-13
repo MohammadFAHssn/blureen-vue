@@ -1,5 +1,6 @@
 <script setup>
 import Allowances from '@/views/apps/payroll/Allowances.vue'
+import Bonuses from '@/views/apps/payroll/Bonuses.vue'
 import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import OverTime from '@/views/apps/payroll/OverTime.vue'
@@ -61,6 +62,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <Deductions />
 
       <br />
+
       <VCard color="primary">
         <VCardItem class="pa-3 pb-0">
           <VCardTitle class="text-white">
@@ -79,6 +81,17 @@ import Payments from '@/views/apps/payroll/Payments.vue'
           </div>
         </VCardText>
       </VCard>
+    </VCol>
+
+    <VCol
+      cols="12"
+      sm="12"
+      md="6"
+      lg="6"
+      xl="4"
+      xxl="3"
+    >
+      <Bonuses />
     </VCol>
 
     <!-- <section class="payroll-slip-container">
