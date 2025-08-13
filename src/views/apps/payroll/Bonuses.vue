@@ -2,6 +2,8 @@
 const bonuses = [
   {
     label: 'پاداش شناور فردی (ارزیابی)',
+    period: 'هجدهم',
+    group: 'عالی',
     amount: '35,485,962',
     percentChange: '4.2%+',
     statsColor: 'success',
@@ -31,12 +33,7 @@ const bonuses = [
   <VCard class="bonuses-card mb-3">
     <VCardItem class="pa-3">
       <template #prepend>
-        <VAvatar
-          color="primary"
-          variant="tonal"
-          rounded
-          icon="tabler-gift"
-        />
+        <VAvatar color="primary" variant="tonal" rounded icon="tabler-gift" />
       </template>
       <VCardTitle>پاداش‌ها</VCardTitle>
       <VCardSubtitle> ریال </VCardSubtitle>
@@ -44,13 +41,21 @@ const bonuses = [
 
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem
-          v-for="bonus in bonuses"
-          :key="bonus.label"
-          class="pa-2"
-        >
+        <VListItem v-for="bonus in bonuses" :key="bonus.label" class="pa-2">
           <VListItemTitle class="text-wrap">
             {{ bonus.label }}
+            <div v-if="bonus.period">
+              دوره
+              <VChip variant="outlined" color="primary" :label="false">
+                {{ bonus.period }}
+              </VChip>
+            </div>
+            <div v-if="bonus.group">
+              گروه
+              <VChip variant="flat" color="primary" :label="false">
+                {{ bonus.group }}
+              </VChip>
+            </div>
           </VListItemTitle>
 
           <template #append>
