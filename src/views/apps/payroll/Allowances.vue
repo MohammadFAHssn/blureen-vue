@@ -182,7 +182,7 @@ const allowanceDeductions = {
               12,500,000
             </h6>
             <div class="text-sm text-light-green">
-              +1.6%
+              1.6%+
             </div>
           </div>
         </VCardText>

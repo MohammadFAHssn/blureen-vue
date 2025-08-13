@@ -193,7 +193,7 @@ const payments = [
               12,500,000
             </h6>
             <div class="text-sm text-teal">
-              +1.6%
+              1.6%+
             </div>
           </div>
         </VCardText>

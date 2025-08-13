@@ -81,7 +81,7 @@ const bonuses = [
           12,500,000
         </h6>
         <VChip variant="flat" color="success">
-          +1.6%
+          1.6%+
         </VChip>
       </div>
     </VCardText>

@@ -300,7 +300,7 @@ const deductions = [
               12,500,000
             </h6>
             <div class="text-sm text-error">
-              +1.6%
+              1.6%+
             </div>
           </div>
         </VCardText>
