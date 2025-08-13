@@ -59,6 +59,26 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xxl="3"
     >
       <Deductions />
+
+      <br />
+      <VCard color="primary">
+        <VCardItem class="pa-3 pb-0">
+          <VCardTitle class="text-white">
+            جمع پرداختی‌های اول
+          </VCardTitle>
+        </VCardItem>
+
+        <VCardText class="pa-3">
+          <div class="d-flex align-center justify-space-between">
+            <h6 class="text-h6 text-center text-white">
+              12,500,000
+            </h6>
+            <VChip variant="flat" color="success">
+              +1.6%
+            </VChip>
+          </div>
+        </VCardText>
+      </VCard>
     </VCol>
 
     <!-- <section class="payroll-slip-container">
