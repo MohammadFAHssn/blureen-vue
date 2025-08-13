@@ -49,6 +49,25 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <OverTime />
       <br />
       <Allowances />
+      <br />
+      <VCard variant="tonal" color="primary">
+        <VCardItem class="pa-3 pb-0">
+          <VCardTitle>
+            جمع ناخالص پرداختی‌های اول
+          </VCardTitle>
+        </VCardItem>
+
+        <VCardText class="pa-3">
+          <div class="d-flex align-center justify-space-between">
+            <h6 class="text-h6 text-center">
+              12,500,000
+            </h6>
+            <div class="text-sm text-success">
+              1.6%+
+            </div>
+          </div>
+        </VCardText>
+      </VCard>
     </VCol>
 
     <VCol
@@ -66,7 +85,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <VCard color="primary">
         <VCardItem class="pa-3 pb-0">
           <VCardTitle class="text-white">
-            جمع پرداختی‌های اول
+            جمع خالص پرداختی‌های اول
           </VCardTitle>
         </VCardItem>
 
@@ -76,7 +95,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
               12,500,000
             </h6>
             <VChip variant="flat" color="success">
-              +1.6%
+              1.6%+
             </VChip>
           </div>
         </VCardText>
