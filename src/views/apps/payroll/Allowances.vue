@@ -3,20 +3,20 @@ const allowanceItems = [
   {
     label: 'ماندگاری',
     amount: '1,000',
-    percentChange: '1.2%+',
-    statsColor: 'light-green',
+    percentChange: -1.2,
+
   },
   {
     label: 'پاداش فنی',
     amount: '2,000',
-    percentChange: '0.8%+',
-    statsColor: 'light-green',
+    percentChange: 0.8,
+
   },
   {
     label: 'فوق العاده مدیریت',
     amount: '30,000',
-    percentChange: '0.5%-',
-    statsColor: 'error',
+    percentChange: 0.5,
+
   },
 ]
 
@@ -24,26 +24,26 @@ const welfareItems = [
   {
     label: 'کمک هزینه درمان',
     amount: '1,200',
-    percentChange: '2.0%+',
-    statsColor: 'light-green',
+    percentChange: -2.0,
+
   },
   {
     label: 'کمک هزینه سفر',
     amount: '2,500',
-    percentChange: '1.1%-',
-    statsColor: 'error',
+    percentChange: 1.1,
+
   },
   {
     label: 'کمک هزینه فرهنگی، ورزشی، سرگرمی',
     amount: '3,200',
-    percentChange: '3.4%+',
-    statsColor: 'light-green',
+    percentChange: 3.4,
+
   },
   {
     label: 'کمک هزینه حمایت از خانواده',
     amount: '550,520,000',
-    percentChange: '0.3%+',
-    statsColor: 'light-green',
+    percentChange: -0.3,
+
   },
 ]
 
@@ -84,8 +84,20 @@ const allowanceDeductions = {
               <div class="text-body-1">
                 {{ allowanceItem.amount }}
               </div>
-              <div :class="`text-${allowanceItem.statsColor} text-sm`">
-                {{ allowanceItem.percentChange }}
+              <div :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
+                <div class="text-sm">
+                  {{ Math.abs(allowanceItem.percentChange) }}%
+                </div>
+
+                <VIcon
+                  :icon="
+                    allowanceItem.percentChange > 0
+                      ? 'tabler-chevron-up'
+                      : 'tabler-chevron-down'
+                  "
+                  size="20"
+                  class="mr-1"
+                />
               </div>
             </div>
           </template>
@@ -117,8 +129,20 @@ const allowanceDeductions = {
                   <div class="text-body-1">
                     {{ welfareItem.amount }}
                   </div>
-                  <div :class="`text-${welfareItem.statsColor} text-sm`">
-                    {{ welfareItem.percentChange }}
+                  <div :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
+                    <div class="text-sm">
+                      {{ Math.abs(welfareItem.percentChange) }}%
+                    </div>
+
+                    <VIcon
+                      :icon="
+                        welfareItem.percentChange > 0
+                          ? 'tabler-chevron-up'
+                          : 'tabler-chevron-down'
+                      "
+                      size="20"
+                      class="mr-1"
+                    />
                   </div>
                 </div>
               </template>
@@ -181,8 +205,20 @@ const allowanceDeductions = {
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <div class="text-sm text-light-green">
-              1.6%+
+            <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">
+              <div class="text-sm">
+                {{ Math.abs(-5) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  -5 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </div>
           </div>
         </VCardText>
