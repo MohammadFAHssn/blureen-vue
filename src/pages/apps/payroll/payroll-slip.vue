@@ -62,8 +62,20 @@ import Payments from '@/views/apps/payroll/Payments.vue'
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <div class="text-sm text-success">
-              1.6%+
+            <div :class="`d-flex align-center ${-6.5 > 0 ? 'text-success' : 'text-error'}`">
+              <div class="text-sm">
+                {{ Math.abs(-6.5) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  -6.5 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </div>
           </div>
         </VCardText>
@@ -94,8 +106,20 @@ import Payments from '@/views/apps/payroll/Payments.vue'
             <h6 class="text-h6 text-center text-white">
               12,500,000
             </h6>
-            <VChip variant="flat" color="success">
-              1.6%+
+            <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+              <div class="text-sm">
+                {{ Math.abs(3.2) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  3.2 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </VChip>
           </div>
         </VCardText>
@@ -138,8 +162,20 @@ import Payments from '@/views/apps/payroll/Payments.vue'
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <VChip variant="flat" color="success">
-              1.6%+
+            <VChip variant="flat" :color="`${-3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+              <div class="text-sm">
+                {{ Math.abs(-3.2) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  -3.2 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </VChip>
           </div>
         </VCardText>
