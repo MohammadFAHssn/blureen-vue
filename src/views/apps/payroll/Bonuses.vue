@@ -5,26 +5,22 @@ const bonuses = [
     period: 'هجدهم',
     group: 'عالی',
     amount: '35,485,962',
-    percentChange: '4.2%+',
-    statsColor: 'success',
+    percentChange: 4.2,
   },
   {
     label: 'پاداش شناور گروهی (بهره‌وری)',
     amount: '1,523,489',
-    percentChange: '1.8%+',
-    statsColor: 'success',
+    percentChange: 1.8,
   },
   {
     label: 'پاداش شناور مدیر واحد',
     amount: '9,123,456',
-    percentChange: '0.5%-',
-    statsColor: 'error',
+    percentChange: 0.5,
   },
   {
     label: 'فوق‌العاده بهره‌وری',
     amount: '1,100,000',
-    percentChange: '2.3%+',
-    statsColor: 'success',
+    percentChange: 2.3,
   },
 ]
 </script>
@@ -63,8 +59,20 @@ const bonuses = [
               <div class="text-body-1">
                 {{ bonus.amount }}
               </div>
-              <div :class="`text-${bonus.statsColor} text-sm`">
-                {{ bonus.percentChange }}
+              <div :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
+                <div class="text-sm">
+                  {{ Math.abs(bonus.percentChange) }}%
+                </div>
+
+                <VIcon
+                  :icon="
+                    bonus.percentChange > 0
+                      ? 'tabler-chevron-up'
+                      : 'tabler-chevron-down'
+                  "
+                  size="20"
+                  class="mr-1"
+                />
               </div>
             </div>
           </template>
@@ -85,8 +93,20 @@ const bonuses = [
         <h6 class="text-h6 text-center text-white">
           12,500,000
         </h6>
-        <VChip variant="flat" color="success">
-          1.6%+
+        <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+          <div class="text-sm">
+            {{ Math.abs(3.2) }}%
+          </div>
+
+          <VIcon
+            :icon="
+              3.2 > 0
+                ? 'tabler-chevron-up'
+                : 'tabler-chevron-down'
+            "
+            size="20"
+            class="mr-1"
+          />
         </VChip>
       </div>
     </VCardText>
