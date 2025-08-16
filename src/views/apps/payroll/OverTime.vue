@@ -2,17 +2,15 @@
 const overtimeItems = [
   {
     label: 'اضافه کاری عادی',
-    minutes: 15555,
+    minutes: '15,555',
     amount: '350,485,962',
-    percentChange: '100.100%-',
-    statsColor: 'error',
+    percentChange: 100.123,
   },
   {
     label: 'جمعه کاری',
-    minutes: 15555,
+    minutes: '15,555',
     amount: '100,523,489',
-    percentChange: '100.100%+',
-    statsColor: 'success',
+    percentChange: -100.123,
   },
 ]
 </script>
@@ -38,13 +36,13 @@ const overtimeItems = [
 
           <template #append>
             <div class="d-flex justify-space-between gap-x-4">
-              <div class="text-body-1 font-weight-bold">
+              <div class="text-body-1 font-weight-bold w-33">
                 دقیقه
               </div>
-              <div class="text-body-1 font-weight-bold">
+              <div class="text-body-1 font-weight-bold w-33">
                 پرداختی
               </div>
-              <div />
+              <div class="w-33" />
             </div>
           </template>
         </VListItem>
@@ -66,8 +64,20 @@ const overtimeItems = [
               <div class="text-body-1">
                 {{ item.amount }}
               </div>
-              <div :class="`text-${item.statsColor} text-sm`">
-                {{ item.percentChange }}
+              <div :class="`d-flex align-center ${item.percentChange > 0 ? 'text-success' : 'text-error'}`">
+                <div class="text-sm">
+                  {{ Math.abs(item.percentChange) }}%
+                </div>
+
+                <VIcon
+                  :icon="
+                    item.percentChange > 0
+                      ? 'tabler-chevron-up'
+                      : 'tabler-chevron-down'
+                  "
+                  size="20"
+                  class="mr-1"
+                />
               </div>
             </div>
           </template>
@@ -86,8 +96,20 @@ const overtimeItems = [
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <div class="text-sm text-success">
-              1.6%+
+            <div :class="`d-flex align-center ${10 > 0 ? 'text-success' : 'text-error'}`">
+              <div class="text-sm">
+                {{ Math.abs(10) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  10 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </div>
           </div>
         </VCardText>
@@ -102,7 +124,7 @@ const overtimeItems = [
 }
 
 .custom-v-list-item {
-  grid-template-columns: 1px auto 220px;
+  grid-template-columns: 1px auto 250px;
 }
 
 :deep(.v-list-item__append) {
