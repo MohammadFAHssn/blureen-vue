@@ -299,8 +299,20 @@ const deductions = [
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <div class="text-sm text-error">
-              1.6%+
+            <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
+              <div class="text-sm">
+                {{ Math.abs(3.3) }}%
+              </div>
+
+              <VIcon
+                :icon="
+                  3.3 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
+                size="20"
+                class="mr-1"
+              />
             </div>
           </div>
         </VCardText>
