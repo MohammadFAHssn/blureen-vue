@@ -1,5 +1,6 @@
 <script setup>
 import Allowances from '@/views/apps/payroll/Allowances.vue'
+import Attendance from '@/views/apps/payroll/Attendances.vue'
 import Bonuses from '@/views/apps/payroll/Bonuses.vue'
 import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
@@ -43,6 +44,8 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xl="4"
       xxl="3"
     >
+      <Attendance />
+      <br />
       <Payments />
     </VCol>
 

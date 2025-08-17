@@ -82,26 +82,6 @@
             </p>
           </div>
         </VCol>
-
-        <VCol class="d-flex align-center">
-          <VAvatar
-            variant="text"
-            color="primary"
-            rounded
-            size="31"
-            class="text-primary me-0"
-          >
-            <VIcon icon="tabler-clock" size="22" />
-          </VAvatar>
-          <div>
-            <p class="text-medium-emphasis ma-0 text-no-wrap">
-              مدت کارکرد
-            </p>
-            <p class="text-primary ma-0 text-no-wrap">
-              13200 دقیقه
-            </p>
-          </div>
-        </VCol>
       </VRow>
     </VCardText>
   </VCard>
