@@ -46,7 +46,7 @@ const payments = [
     percentChange: 0.9,
   },
   {
-    label: 'پایه سنوات',
+    label: 'پایه سنوات سالیانه',
     amount: '750,000',
     percentChange: 0.7,
   },
@@ -61,29 +61,19 @@ const payments = [
     percentChange: 2.1,
   },
   {
-    label: 'ماندگاری حق پست',
+    label: 'ماندگاری پست',
     amount: '450,000',
     percentChange: 0.4,
+  },
+  {
+    label: 'ماندگاری محیط کار (سختی کار)',
+    amount: '1,000,000,000',
+    percentChange: 99.99,
   },
   {
     label: 'محیط کار (سختی کار)',
     amount: '2,100,000',
     percentChange: 2.5,
-  },
-  {
-    label: 'ماندگاری محیط کار(سختی کار)',
-    amount: '1,000,000,000',
-    percentChange: 99.99,
-  },
-  {
-    label: 'حق پست جدید',
-    amount: '1,950,000',
-    percentChange: 2.2,
-  },
-  {
-    label: 'ماندگاری پست جدید',
-    amount: '487,500',
-    percentChange: 0.5,
   },
   {
     label: 'پاداش مدیریت',
@@ -96,7 +86,17 @@ const payments = [
     percentChange: 2.5,
   },
   {
-    label: 'حق ماموریت',
+    label: 'سایر مزایا',
+    amount: '450,000',
+    percentChange: 0.8,
+  },
+  {
+    label: 'رتبه‌بندی',
+    amount: '4,500,000',
+    percentChange: 4.1,
+  },
+  {
+    label: 'حق مأموریت',
     amount: '3,200,000',
     percentChange: -3.0,
   },
@@ -105,16 +105,7 @@ const payments = [
     amount: '7,800,000',
     percentChange: 5.0,
   },
-  {
-    label: 'سایر مزایا',
-    amount: '450,000',
-    percentChange: 0.8,
-  },
-  {
-    label: 'رتبه بندی',
-    amount: '4,500,000',
-    percentChange: 4.1,
-  },
+
 ]
 </script>
 

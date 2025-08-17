@@ -1,13 +1,13 @@
 <script setup>
 const overtimeItems = [
   {
-    label: 'اضافه کاری عادی',
+    label: 'اضافه‌کاری عادی',
     minutes: '15,555',
     amount: '350,485,962',
     percentChange: 100.123,
   },
   {
-    label: 'جمعه کاری',
+    label: 'جمعه‌کاری',
     minutes: '15,555',
     amount: '100,523,489',
     percentChange: -100.123,

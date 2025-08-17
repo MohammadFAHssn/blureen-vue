@@ -55,7 +55,7 @@
           </VAvatar>
           <div>
             <p class="text-medium-emphasis ma-0 text-no-wrap">
-              واحد
+              واحد کاری
             </p>
             <p class="text-primary ma-0 text-no-wrap">
               برنامه‌نویسی

@@ -1,7 +1,7 @@
 <script setup>
 const allowanceItems = [
   {
-    label: 'ماندگاری',
+    label: 'ماندگاری در شرکت',
     amount: '1,000',
     percentChange: -1.2,
 
@@ -13,7 +13,7 @@ const allowanceItems = [
 
   },
   {
-    label: 'فوق العاده مدیریت',
+    label: 'فوق‌العاده مدیریت',
     amount: '30,000',
     percentChange: 0.5,
 

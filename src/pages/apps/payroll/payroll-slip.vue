@@ -26,6 +26,14 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     </VCol>
   </VRow>
 
+  <!-- <div class="ma-10">
+    <v-divider color="info" thickness="1" class="border-opacity-50">
+      <template #default>
+        <span class="v-card-title px-2 text-info">پرداختی اول</span>
+      </template>
+    </v-divider>
+  </div> -->
+
   <VRow>
     <VCol
       cols="12"
@@ -46,40 +54,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xl="4"
       xxl="3"
     >
-      <OverTime />
-      <br />
-      <Allowances />
-      <br />
-      <VCard variant="tonal" color="primary">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>
-            جمع ناخالص پرداختی‌های اول
-          </VCardTitle>
-        </VCardItem>
-
-        <VCardText class="pa-3">
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
-              12,500,000
-            </h6>
-            <div :class="`d-flex align-center ${-6.5 > 0 ? 'text-success' : 'text-error'}`">
-              <div class="text-sm">
-                {{ Math.abs(-6.5) }}%
-              </div>
-
-              <VIcon
-                :icon="
-                  -6.5 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
-                size="20"
-                class="mr-1"
-              />
-            </div>
-          </div>
-        </VCardText>
-      </VCard>
+      <Deductions />
     </VCol>
 
     <VCol
@@ -90,10 +65,10 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xl="4"
       xxl="3"
     >
-      <Deductions />
-
+      <OverTime />
       <br />
-
+      <Allowances />
+      <br />
       <VCard color="primary">
         <VCardItem class="pa-3 pb-0">
           <VCardTitle class="text-white">
@@ -106,17 +81,17 @@ import Payments from '@/views/apps/payroll/Payments.vue'
             <h6 class="text-h6 text-center text-white">
               12,500,000
             </h6>
-            <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+            <VChip
+              variant="flat"
+              :color="`${3.2 > 0 ? 'success' : 'error'}`"
+              class="d-flex align-center"
+            >
               <div class="text-sm">
                 {{ Math.abs(3.2) }}%
               </div>
 
               <VIcon
-                :icon="
-                  3.2 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />
@@ -125,7 +100,17 @@ import Payments from '@/views/apps/payroll/Payments.vue'
         </VCardText>
       </VCard>
     </VCol>
+  </VRow>
 
+  <!-- <div class="ma-10">
+    <v-divider>
+      <template #default>
+        <span class="px-2">پرداختی دوم</span>
+      </template>
+    </v-divider>
+  </div> -->
+
+  <VRow>
     <VCol
       cols="12"
       sm="12"
@@ -138,10 +123,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     </VCol>
   </VRow>
 
-  <VRow
-    justify="center"
-    align="center"
-  >
+  <VRow justify="center" align="center">
     <VCol
       cols="12"
       sm="12"
@@ -152,9 +134,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     >
       <VCard color="warning">
         <VCardItem class="pa-3 pb-0">
-          <VCardTitle>
-            جمع کل پرداختی‌ها
-          </VCardTitle>
+          <VCardTitle>جمع کل پرداخت‌ها</VCardTitle>
         </VCardItem>
 
         <VCardText class="pa-3">
@@ -162,17 +142,17 @@ import Payments from '@/views/apps/payroll/Payments.vue'
             <h6 class="text-h6 text-center">
               12,500,000
             </h6>
-            <VChip variant="flat" :color="`${-3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+            <VChip
+              variant="flat"
+              :color="`${-3.2 > 0 ? 'success' : 'error'}`"
+              class="d-flex align-center"
+            >
               <div class="text-sm">
                 {{ Math.abs(-3.2) }}%
               </div>
 
               <VIcon
-                :icon="
-                  -3.2 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="-3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />
