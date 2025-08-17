@@ -27,13 +27,13 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     </VCol>
   </VRow>
 
-  <!-- <div class="ma-10">
-    <v-divider color="info" thickness="1" class="border-opacity-50">
+  <div class="my-6">
+    <v-divider color="info" thickness="2" class="border-opacity-50">
       <template #default>
         <span class="v-card-title px-2 text-info">پرداختی اول</span>
       </template>
     </v-divider>
-  </div> -->
+  </div>
 
   <VRow>
     <VCol
@@ -105,13 +105,13 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     </VCol>
   </VRow>
 
-  <!-- <div class="ma-10">
-    <v-divider>
+  <div class="my-6">
+    <v-divider color="info" thickness="2" class="border-opacity-50">
       <template #default>
-        <span class="px-2">پرداختی دوم</span>
+        <span class="v-card-title px-2 text-info">پرداختی دوم</span>
       </template>
     </v-divider>
-  </div> -->
+  </div>
 
   <VRow>
     <VCol
