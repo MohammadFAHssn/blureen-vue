@@ -39,10 +39,10 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     <VCol
       cols="12"
       sm="12"
-      md="6"
-      lg="6"
+      md="4"
+      lg="4"
       xl="4"
-      xxl="3"
+      xxl="4"
     >
       <Attendance />
       <br />
@@ -52,10 +52,10 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     <VCol
       cols="12"
       sm="12"
-      md="6"
-      lg="6"
+      md="4"
+      lg="4"
       xl="4"
-      xxl="3"
+      xxl="4"
     >
       <Deductions />
     </VCol>
@@ -63,10 +63,10 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     <VCol
       cols="12"
       sm="12"
-      md="6"
-      lg="6"
+      md="4"
+      lg="4"
       xl="4"
-      xxl="3"
+      xxl="4"
     >
       <OverTime />
       <br />
@@ -120,7 +120,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       md="6"
       lg="6"
       xl="4"
-      xxl="3"
+      xxl="4"
     >
       <Bonuses />
     </VCol>
@@ -131,9 +131,9 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       cols="12"
       sm="12"
       md="6"
-      lg="6"
+      lg="4"
       xl="4"
-      xxl="3"
+      xxl="4"
     >
       <VCard color="warning">
         <VCardItem class="pa-3 pb-0">
