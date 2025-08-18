@@ -64,7 +64,7 @@ const allowanceDeductions = {
           icon="tabler-medal"
         />
       </template>
-      <VCardTitle>فوق‌العاده پرداخت‌ها</VCardTitle>
+      <VCardTitle>فوق‌العاده جذب</VCardTitle>
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
@@ -156,7 +156,7 @@ const allowanceDeductions = {
       <VCard variant="outlined" color="error-lighten-2">
         <VCardItem class="pa-3">
           <VCardTitle class="v-list-item-title font-weight-bold">
-            کسورات فوق‌العاده
+            کسورات فوق‌العاده جذب
           </VCardTitle>
         </VCardItem>
 
@@ -196,13 +196,13 @@ const allowanceDeductions = {
 
     <VCardText>
       <VCard variant="tonal" color="light-green">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع فوق‌العاده پرداخت‌ها</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 d-flex justify-space-between">
+          <div class="v-card-title pa-0">
+            جمع فوق‌العاده جذب
+          </div>
 
-        <VCardText class="pa-3">
           <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
+            <h6 class="text-h6 text-center ml-4">
               12,500,000
             </h6>
             <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">

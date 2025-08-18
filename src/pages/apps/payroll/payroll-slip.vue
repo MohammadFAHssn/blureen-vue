@@ -73,15 +73,13 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <Allowances />
       <br />
       <VCard color="primary">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle class="text-white">
+        <VCardText class="pa-3 d-flex justify-space-between">
+          <div class="v-card-title pa-0 text-white">
             جمع خالص پرداختی‌های اول
-          </VCardTitle>
-        </VCardItem>
+          </div>
 
-        <VCardText class="pa-3">
           <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center text-white">
+            <h6 class="text-h6 text-center text-white ml-4">
               12,500,000
             </h6>
             <VChip
@@ -136,13 +134,13 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xxl="4"
     >
       <VCard color="warning">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع کل پرداخت‌ها</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 d-flex justify-space-between">
+          <div class="v-card-title pa-0">
+            جمع کل پرداخت‌ها
+          </div>
 
-        <VCardText class="pa-3">
           <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
+            <h6 class="text-h6 text-center ml-4">
               12,500,000
             </h6>
             <VChip

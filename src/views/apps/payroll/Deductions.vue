@@ -296,13 +296,13 @@ const deductions = [
 
     <VCardText>
       <VCard variant="tonal" color="error">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع کسورات</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 d-flex justify-space-between">
+          <div class="v-card-title pa-0">
+            جمع کسورات
+          </div>
 
-        <VCardText class="pa-3">
           <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
+            <h6 class="text-h6 text-center ml-4">
               12,500,000
             </h6>
             <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">

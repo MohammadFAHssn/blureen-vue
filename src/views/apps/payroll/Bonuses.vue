@@ -82,15 +82,13 @@ const bonuses = [
   </VCard>
 
   <VCard color="primary">
-    <VCardItem class="pa-3 pb-0">
-      <VCardTitle class="text-white">
+    <VCardText class="pa-3 d-flex justify-space-between">
+      <div class="v-card-title pa-0 text-white">
         جمع پاداش‌ها (پرداختی دوم)
-      </VCardTitle>
-    </VCardItem>
+      </div>
 
-    <VCardText class="pa-3">
       <div class="d-flex align-center justify-space-between">
-        <h6 class="text-h6 text-center text-white">
+        <h6 class="text-h6 text-center ml-4 text-white">
           12,500,000
         </h6>
         <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">

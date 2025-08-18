@@ -100,7 +100,6 @@ const payments = [
     amount: '7,800,000',
     percentChange: 5.0,
   },
-
 ]
 </script>
 
@@ -135,7 +134,11 @@ const payments = [
               <div class="text-body-1">
                 {{ payment.amount }}
               </div>
-              <div :class="`d-flex align-center ${payment.percentChange > 0 ? 'text-teal' : 'text-error'}`">
+              <div
+                :class="`d-flex align-center ${
+                  payment.percentChange > 0 ? 'text-teal' : 'text-error'
+                }`"
+              >
                 <div class="text-sm">
                   {{ Math.abs(payment.percentChange) }}%
                 </div>
@@ -158,16 +161,20 @@ const payments = [
 
     <VCardText>
       <VCard variant="tonal" color="teal">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع پایه پرداخت‌ها</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 d-flex justify-space-between">
+          <div class="v-card-title pa-0">
+            جمع پایه پرداخت‌ها
+          </div>
 
-        <VCardText class="pa-3">
           <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
+            <h6 class="text-h6 text-center ml-4">
               12,500,000
             </h6>
-            <div :class="`d-flex align-center ${10 > 0 ? 'text-teal' : 'text-error'}`">
+            <div
+              :class="`d-flex align-center ${
+                10 > 0 ? 'text-teal' : 'text-error'
+              }`"
+            >
               <div class="text-sm">
                 {{ Math.abs(10) }}%
               </div>
