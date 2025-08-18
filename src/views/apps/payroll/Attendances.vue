@@ -16,6 +16,14 @@ const attendances = [
     label: 'مرخصی بدون حقوق',
     minutes: '50',
   },
+  {
+    label: 'اضافه‌کاری',
+    minutes: '660',
+  },
+  {
+    label: 'جمعه‌کاری',
+    minutes: '1500',
+  },
 ]
 </script>
 

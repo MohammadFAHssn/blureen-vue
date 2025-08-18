@@ -27,40 +27,22 @@ const overtimeItems = [
         />
       </template>
       <VCardTitle>اضافه‌کاری</VCardTitle>
+      <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem class="pa-2 custom-v-list-item">
-          <VListItemTitle class="text-wrap" />
-
-          <template #append>
-            <div class="d-flex justify-space-between gap-x-4">
-              <div class="text-body-1 font-weight-bold w-33">
-                دقیقه
-              </div>
-              <div class="text-body-1 font-weight-bold w-33">
-                پرداختی
-              </div>
-              <div class="w-33" />
-            </div>
-          </template>
-        </VListItem>
-
         <VListItem
           v-for="item in overtimeItems"
           :key="item.label"
-          class="pa-2 custom-v-list-item"
+          class="pa-2"
         >
           <VListItemTitle class="text-wrap">
             {{ item.label }}
           </VListItemTitle>
 
           <template #append>
-            <div class="d-flex justify-space-between gap-x-4">
-              <div class="text-body-1">
-                {{ item.minutes }}
-              </div>
+            <div class="d-flex gap-x-4">
               <div class="text-body-1">
                 {{ item.amount }}
               </div>
@@ -121,13 +103,5 @@ const overtimeItems = [
 <style lang="scss" scoped>
 .overtime-card {
   border-block: 2px solid rgb(var(--v-theme-success));
-}
-
-.custom-v-list-item {
-  grid-template-columns: 1px auto 250px;
-}
-
-:deep(.v-list-item__append) {
-  display: block;
 }
 </style>

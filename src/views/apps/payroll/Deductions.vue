@@ -1,6 +1,18 @@
 <script setup>
 const deductions = [
   {
+    label: 'بیمه سهم کارمند',
+    amount: '347,821-',
+  },
+  {
+    label: 'مالیات ماه',
+    amount: '1,892,456-',
+  },
+  {
+    label: 'بیمه تکمیلی',
+    amount: '2,891-',
+  },
+  {
     label: 'کسر جاری کارکنان',
     amount: '187,234-',
   },
@@ -20,10 +32,7 @@ const deductions = [
     label: 'خرید کارکنان 2',
     amount: '298,543-',
   },
-  {
-    label: 'بیمه تکمیلی',
-    amount: '2,891-',
-  },
+
   {
     label: 'خرید فروردین آریا',
     amount: '112,789-',
@@ -244,14 +253,7 @@ const deductions = [
   //   label: 'خرید بهمن سالار',
   //   amount: '112,567-',
   // },
-  {
-    label: 'مالیات ماه',
-    amount: '1,892,456-',
-  },
-  {
-    label: 'بیمه سهم کارمند',
-    amount: '347,821-',
-  },
+
 ]
 </script>
 

@@ -36,11 +36,6 @@ const payments = [
     percentChange: 1.6,
   },
   {
-    label: 'شب کاری 35%',
-    amount: '904,123',
-    percentChange: 4.5,
-  },
-  {
     label: 'بن کارگری',
     amount: '1,250,000',
     percentChange: 0.9,
