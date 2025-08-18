@@ -42,6 +42,8 @@ const attendances = [
       <VCardSubtitle> دقیقه </VCardSubtitle>
     </VCardItem>
 
+    <VDivider />
+
     <VCardText class="pa-3 pt-0">
       <VList>
         <VListItem

@@ -35,6 +35,8 @@ const bonuses = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
+    <VDivider />
+
     <VCardText class="pa-3 pt-0">
       <VList>
         <VListItem v-for="bonus in bonuses" :key="bonus.label" class="pa-2">
