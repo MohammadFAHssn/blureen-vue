@@ -11,14 +11,14 @@
             size="31"
             class="text-primary me-0"
           >
-            <VIcon icon="tabler-user" size="22" />
+            <VIcon icon="tabler-id" size="22" />
           </VAvatar>
           <div>
             <p class="text-medium-emphasis ma-0 text-no-wrap">
-              نام و نام خانوادگی
+              کد پرسنلی
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              محمد حسنی احمدآبادی
+              6649
             </p>
           </div>
         </VCol>
@@ -31,14 +31,14 @@
             size="31"
             class="text-primary me-0"
           >
-            <VIcon icon="tabler-id" size="22" />
+            <VIcon icon="tabler-user" size="22" />
           </VAvatar>
           <div>
             <p class="text-medium-emphasis ma-0 text-no-wrap">
-              کد پرسنلی
+              نام و نام خانوادگی
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              6649
+              محمد حسنی احمدآبادی
             </p>
           </div>
         </VCol>
