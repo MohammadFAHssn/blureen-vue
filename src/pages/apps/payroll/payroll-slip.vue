@@ -28,9 +28,9 @@ import Payments from '@/views/apps/payroll/Payments.vue'
   </VRow>
 
   <div class="my-6">
-    <v-divider color="info" thickness="2" class="border-opacity-50">
+    <v-divider color="info" thickness="3" class="border-opacity-50">
       <template #default>
-        <span class="v-card-title px-2 text-info">پرداختی اول</span>
+        <span class="v-card-title px-2 text-info v-card-title">پرداختی اول</span>
       </template>
     </v-divider>
   </div>
@@ -106,9 +106,9 @@ import Payments from '@/views/apps/payroll/Payments.vue'
   </VRow>
 
   <div class="my-6">
-    <v-divider color="info" thickness="2" class="border-opacity-50">
+    <v-divider color="info" thickness="3" class="border-opacity-50">
       <template #default>
-        <span class="v-card-title px-2 text-info">پرداختی دوم</span>
+        <span class="v-card-title px-2 text-info v-card-title">پرداختی دوم</span>
       </template>
     </v-divider>
   </div>
