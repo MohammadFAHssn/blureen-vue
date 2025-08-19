@@ -65,7 +65,9 @@ function openSelectedMethodDialog() {
       <VCardText>
         <!-- 👉 Title -->
         <div class="mb-6">
-          <h4 class="text-h4 text-center mb-2">Select Authentication Method</h4>
+          <h4 class="text-h4 text-center mb-2">
+            Select Authentication Method
+          </h4>
           <p class="text-body-1 text-center mb-6">
             You also need to select a method by which the proxy authenticates to
             the directory serve.
@@ -96,7 +98,9 @@ function openSelectedMethodDialog() {
         </div>
 
         <div class="d-flex gap-4 justify-center">
-          <VBtn @click="openSelectedMethodDialog"> submit </VBtn>
+          <VBtn @click="openSelectedMethodDialog">
+            submit
+          </VBtn>
           <VBtn
             color="secondary"
             variant="tonal"

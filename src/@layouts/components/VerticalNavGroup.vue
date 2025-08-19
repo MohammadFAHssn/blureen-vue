@@ -50,7 +50,7 @@ function isAnyChildOpen(children) {
 function collapseChildren(children) {
   children.forEach((child) => {
     if ('children' in child) collapseChildren(child.children)
-    openGroups.value = openGroups.value.filter((group) => group !== child.title)
+    openGroups.value = openGroups.value.filter(group => group !== child.title)
   })
 }
 
@@ -64,8 +64,8 @@ watch(
     const isActive = isNavGroupActive(props.item.children, router)
 
     // Don't open group if vertical nav is collapsed and window size is more than overlay nav breakpoint
-    isGroupOpen.value =
-      isActive && !configStore.isVerticalNavMini(isVerticalNavHovered).value
+    isGroupOpen.value
+      = isActive && !configStore.isVerticalNavMini(isVerticalNavHovered).value
     isGroupActive.value = isActive
   },
   { immediate: true },
@@ -81,7 +81,8 @@ watch(
     // If group is opened => Add it to `openGroups` array
     if (val && grpIndex === -1) {
       openGroups.value.push(props.item.title)
-    } else if (!val && grpIndex !== -1) {
+    }
+    else if (!val && grpIndex !== -1) {
       openGroups.value.splice(grpIndex, 1)
       collapseChildren(props.item.children)
     }

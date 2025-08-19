@@ -78,9 +78,9 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
     :class="[
       {
         'overlay-nav': configStore.isLessThanOverlayNavBreakpoint,
-        hovered: isHovered,
-        visible: isOverlayNavActive,
-        scrolled: isVerticalNavScrolled,
+        'hovered': isHovered,
+        'visible': isOverlayNavActive,
+        'scrolled': isVerticalNavScrolled,
       },
     ]"
   >
@@ -106,8 +106,8 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
             :class="configStore.isVerticalNavCollapsed && 'd-lg-block'"
             v-bind="layoutConfig.icons.verticalNavUnPinned"
             @click="
-              configStore.isVerticalNavCollapsed =
-                !configStore.isVerticalNavCollapsed
+              configStore.isVerticalNavCollapsed
+                = !configStore.isVerticalNavCollapsed
             "
           />
           <Component
@@ -117,8 +117,8 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
             :class="!configStore.isVerticalNavCollapsed && 'd-lg-block'"
             v-bind="layoutConfig.icons.verticalNavPinned"
             @click="
-              configStore.isVerticalNavCollapsed =
-                !configStore.isVerticalNavCollapsed
+              configStore.isVerticalNavCollapsed
+                = !configStore.isVerticalNavCollapsed
             "
           />
           <Component

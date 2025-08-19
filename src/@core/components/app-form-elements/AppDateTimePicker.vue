@@ -114,8 +114,8 @@ watch(
 )
 
 const elementId = computed(() => {
-  const _elementIdToken =
-    fieldProps.value.id || fieldProps.value.label || inputProps.value.id
+  const _elementIdToken
+    = fieldProps.value.id || fieldProps.value.label || inputProps.value.id
 
   const _id = useId()
 
@@ -150,9 +150,7 @@ const elementId = computed(() => {
       class="position-relative v-text-field"
       :style="props.style"
     >
-      <template
-        #default="{ id, isDirty, isValid, isDisabled, isReadonly, validate }"
-      >
+      <template #default="{ id, isDirty, isValid, isDisabled, isReadonly, validate }">
         <!-- v-field -->
         <VField
           v-bind="{ ...fieldProps, label: undefined }"
@@ -230,10 +228,7 @@ const elementId = computed(() => {
   padding-inline: var(--v-field-padding-start);
 }
 
-$heading-color: rgba(
-  var(--v-theme-on-background),
-  var(--v-high-emphasis-opacity)
-);
+$heading-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
 $body-color: rgba(var(--v-theme-on-background), var(--v-high-emphasis-opacity));
 $disabled-color: rgba(var(--v-theme-on-background), var(--v-disabled-opacity));
 
@@ -312,10 +307,7 @@ input[altinputclass='inlinePicker'] {
     &.inRange,
     &.inRange:hover {
       border: none;
-      background: rgba(
-        var(--v-theme-primary),
-        var(--v-activated-opacity)
-      ) !important;
+      background: rgba(var(--v-theme-primary), var(--v-activated-opacity)) !important;
       box-shadow: none !important;
       color: rgb(var(--v-theme-primary));
     }
@@ -401,8 +393,7 @@ input[altinputclass='inlinePicker'] {
   &.hasTime.open {
     .flatpickr-innerContainer + .flatpickr-time {
       block-size: auto;
-      border-block-start: 1px solid
-        rgba(var(--v-border-color), var(--v-border-opacity));
+      border-block-start: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
     }
 
     .flatpickr-time {

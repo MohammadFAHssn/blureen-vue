@@ -86,9 +86,11 @@ async function sendTenderBid(tenderBid) {
 
     uiState.HaveTenderBidsBeenSent[id] = true
     uiState.isSuccessful = true
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
-  } finally {
+  }
+  finally {
     uiState.isSendTenderBidPending[id] = false
   }
 }
@@ -106,7 +108,8 @@ async function fetchTenderData() {
     tenderBids.value = data.value.data.tenderBids || []
 
     startCountDown()
-  } catch (e) {
+  }
+  catch (e) {
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت اطلاعات مناقصه'
     setTimeout(() => {
@@ -207,7 +210,9 @@ onUnmounted(() => {
       <VCol cols="12" md="6" lg="4">
         <VCard>
           <VCardText class="custom-v-card-text">
-            <VLabel class="mb-2"> شرایط پرداخت </VLabel>
+            <VLabel class="mb-2">
+              شرایط پرداخت
+            </VLabel>
             <VRadioGroup v-model="formState.paymentTerms" inline>
               <VRadio label="نقدی" value="cash" />
               <VRadio label="شرایطی" value="credit" />
@@ -223,7 +228,9 @@ onUnmounted(() => {
           <VDivider />
 
           <VCardText class="custom-v-card-text">
-            <VLabel class="mb-2"> نوع فاکتور </VLabel>
+            <VLabel class="mb-2">
+              نوع فاکتور
+            </VLabel>
             <VRadioGroup v-model="formState.invoiceType" inline>
               <VRadio label="فاکتور رسمی" value="taxInvoice" />
               <VRadio label="فاکتور فروشگاهی" value="commercialInvoice" />
@@ -338,7 +345,7 @@ onUnmounted(() => {
   </main>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .layout-page-content {
   overflow: hidden;
 

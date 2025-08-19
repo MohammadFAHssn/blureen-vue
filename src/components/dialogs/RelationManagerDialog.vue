@@ -45,7 +45,7 @@ const search = ref('')
 
 const selected = ref(
   items.filter((item) => {
-    return props.selected.some((selectedItem) => selectedItem.id === item.id)
+    return props.selected.some(selectedItem => selectedItem.id === item.id)
   }),
 )
 

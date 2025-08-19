@@ -48,7 +48,8 @@ function getFocusOnSearchList(e) {
   if (e.key === 'ArrowDown') {
     e.preventDefault()
     refSearchList.value?.focus('next')
-  } else if (e.key === 'ArrowUp') {
+  }
+  else if (e.key === 'ArrowUp') {
     e.preventDefault()
     refSearchList.value?.focus('prev')
   }
@@ -161,13 +162,9 @@ watch(
           >
             <slot name="noData">
               <VCardText class="h-100">
-                <div
-                  class="app-bar-search-suggestions d-flex flex-column align-center justify-center text-high-emphasis pa-12"
-                >
+                <div class="app-bar-search-suggestions d-flex flex-column align-center justify-center text-high-emphasis pa-12">
                   <VIcon size="64" icon="tabler-file-alert" />
-                  <div
-                    class="d-flex align-center flex-wrap justify-center gap-2 text-h5 mt-3"
-                  >
+                  <div class="d-flex align-center flex-wrap justify-center gap-2 text-h5 mt-3">
                     <span>No Result For </span>
                     <span>"{{ searchQueryLocal }}"</span>
                   </div>

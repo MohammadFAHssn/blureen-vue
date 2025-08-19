@@ -70,8 +70,12 @@ const paymentMethodsData = [
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-2">Add payment methods</h4>
-        <p class="text-body-1 text-center mb-6">Supported payment methods</p>
+        <h4 class="text-h4 text-center mb-2">
+          Add payment methods
+        </h4>
+        <p class="text-body-1 text-center mb-6">
+          Supported payment methods
+        </p>
 
         <div v-for="(item, index) in paymentMethodsData" :key="index">
           <div class="d-flex justify-space-between align-center py-4 gap-x-4">

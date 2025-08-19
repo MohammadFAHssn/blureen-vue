@@ -26,8 +26,8 @@ function _syncAppRtl() {
 
       // set isAppRtl value based on selected language
       if (
-        themeConfig.app.i18n.langConfig &&
-        themeConfig.app.i18n.langConfig.length
+        themeConfig.app.i18n.langConfig
+        && themeConfig.app.i18n.langConfig.length
       ) {
         themeConfig.app.i18n.langConfig.forEach((lang) => {
           if (lang.i18nLang === storedLang.value)
@@ -75,10 +75,10 @@ function _syncInitialLoaderTheme() {
     () => useConfigStore().theme,
     () => {
       // ℹ️ We are not using theme.current.colors.surface because watcher is independent and when this watcher is ran `theme` computed is not updated
-      useStorage(namespaceConfig('initial-loader-bg'), null).value =
-        vuetifyTheme.current.value.colors.surface
-      useStorage(namespaceConfig('initial-loader-color'), null).value =
-        vuetifyTheme.current.value.colors.primary
+      useStorage(namespaceConfig('initial-loader-bg'), null).value
+        = vuetifyTheme.current.value.colors.surface
+      useStorage(namespaceConfig('initial-loader-color'), null).value
+        = vuetifyTheme.current.value.colors.primary
     },
     { immediate: true },
   )
@@ -89,7 +89,8 @@ function initCore() {
   _handleSkinChanges()
 
   // ℹ️ We don't want to trigger i18n in SK
-  if (themeConfig.app.i18n.enable) _syncAppRtl()
+  if (themeConfig.app.i18n.enable)
+    _syncAppRtl()
 }
 
 export default initCore

@@ -28,7 +28,8 @@ export const useApi = createFetch({
       let parsedData = null
       try {
         parsedData = destr(data)
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
       }
 
@@ -42,7 +43,8 @@ export const useApi = createFetch({
       let parsedError = null
       try {
         parsedError = destr(ctx.data)
-      } catch (error) {
+      }
+      catch (error) {
         console.error(error)
       }
 

@@ -43,10 +43,7 @@
 }
 
 .shepherd-cancel-icon {
-  color: rgba(
-    var(--v-theme-on-background),
-    var(--v-disabled-opacity)
-  ) !important;
+  color: rgba(var(--v-theme-on-background), var(--v-disabled-opacity)) !important;
   font-size: 1.5rem;
 }
 

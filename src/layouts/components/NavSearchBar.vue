@@ -241,9 +241,7 @@ const LazyAppBarSearch = defineAsyncComponent(
     <!-- no data suggestion -->
     <template #noDataSuggestion>
       <div class="mt-9">
-        <span class="d-flex justify-center text-disabled mb-2"
-          >Try searching for</span
-        >
+        <span class="d-flex justify-center text-disabled mb-2">Try searching for</span>
         <h6
           v-for="suggestion in noDataSuggestions"
           :key="suggestion.title"
@@ -258,9 +256,7 @@ const LazyAppBarSearch = defineAsyncComponent(
 
     <!-- search result -->
     <template #searchResult="{ item }">
-      <VListSubheader
-        class="text-disabled custom-letter-spacing font-weight-regular ps-4"
-      >
+      <VListSubheader class="text-disabled custom-letter-spacing font-weight-regular ps-4">
         {{ item.title }}
       </VListSubheader>
       <VListItem

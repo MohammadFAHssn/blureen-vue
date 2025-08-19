@@ -41,10 +41,14 @@ useDropZone(dropZoneRef, onDrop)
           <IconBtn variant="tonal" class="rounded-sm">
             <VIcon icon="tabler-upload" />
           </IconBtn>
-          <h4 class="text-h4">Drag and drop your image here.</h4>
+          <h4 class="text-h4">
+            Drag and drop your image here.
+          </h4>
           <span class="text-disabled">or</span>
 
-          <VBtn variant="tonal" size="small"> Browse Images </VBtn>
+          <VBtn variant="tonal" size="small">
+            Browse Images
+          </VBtn>
         </div>
 
         <div

@@ -12,8 +12,8 @@ export function useSkins() {
       wrapperProps: {
         withBackground: true,
         theme:
-          configStore.isVerticalNavSemiDark &&
-          configStore.appContentLayoutNav === AppContentLayoutNav.Vertical
+          configStore.isVerticalNavSemiDark
+          && configStore.appContentLayoutNav === AppContentLayoutNav.Vertical
             ? 'dark'
             : undefined,
       },
@@ -23,7 +23,7 @@ export function useSkins() {
   const injectSkinClasses = () => {
     if (typeof document !== 'undefined') {
       const bodyClasses = document.body.classList
-      const genSkinClass = (_skin) => `skin--${_skin}`
+      const genSkinClass = _skin => `skin--${_skin}`
 
       watch(
         () => configStore.skin,

@@ -41,8 +41,7 @@
   font-family: 'Shabnam';
   src: url('/fonts/Shabnam/Shabnam-Light-FD.eot');
   src:
-    url('/fonts/Shabnam/Shabnam-Light-FD.eot?#iefix')
-      format('embedded-opentype'),
+    url('/fonts/Shabnam/Shabnam-Light-FD.eot?#iefix') format('embedded-opentype'),
     url('/fonts/Shabnam/Shabnam-Light-FD.woff2') format('woff2'),
     url('/fonts/Shabnam/Shabnam-Light-FD.woff') format('woff'),
     url('/fonts/Shabnam/Shabnam-Light-FD.ttf') format('truetype');
@@ -55,8 +54,7 @@
   font-family: 'Shabnam';
   src: url('/fonts/Shabnam/Shabnam-Medium-FD.eot');
   src:
-    url('/fonts/Shabnam/Shabnam-Medium-FD.eot?#iefix')
-      format('embedded-opentype'),
+    url('/fonts/Shabnam/Shabnam-Medium-FD.eot?#iefix') format('embedded-opentype'),
     url('/fonts/Shabnam/Shabnam-Medium-FD.woff2') format('woff2'),
     url('/fonts/Shabnam/Shabnam-Medium-FD.woff') format('woff'),
     url('/fonts/Shabnam/Shabnam-Medium-FD.ttf') format('truetype');

@@ -143,9 +143,7 @@ const codeSnippet = highlighter.codeToHtml(
 
 code[class*='language-'],
 pre[class*='language-'] {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   font-size: 14px;
 }
 

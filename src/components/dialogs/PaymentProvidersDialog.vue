@@ -76,15 +76,15 @@ const paymentProvidersData = [
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-2">Select Payment Providers</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Select Payment Providers
+        </h4>
         <p class="text-body-1 text-center mb-6">
           Third-party payment providers
         </p>
 
         <div v-for="(item, index) in paymentProvidersData" :key="index">
-          <div
-            class="d-flex flex-column flex-sm-row justify-space-between gap-4 flex-wrap py-4"
-          >
+          <div class="d-flex flex-column flex-sm-row justify-space-between gap-4 flex-wrap py-4">
             <h6 class="text-h6">
               {{ item.title }}
             </h6>

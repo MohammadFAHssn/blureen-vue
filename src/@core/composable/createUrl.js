@@ -2,7 +2,8 @@ import { stringifyQuery } from 'ufo'
 
 export function createUrl(url, options) {
   return computed(() => {
-    if (!options?.query) return toValue(url)
+    if (!options?.query)
+      return toValue(url)
     const _url = toValue(url)
     const _query = toValue(options?.query)
 

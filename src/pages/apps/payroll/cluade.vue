@@ -1,3 +1,117 @@
+<script setup>
+// Payment items data
+const paymentsData = [
+  { title: 'حقوق پایه', value: '' },
+  { title: 'حق اولاد', value: '' },
+  { title: 'حق مسکن', value: '' },
+  { title: 'خواربار', value: '' },
+  { title: 'حق تاهل', value: '' },
+  { title: 'نوبت کاری 10%', value: '' },
+  { title: 'نوبت کاری 15%', value: '' },
+  { title: 'شب کاری 35%', value: '' },
+  { title: 'بن کارگری', value: '' },
+  { title: 'پایه سنوات', value: '' },
+  { title: 'مزد سنوات', value: '' },
+  { title: 'حق پست', value: '' },
+  { title: 'ماندگاری حق پست', value: '' },
+  { title: 'محیط کار (سختی کار)', value: '' },
+  { title: 'ماندگاری محیط کار(سختی کار)', value: '' },
+  { title: 'حق پست جدید', value: '' },
+  { title: 'ماندگاری پست جدید', value: '' },
+  { title: 'پاداش مدیریت', value: '' },
+  { title: 'ماندگاری پاداش مدیریت', value: '' },
+  { title: 'حق ماموریت', value: '' },
+  { title: 'پرداختی معوق', value: '' },
+  { title: 'سایر مزایا', value: '' },
+  { title: 'رتبه بندی', value: '' },
+
+  // Empty rows
+  ...Array.from({ length: 17 }, () => ({ title: '', value: null })),
+]
+
+// Deduction items data
+const deductionsData = [
+  { title: 'بیمه سهم کارمند', value: '' },
+  { title: 'مالیات ماه', value: '' },
+  { title: 'خرید کارکنان 1', value: '' },
+  { title: 'خرید کارکنان 2', value: '' },
+  { title: 'کسر جاری کارکنان', value: '' },
+  { title: 'بیمه تکمیلی', value: '' },
+  { title: 'وام ضروری', value: '' },
+  { title: 'وام ضروری 3', value: '' },
+  { title: 'بیمه تکمیلی فروردین', value: '' },
+  { title: 'بن کارت خرید اردیبهشت ابوطالبی', value: '' },
+  { title: 'بن کارت خرید خرداد ابوطالبی', value: '' },
+  { title: 'بن کارت خرید تیر ابوطالبی', value: '' },
+  { title: 'بن کارت خرید مرداد ابوطالبی', value: '' },
+  { title: 'بن کارت خرید شهریور ابوطالبی', value: '' },
+  { title: 'بن کارت خرید مهر ابوطالبی', value: '' },
+  { title: 'بن کارت خرید آبان ابوطالبی', value: '' },
+  { title: 'بن کارت خرید آذر ابوطالبی', value: '' },
+  { title: 'بن کارت خرید دی ابوطالبی', value: '' },
+  { title: 'بن کارت خرید بهمن ابوطالبی', value: '' },
+  { title: 'بن کارت خرید فروردین آریا', value: '' },
+  { title: 'بن کارت خرید اردیبهشت آریا', value: '' },
+  { title: 'بن کارت خرید خرداد آریا', value: '' },
+  { title: 'بن کارت خرید تیر آریا', value: '' },
+  { title: 'بن کارت خرید مرداد آریا', value: '' },
+  { title: 'بن کارت خرید شهریور آریا', value: '' },
+  { title: 'بن کارت خرید مهر آریا', value: '' },
+  { title: 'بن کارت خرید آبان آریا', value: '' },
+  { title: 'بن کارت خرید آذر آریا', value: '' },
+  { title: 'بن کارت خرید دی آریا', value: '' },
+  { title: 'بن کارت خرید بهمن آریا', value: '' },
+  { title: 'بن کارت خرید فروردین چادرملو', value: '' },
+  { title: 'بن کارت خرید اردیبهشت چادرملو', value: '' },
+  { title: 'بن کارت خرید خرداد چادرملو', value: '' },
+  { title: 'بن کارت خرید تیر چادرملو', value: '' },
+  { title: 'بن کارت خرید مرداد چادرملو', value: '' },
+  { title: 'بن کارت خرید شهریور چادرملو', value: '' },
+  { title: 'بن کارت خرید مهر چادرملو', value: '' },
+  { title: 'بن کارت خرید آبان چادرملو', value: '' },
+  { title: 'بن کارت خرید آذر چادرملو', value: '' },
+  { title: 'بن کارت خرید دی چادرملو', value: '' },
+  { title: 'بن کارت خرید بهمن چادرملو', value: '' },
+  { title: 'خرید فروردین شیشه', value: '' },
+  { title: 'خرید اردیبهشت شیشه', value: '' },
+  { title: 'خرید خرداد شیشه', value: '' },
+  { title: 'خرید تیر شیشه', value: '' },
+  { title: 'خرید مرداد شیشه', value: '' },
+  { title: 'خرید شهریور شیشه', value: '' },
+  { title: 'خرید مهر شیشه', value: '' },
+  { title: 'خرید آبان شیشه', value: '' },
+  { title: 'خرید آذر شیشه', value: '' },
+  { title: 'خرید دی شیشه', value: '' },
+  { title: 'خرید بهمن شیشه', value: '' },
+  { title: 'خرید اردیبهشت سالار', value: '' },
+  { title: 'خرید خرداد سالار', value: '' },
+  { title: 'خرید تیر سالار', value: '' },
+  { title: 'خرید مرداد سالار', value: '' },
+  { title: 'خرید شهریور سالار', value: '' },
+  { title: 'خرید مهر سالار', value: '' },
+  { title: 'خرید آبان سالار', value: '' },
+  { title: 'خرید آذر سالار', value: '' },
+  { title: 'خرید دی سالار', value: '' },
+  { title: 'خرید بهمن سالار', value: '' },
+
+  // Empty rows
+  ...Array.from({ length: 20 }, () => ({ title: '', value: null })),
+]
+
+// Print function
+function printPayrollSlip() {
+  window.print()
+}
+
+// Page meta
+definePage({
+  meta: {
+    title: 'Payroll Slip',
+    navActiveLink: 'apps-payroll-slip',
+  },
+})
+</script>
+
 <template>
   <section class="payroll-slip-container">
     <!-- Print Button (only visible on screen) -->
@@ -570,12 +684,12 @@
                     <td colspan="2">
                       <div class="d-flex align-center gap-2">
                         <span class="font-weight-bold">کسورات فوق العاده:</span>
-                        <VTextField 
-                          variant="plain" 
-                          density="compact" 
-                          readonly 
-                          hide-details 
-                          style="max-inline-size: 100px;" 
+                        <VTextField
+                          variant="plain"
+                          density="compact"
+                          readonly
+                          hide-details
+                          style="max-inline-size: 100px;"
                         />
                       </div>
                     </td>
@@ -617,7 +731,7 @@
             >
               <VCardText class="pa-4 text-center">
                 <h6 class="text-h6 text-white font-weight-bold mb-3">
-                  جمع ناخالص پرداختی<br>
+                  جمع ناخالص پرداختی<br />
                   (ناخالص حقوق،پاداش،فوق العاده،اضافه کاری)
                 </h6>
                 <VTextField
@@ -731,120 +845,6 @@
     </VCard>
   </section>
 </template>
-
-<script setup>
-// Payment items data
-const paymentsData = [
-  { title: 'حقوق پایه', value: '' },
-  { title: 'حق اولاد', value: '' },
-  { title: 'حق مسکن', value: '' },
-  { title: 'خواربار', value: '' },
-  { title: 'حق تاهل', value: '' },
-  { title: 'نوبت کاری 10%', value: '' },
-  { title: 'نوبت کاری 15%', value: '' },
-  { title: 'شب کاری 35%', value: '' },
-  { title: 'بن کارگری', value: '' },
-  { title: 'پایه سنوات', value: '' },
-  { title: 'مزد سنوات', value: '' },
-  { title: 'حق پست', value: '' },
-  { title: 'ماندگاری حق پست', value: '' },
-  { title: 'محیط کار (سختی کار)', value: '' },
-  { title: 'ماندگاری محیط کار(سختی کار)', value: '' },
-  { title: 'حق پست جدید', value: '' },
-  { title: 'ماندگاری پست جدید', value: '' },
-  { title: 'پاداش مدیریت', value: '' },
-  { title: 'ماندگاری پاداش مدیریت', value: '' },
-  { title: 'حق ماموریت', value: '' },
-  { title: 'پرداختی معوق', value: '' },
-  { title: 'سایر مزایا', value: '' },
-  { title: 'رتبه بندی', value: '' },
-
-  // Empty rows
-  ...Array.from({ length: 17 }, () => ({ title: '', value: null })),
-]
-
-// Deduction items data
-const deductionsData = [
-  { title: 'بیمه سهم کارمند', value: '' },
-  { title: 'مالیات ماه', value: '' },
-  { title: 'خرید کارکنان 1', value: '' },
-  { title: 'خرید کارکنان 2', value: '' },
-  { title: 'کسر جاری کارکنان', value: '' },
-  { title: 'بیمه تکمیلی', value: '' },
-  { title: 'وام ضروری', value: '' },
-  { title: 'وام ضروری 3', value: '' },
-  { title: 'بیمه تکمیلی فروردین', value: '' },
-  { title: 'بن کارت خرید اردیبهشت ابوطالبی', value: '' },
-  { title: 'بن کارت خرید خرداد ابوطالبی', value: '' },
-  { title: 'بن کارت خرید تیر ابوطالبی', value: '' },
-  { title: 'بن کارت خرید مرداد ابوطالبی', value: '' },
-  { title: 'بن کارت خرید شهریور ابوطالبی', value: '' },
-  { title: 'بن کارت خرید مهر ابوطالبی', value: '' },
-  { title: 'بن کارت خرید آبان ابوطالبی', value: '' },
-  { title: 'بن کارت خرید آذر ابوطالبی', value: '' },
-  { title: 'بن کارت خرید دی ابوطالبی', value: '' },
-  { title: 'بن کارت خرید بهمن ابوطالبی', value: '' },
-  { title: 'بن کارت خرید فروردین آریا', value: '' },
-  { title: 'بن کارت خرید اردیبهشت آریا', value: '' },
-  { title: 'بن کارت خرید خرداد آریا', value: '' },
-  { title: 'بن کارت خرید تیر آریا', value: '' },
-  { title: 'بن کارت خرید مرداد آریا', value: '' },
-  { title: 'بن کارت خرید شهریور آریا', value: '' },
-  { title: 'بن کارت خرید مهر آریا', value: '' },
-  { title: 'بن کارت خرید آبان آریا', value: '' },
-  { title: 'بن کارت خرید آذر آریا', value: '' },
-  { title: 'بن کارت خرید دی آریا', value: '' },
-  { title: 'بن کارت خرید بهمن آریا', value: '' },
-  { title: 'بن کارت خرید فروردین چادرملو', value: '' },
-  { title: 'بن کارت خرید اردیبهشت چادرملو', value: '' },
-  { title: 'بن کارت خرید خرداد چادرملو', value: '' },
-  { title: 'بن کارت خرید تیر چادرملو', value: '' },
-  { title: 'بن کارت خرید مرداد چادرملو', value: '' },
-  { title: 'بن کارت خرید شهریور چادرملو', value: '' },
-  { title: 'بن کارت خرید مهر چادرملو', value: '' },
-  { title: 'بن کارت خرید آبان چادرملو', value: '' },
-  { title: 'بن کارت خرید آذر چادرملو', value: '' },
-  { title: 'بن کارت خرید دی چادرملو', value: '' },
-  { title: 'بن کارت خرید بهمن چادرملو', value: '' },
-  { title: 'خرید فروردین شیشه', value: '' },
-  { title: 'خرید اردیبهشت شیشه', value: '' },
-  { title: 'خرید خرداد شیشه', value: '' },
-  { title: 'خرید تیر شیشه', value: '' },
-  { title: 'خرید مرداد شیشه', value: '' },
-  { title: 'خرید شهریور شیشه', value: '' },
-  { title: 'خرید مهر شیشه', value: '' },
-  { title: 'خرید آبان شیشه', value: '' },
-  { title: 'خرید آذر شیشه', value: '' },
-  { title: 'خرید دی شیشه', value: '' },
-  { title: 'خرید بهمن شیشه', value: '' },
-  { title: 'خرید اردیبهشت سالار', value: '' },
-  { title: 'خرید خرداد سالار', value: '' },
-  { title: 'خرید تیر سالار', value: '' },
-  { title: 'خرید مرداد سالار', value: '' },
-  { title: 'خرید شهریور سالار', value: '' },
-  { title: 'خرید مهر سالار', value: '' },
-  { title: 'خرید آبان سالار', value: '' },
-  { title: 'خرید آذر سالار', value: '' },
-  { title: 'خرید دی سالار', value: '' },
-  { title: 'خرید بهمن سالار', value: '' },
-
-  // Empty rows
-  ...Array.from({ length: 20 }, () => ({ title: '', value: null })),
-]
-
-// Print function
-const printPayrollSlip = () => {
-  window.print()
-}
-
-// Page meta
-definePage({
-  meta: {
-    title: 'Payroll Slip',
-    navActiveLink: 'apps-payroll-slip',
-  },
-})
-</script>
 
 <style lang="scss" scoped>
 .payroll-slip-container {

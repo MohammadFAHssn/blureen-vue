@@ -70,18 +70,18 @@ function getContextMenuItems(params) {
 
   return selectedUsersPersonnelCode.length
     ? [
-      {
-        icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
-        name: 'ویرایش دسترسی',
-        action: () => {
-          updateSelectedUsers(selectedUsersPersonnelCode)
-          updateSelectedUserRoles()
+        {
+          icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+          name: 'ویرایش دسترسی',
+          action: () => {
+            updateSelectedUsers(selectedUsersPersonnelCode)
+            updateSelectedUserRoles()
 
-          uiState.isEditAccessDialogVisible = true
+            uiState.isEditAccessDialogVisible = true
+          },
         },
-      },
-      ...params.defaultItems,
-    ]
+        ...params.defaultItems,
+      ]
     : [...params.defaultItems]
 }
 

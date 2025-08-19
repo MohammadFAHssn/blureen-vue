@@ -13,7 +13,8 @@ export async function useLogout() {
       path: '/login-supplier',
       query: { isRedirectedFromUnauthorizedStatus: true },
     })
-  } else {
+  }
+  else {
     await router.replace({
       path: '/login',
       query: { isRedirectedFromUnauthorizedStatus: true },

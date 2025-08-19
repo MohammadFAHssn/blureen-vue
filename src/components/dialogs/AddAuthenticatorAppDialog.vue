@@ -41,8 +41,12 @@ function resetAuthCode() {
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-6">Add Authenticator App</h4>
-        <h5 class="text-h5 mb-2">Authenticator Apps</h5>
+        <h4 class="text-h4 text-center mb-6">
+          Add Authenticator App
+        </h4>
+        <h5 class="text-h5 mb-2">
+          Authenticator Apps
+        </h5>
 
         <p class="text-body-1 mb-6">
           Using an authenticator app like Google Authenticator, Microsoft

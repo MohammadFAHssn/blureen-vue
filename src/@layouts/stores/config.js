@@ -5,7 +5,7 @@ import { _setDirAttr } from '@layouts/utils'
 // ℹ️ We should not import themeConfig here but in urgency we are doing it for now
 import { layoutConfig } from '@themeConfig'
 
-export const namespaceConfig = (str) => `${layoutConfig.app.title}-${str}`
+export const namespaceConfig = str => `${layoutConfig.app.title}-${str}`
 export function cookieRef(key, defaultValue) {
   return useCookie(namespaceConfig(key), { default: () => defaultValue })
 }
@@ -86,9 +86,9 @@ export const useLayoutConfigStore = defineStore('layoutConfig', () => {
       `layout-footer-${footerType.value}`,
       {
         'layout-vertical-nav-collapsed':
-          isVerticalNavCollapsed.value &&
-          appContentLayoutNav.value === 'vertical' &&
-          !isLessThanOverlayNavBreakpoint.value,
+          isVerticalNavCollapsed.value
+          && appContentLayoutNav.value === 'vertical'
+          && !isLessThanOverlayNavBreakpoint.value,
       },
       {
         [`horizontal-nav-${horizontalNavType.value}`]:
@@ -121,16 +121,16 @@ export const useLayoutConfigStore = defineStore('layoutConfig', () => {
           same component is providing & injecting we are getting undefined error
     */
   const isVerticalNavMini = (isVerticalNavHovered = null) => {
-    const isVerticalNavHoveredLocal =
-      isVerticalNavHovered ||
-      inject(injectionKeyIsVerticalNavHovered) ||
-      ref(false)
+    const isVerticalNavHoveredLocal
+      = isVerticalNavHovered
+        || inject(injectionKeyIsVerticalNavHovered)
+        || ref(false)
 
     return computed(
       () =>
-        isVerticalNavCollapsed.value &&
-        !isVerticalNavHoveredLocal.value &&
-        !isLessThanOverlayNavBreakpoint.value,
+        isVerticalNavCollapsed.value
+        && !isVerticalNavHoveredLocal.value
+        && !isLessThanOverlayNavBreakpoint.value,
     )
   }
 

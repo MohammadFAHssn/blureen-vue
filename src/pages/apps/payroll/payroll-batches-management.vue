@@ -32,8 +32,8 @@ async function onCreatePayrollBatch(payload) {
       onResponseError({ response }) {
         pendingState.createPayrollBatch = false
         uiState.hasError = true
-        uiState.errorMessage =
-          response._data.message || 'خطا در ایجاد فیش حقوقی'
+        uiState.errorMessage
+          = response._data.message || 'خطا در ایجاد فیش حقوقی'
       },
     })
 
@@ -41,7 +41,8 @@ async function onCreatePayrollBatch(payload) {
     uiState.isPayrollBatchCreateDialogVisible = false
 
     // UpdateUserRoles(newUserRoles)
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }

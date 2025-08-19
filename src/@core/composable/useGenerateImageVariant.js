@@ -14,11 +14,13 @@ export function useGenerateImageVariant(
 
   return computed(() => {
     if (global.name.value === 'light') {
-      if (configStore.skin === 'bordered' && bordered) return imgLightBordered
+      if (configStore.skin === 'bordered' && bordered)
+        return imgLightBordered
       else return imgLight
     }
     if (global.name.value === 'dark') {
-      if (configStore.skin === 'bordered' && bordered) return imgDarkBordered
+      if (configStore.skin === 'bordered' && bordered)
+        return imgDarkBordered
       else return imgDark
     }
 

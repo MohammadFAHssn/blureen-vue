@@ -13,13 +13,7 @@
       <div id="loading-bg">
         <div class="loading-logo">
           <!-- SVG Logo -->
-          <svg
-            width="86"
-            height="48"
-            viewBox="0 0 34 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="86" height="48" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
@@ -57,27 +51,13 @@
     </div>
     <script type="module" src="/src/main.js"></script>
     <script>
-      const loaderColor =
-        localStorage.getItem('vuexy-initial-loader-bg') || '#FFFFFF'
-      const primaryColor =
-        localStorage.getItem('vuexy-initial-loader-color') || '#7367F0'
+      const loaderColor = localStorage.getItem('vuexy-initial-loader-bg') || '#FFFFFF'
+      const primaryColor = localStorage.getItem('vuexy-initial-loader-color') || '#7367F0'
 
-      if (loaderColor)
-        document.documentElement.style.setProperty(
-          '--initial-loader-bg',
-          loaderColor,
-        )
-      if (loaderColor)
-        document.documentElement.style.setProperty(
-          '--initial-loader-bg',
-          loaderColor,
-        )
+      if (loaderColor) document.documentElement.style.setProperty('--initial-loader-bg', loaderColor)
+      if (loaderColor) document.documentElement.style.setProperty('--initial-loader-bg', loaderColor)
 
-      if (primaryColor)
-        document.documentElement.style.setProperty(
-          '--initial-loader-color',
-          primaryColor,
-        )
+      if (primaryColor) document.documentElement.style.setProperty('--initial-loader-color', primaryColor)
     </script>
   </body>
 </html>

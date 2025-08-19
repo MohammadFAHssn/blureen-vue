@@ -93,32 +93,36 @@ const pricingPlans = [
     <p class="mb-0">
       All plans include 40+ advanced tools and features to boost your product.
     </p>
-    <p class="mb-2">Choose the best plan to fit your needs.</p>
+    <p class="mb-2">
+      Choose the best plan to fit your needs.
+    </p>
   </div>
 
   <!-- 👉 Annual and monthly price toggler -->
 
-  <div
-    class="d-flex font-weight-medium text-body-1 align-center justify-center mx-auto mt-12 mb-6"
-  >
-    <VLabel for="pricing-plan-toggle" class="me-3"> Monthly </VLabel>
+  <div class="d-flex font-weight-medium text-body-1 align-center justify-center mx-auto mt-12 mb-6">
+    <VLabel for="pricing-plan-toggle" class="me-3">
+      Monthly
+    </VLabel>
 
     <div class="position-relative">
       <VSwitch id="pricing-plan-toggle" v-model="annualMonthlyPlanPriceToggler">
         <template #label>
-          <div class="text-body-1 font-weight-medium">Annually</div>
+          <div class="text-body-1 font-weight-medium">
+            Annually
+          </div>
         </template>
       </VSwitch>
 
-      <div
-        class="save-upto-chip position-absolute align-center d-none d-md-flex gap-1"
-      >
+      <div class="save-upto-chip position-absolute align-center d-none d-md-flex gap-1">
         <VIcon
           icon="tabler-corner-left-down"
           size="24"
           class="flip-in-rtl mt-2 text-disabled"
         />
-        <VChip label color="primary" size="small"> Save up to 10% </VChip>
+        <VChip label color="primary" size="small">
+          Save up to 10%
+        </VChip>
       </div>
     </div>
   </div>

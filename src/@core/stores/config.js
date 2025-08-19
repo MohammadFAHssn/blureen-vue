@@ -12,7 +12,8 @@ export const useConfigStore = defineStore('config', () => {
   watch(
     userPreferredColorScheme,
     (val) => {
-      if (val !== 'no-preference') cookieColorScheme.value = val
+      if (val !== 'no-preference')
+        cookieColorScheme.value = val
     },
     { immediate: true },
   )

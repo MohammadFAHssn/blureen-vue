@@ -34,7 +34,7 @@ const columnDefs = ref([
     field: 'roles',
     flex: 3,
     cellRenderer: MultiValuedCell,
-    cellStyle: { display: 'flex', 'align-items': 'center' },
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
   },
   { headerName: 'شماره تلفن', field: 'mobileNumber', flex: 2 },
 ])
@@ -45,7 +45,7 @@ const rowData = computed(() =>
       personnelCode: Number.parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
-      roles: user.roles?.map((role) => role.name),
+      roles: user.roles?.map(role => role.name),
       mobileNumber: user.mobile_number,
     }
   }),
@@ -62,7 +62,8 @@ async function fetchUsers() {
     if (error.value) throw error.value
 
     users.value = data.value.data
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error fetching users:', e)
     uiState.hasError = true
     uiState.errorMessage = 'خطا در دریافت کاربران'

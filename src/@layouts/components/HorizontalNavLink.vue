@@ -27,7 +27,7 @@ const props = defineProps({
     :class="[
       {
         'sub-item': props.isSubItem,
-        disabled: item.disable,
+        'disabled': item.disable,
       },
     ]"
   >

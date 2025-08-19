@@ -62,7 +62,8 @@ async function login() {
         IsItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
-        } else {
+        }
+        else {
           errors.value.other = response._data.message
           hasError.value = true
         }
@@ -78,7 +79,8 @@ async function login() {
         query: { mobileNumber: credentials.value.mobileNumber },
       })
     })
-  } catch (err) {}
+  }
+  catch (err) {}
 }
 
 function onSubmit() {
@@ -124,7 +126,7 @@ function onSubmit() {
       <div class="position-relative bg-background w-100 me-0">
         <div
           class="d-flex align-center justify-center w-100 h-100"
-          style="padding-inline: 6.25rem"
+          style="padding-inline: 6.25rem;"
         />
 
         <img
@@ -193,6 +195,6 @@ function onSubmit() {
   </VRow>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use '@core/scss/template/pages/page-auth';
 </style>

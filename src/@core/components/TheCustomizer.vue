@@ -58,8 +58,8 @@ watch(
     ).value
 
     if (
-      cookiePrimaryColor &&
-      !colors.some((color) => color.main === cookiePrimaryColor)
+      cookiePrimaryColor
+      && !colors.some(color => color.main === cookiePrimaryColor)
     ) {
       customPrimaryColor.value = cookiePrimaryColor
     }
@@ -72,10 +72,10 @@ const setPrimaryColor = useDebounceFn((color) => {
   vuetifyTheme.themes.value[vuetifyTheme.name.value].colors[
     'primary-darken-1'
   ] = color.darken
-  cookieRef(`${vuetifyTheme.name.value}ThemePrimaryColor`, null).value =
-    color.main
-  cookieRef(`${vuetifyTheme.name.value}ThemePrimaryDarkenColor`, null).value =
-    color.darken
+  cookieRef(`${vuetifyTheme.name.value}ThemePrimaryColor`, null).value
+    = color.main
+  cookieRef(`${vuetifyTheme.name.value}ThemePrimaryDarkenColor`, null).value
+    = color.darken
   useStorage(namespaceConfig('initial-loader-color'), null).value = color.main
 }, 100)
 
@@ -144,7 +144,8 @@ watch(currentLayout, () => {
   if (currentLayout.value === 'collapsed') {
     configStore.isVerticalNavCollapsed = true
     configStore.appContentLayoutNav = AppContentLayoutNav.Vertical
-  } else {
+  }
+  else {
     configStore.isVerticalNavCollapsed = false
     configStore.appContentLayoutNav = currentLayout.value
   }
@@ -200,7 +201,7 @@ const { locale } = useI18n({ useScope: 'global' })
 
 const isActiveLangRTL = computed(() => {
   const lang = themeConfig.app.i18n.langConfig.find(
-    (l) => l.i18nLang === locale.value,
+    l => l.i18nLang === locale.value,
   )
 
   return lang?.isRTL ?? false
@@ -234,8 +235,8 @@ watch(
     ]
 
     currentDir.value = configStore.isAppRTL ? 'rtl' : 'ltr'
-    isCookieHasAnyValue.value =
-      JSON.stringify(themeConfigValue) !== JSON.stringify(initialConfigValue)
+    isCookieHasAnyValue.value
+      = JSON.stringify(themeConfigValue) !== JSON.stringify(initialConfigValue)
   },
   {
     deep: true,
@@ -247,21 +248,21 @@ async function resetCustomizer() {
   if (isCookieHasAnyValue.value) {
     vuetifyTheme.themes.value.light.colors.primary = staticPrimaryColor
     vuetifyTheme.themes.value.dark.colors.primary = staticPrimaryColor
-    vuetifyTheme.themes.value.light.colors['primary-darken-1'] =
-      staticPrimaryDarkenColor
-    vuetifyTheme.themes.value.dark.colors['primary-darken-1'] =
-      staticPrimaryDarkenColor
+    vuetifyTheme.themes.value.light.colors['primary-darken-1']
+      = staticPrimaryDarkenColor
+    vuetifyTheme.themes.value.dark.colors['primary-darken-1']
+      = staticPrimaryDarkenColor
     configStore.theme = themeConfig.app.theme
     configStore.skin = themeConfig.app.skin
-    configStore.isVerticalNavSemiDark =
-      themeConfig.verticalNav.isVerticalNavSemiDark
+    configStore.isVerticalNavSemiDark
+      = themeConfig.verticalNav.isVerticalNavSemiDark
     configStore.appContentLayoutNav = themeConfig.app.contentLayoutNav
     configStore.appContentWidth = themeConfig.app.contentWidth
     configStore.isAppRTL = isActiveLangRTL.value
-    configStore.isVerticalNavCollapsed =
-      themeConfig.verticalNav.isVerticalNavCollapsed
-    useStorage(namespaceConfig('initial-loader-color'), null).value =
-      staticPrimaryColor
+    configStore.isVerticalNavCollapsed
+      = themeConfig.verticalNav.isVerticalNavCollapsed
+    useStorage(namespaceConfig('initial-loader-color'), null).value
+      = staticPrimaryColor
     currentLayout.value = themeConfig.app.contentLayoutNav
     cookieRef('lightThemePrimaryColor', null).value = null
     cookieRef('darkThemePrimaryColor', null).value = null
@@ -300,8 +301,12 @@ async function resetCustomizer() {
       <!-- 👉 Header -->
       <div class="customizer-heading d-flex align-center justify-space-between">
         <div>
-          <h6 class="text-h6">شخصی‌سازی زمینه</h6>
-          <p class="text-body-2 mb-0">سفارشی‌سازی و پیش‌نمایش درآن‌واحد</p>
+          <h6 class="text-h6">
+            شخصی‌سازی زمینه
+          </h6>
+          <p class="text-body-2 mb-0">
+            سفارشی‌سازی و پیش‌نمایش درآن‌واحد
+          </p>
         </div>
 
         <div class="d-flex align-center gap-1">
@@ -342,7 +347,9 @@ async function resetCustomizer() {
         <CustomizerSection title="طراحی زمینه" :divider="false">
           <!-- 👉 Primary Color -->
           <div class="d-flex flex-column gap-2">
-            <h6 class="text-h6">رنگ‌های اصلی</h6>
+            <h6 class="text-h6">
+              رنگ‌های اصلی
+            </h6>
 
             <div
               class="d-flex app-customizer-primary-colors"
@@ -391,14 +398,14 @@ async function resetCustomizer() {
                   padding-inline: 0.625rem;
                 "
                 :class="
-                  vuetifyTheme.current.value.colors.primary ===
-                  customPrimaryColor
+                  vuetifyTheme.current.value.colors.primary
+                    === customPrimaryColor
                     ? 'active'
                     : ''
                 "
                 :style="
-                  vuetifyTheme.current.value.colors.primary ===
-                  customPrimaryColor
+                  vuetifyTheme.current.value.colors.primary
+                    === customPrimaryColor
                     ? `outline-color: ${customPrimaryColor}; outline-width:2px;`
                     : ''
                 "
@@ -407,8 +414,8 @@ async function resetCustomizer() {
                   icon
                   size="30"
                   :color="
-                    vuetifyTheme.current.value.colors.primary ===
-                    customPrimaryColor
+                    vuetifyTheme.current.value.colors.primary
+                      === customPrimaryColor
                       ? customPrimaryColor
                       : $vuetify.theme.current.dark
                         ? '#8692d029'
@@ -421,8 +428,8 @@ async function resetCustomizer() {
                     size="20"
                     icon="tabler-color-picker"
                     :color="
-                      vuetifyTheme.current.value.colors.primary ===
-                      customPrimaryColor
+                      vuetifyTheme.current.value.colors.primary
+                        === customPrimaryColor
                         ? 'rgb(var(--v-theme-on-primary))'
                         : ''
                     "
@@ -452,7 +459,9 @@ async function resetCustomizer() {
 
           <!-- 👉 Theme -->
           <div class="d-flex flex-column gap-2">
-            <h6 class="text-h6">زمینه</h6>
+            <h6 class="text-h6">
+              زمینه
+            </h6>
 
             <CustomRadiosWithImage
               :key="configStore.theme"
@@ -480,7 +489,9 @@ async function resetCustomizer() {
 
           <!-- 👉 Skin -->
           <div class="d-flex flex-column gap-2">
-            <h6 class="text-h6">صفحات</h6>
+            <h6 class="text-h6">
+              صفحات
+            </h6>
 
             <CustomRadiosWithImage
               :key="configStore.skin"
@@ -500,8 +511,8 @@ async function resetCustomizer() {
           <div
             class="align-center justify-space-between"
             :class="
-              vuetifyTheme.global.name.value === 'light' &&
-              configStore.appContentLayoutNav === AppContentLayoutNav.Vertical
+              vuetifyTheme.global.name.value === 'light'
+                && configStore.appContentLayoutNav === AppContentLayoutNav.Vertical
                 ? 'd-flex'
                 : 'd-none'
             "
@@ -528,7 +539,9 @@ async function resetCustomizer() {
         <CustomizerSection title="چیدمان">
           <!-- 👉 Layouts -->
           <div class="d-flex flex-column gap-2">
-            <h6 class="text-base font-weight-medium">چیدمان</h6>
+            <h6 class="text-base font-weight-medium">
+              چیدمان
+            </h6>
 
             <CustomRadiosWithImage
               :key="currentLayout"
@@ -603,10 +616,7 @@ async function resetCustomizer() {
   .customizer-skins {
     .custom-input.active {
       .customizer-skins-icon-wrapper {
-        background-color: rgba(
-          var(--v-global-theme-primary),
-          var(--v-selected-opacity)
-        );
+        background-color: rgba(var(--v-global-theme-primary), var(--v-selected-opacity));
       }
     }
   }

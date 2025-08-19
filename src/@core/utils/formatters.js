@@ -1,10 +1,11 @@
 import { isToday } from './helpers'
 
 export function avatarText(value) {
-  if (!value) return ''
+  if (!value)
+    return ''
   const nameArray = value.split(' ')
 
-  return nameArray.map((word) => word.charAt(0).toUpperCase()).join('')
+  return nameArray.map(word => word.charAt(0).toUpperCase()).join('')
 }
 
 // TODO: Try to implement this: https://twitter.com/fireship_dev/status/1565424801216311297
@@ -27,7 +28,8 @@ export function formatDate(
   value,
   formatting = { month: 'short', day: 'numeric', year: 'numeric' },
 ) {
-  if (!value) return value
+  if (!value)
+    return value
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
@@ -46,4 +48,4 @@ export function formatDateToMonthShort(value, toTimeForCurrentDay = true) {
 
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
-export const prefixWithPlus = (value) => (value > 0 ? `+${value}` : value)
+export const prefixWithPlus = value => (value > 0 ? `+${value}` : value)

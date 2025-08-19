@@ -115,7 +115,7 @@ const payrollData = {
               src="/src/assets/images/logo.svg"
               alt="logo"
               height="40"
-            >
+            />
           </div>
           <div class="text-body-2 mt-2 text-left">
             تاریخ: {{ new Date().toLocaleDateString('fa-IR') }}

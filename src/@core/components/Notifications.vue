@@ -21,17 +21,17 @@ const props = defineProps({
 const emit = defineEmits(['read', 'unread', 'remove', 'click:notification'])
 
 const isAllMarkRead = computed(() => {
-  return props.notifications.some((item) => item.isSeen === false)
+  return props.notifications.some(item => item.isSeen === false)
 })
 
 function markAllReadOrUnread() {
-  const allNotificationsIds = props.notifications.map((item) => item.id)
+  const allNotificationsIds = props.notifications.map(item => item.id)
   if (!isAllMarkRead.value) emit('unread', allNotificationsIds)
   else emit('read', allNotificationsIds)
 }
 
 const totalUnseenNotifications = computed(() => {
-  return props.notifications.filter((item) => item.isSeen === false).length
+  return props.notifications.filter(item => item.isSeen === false).length
 })
 
 function toggleReadUnread(isSeen, Id) {
@@ -63,7 +63,9 @@ function toggleReadUnread(isSeen, Id) {
       <VCard class="d-flex flex-column">
         <!-- 👉 Header -->
         <VCardItem class="notification-section">
-          <VCardTitle class="text-h6"> Notifications </VCardTitle>
+          <VCardTitle class="text-h6">
+            Notifications
+          </VCardTitle>
 
           <template #append>
             <VChip
@@ -192,7 +194,9 @@ function toggleReadUnread(isSeen, Id) {
 
         <!-- 👉 Footer -->
         <VCardText v-show="props.notifications.length" class="pa-4">
-          <VBtn block size="small"> View All Notifications </VBtn>
+          <VBtn block size="small">
+            View All Notifications
+          </VBtn>
         </VCardText>
       </VCard>
     </VMenu>
