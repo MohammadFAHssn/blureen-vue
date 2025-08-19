@@ -73,7 +73,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <Allowances />
       <br />
       <VCard color="primary">
-        <VCardText class="pa-3 first-payment">
+        <VCardText class="pa-3 sum-of-amounts-card">
           <div class="label v-card-title pa-0 text-white text-wrap">
             جمع خالص پرداختی‌های اول
           </div>
@@ -134,15 +134,15 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       xxl="4"
     >
       <VCard color="warning">
-        <VCardText class="pa-3 d-flex justify-space-between">
-          <div class="v-card-title pa-0">
-            جمع کل پرداخت‌ها
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
+            جمع خالص پرداختی‌های اول
           </div>
 
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center ml-4">
-              12,500,000
-            </h6>
+          <h6 class="text-h6 amount">
+            12,500,000
+          </h6>
+          <div class="percent-change">
             <VChip
               variant="flat"
               :color="`${-3.2 > 0 ? 'success' : 'error'}`"
@@ -166,7 +166,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
 </template>
 
 <style lang="scss" scoped>
-.first-payment {
+.sum-of-amounts-card {
   display: grid;
   grid-gap: 0;
   grid-template-columns: 1fr auto;
