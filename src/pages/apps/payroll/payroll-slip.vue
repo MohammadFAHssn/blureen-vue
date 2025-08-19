@@ -74,7 +74,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <br />
       <VCard color="primary">
         <VCardText class="pa-3 first-payment">
-          <div class="label v-card-title pa-0 text-white">
+          <div class="label v-card-title pa-0 text-white text-wrap">
             جمع خالص پرداختی‌های اول
           </div>
 
@@ -185,8 +185,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
     place-self: center center;
   }
 
-  // حالت صفحه‌نمایش بزرگ
-  @media (min-width: 1600px) {
+  @media (min-width: 1700px) {
     grid-gap: 0 1rem;
     grid-template-columns: 1fr auto auto;
     grid-template-rows: 1fr;
