@@ -136,7 +136,7 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <VCard color="warning">
         <VCardText class="pa-3 sum-of-amounts-card">
           <div class="label v-card-title pa-0 text-wrap">
-            جمع خالص پرداختی‌های اول
+            جمع کل پرداخت‌ها
           </div>
 
           <h6 class="text-h6 amount">

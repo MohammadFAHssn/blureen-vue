@@ -84,15 +84,15 @@ const bonuses = [
   </VCard>
 
   <VCard color="primary">
-    <VCardText class="pa-3 d-flex justify-space-between">
-      <div class="v-card-title pa-0 text-white">
+    <VCardText class="pa-3 sum-of-amounts-card">
+      <div class="label v-card-title pa-0 text-white text-wrap">
         جمع پاداش‌ها (پرداختی دوم)
       </div>
 
-      <div class="d-flex align-center justify-space-between">
-        <h6 class="text-h6 text-center ml-4 text-white">
-          12,500,000
-        </h6>
+      <h6 class="text-h6 text-white amount">
+        12,500,000
+      </h6>
+      <div class="percent-change">
         <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
           <div class="text-sm">
             {{ Math.abs(3.2) }}%
@@ -116,5 +116,43 @@ const bonuses = [
 <style lang="scss" scoped>
 .bonuses-card {
   border-block: 2px solid rgb(var(--v-theme-primary));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

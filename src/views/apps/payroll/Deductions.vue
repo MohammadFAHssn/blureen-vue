@@ -298,15 +298,15 @@ const deductions = [
 
     <VCardText>
       <VCard variant="tonal" color="error">
-        <VCardText class="pa-3 d-flex justify-space-between">
-          <div class="v-card-title pa-0">
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
             جمع کسورات
           </div>
 
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center ml-4">
-              12,500,000
-            </h6>
+          <h6 class="text-h6 amount">
+            12,500,000
+          </h6>
+          <div class="percent-change">
             <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
               <div class="text-sm">
                 {{ Math.abs(3.3) }}%
@@ -332,5 +332,43 @@ const deductions = [
 <style lang="scss" scoped>
 .deductions-card {
   border-block: 2px solid rgb(var(--v-theme-error));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>
