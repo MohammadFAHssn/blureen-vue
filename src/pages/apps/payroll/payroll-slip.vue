@@ -73,33 +73,30 @@ import Payments from '@/views/apps/payroll/Payments.vue'
       <Allowances />
       <br />
       <VCard color="primary">
-        <VCardText class="pa-3">
-          <div class="parent">
-            <div class="div1 v-card-title pa-0 text-white">
-              جمع خالص پرداختی‌های اول
-            </div>
-            <div class="div2">
-              <h6 class="text-h6 text-white">
-                12,500,000
-              </h6>
-            </div>
-            <div class="div3">
-              <VChip
-                variant="flat"
-                :color="`${3.2 > 0 ? 'success' : 'error'}`"
-                class="d-flex align-center"
-              >
-                <div class="text-sm">
-                  {{ Math.abs(3.2) }}%
-                </div>
+        <VCardText class="pa-3 first-payment">
+          <div class="label v-card-title pa-0 text-white">
+            جمع خالص پرداختی‌های اول
+          </div>
 
-                <VIcon
-                  :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
-                  size="20"
-                  class="mr-1"
-                />
-              </VChip>
-            </div>
+          <h6 class="text-h6 text-white amount">
+            12,500,000
+          </h6>
+          <div class="percent-change">
+            <VChip
+              variant="flat"
+              :color="`${3.2 > 0 ? 'success' : 'error'}`"
+              class="d-flex align-center"
+            >
+              <div class="text-sm">
+                {{ Math.abs(3.2) }}%
+              </div>
+
+              <VIcon
+                :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                size="20"
+                class="mr-1"
+              />
+            </VChip>
           </div>
         </VCardText>
       </VCard>
@@ -169,45 +166,42 @@ import Payments from '@/views/apps/payroll/Payments.vue'
 </template>
 
 <style lang="scss" scoped>
-/* حالت موبایل (پیش‌فرض) */
-.parent {
+.first-payment {
   display: grid;
   grid-gap: 0;
   grid-template-columns: 1fr auto;
   grid-template-rows: repeat(2, 1fr);
-}
 
-.div1 {
-  grid-area: 1 / 1 / 2 / 2;
-}
-
-.div2 {
-  grid-area: 2 / 1 / 3 / 2;
-}
-
-.div3 {
-  grid-area: 1 / 2 / 3 / 3;
-  place-self: center center;
-}
-
-/* حالت صفحه‌نمایش بزرگ */
-@media (min-width: 1600px) {
-  .parent {
-    grid-gap: 0 1rem;
-    grid-template-columns: 1fr auto auto;
-    grid-template-rows: 1fr;
-  }
-
-  .div1 {
+  .label {
     grid-area: 1 / 1 / 2 / 2;
   }
 
-  .div2 {
-    grid-area: 1 / 2 / 2 / 3;
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
   }
 
-  .div3 {
-    grid-area: 1 / 3 / 2 / 4;
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  // حالت صفحه‌نمایش بزرگ
+  @media (min-width: 1600px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
   }
 }
 </style>
