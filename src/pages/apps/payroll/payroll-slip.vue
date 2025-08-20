@@ -6,9 +6,59 @@ import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import OverTime from '@/views/apps/payroll/OverTime.vue'
 import Payments from '@/views/apps/payroll/Payments.vue'
+
+// states
+const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
+})
+
+const payrollSlips = ref([]) // the current and previous month
+
+const pendingState = reactive({
+  fetchingPayrollSlips: false,
+})
+
+// ----- -----
+
+pendingState.fetchingPayrollSlips = true
+try {
+  const { data, error } = await useApi(
+    createUrl('/payroll/payroll-slip', {
+      query: {
+        'fields[users]': 'id,first_name,last_name,personnel_code',
+        'filter[user_id]': 'current',
+        'filter[payrollBatch.month]': '${2,1}',
+        'filter[payrollBatch.year]': '${1404}',
+        'include': 'payrollItems,users',
+      },
+    }),
+  )
+
+  pendingState.fetchingPayrollSlips = false
+
+  if (error.value) throw error.value
+
+  payrollSlips.value = data.value.data
+}
+catch (e) {
+  console.error('Error fetching payrollSlips:', e)
+  uiState.hasError = true
+  uiState.errorMessage = 'خطا در دریافت فیش حقوقی'
+}
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="outlined"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+
   <VRow>
     <VCol>
       <p class="text-lg font-weight-bold mb-1">
