@@ -1,28 +1,35 @@
 <script setup>
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
+  },
+})
+
 const attendances = [
   {
     label: 'کارکرد عادی',
-    minutes: '160',
+    minutes: props.getAmount('دقیقه كاركرد عادی'),
   },
   {
     label: 'بیماری',
-    minutes: '125,000',
+    minutes: props.getAmount('دقیقه بيماری'),
   },
   {
     label: 'غیبت',
-    minutes: '12,100',
+    minutes: props.getAmount('دقیقه غيبت'),
   },
   {
     label: 'مرخصی بدون حقوق',
-    minutes: '50',
+    minutes: props.getAmount('دقیقه مرخصی بدون حقوق'),
   },
   {
     label: 'اضافه‌کاری',
-    minutes: '660',
+    minutes: props.getAmount('اضافه كاري عادی*'),
   },
   {
     label: 'جمعه‌کاری',
-    minutes: '1500',
+    minutes: props.getAmount('جمعه كاری*'),
   },
 ]
 </script>

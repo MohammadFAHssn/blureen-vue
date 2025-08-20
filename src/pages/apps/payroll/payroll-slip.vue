@@ -19,8 +19,8 @@ const pendingState = reactive({
   fetchingPayrollSlips: false,
 })
 
-const month = ref(4)
-const year = ref(1404)
+const month = ref(11)
+const year = ref(1403)
 const last = 2
 
 // ----- -----
@@ -108,7 +108,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Attendance />
+      <Attendance :get-amount="getAmount" />
       <br />
       <Payments />
     </VCol>
