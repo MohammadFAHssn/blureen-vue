@@ -1,103 +1,110 @@
 <script setup>
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
+  },
+})
+
 const payments = [
   {
     label: 'حقوق پایه',
-    amount: '35,485,962',
+    amount: props.getAmount('حقوق پايه'),
     percentChange: 4.2,
   },
   {
     label: 'حق اولاد',
-    amount: '1,523,489',
+    amount: props.getAmount('حق اولاد'),
     percentChange: 1.8,
   },
   {
     label: 'حق مسکن',
-    amount: '9,123,456',
+    amount: props.getAmount('حق مسكن'),
     percentChange: -0.5,
   },
   {
     label: 'خواربار',
-    amount: '1,100,000',
+    amount: props.getAmount('خواربار'),
     percentChange: 2.3,
   },
   {
     label: 'حق تأهل',
-    amount: '5,000,000',
+    amount: props.getAmount('حق تاهل'),
     percentChange: 3.1,
   },
   {
     label: 'نوبت کاری 10%',
-    amount: '258,321',
+    amount: props.getAmount('نوبتكاری 10%'),
     percentChange: -1.1,
   },
   {
     label: 'نوبت کاری 15%',
-    amount: '387,481',
+    amount: props.getAmount('نوبتكاری 15%'),
     percentChange: 1.6,
   },
   {
     label: 'بن کارگری',
-    amount: '1,250,000',
+    amount: props.getAmount('بن كارگری'),
     percentChange: 0.9,
   },
   {
     label: 'پایه سنوات سالیانه',
-    amount: '750,000',
+    amount: props.getAmount('پايه سنوات ساليانه'),
     percentChange: 0.7,
   },
   {
     label: 'مزد سنوات',
-    amount: '850,000',
+    amount: props.getAmount('مزد سنوات'),
     percentChange: -1.2,
   },
   {
     label: 'حق پست',
-    amount: '1,800,000',
+    amount: props.getAmount('حق پست'),
     percentChange: 2.1,
   },
   {
     label: 'ماندگاری پست',
-    amount: '450,000',
+    amount: props.getAmount('ماندگاری پست'),
     percentChange: 0.4,
   },
   {
     label: 'ماندگاری محیط کار (سختی کار)',
-    amount: '1,000,000,000',
+    amount: props.getAmount('ماندگاری محيط كار(سختی كار)'),
     percentChange: 99.99,
   },
   {
     label: 'محیط کار (سختی کار)',
-    amount: '2,100,000',
+    amount: props.getAmount('محيط كار(سختی كار)'),
     percentChange: 2.5,
   },
   {
     label: 'پاداش مدیریت',
-    amount: '15,000,000',
+    amount: props.getAmount('پاداش مدیریت'),
     percentChange: 10.0,
   },
   {
     label: 'ماندگاری پاداش مدیریت',
-    amount: '3,750,000',
+    amount: props.getAmount('ماندگاری پاداش مدیریت'),
     percentChange: 2.5,
   },
   {
     label: 'سایر مزایا',
-    amount: '450,000',
+    amount: props.getAmount('ساير مزايا'),
     percentChange: 0.8,
   },
   {
     label: 'رتبه‌بندی',
-    amount: '4,500,000',
+    amount: props.getAmount('رتبه بندی'),
     percentChange: 4.1,
   },
   {
     label: 'حق مأموریت',
-    amount: '3,200,000',
+    amount: props.getAmount('حق ماموريت'),
     percentChange: -3.0,
   },
   {
     label: 'پرداختی معوق',
-    amount: '7,800,000',
+    amount: props.getAmount('پرداختی معوق'),
     percentChange: 5.0,
   },
 ]
@@ -169,7 +176,7 @@ const payments = [
           </div>
 
           <h6 class="text-h6 amount">
-            12,500,000
+            {{ props.getAmount('جمع ناخالص پرداختی') }}
           </h6>
           <div class="percent-change">
             <div

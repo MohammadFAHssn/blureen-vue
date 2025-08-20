@@ -110,7 +110,7 @@ function getAmount(label) {
     >
       <Attendance :get-amount="getAmount" />
       <br />
-      <Payments />
+      <Payments :get-amount="getAmount" />
     </VCol>
 
     <VCol
