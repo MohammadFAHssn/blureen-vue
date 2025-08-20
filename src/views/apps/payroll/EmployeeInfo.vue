@@ -1,4 +1,12 @@
-<!-- icon size -->
+<script setup>
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
+  },
+})
+</script>
+
 <template>
   <VCard>
     <VCardText class="pa-3">
@@ -18,7 +26,7 @@
               کد پرسنلی
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              6649
+              {{ props.getAmount('پرسنلی') }}
             </p>
           </div>
         </VCol>
@@ -38,7 +46,8 @@
               نام و نام خانوادگی
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              محمد حسنی احمدآبادی
+              {{ props.getAmount('نام') }}
+              {{ props.getAmount('نام خانوادگی') }}
             </p>
           </div>
         </VCol>
@@ -58,7 +67,7 @@
               واحد کاری
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              برنامه‌نویسی
+              {{ props.getAmount('واحد کاری') }}
             </p>
           </div>
         </VCol>
@@ -78,12 +87,12 @@
               گروه
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              10
+              {{ props.getAmount('گروه') }}
             </p>
           </div>
         </VCol>
 
-        <VCol class="d-flex align-center">
+        <VCol v-if="props.getAmount('رتبه')" class="d-flex align-center">
           <VAvatar
             variant="text"
             color="primary"
@@ -98,7 +107,7 @@
               رتبه
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              2
+              {{ props.getAmount('رتبه') }}
             </p>
           </div>
         </VCol>

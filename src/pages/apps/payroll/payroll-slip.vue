@@ -19,11 +19,11 @@ const pendingState = reactive({
   fetchingPayrollSlips: false,
 })
 
-// ----- -----
-
 const month = ref(4)
 const year = ref(1404)
 const last = 2
+
+// ----- -----
 
 pendingState.fetchingPayrollSlips = true
 try {
@@ -47,6 +47,18 @@ catch (e) {
   console.error('Error fetching payrollSlips:', e)
   uiState.hasError = true
   uiState.errorMessage = e.message || 'خطا در دریافت فیش حقوقی'
+}
+
+const payrollSlipOfCurrentPeriod = computed(() => payrollSlips.value[0])
+
+function getAmount(label) {
+  let amount
+  payrollSlipOfCurrentPeriod.value.payroll_items.forEach((item) => {
+    if (item.item_title === label) {
+      amount = item.item_value
+    }
+  })
+  return amount
 }
 </script>
 
@@ -75,7 +87,7 @@ catch (e) {
 
   <VRow>
     <VCol>
-      <EmployeeInfo />
+      <EmployeeInfo :get-amount="getAmount" />
     </VCol>
   </VRow>
 
