@@ -21,16 +21,18 @@ const pendingState = reactive({
 
 // ----- -----
 
+const month = ref(4)
+const year = ref(1404)
+const last = 2
+
 pendingState.fetchingPayrollSlips = true
 try {
   const { data, error } = await useApi(
-    createUrl('/payroll/payroll-slip', {
+    createUrl('/payroll/payroll-slip/get-the-last-few-months', {
       query: {
-        'fields[users]': 'id,first_name,last_name,personnel_code',
-        'filter[user_id]': 'current',
-        'filter[payrollBatch.month]': '${2,1}',
-        'filter[payrollBatch.year]': '${1404}',
-        'include': 'payrollItems,users',
+        month: month.value,
+        year: year.value,
+        last,
       },
     }),
   )
@@ -44,7 +46,7 @@ try {
 catch (e) {
   console.error('Error fetching payrollSlips:', e)
   uiState.hasError = true
-  uiState.errorMessage = 'خطا در دریافت فیش حقوقی'
+  uiState.errorMessage = e.message || 'خطا در دریافت فیش حقوقی'
 }
 </script>
 
