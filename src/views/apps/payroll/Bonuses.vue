@@ -33,7 +33,9 @@ const bonuses = computed(() =>
   ].filter(bonus => bonus.amount),
 )
 
-const totalBonuses = computed(() => props.getAmount('جمع پاداش'))
+const total = computed(() => {
+  return { amount: props.getAmount('جمع پاداش'), percentChange: 5.0 }
+})
 </script>
 
 <template>
@@ -101,20 +103,22 @@ const totalBonuses = computed(() => props.getAmount('جمع پاداش'))
       </div>
 
       <h6 class="text-h6 text-white amount">
-        {{ totalBonuses }}
+        {{ total.amount }}
       </h6>
       <div class="percent-change">
         <VChip
           variant="flat"
-          :color="`${totalBonuses > 0 ? 'success' : 'error'}`"
+          :color="`${3.2 > 0 ? 'success' : 'error'}`"
           class="d-flex align-center"
         >
           <div class="text-sm">
-            {{ Math.abs(totalBonuses) }}%
+            {{ Math.abs(3.2) }}%
           </div>
 
           <VIcon
-            :icon="totalBonuses > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+            :icon="
+              3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
+            "
             size="20"
             class="mr-1"
           />

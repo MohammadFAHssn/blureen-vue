@@ -264,9 +264,9 @@ const deductions = computed(() =>
   ].filter(deduction => deduction.amount),
 )
 
-const totalDeductions = computed(() =>
-  props.getAmount('جمع کسورات'),
-)
+const total = computed(() => {
+  return { amount: props.getAmount('جمع کسورات'), percentChange: 5.0 }
+})
 </script>
 
 <template>
@@ -316,16 +316,20 @@ const totalDeductions = computed(() =>
           </div>
 
           <h6 class="text-h6 amount">
-            {{ totalDeductions }}
+            {{ total.amount }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${totalDeductions > 0 ? 'text-error' : 'text-success'}`">
+            <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
               <div class="text-sm">
-                {{ Math.abs(totalDeductions) }}%
+                {{ Math.abs(3.3) }}%
               </div>
 
               <VIcon
-                :icon="totalDeductions > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="
+                  3.3 > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
                 size="20"
                 class="mr-1"
               />

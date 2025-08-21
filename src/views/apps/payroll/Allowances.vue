@@ -54,7 +54,9 @@ const allowanceDeductions = {
   reason: props.getAmount('علت کسر پاداش'),
 }
 
-const totalAllowances = computed(() => props.getAmount('جمع فوق العاده'))
+const total = computed(() => {
+  return { amount: props.getAmount('جمع فوق العاده'), percentChange: 5.0 }
+})
 </script>
 
 <template>
@@ -208,17 +210,17 @@ const totalAllowances = computed(() => props.getAmount('جمع فوق العاد
           </div>
 
           <h6 class="text-h6 amount">
-            {{ totalAllowances }}
+            {{ total.amount }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${totalAllowances > 0 ? 'text-light-green' : 'text-error'}`">
+            <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(totalAllowances) }}%
+                {{ Math.abs(-5) }}%
               </div>
 
               <VIcon
                 :icon="
-                  totalAllowances > 0
+                  -5 > 0
                     ? 'tabler-chevron-up'
                     : 'tabler-chevron-down'
                 "

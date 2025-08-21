@@ -204,7 +204,7 @@ function getAmount(label) {
           </div>
 
           <h6 class="text-h6 amount">
-            12,500,000
+            {{ getAmount('جمع کل پرداختی') }}
           </h6>
           <div class="percent-change">
             <VChip

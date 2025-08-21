@@ -6,20 +6,27 @@ const props = defineProps({
   },
 })
 
-const overtimeItems = computed(() => [
-  {
-    label: 'اضافه‌کاری عادی',
-    amount: props.getAmount('اضافه كاري عادی*'),
-    percentChange: 100.123,
-  },
-  {
-    label: 'جمعه‌کاری',
-    amount: props.getAmount('جمعه كاری*'),
-    percentChange: -100.123,
-  },
-].filter(item => item.amount))
+const overtimeItems = computed(() =>
+  [
+    {
+      label: 'اضافه‌کاری عادی',
+      amount: props.getAmount('اضافه كاري عادی*'),
+      percentChange: 100.123,
+    },
+    {
+      label: 'جمعه‌کاری',
+      amount: props.getAmount('جمعه كاری*'),
+      percentChange: -100.123,
+    },
+  ].filter(item => item.amount),
+)
 
-const sumOfOvertime = computed(() => props.getAmount('جمع اضافه کاری / جمعه کاری'))
+const total = computed(() => {
+  return {
+    amount: props.getAmount('جمع اضافه کاری / جمعه کاری'),
+    percentChange: 5.0,
+  }
+})
 </script>
 
 <template>
@@ -41,11 +48,7 @@ const sumOfOvertime = computed(() => props.getAmount('جمع اضافه کاری
 
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem
-          v-for="item in overtimeItems"
-          :key="item.label"
-          class="pa-2"
-        >
+        <VListItem v-for="item in overtimeItems" :key="item.label" class="pa-2">
           <VListItemTitle class="text-wrap">
             {{ item.label }}
           </VListItemTitle>
@@ -84,17 +87,17 @@ const sumOfOvertime = computed(() => props.getAmount('جمع اضافه کاری
           </div>
 
           <h6 class="text-h6 amount">
-            {{ sumOfOvertime }}
+            {{ total.amount }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${sumOfOvertime > 0 ? 'text-success' : 'text-error'}`">
+            <div :class="`d-flex align-center ${10 > 0 ? 'text-success' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(sumOfOvertime) }}%
+                {{ Math.abs(10) }}%
               </div>
 
               <VIcon
                 :icon="
-                  sumOfOvertime > 0
+                  10 > 0
                     ? 'tabler-chevron-up'
                     : 'tabler-chevron-down'
                 "

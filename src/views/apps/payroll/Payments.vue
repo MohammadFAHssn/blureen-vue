@@ -111,8 +111,12 @@ const payments = computed(() =>
   ].filter(payment => payment.amount),
 )
 
-const totalAmount = computed(() =>
-  props.getAmount('جمع ناخالص پرداختی'),
+const total = computed(() => {
+  return {
+    amount: props.getAmount('جمع ناخالص پرداختی'),
+    percentChange: 5.0,
+  }
+},
 )
 </script>
 
@@ -182,20 +186,22 @@ const totalAmount = computed(() =>
           </div>
 
           <h6 class="text-h6 amount">
-            {{ totalAmount }}
+            {{ total.amount }}
           </h6>
           <div class="percent-change">
             <div
               :class="`d-flex align-center ${
-                totalAmount > 0 ? 'text-teal' : 'text-error'
+                10 > 0 ? 'text-teal' : 'text-error'
               }`"
             >
               <div class="text-sm">
-                {{ Math.abs(totalAmount) }}%
+                {{ Math.abs(10) }}%
               </div>
 
               <VIcon
-                :icon="totalAmount > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="
+                  10 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
+                "
                 size="20"
                 class="mr-1"
               />
