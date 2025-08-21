@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   getAmount: {
     type: Function,
@@ -6,32 +8,34 @@ const props = defineProps({
   },
 })
 
-const attendances = [
-  {
-    label: 'کارکرد عادی',
-    minutes: props.getAmount('دقیقه كاركرد عادی'),
-  },
-  {
-    label: 'بیماری',
-    minutes: props.getAmount('دقیقه بيماری'),
-  },
-  {
-    label: 'غیبت',
-    minutes: props.getAmount('دقیقه غيبت'),
-  },
-  {
-    label: 'مرخصی بدون حقوق',
-    minutes: props.getAmount('دقیقه مرخصی بدون حقوق'),
-  },
-  {
-    label: 'اضافه‌کاری',
-    minutes: props.getAmount('اضافه كاري عادی*'),
-  },
-  {
-    label: 'جمعه‌کاری',
-    minutes: props.getAmount('جمعه كاری*'),
-  },
-]
+const attendances = computed(() =>
+  [
+    {
+      label: 'کارکرد عادی',
+      minutes: props.getAmount('دقیقه كاركرد عادی'),
+    },
+    {
+      label: 'بیماری',
+      minutes: props.getAmount('دقیقه بيماری'),
+    },
+    {
+      label: 'غیبت',
+      minutes: props.getAmount('دقیقه غيبت'),
+    },
+    {
+      label: 'مرخصی بدون حقوق',
+      minutes: props.getAmount('دقیقه مرخصی بدون حقوق'),
+    },
+    {
+      label: 'اضافه‌کاری',
+      minutes: props.getAmount('اضافه كاري عادی*'),
+    },
+    {
+      label: 'جمعه‌کاری',
+      minutes: props.getAmount('جمعه كاری*'),
+    },
+  ].filter(attendance => attendance.minutes),
+)
 </script>
 
 <template>

@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+
 const props = defineProps({
   getAmount: {
     type: Function,
@@ -6,108 +8,110 @@ const props = defineProps({
   },
 })
 
-const payments = [
-  {
-    label: 'حقوق پایه',
-    amount: props.getAmount('حقوق پايه'),
-    percentChange: 4.2,
-  },
-  {
-    label: 'حق اولاد',
-    amount: props.getAmount('حق اولاد'),
-    percentChange: 1.8,
-  },
-  {
-    label: 'حق مسکن',
-    amount: props.getAmount('حق مسكن'),
-    percentChange: -0.5,
-  },
-  {
-    label: 'خواربار',
-    amount: props.getAmount('خواربار'),
-    percentChange: 2.3,
-  },
-  {
-    label: 'حق تأهل',
-    amount: props.getAmount('حق تاهل'),
-    percentChange: 3.1,
-  },
-  {
-    label: 'نوبت کاری 10%',
-    amount: props.getAmount('نوبتكاری 10%'),
-    percentChange: -1.1,
-  },
-  {
-    label: 'نوبت کاری 15%',
-    amount: props.getAmount('نوبتكاری 15%'),
-    percentChange: 1.6,
-  },
-  {
-    label: 'بن کارگری',
-    amount: props.getAmount('بن كارگری'),
-    percentChange: 0.9,
-  },
-  {
-    label: 'پایه سنوات سالیانه',
-    amount: props.getAmount('پايه سنوات ساليانه'),
-    percentChange: 0.7,
-  },
-  {
-    label: 'مزد سنوات',
-    amount: props.getAmount('مزد سنوات'),
-    percentChange: -1.2,
-  },
-  {
-    label: 'حق پست',
-    amount: props.getAmount('حق پست'),
-    percentChange: 2.1,
-  },
-  {
-    label: 'ماندگاری پست',
-    amount: props.getAmount('ماندگاری پست'),
-    percentChange: 0.4,
-  },
-  {
-    label: 'ماندگاری محیط کار (سختی کار)',
-    amount: props.getAmount('ماندگاری محيط كار(سختی كار)'),
-    percentChange: 99.99,
-  },
-  {
-    label: 'محیط کار (سختی کار)',
-    amount: props.getAmount('محيط كار(سختی كار)'),
-    percentChange: 2.5,
-  },
-  {
-    label: 'پاداش مدیریت',
-    amount: props.getAmount('پاداش مدیریت'),
-    percentChange: 10.0,
-  },
-  {
-    label: 'ماندگاری پاداش مدیریت',
-    amount: props.getAmount('ماندگاری پاداش مدیریت'),
-    percentChange: 2.5,
-  },
-  {
-    label: 'سایر مزایا',
-    amount: props.getAmount('ساير مزايا'),
-    percentChange: 0.8,
-  },
-  {
-    label: 'رتبه‌بندی',
-    amount: props.getAmount('رتبه بندی'),
-    percentChange: 4.1,
-  },
-  {
-    label: 'حق مأموریت',
-    amount: props.getAmount('حق ماموريت'),
-    percentChange: -3.0,
-  },
-  {
-    label: 'پرداختی معوق',
-    amount: props.getAmount('پرداختی معوق'),
-    percentChange: 5.0,
-  },
-]
+const payments = computed(() =>
+  [
+    {
+      label: 'حقوق پایه',
+      amount: props.getAmount('حقوق پايه'),
+      percentChange: 4.2,
+    },
+    {
+      label: 'حق اولاد',
+      amount: props.getAmount('حق اولاد'),
+      percentChange: 1.8,
+    },
+    {
+      label: 'حق مسکن',
+      amount: props.getAmount('حق مسكن'),
+      percentChange: -0.5,
+    },
+    {
+      label: 'خواربار',
+      amount: props.getAmount('خواربار'),
+      percentChange: 2.3,
+    },
+    {
+      label: 'حق تأهل',
+      amount: props.getAmount('حق تاهل'),
+      percentChange: 3.1,
+    },
+    {
+      label: 'نوبت کاری 10%',
+      amount: props.getAmount('نوبتكاری 10%'),
+      percentChange: -1.1,
+    },
+    {
+      label: 'نوبت کاری 15%',
+      amount: props.getAmount('نوبتكاری 15%'),
+      percentChange: 1.6,
+    },
+    {
+      label: 'بن کارگری',
+      amount: props.getAmount('بن كارگری'),
+      percentChange: 0.9,
+    },
+    {
+      label: 'پایه سنوات سالیانه',
+      amount: props.getAmount('پايه سنوات ساليانه'),
+      percentChange: 0.7,
+    },
+    {
+      label: 'مزد سنوات',
+      amount: props.getAmount('مزد سنوات'),
+      percentChange: -1.2,
+    },
+    {
+      label: 'حق پست',
+      amount: props.getAmount('حق پست'),
+      percentChange: 2.1,
+    },
+    {
+      label: 'ماندگاری پست',
+      amount: props.getAmount('ماندگاری پست'),
+      percentChange: 0.4,
+    },
+    {
+      label: 'ماندگاری محیط کار (سختی کار)',
+      amount: props.getAmount('ماندگاری محيط كار(سختی كار)'),
+      percentChange: 99.99,
+    },
+    {
+      label: 'محیط کار (سختی کار)',
+      amount: props.getAmount('محيط كار(سختی كار)'),
+      percentChange: 2.5,
+    },
+    {
+      label: 'پاداش مدیریت',
+      amount: props.getAmount('پاداش مدیریت'),
+      percentChange: 10.0,
+    },
+    {
+      label: 'ماندگاری پاداش مدیریت',
+      amount: props.getAmount('ماندگاری پاداش مدیریت'),
+      percentChange: 2.5,
+    },
+    {
+      label: 'سایر مزایا',
+      amount: props.getAmount('ساير مزايا'),
+      percentChange: 0.8,
+    },
+    {
+      label: 'رتبه‌بندی',
+      amount: props.getAmount('رتبه بندی'),
+      percentChange: 4.1,
+    },
+    {
+      label: 'حق مأموریت',
+      amount: props.getAmount('حق ماموريت'),
+      percentChange: -3.0,
+    },
+    {
+      label: 'پرداختی معوق',
+      amount: props.getAmount('پرداختی معوق'),
+      percentChange: 5.0,
+    },
+  ].filter(payment => payment.amount),
+)
 </script>
 
 <template>
