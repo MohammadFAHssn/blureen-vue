@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   getAmount: {
     type: Function,
@@ -112,6 +110,10 @@ const payments = computed(() =>
     },
   ].filter(payment => payment.amount),
 )
+
+const totalAmount = computed(() =>
+  props.getAmount('جمع ناخالص پرداختی'),
+)
 </script>
 
 <template>
@@ -180,20 +182,20 @@ const payments = computed(() =>
           </div>
 
           <h6 class="text-h6 amount">
-            {{ props.getAmount('جمع ناخالص پرداختی') }}
+            {{ totalAmount }}
           </h6>
           <div class="percent-change">
             <div
               :class="`d-flex align-center ${
-                10 > 0 ? 'text-teal' : 'text-error'
+                totalAmount > 0 ? 'text-teal' : 'text-error'
               }`"
             >
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(totalAmount) }}%
               </div>
 
               <VIcon
-                :icon="10 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="totalAmount > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />

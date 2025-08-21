@@ -1,18 +1,25 @@
 <script setup>
-const overtimeItems = [
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
+  },
+})
+
+const overtimeItems = computed(() => [
   {
     label: 'اضافه‌کاری عادی',
-    minutes: '15,555',
-    amount: '350,485,962',
+    amount: props.getAmount('اضافه كاري عادی*'),
     percentChange: 100.123,
   },
   {
     label: 'جمعه‌کاری',
-    minutes: '15,555',
-    amount: '100,523,489',
+    amount: props.getAmount('جمعه كاری*'),
     percentChange: -100.123,
   },
-]
+].filter(item => item.amount))
+
+const sumOfOvertime = computed(() => props.getAmount('جمع اضافه کاری / جمعه کاری'))
 </script>
 
 <template>
@@ -77,17 +84,17 @@ const overtimeItems = [
           </div>
 
           <h6 class="text-h6 amount">
-            12,500,000
+            {{ sumOfOvertime }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${10 > 0 ? 'text-success' : 'text-error'}`">
+            <div :class="`d-flex align-center ${sumOfOvertime > 0 ? 'text-success' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(sumOfOvertime) }}%
               </div>
 
               <VIcon
                 :icon="
-                  10 > 0
+                  sumOfOvertime > 0
                     ? 'tabler-chevron-up'
                     : 'tabler-chevron-down'
                 "

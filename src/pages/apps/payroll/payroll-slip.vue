@@ -132,7 +132,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <OverTime />
+      <OverTime :get-amount="getAmount"/>
       <br />
       <Allowances />
       <br />

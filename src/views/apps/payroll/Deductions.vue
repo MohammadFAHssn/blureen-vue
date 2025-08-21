@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   getAmount: {
     type: Function,
@@ -265,6 +263,10 @@ const deductions = computed(() =>
     },
   ].filter(deduction => deduction.amount),
 )
+
+const totalDeductions = computed(() =>
+  props.getAmount('جمع کسورات'),
+)
 </script>
 
 <template>
@@ -314,16 +316,16 @@ const deductions = computed(() =>
           </div>
 
           <h6 class="text-h6 amount">
-            {{ props.getAmount('جمع کسورات') }}
+            {{ totalDeductions }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
+            <div :class="`d-flex align-center ${totalDeductions > 0 ? 'text-error' : 'text-success'}`">
               <div class="text-sm">
-                {{ Math.abs(3.3) }}%
+                {{ Math.abs(totalDeductions) }}%
               </div>
 
               <VIcon
-                :icon="3.3 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="totalDeductions > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />

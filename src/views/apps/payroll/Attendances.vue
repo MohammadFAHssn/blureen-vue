@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   getAmount: {
     type: Function,
@@ -28,11 +26,11 @@ const attendances = computed(() =>
     },
     {
       label: 'اضافه‌کاری',
-      minutes: props.getAmount('اضافه كاري عادی*'),
+      minutes: props.getAmount('دقیقه اضافه كاری عادی'),
     },
     {
       label: 'جمعه‌کاری',
-      minutes: props.getAmount('جمعه كاری*'),
+      minutes: props.getAmount('دقیقه جمعه كاری'),
     },
   ].filter(attendance => attendance.minutes),
 )
