@@ -1,258 +1,265 @@
 <script setup>
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
+  },
+})
+
 const deductions = [
   {
     label: 'بیمه سهم کارمند',
-    amount: '347,821-',
+    amount: props.getAmount('بيمه سهم كارمند'),
   },
   {
     label: 'مالیات ماه',
-    amount: '1,892,456-',
+    amount: props.getAmount('ماليات ماه'),
   },
   {
     label: 'بیمه تکمیلی',
-    amount: '2,891-',
+    amount: props.getAmount('بيمه تكميلی'),
   },
   {
     label: 'کسر جاری کارکنان',
-    amount: '187,234-',
+    amount: props.getAmount('كسر جاری كاركنان'),
   },
   {
     label: 'وام ضروری',
-    amount: '456,789-',
+    amount: props.getAmount('وام ضروری'),
   },
   {
     label: 'وام ضروری 3',
-    amount: '312,567-',
+    amount: props.getAmount('وام ضروری 3'),
   },
   {
     label: 'خرید کارکنان 1',
-    amount: '623,789-',
+    amount: props.getAmount('خريد كاركنان 1'),
   },
   {
     label: 'خرید کارکنان 2',
-    amount: '298,543-',
+    amount: props.getAmount('خريد كاركنان 2'),
   },
 
   {
     label: 'خرید فروردین آریا',
-    amount: '112,789-',
+    amount: props.getAmount('خريد فروردين آريا'),
   },
-  // {
-  //   label: 'خرید اردیبهشت آریا',
-  //   amount: '89,456-',
-  // },
-  // {
-  //   label: 'خرید خرداد آریا',
-  //   amount: '167,234-',
-  // },
-  // {
-  //   label: 'خرید تیر آریا',
-  //   amount: '94,567-',
-  // },
-  // {
-  //   label: 'خرید مرداد آریا',
-  //   amount: '134,890-',
-  // },
-  // {
-  //   label: 'خرید شهریور آریا',
-  //   amount: '78,912-',
-  // },
-  // {
-  //   label: 'خرید مهر آریا',
-  //   amount: '156,345-',
-  // },
-  // {
-  //   label: 'خرید آبان آریا',
-  //   amount: '123,567-',
-  // },
-  // {
-  //   label: 'خرید آذر آریا',
-  //   amount: '91,234-',
-  // },
-  // {
-  //   label: 'خرید دی آریا',
-  //   amount: '178,456-',
-  // },
-  // {
-  //   label: 'خرید بهمن آریا',
-  //   amount: '87,789-',
-  // },
-  // {
-  //   label: 'خرید فروردین چادرملو',
-  //   amount: '145,123-',
-  // },
-  // {
-  //   label: 'خرید اردیبهشت چادرملو',
-  //   amount: '76,890-',
-  // },
-  // {
-  //   label: 'خرید خرداد چادرملو',
-  //   amount: '198,234-',
-  // },
-  // {
-  //   label: 'خرید تیر چادرملو',
-  //   amount: '112,567-',
-  // },
-  // {
-  //   label: 'خرید مرداد چادرملو',
-  //   amount: '89,345-',
-  // },
-  // {
-  //   label: 'خرید شهریور چادرملو',
-  //   amount: '167,789-',
-  // },
-  // {
-  //   label: 'خرید مهر چادرملو',
-  //   amount: '94,123-',
-  // },
-  // {
-  //   label: 'خرید آبان چادرملو',
-  //   amount: '134,456-',
-  // },
-  // {
-  //   label: 'خرید آذر چادرملو',
-  //   amount: '78,234-',
-  // },
-  // {
-  //   label: 'خرید دی چادرملو',
-  //   amount: '156,890-',
-  // },
-  // {
-  //   label: 'خرید بهمن چادرملو',
-  //   amount: '123,345-',
-  // },
-  // {
-  //   label: 'فروردین ابوطالبی',
-  //   amount: '134,567-',
-  // },
-  // {
-  //   label: 'اردیبهشت ابوطالبی',
-  //   amount: '134,567-',
-  // },
-  // {
-  //   label: 'خرداد ابوطالبی',
-  //   amount: '89,234-',
-  // },
-  // {
-  //   label: 'تیر ابوطالبی',
-  //   amount: '156,789-',
-  // },
-  // {
-  //   label: 'مرداد ابوطالبی',
-  //   amount: '92,345-',
-  // },
-  // {
-  //   label: 'شهریور ابوطالبی',
-  //   amount: '178,912-',
-  // },
-  // {
-  //   label: 'مهر ابوطالبی',
-  //   amount: '123,678-',
-  // },
-  // {
-  //   label: 'آبان ابوطالبی',
-  //   amount: '87,543-',
-  // },
-  // {
-  //   label: 'آذر ابوطالبی',
-  //   amount: '145,892-',
-  // },
-  // {
-  //   label: 'دی ابوطالبی',
-  //   amount: '76,234-',
-  // },
-  // {
-  //   label: 'بهمن ابوطالبی',
-  //   amount: '198,567-',
-  // },
-  // {
-  //   label: 'خرید فروردین شیشه',
-  //   amount: '91,567-',
-  // },
-  // {
-  //   label: 'خرید اردیبهشت شیشه',
-  //   amount: '178,789-',
-  // },
-  // {
-  //   label: 'خرید خرداد شیشه',
-  //   amount: '87,123-',
-  // },
-  // {
-  //   label: 'خرید تیر شیشه',
-  //   amount: '145,456-',
-  // },
-  // {
-  //   label: 'خرید مرداد شیشه',
-  //   amount: '76,234-',
-  // },
-  // {
-  //   label: 'خرید شهریور شیشه',
-  //   amount: '198,890-',
-  // },
-  // {
-  //   label: 'خرید مهر شیشه',
-  //   amount: '112,345-',
-  // },
-  // {
-  //   label: 'خرید آبان شیشه',
-  //   amount: '89,567-',
-  // },
-  // {
-  //   label: 'خرید آذر شیشه',
-  //   amount: '167,789-',
-  // },
-  // {
-  //   label: 'خرید دی شیشه',
-  //   amount: '94,123-',
-  // },
-  // {
-  //   label: 'خرید بهمن شیشه',
-  //   amount: '134,456-',
-  // },
-  // {
-  //   label: 'خرید فروردین سالار',
-  //   amount: '78,890-',
-  // },
-  // {
-  //   label: 'خرید اردیبهشت سالار',
-  //   amount: '78,890-',
-  // },
-  // {
-  //   label: 'خرید خرداد سالار',
-  //   amount: '156,234-',
-  // },
-  // {
-  //   label: 'خرید تیر سالار',
-  //   amount: '123,567-',
-  // },
-  // {
-  //   label: 'خرید مرداد سالار',
-  //   amount: '91,345-',
-  // },
-  // {
-  //   label: 'خرید شهریور سالار',
-  //   amount: '178,789-',
-  // },
-  // {
-  //   label: 'خرید مهر سالار',
-  //   amount: '87,123-',
-  // },
-  // {
-  //   label: 'خرید آبان سالار',
-  //   amount: '145,456-',
-  // },
-  // {
-  //   label: 'خرید آذر سالار',
-  //   amount: '76,890-',
-  // },
-  // {
-  //   label: 'خرید دی سالار',
-  //   amount: '198,234-',
-  // },
-  // {
-  //   label: 'خرید بهمن سالار',
-  //   amount: '112,567-',
-  // },
+  {
+    label: 'خرید اردیبهشت آریا',
+    amount: props.getAmount('خريد اريبهشت آريا'),
+  },
+  {
+    label: 'خرید خرداد آریا',
+    amount: props.getAmount('خريد خرداد آريا'),
+  },
+  {
+    label: 'خرید تیر آریا',
+    amount: props.getAmount('خرید تیر آریا'),
+  },
+  {
+    label: 'خرید مرداد آریا',
+    amount: props.getAmount('خريد مرداد آريا'),
+  },
+  {
+    label: 'خرید شهریور آریا',
+    amount: props.getAmount('خريد شهريور آريا'),
+  },
+  {
+    label: 'خرید مهر آریا',
+    amount: props.getAmount('خريد مهر آريا'),
+  },
+  {
+    label: 'خرید آبان آریا',
+    amount: props.getAmount('خريد آبان آريا'),
+  },
+  {
+    label: 'خرید آذر آریا',
+    amount: props.getAmount('خريد آذر آريا'),
+  },
+  {
+    label: 'خرید دی آریا',
+    amount: props.getAmount('خريد دی آريا'),
+  },
+  {
+    label: 'خرید بهمن آریا',
+    amount: props.getAmount('خريد بهمن آريا'),
+  },
+  {
+    label: 'خرید فروردین چادرملو',
+    amount: props.getAmount('خريد فروردين چادرملو'),
+  },
+  {
+    label: 'خرید اردیبهشت چادرملو',
+    amount: props.getAmount('خريد ارديبهشت چادرملو'),
+  },
+  {
+    label: 'خرید خرداد چادرملو',
+    amount: props.getAmount('خريد خرداد چادرملو'),
+  },
+  {
+    label: 'خرید تیر چادرملو',
+    amount: props.getAmount('خريد تير چادرملو'),
+  },
+  {
+    label: 'خرید مرداد چادرملو',
+    amount: props.getAmount('خريد مرداد چادرملو'),
+  },
+  {
+    label: 'خرید شهریور چادرملو',
+    amount: props.getAmount('خريد شهريور چادرملو'),
+  },
+  {
+    label: 'خرید مهر چادرملو',
+    amount: props.getAmount('خريد مهر چادرملو'),
+  },
+  {
+    label: 'خرید آبان چادرملو',
+    amount: props.getAmount('خريد آبان چادرملو'),
+  },
+  {
+    label: 'خرید آذر چادرملو',
+    amount: props.getAmount('خريد آذر چادرملو'),
+  },
+  {
+    label: 'خرید دی چادرملو',
+    amount: props.getAmount('خريد دي چادرملو'),
+  },
+  {
+    label: 'خرید بهمن چادرملو',
+    amount: props.getAmount('خريد بهمن چادرملو'),
+  },
+  {
+    label: 'فروردین ابوطالبی',
+    amount: props.getAmount('خريد فروردين ابوطالبی'),
+  },
+  {
+    label: 'اردیبهشت ابوطالبی',
+    amount: props.getAmount('خريد ارديبهشت ابوطالبی'),
+  },
+  {
+    label: 'خرداد ابوطالبی',
+    amount: props.getAmount('خريد خرداد ابوطالبی'),
+  },
+  {
+    label: 'تیر ابوطالبی',
+    amount: props.getAmount('خريد تير ابوطالبی'),
+  },
+  {
+    label: 'مرداد ابوطالبی',
+    amount: props.getAmount('خريد مرداد ابوطالبی'),
+  },
+  {
+    label: 'شهریور ابوطالبی',
+    amount: props.getAmount('خريد شهريور ابوطالبی'),
+  },
+  {
+    label: 'مهر ابوطالبی',
+    amount: props.getAmount('خريد مهر ابوطالبی'),
+  },
+  {
+    label: 'آبان ابوطالبی',
+    amount: props.getAmount('خريد آبان ابوطالبی'),
+  },
+  {
+    label: 'آذر ابوطالبی',
+    amount: props.getAmount('خريد آذر ابوطالبی'),
+  },
+  {
+    label: 'دی ابوطالبی',
+    amount: props.getAmount('خريد دي ابوطالبی'),
+  },
+  {
+    label: 'بهمن ابوطالبی',
+    amount: props.getAmount('خريد بهمن ابوطالبی'),
+  },
+  {
+    label: 'خرید فروردین شیشه',
+    amount: props.getAmount('خريد فروردين شیشه'),
+  },
+  {
+    label: 'خرید اردیبهشت شیشه',
+    amount: props.getAmount('خرید اردیبهشت شیشه'),
+  },
+  {
+    label: 'خرید خرداد شیشه',
+    amount: props.getAmount('خريد خرداد شیشه'),
+  },
+  {
+    label: 'خرید تیر شیشه',
+    amount: props.getAmount('خريد تير شیشه'),
+  },
+  {
+    label: 'خرید مرداد شیشه',
+    amount: props.getAmount('خريد مرداد شیشه'),
+  },
+  {
+    label: 'خرید شهریور شیشه',
+    amount: props.getAmount('خريد شهريور شیشه'),
+  },
+  {
+    label: 'خرید مهر شیشه',
+    amount: props.getAmount('خريد مهر شیشه'),
+  },
+  {
+    label: 'خرید آبان شیشه',
+    amount: props.getAmount('خريد آبان شیشه'),
+  },
+  {
+    label: 'خرید آذر شیشه',
+    amount: props.getAmount('خريد آذر شیشه'),
+  },
+  {
+    label: 'خرید دی شیشه',
+    amount: props.getAmount('خريد دي شیشه'),
+  },
+  {
+    label: 'خرید بهمن شیشه',
+    amount: props.getAmount('خريد بهمن شیشه'),
+  },
+  {
+    label: 'خرید فروردین سالار',
+    amount: props.getAmount('خرید فروردین سالار'),
+  },
+  {
+    label: 'خرید اردیبهشت سالار',
+    amount: props.getAmount('خرید اردیبهشت سالار'),
+  },
+  {
+    label: 'خرید خرداد سالار',
+    amount: props.getAmount('خريد خرداد سالار'),
+  },
+  {
+    label: 'خرید تیر سالار',
+    amount: props.getAmount('خريد تير سالار'),
+  },
+  {
+    label: 'خرید مرداد سالار',
+    amount: props.getAmount('خريد مرداد سالار'),
+  },
+  {
+    label: 'خرید شهریور سالار',
+    amount: props.getAmount('خريد شهريور سالار'),
+  },
+  {
+    label: 'خرید مهر سالار',
+    amount: props.getAmount('خريد مهر سالار'),
+  },
+  {
+    label: 'خرید آبان سالار',
+    amount: props.getAmount('خريد آبان سالار'),
+  },
+  {
+    label: 'خرید آذر سالار',
+    amount: props.getAmount('خريد آذر سالار'),
+  },
+  {
+    label: 'خرید دی سالار',
+    amount: props.getAmount('خريد دي سالار'),
+  },
+  {
+    label: 'خرید بهمن سالار',
+    amount: props.getAmount('خريد بهمن سالار'),
+  },
 
 ]
 </script>
@@ -304,7 +311,7 @@ const deductions = [
           </div>
 
           <h6 class="text-h6 amount">
-            12,500,000
+            {{ props.getAmount('جمع کسورات') }}
           </h6>
           <div class="percent-change">
             <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">

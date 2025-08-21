@@ -121,7 +121,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Deductions />
+      <Deductions :get-amount="getAmount" />
     </VCol>
 
     <VCol
