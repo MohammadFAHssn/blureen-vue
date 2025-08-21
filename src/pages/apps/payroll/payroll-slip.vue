@@ -132,9 +132,9 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <OverTime :get-amount="getAmount"/>
+      <OverTime :get-amount="getAmount" />
       <br />
-      <Allowances />
+      <Allowances :get-amount="getAmount" />
       <br />
       <VCard color="primary">
         <VCardText class="pa-3 sum-of-amounts-card">

@@ -1,56 +1,60 @@
 <script setup>
-const allowanceItems = [
-  {
-    label: 'ماندگاری در شرکت',
-    amount: '1,000',
-    percentChange: -1.2,
-
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'پاداش فنی',
-    amount: '2,000',
-    percentChange: 0.8,
+})
 
-  },
-  {
-    label: 'فوق‌العاده مدیریت',
-    amount: '30,000',
-    percentChange: 0.5,
-
-  },
-]
+const allowanceItems = computed(() =>
+  [
+    {
+      label: 'ماندگاری در شرکت',
+      amount: props.getAmount('ماندگاری در شركت'),
+      percentChange: -1.2,
+    },
+    {
+      label: 'پاداش فنی',
+      amount: props.getAmount('پاداش فنی'),
+      percentChange: 0.8,
+    },
+    {
+      label: 'فوق‌العاده مدیریت',
+      amount: props.getAmount('فوق العاده مدیریت'),
+      percentChange: 0.5,
+    },
+  ].filter(item => item.amount),
+)
 
 const welfareItems = [
   {
     label: 'کمک هزینه درمان',
-    amount: '1,200',
+    amount: props.getAmount('کمک هزینه درمان'),
     percentChange: -2.0,
-
   },
   {
     label: 'کمک هزینه سفر',
-    amount: '2,500',
+    amount: props.getAmount('کمک هزینه سفر'),
     percentChange: 1.1,
-
   },
   {
     label: 'کمک هزینه فرهنگی، ورزشی، سرگرمی',
-    amount: '3,200',
+    amount: props.getAmount('فرهنگی ورزشی'),
     percentChange: 3.4,
-
   },
   {
     label: 'کمک هزینه حمایت از خانواده',
-    amount: '550,520,000',
+    amount: props.getAmount('حمایت از خانواده'),
     percentChange: -0.3,
-
   },
 ]
 
 const allowanceDeductions = {
-  amount: '1,200',
-  reason: 'دلوم موخواد',
+  amount: props.getAmount('كسر فوق العاده'),
+  reason: props.getAmount('علت کسر پاداش'),
 }
+
+const totalAllowances = computed(() => props.getAmount('جمع فوق العاده'))
 </script>
 
 <template>
@@ -154,7 +158,7 @@ const allowanceDeductions = {
       </VCard>
     </VCardText>
 
-    <VCardText>
+    <VCardText v-if="allowanceDeductions.amount">
       <VCard variant="outlined" color="error-lighten-2">
         <VCardItem class="pa-3">
           <VCardTitle class="v-list-item-title font-weight-bold">
@@ -204,17 +208,17 @@ const allowanceDeductions = {
           </div>
 
           <h6 class="text-h6 amount">
-            12,500,000
+            {{ totalAllowances }}
           </h6>
           <div class="percent-change">
-            <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">
+            <div :class="`d-flex align-center ${totalAllowances > 0 ? 'text-light-green' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(-5) }}%
+                {{ Math.abs(totalAllowances) }}%
               </div>
 
               <VIcon
                 :icon="
-                  -5 > 0
+                  totalAllowances > 0
                     ? 'tabler-chevron-up'
                     : 'tabler-chevron-down'
                 "
