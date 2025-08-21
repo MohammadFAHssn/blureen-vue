@@ -11,41 +11,44 @@ const allowanceItems = computed(() =>
     {
       label: 'ماندگاری در شرکت',
       amount: props.getPayrollItemByLabel('ماندگاری در شركت').amount,
-      percentChange: -1.2,
+      percentChange:
+        props.getPayrollItemByLabel('ماندگاری در شركت').percentChange,
     },
     {
       label: 'پاداش فنی',
       amount: props.getPayrollItemByLabel('پاداش فنی').amount,
-      percentChange: 0.8,
+      percentChange: props.getPayrollItemByLabel('پاداش فنی').percentChange,
     },
     {
       label: 'فوق‌العاده مدیریت',
       amount: props.getPayrollItemByLabel('فوق العاده مدیریت').amount,
-      percentChange: 0.5,
+      percentChange:
+        props.getPayrollItemByLabel('فوق العاده مدیریت').percentChange,
     },
-  ].filter(item => item.amount),
+  ].filter(item => item.amount || item.percentChange),
 )
 
 const welfareItems = [
   {
     label: 'کمک هزینه درمان',
     amount: props.getPayrollItemByLabel('کمک هزینه درمان').amount,
-    percentChange: -2.0,
+    percentChange: props.getPayrollItemByLabel('کمک هزینه درمان').percentChange,
   },
   {
     label: 'کمک هزینه سفر',
     amount: props.getPayrollItemByLabel('کمک هزینه سفر').amount,
-    percentChange: 1.1,
+    percentChange: props.getPayrollItemByLabel('کمک هزینه سفر').percentChange,
   },
   {
     label: 'کمک هزینه فرهنگی، ورزشی، سرگرمی',
     amount: props.getPayrollItemByLabel('فرهنگی ورزشی').amount,
-    percentChange: 3.4,
+    percentChange: props.getPayrollItemByLabel('فرهنگی ورزشی').percentChange,
   },
   {
     label: 'کمک هزینه حمایت از خانواده',
     amount: props.getPayrollItemByLabel('حمایت از خانواده').amount,
-    percentChange: -0.3,
+    percentChange:
+      props.getPayrollItemByLabel('حمایت از خانواده').percentChange,
   },
 ]
 
@@ -55,7 +58,10 @@ const allowanceDeductions = {
 }
 
 const total = computed(() => {
-  return { amount: props.getPayrollItemByLabel('جمع فوق العاده').amount, percentChange: 5.0 }
+  return {
+    amount: props.getPayrollItemByLabel('جمع فوق العاده').amount,
+    percentChange: props.getPayrollItemByLabel('جمع فوق العاده').percentChange,
+  }
 })
 </script>
 
@@ -92,20 +98,25 @@ const total = computed(() => {
               <div class="text-body-1">
                 {{ allowanceItem.amount }}
               </div>
-              <div :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(allowanceItem.percentChange) }}%
-                </div>
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <div
+                  v-if="allowanceItem.percentChange"
+                  :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(allowanceItem.percentChange) }}%
+                  </div>
 
-                <VIcon
-                  :icon="
-                    allowanceItem.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
-                  size="20"
-                  class="mr-1"
-                />
+                  <VIcon
+                    :icon="
+                      allowanceItem.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -137,20 +148,25 @@ const total = computed(() => {
                   <div class="text-body-1">
                     {{ welfareItem.amount }}
                   </div>
-                  <div :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
-                    <div class="text-sm">
-                      {{ Math.abs(welfareItem.percentChange) }}%
-                    </div>
+                  <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                    <div
+                      v-if="welfareItem.percentChange"
+                      :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
+                    >
+                      <div class="text-sm">
+                        {{ Math.abs(welfareItem.percentChange) }}%
+                      </div>
 
-                    <VIcon
-                      :icon="
-                        welfareItem.percentChange > 0
-                          ? 'tabler-chevron-up'
-                          : 'tabler-chevron-down'
-                      "
-                      size="20"
-                      class="mr-1"
-                    />
+                      <VIcon
+                        :icon="
+                          welfareItem.percentChange > 0
+                            ? 'tabler-chevron-up'
+                            : 'tabler-chevron-down'
+                        "
+                        size="20"
+                        class="mr-1"
+                      />
+                    </div>
                   </div>
                 </div>
               </template>
@@ -212,18 +228,14 @@ const total = computed(() => {
           <h6 class="text-h6 amount">
             {{ total.amount }}
           </h6>
-          <div class="percent-change">
-            <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(-5) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="
-                  -5 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />

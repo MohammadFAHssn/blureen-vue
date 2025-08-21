@@ -11,110 +11,110 @@ const payments = computed(() =>
     {
       label: 'حقوق پایه',
       amount: props.getPayrollItemByLabel('حقوق پايه').amount,
-      percentChange: 4.2,
+      percentChange: props.getPayrollItemByLabel('حقوق پايه').percentChange,
     },
     {
       label: 'حق اولاد',
       amount: props.getPayrollItemByLabel('حق اولاد').amount,
-      percentChange: 1.8,
+      percentChange: props.getPayrollItemByLabel('حق اولاد').percentChange,
     },
     {
       label: 'حق مسکن',
       amount: props.getPayrollItemByLabel('حق مسكن').amount,
-      percentChange: -0.5,
+      percentChange: props.getPayrollItemByLabel('حق مسكن').percentChange,
     },
     {
       label: 'خواربار',
       amount: props.getPayrollItemByLabel('خواربار').amount,
-      percentChange: 2.3,
+      percentChange: props.getPayrollItemByLabel('خواربار').percentChange,
     },
     {
       label: 'حق تأهل',
       amount: props.getPayrollItemByLabel('حق تاهل').amount,
-      percentChange: 3.1,
+      percentChange: props.getPayrollItemByLabel('حق تاهل').percentChange,
     },
     {
       label: 'نوبت کاری 10%',
       amount: props.getPayrollItemByLabel('نوبتكاری 10%').amount,
-      percentChange: -1.1,
+      percentChange: props.getPayrollItemByLabel('نوبتكاری 10%').percentChange,
     },
     {
       label: 'نوبت کاری 15%',
       amount: props.getPayrollItemByLabel('نوبتكاری 15%').amount,
-      percentChange: 1.6,
+      percentChange: props.getPayrollItemByLabel('نوبتكاری 15%').percentChange,
     },
     {
       label: 'بن کارگری',
       amount: props.getPayrollItemByLabel('بن كارگری').amount,
-      percentChange: 0.9,
+      percentChange: props.getPayrollItemByLabel('بن كارگری').percentChange,
     },
     {
       label: 'پایه سنوات سالیانه',
       amount: props.getPayrollItemByLabel('پايه سنوات ساليانه').amount,
-      percentChange: 0.7,
+      percentChange: props.getPayrollItemByLabel('پايه سنوات ساليانه').percentChange,
     },
     {
       label: 'مزد سنوات',
       amount: props.getPayrollItemByLabel('مزد سنوات').amount,
-      percentChange: -1.2,
+      percentChange: props.getPayrollItemByLabel('مزد سنوات').percentChange,
     },
     {
       label: 'حق پست',
       amount: props.getPayrollItemByLabel('حق پست').amount,
-      percentChange: 2.1,
+      percentChange: props.getPayrollItemByLabel('حق پست').percentChange,
     },
     {
       label: 'ماندگاری پست',
       amount: props.getPayrollItemByLabel('ماندگاری پست').amount,
-      percentChange: 0.4,
+      percentChange: props.getPayrollItemByLabel('ماندگاری پست').percentChange,
     },
     {
       label: 'ماندگاری محیط کار (سختی کار)',
       amount: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)').amount,
-      percentChange: 99.99,
+      percentChange: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)').percentChange,
     },
     {
       label: 'محیط کار (سختی کار)',
       amount: props.getPayrollItemByLabel('محيط كار(سختی كار)').amount,
-      percentChange: 2.5,
+      percentChange: props.getPayrollItemByLabel('محيط كار(سختی كار)').percentChange,
     },
     {
       label: 'پاداش مدیریت',
       amount: props.getPayrollItemByLabel('پاداش مدیریت').amount,
-      percentChange: 10.0,
+      percentChange: props.getPayrollItemByLabel('پاداش مدیریت').percentChange,
     },
     {
       label: 'ماندگاری پاداش مدیریت',
       amount: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت').amount,
-      percentChange: 2.5,
+      percentChange: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت').percentChange,
     },
     {
       label: 'سایر مزایا',
       amount: props.getPayrollItemByLabel('ساير مزايا').amount,
-      percentChange: 0.8,
+      percentChange: props.getPayrollItemByLabel('ساير مزايا').percentChange,
     },
     {
       label: 'رتبه‌بندی',
       amount: props.getPayrollItemByLabel('رتبه بندی').amount,
-      percentChange: 4.1,
+      percentChange: props.getPayrollItemByLabel('رتبه بندی').percentChange,
     },
     {
       label: 'حق مأموریت',
       amount: props.getPayrollItemByLabel('حق ماموريت').amount,
-      percentChange: -3.0,
+      percentChange: props.getPayrollItemByLabel('حق ماموريت').percentChange,
     },
     {
       label: 'پرداختی معوق',
       amount: props.getPayrollItemByLabel('پرداختی معوق').amount,
-      percentChange: 5.0,
+      percentChange: props.getPayrollItemByLabel('پرداختی معوق').percentChange,
     },
-  ].filter(payment => payment.amount),
+  ].filter(payment => payment.amount || payment.percentChange),
 )
 
 const total = computed(() => {
   return {
     amount: props.getPayrollItemByLabel('جمع ناخالص پرداختی').amount,
-    percentChange: 5.0,
+    percentChange: props.getPayrollItemByLabel('جمع ناخالص پرداختی').percentChange,
   }
 },
 )
@@ -153,24 +153,27 @@ const total = computed(() => {
               <div class="text-body-1">
                 {{ payment.amount }}
               </div>
-              <div
-                :class="`d-flex align-center ${
-                  payment.percentChange > 0 ? 'text-teal' : 'text-error'
-                }`"
-              >
-                <div class="text-sm">
-                  {{ Math.abs(payment.percentChange) }}%
-                </div>
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <div
+                  v-if="payment.percentChange"
+                  :class="`d-flex align-center ${
+                    payment.percentChange > 0 ? 'text-teal' : 'text-error'
+                  }`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(payment.percentChange) }}%
+                  </div>
 
-                <VIcon
-                  :icon="
-                    payment.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
-                  size="20"
-                  class="mr-1"
-                />
+                  <VIcon
+                    :icon="
+                      payment.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -188,19 +191,19 @@ const total = computed(() => {
           <h6 class="text-h6 amount">
             {{ total.amount }}
           </h6>
-          <div class="percent-change">
+          <div v-if="total.percentChange" class="percent-change">
             <div
               :class="`d-flex align-center ${
-                10 > 0 ? 'text-teal' : 'text-error'
+                total.percentChange > 0 ? 'text-teal' : 'text-error'
               }`"
             >
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
                 :icon="
-                  10 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
+                  total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
                 "
                 size="20"
                 class="mr-1"

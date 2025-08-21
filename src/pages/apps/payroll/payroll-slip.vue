@@ -19,8 +19,8 @@ const pendingState = reactive({
   fetchingPayrollSlips: false,
 })
 
-const month = ref(11)
-const year = ref(1403)
+const month = ref(4)
+const year = ref(1404)
 const last = 2
 
 // ----- -----
@@ -51,16 +51,38 @@ catch (e) {
 
 const payrollSlipOfCurrentPeriod = computed(() => payrollSlips.value[0])
 // TODO: if it is for 2 or 3 later period, i mean if we have no previous period?
-const _payrollSlipOfPreviousPeriod = computed(() => payrollSlips.value[1])
+const payrollSlipOfPreviousPeriod = computed(() => payrollSlips.value[1])
 
 function getPayrollItemByLabel(label) {
-  let amount
+  let currentAmount
   payrollSlipOfCurrentPeriod.value.payroll_items.forEach((item) => {
     if (item.item_title === label) {
-      amount = item.item_value
+      currentAmount = item.item_value
     }
   })
-  return { amount }
+
+  currentAmount = currentAmount == 0 ? 0 : currentAmount
+
+  let previousAmount
+  payrollSlipOfPreviousPeriod.value.payroll_items.forEach((item) => {
+    if (item.item_title === label) {
+      previousAmount = item.item_value
+    }
+  })
+
+  previousAmount = previousAmount == 0 ? 0 : previousAmount
+
+  return {
+    amount: currentAmount,
+    percentChange:
+      currentAmount && !previousAmount
+        ? 100
+        : Number.parseFloat(
+            (((currentAmount - previousAmount) / previousAmount) * 100).toFixed(
+              1,
+            ),
+          ),
+  }
 }
 </script>
 
@@ -208,18 +230,29 @@ function getPayrollItemByLabel(label) {
           <h6 class="text-h6 amount">
             {{ getPayrollItemByLabel('جمع کل پرداختی').amount }}
           </h6>
-          <div class="percent-change">
+          <div
+            v-if="getPayrollItemByLabel('جمع کل پرداختی').percentChange"
+            class="percent-change"
+          >
             <VChip
               variant="flat"
-              :color="`${-3.2 > 0 ? 'success' : 'error'}`"
+              :color="`${getPayrollItemByLabel('جمع کل پرداختی').percentChange > 0 ? 'success' : 'error'}`"
               class="d-flex align-center"
             >
               <div class="text-sm">
-                {{ Math.abs(-3.2) }}%
+                {{
+                  Math.abs(
+                    getPayrollItemByLabel('جمع کل پرداختی').percentChange,
+                  )
+                }}%
               </div>
 
               <VIcon
-                :icon="-3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="
+                  getPayrollItemByLabel('جمع کل پرداختی').percentChange > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
                 size="20"
                 class="mr-1"
               />

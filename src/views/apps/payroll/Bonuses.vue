@@ -13,28 +13,35 @@ const bonuses = computed(() =>
       period: props.getPayrollItemByLabel('دوره ارزیابی').amount,
       group: props.getPayrollItemByLabel('گروه ارزیابی').amount,
       amount: props.getPayrollItemByLabel('پاداش شناور فردی(ارزيابی)').amount,
-      percentChange: 4.2,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور فردی(ارزيابی)')
+        .percentChange,
     },
     {
       label: 'پاداش شناور گروهی (بهره‌وری)',
       amount: props.getPayrollItemByLabel('پاداش شناور گروهی(بهره وری)').amount,
-      percentChange: 1.8,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور گروهی(بهره وری)')
+        .percentChange,
     },
     {
       label: 'پاداش شناور مدیر واحد',
       amount: props.getPayrollItemByLabel('پاداش شناور مدير واحد').amount,
-      percentChange: 0.5,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور مدير واحد')
+        .percentChange,
     },
     {
       label: 'فوق‌العاده بهره‌وری',
       amount: props.getPayrollItemByLabel('فوق العاده بهره وری').amount,
-      percentChange: 2.3,
+      percentChange: props.getPayrollItemByLabel('فوق العاده بهره وری')
+        .percentChange,
     },
-  ].filter(bonus => bonus.amount),
+  ].filter(bonus => bonus.amount || bonus.percentChange),
 )
 
 const total = computed(() => {
-  return { amount: props.getPayrollItemByLabel('جمع پاداش').amount, percentChange: 5.0 }
+  return {
+    amount: props.getPayrollItemByLabel('جمع پاداش').amount,
+    percentChange: props.getPayrollItemByLabel('جمع پاداش').percentChange,
+  }
 })
 </script>
 
@@ -74,20 +81,22 @@ const total = computed(() => {
               <div class="text-body-1">
                 {{ bonus.amount }}
               </div>
-              <div :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(bonus.percentChange) }}%
-                </div>
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <div v-if="bonus.percentChange" :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
+                  <div class="text-sm">
+                    {{ Math.abs(bonus.percentChange) }}%
+                  </div>
 
-                <VIcon
-                  :icon="
-                    bonus.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
-                  size="20"
-                  class="mr-1"
-                />
+                  <VIcon
+                    :icon="
+                      bonus.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -105,20 +114,18 @@ const total = computed(() => {
       <h6 class="text-h6 text-white amount">
         {{ total.amount }}
       </h6>
-      <div class="percent-change">
+      <div v-if="total.percentChange" class="percent-change">
         <VChip
           variant="flat"
-          :color="`${3.2 > 0 ? 'success' : 'error'}`"
+          :color="`${total.percentChange > 0 ? 'success' : 'error'}`"
           class="d-flex align-center"
         >
           <div class="text-sm">
-            {{ Math.abs(3.2) }}%
+            {{ Math.abs(total.percentChange) }}%
           </div>
 
           <VIcon
-            :icon="
-              3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
-            "
+            :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
             size="20"
             class="mr-1"
           />

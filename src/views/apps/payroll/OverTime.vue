@@ -11,20 +11,22 @@ const overtimeItems = computed(() =>
     {
       label: 'اضافه‌کاری عادی',
       amount: props.getPayrollItemByLabel('اضافه كاري عادی*').amount,
-      percentChange: 100.123,
+      percentChange:
+        props.getPayrollItemByLabel('اضافه كاري عادی*').percentChange,
     },
     {
       label: 'جمعه‌کاری',
       amount: props.getPayrollItemByLabel('جمعه كاری*').amount,
-      percentChange: -100.123,
+      percentChange: props.getPayrollItemByLabel('جمعه كاری*').percentChange,
     },
-  ].filter(item => item.amount),
+  ].filter(item => item.amount || item.percentChange),
 )
 
 const total = computed(() => {
   return {
     amount: props.getPayrollItemByLabel('جمع اضافه کاری / جمعه کاری').amount,
-    percentChange: 5.0,
+    percentChange: props.getPayrollItemByLabel('جمع اضافه کاری / جمعه کاری')
+      .percentChange,
   }
 })
 </script>
@@ -58,20 +60,25 @@ const total = computed(() => {
               <div class="text-body-1">
                 {{ item.amount }}
               </div>
-              <div :class="`d-flex align-center ${item.percentChange > 0 ? 'text-success' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(item.percentChange) }}%
-                </div>
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <div
+                  v-if="item.percentChange"
+                  :class="`d-flex align-center ${item.percentChange > 0 ? 'text-success' : 'text-error'}`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(item.percentChange) }}%
+                  </div>
 
-                <VIcon
-                  :icon="
-                    item.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
-                  size="20"
-                  class="mr-1"
-                />
+                  <VIcon
+                    :icon="
+                      item.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -89,18 +96,14 @@ const total = computed(() => {
           <h6 class="text-h6 amount">
             {{ total.amount }}
           </h6>
-          <div class="percent-change">
-            <div :class="`d-flex align-center ${10 > 0 ? 'text-success' : 'text-error'}`">
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-success' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="
-                  10 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />

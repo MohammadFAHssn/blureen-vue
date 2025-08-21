@@ -265,7 +265,10 @@ const deductions = computed(() =>
 )
 
 const total = computed(() => {
-  return { amount: props.getPayrollItemByLabel('جمع کسورات').amount, percentChange: 5.0 }
+  return {
+    amount: props.getPayrollItemByLabel('جمع کسورات').amount,
+    percentChange: props.getPayrollItemByLabel('جمع کسورات').percentChange,
+  }
 })
 </script>
 
@@ -318,18 +321,14 @@ const total = computed(() => {
           <h6 class="text-h6 amount">
             {{ total.amount }}
           </h6>
-          <div class="percent-change">
-            <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-error' : 'text-success'}`">
               <div class="text-sm">
-                {{ Math.abs(3.3) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="
-                  3.3 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />
