@@ -50,15 +50,17 @@ catch (e) {
 }
 
 const payrollSlipOfCurrentPeriod = computed(() => payrollSlips.value[0])
+// TODO: if it is for 2 or 3 later period, i mean if we have no previous period?
+const _payrollSlipOfPreviousPeriod = computed(() => payrollSlips.value[1])
 
-function getAmount(label) {
+function getPayrollItemByLabel(label) {
   let amount
   payrollSlipOfCurrentPeriod.value.payroll_items.forEach((item) => {
     if (item.item_title === label) {
       amount = item.item_value
     }
   })
-  return amount
+  return { amount }
 }
 </script>
 
@@ -87,7 +89,7 @@ function getAmount(label) {
 
   <VRow>
     <VCol>
-      <EmployeeInfo :get-amount="getAmount" />
+      <EmployeeInfo :get-payroll-item-by-label="getPayrollItemByLabel" />
     </VCol>
   </VRow>
 
@@ -108,9 +110,9 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Attendance :get-amount="getAmount" />
+      <Attendance :get-payroll-item-by-label="getPayrollItemByLabel" />
       <br />
-      <Payments :get-amount="getAmount" />
+      <Payments :get-payroll-item-by-label="getPayrollItemByLabel" />
     </VCol>
 
     <VCol
@@ -121,7 +123,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Deductions :get-amount="getAmount" />
+      <Deductions :get-payroll-item-by-label="getPayrollItemByLabel" />
     </VCol>
 
     <VCol
@@ -132,9 +134,9 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <OverTime :get-amount="getAmount" />
+      <OverTime :get-payroll-item-by-label="getPayrollItemByLabel" />
       <br />
-      <Allowances :get-amount="getAmount" />
+      <Allowances :get-payroll-item-by-label="getPayrollItemByLabel" />
       <br />
       <VCard color="primary">
         <VCardText class="pa-3 sum-of-amounts-card">
@@ -184,7 +186,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Bonuses :get-amount="getAmount" />
+      <Bonuses :get-payroll-item-by-label="getPayrollItemByLabel" />
     </VCol>
   </VRow>
 
@@ -204,7 +206,7 @@ function getAmount(label) {
           </div>
 
           <h6 class="text-h6 amount">
-            {{ getAmount('جمع کل پرداختی') }}
+            {{ getPayrollItemByLabel('جمع کل پرداختی').amount }}
           </h6>
           <div class="percent-change">
             <VChip

@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  getAmount: {
+  getPayrollItemByLabel: {
     type: Function,
     required: true,
   },
@@ -10,17 +10,17 @@ const allowanceItems = computed(() =>
   [
     {
       label: 'ماندگاری در شرکت',
-      amount: props.getAmount('ماندگاری در شركت'),
+      amount: props.getPayrollItemByLabel('ماندگاری در شركت').amount,
       percentChange: -1.2,
     },
     {
       label: 'پاداش فنی',
-      amount: props.getAmount('پاداش فنی'),
+      amount: props.getPayrollItemByLabel('پاداش فنی').amount,
       percentChange: 0.8,
     },
     {
       label: 'فوق‌العاده مدیریت',
-      amount: props.getAmount('فوق العاده مدیریت'),
+      amount: props.getPayrollItemByLabel('فوق العاده مدیریت').amount,
       percentChange: 0.5,
     },
   ].filter(item => item.amount),
@@ -29,33 +29,33 @@ const allowanceItems = computed(() =>
 const welfareItems = [
   {
     label: 'کمک هزینه درمان',
-    amount: props.getAmount('کمک هزینه درمان'),
+    amount: props.getPayrollItemByLabel('کمک هزینه درمان').amount,
     percentChange: -2.0,
   },
   {
     label: 'کمک هزینه سفر',
-    amount: props.getAmount('کمک هزینه سفر'),
+    amount: props.getPayrollItemByLabel('کمک هزینه سفر').amount,
     percentChange: 1.1,
   },
   {
     label: 'کمک هزینه فرهنگی، ورزشی، سرگرمی',
-    amount: props.getAmount('فرهنگی ورزشی'),
+    amount: props.getPayrollItemByLabel('فرهنگی ورزشی').amount,
     percentChange: 3.4,
   },
   {
     label: 'کمک هزینه حمایت از خانواده',
-    amount: props.getAmount('حمایت از خانواده'),
+    amount: props.getPayrollItemByLabel('حمایت از خانواده').amount,
     percentChange: -0.3,
   },
 ]
 
 const allowanceDeductions = {
-  amount: props.getAmount('كسر فوق العاده'),
-  reason: props.getAmount('علت کسر پاداش'),
+  amount: props.getPayrollItemByLabel('كسر فوق العاده').amount,
+  reason: props.getPayrollItemByLabel('علت کسر پاداش').amount,
 }
 
 const total = computed(() => {
-  return { amount: props.getAmount('جمع فوق العاده'), percentChange: 5.0 }
+  return { amount: props.getPayrollItemByLabel('جمع فوق العاده').amount, percentChange: 5.0 }
 })
 </script>
 

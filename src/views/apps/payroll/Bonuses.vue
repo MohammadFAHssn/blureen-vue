@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  getAmount: {
+  getPayrollItemByLabel: {
     type: Function,
     required: true,
   },
@@ -10,31 +10,31 @@ const bonuses = computed(() =>
   [
     {
       label: 'پاداش شناور فردی (ارزیابی)',
-      period: props.getAmount('دوره ارزیابی'),
-      group: props.getAmount('گروه ارزیابی'),
-      amount: props.getAmount('پاداش شناور فردی(ارزيابی)'),
+      period: props.getPayrollItemByLabel('دوره ارزیابی').amount,
+      group: props.getPayrollItemByLabel('گروه ارزیابی').amount,
+      amount: props.getPayrollItemByLabel('پاداش شناور فردی(ارزيابی)').amount,
       percentChange: 4.2,
     },
     {
       label: 'پاداش شناور گروهی (بهره‌وری)',
-      amount: props.getAmount('پاداش شناور گروهی(بهره وری)'),
+      amount: props.getPayrollItemByLabel('پاداش شناور گروهی(بهره وری)').amount,
       percentChange: 1.8,
     },
     {
       label: 'پاداش شناور مدیر واحد',
-      amount: props.getAmount('پاداش شناور مدير واحد'),
+      amount: props.getPayrollItemByLabel('پاداش شناور مدير واحد').amount,
       percentChange: 0.5,
     },
     {
       label: 'فوق‌العاده بهره‌وری',
-      amount: props.getAmount('فوق العاده بهره وری'),
+      amount: props.getPayrollItemByLabel('فوق العاده بهره وری').amount,
       percentChange: 2.3,
     },
   ].filter(bonus => bonus.amount),
 )
 
 const total = computed(() => {
-  return { amount: props.getAmount('جمع پاداش'), percentChange: 5.0 }
+  return { amount: props.getPayrollItemByLabel('جمع پاداش').amount, percentChange: 5.0 }
 })
 </script>
 

@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  getAmount: {
+  getPayrollItemByLabel: {
     type: Function,
     required: true,
   },
@@ -10,12 +10,12 @@ const overtimeItems = computed(() =>
   [
     {
       label: 'اضافه‌کاری عادی',
-      amount: props.getAmount('اضافه كاري عادی*'),
+      amount: props.getPayrollItemByLabel('اضافه كاري عادی*').amount,
       percentChange: 100.123,
     },
     {
       label: 'جمعه‌کاری',
-      amount: props.getAmount('جمعه كاری*'),
+      amount: props.getPayrollItemByLabel('جمعه كاری*').amount,
       percentChange: -100.123,
     },
   ].filter(item => item.amount),
@@ -23,7 +23,7 @@ const overtimeItems = computed(() =>
 
 const total = computed(() => {
   return {
-    amount: props.getAmount('جمع اضافه کاری / جمعه کاری'),
+    amount: props.getPayrollItemByLabel('جمع اضافه کاری / جمعه کاری').amount,
     percentChange: 5.0,
   }
 })

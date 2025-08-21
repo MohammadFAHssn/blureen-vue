@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  getAmount: {
+  getPayrollItemByLabel: {
     type: Function,
     required: true,
   },
@@ -10,27 +10,27 @@ const employeeInfo = computed(() =>
   [
     {
       label: 'کد پرسنلی',
-      value: props.getAmount('پرسنلی'),
+      value: props.getPayrollItemByLabel('پرسنلی').amount,
       icon: 'tabler-id',
     },
     {
       label: 'نام و نام خانوادگی',
-      value: `${props.getAmount('نام')} ${props.getAmount('نام خانوادگی')}`,
+      value: `${props.getPayrollItemByLabel('نام').amount} ${props.getPayrollItemByLabel('نام خانوادگی').amount}`,
       icon: 'tabler-user',
     },
     {
       label: 'واحد کاری',
-      value: props.getAmount('واحد کاری'),
+      value: props.getPayrollItemByLabel('واحد کاری').amount,
       icon: 'tabler-building',
     },
     {
       label: 'گروه',
-      value: props.getAmount('گروه'),
+      value: props.getPayrollItemByLabel('گروه').amount,
       icon: 'tabler-star',
     },
     {
       label: 'رتبه',
-      value: props.getAmount('رتبه'),
+      value: props.getPayrollItemByLabel('رتبه').amount,
       icon: 'tabler-tag-starred',
     },
   ].filter(info => info.value),

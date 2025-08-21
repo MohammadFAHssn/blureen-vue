@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  getAmount: {
+  getPayrollItemByLabel: {
     type: Function,
     required: true,
   },
@@ -10,27 +10,27 @@ const attendances = computed(() =>
   [
     {
       label: 'کارکرد عادی',
-      minutes: props.getAmount('دقیقه كاركرد عادی'),
+      minutes: props.getPayrollItemByLabel('دقیقه كاركرد عادی').amount,
     },
     {
       label: 'بیماری',
-      minutes: props.getAmount('دقیقه بيماری'),
+      minutes: props.getPayrollItemByLabel('دقیقه بيماری').amount,
     },
     {
       label: 'غیبت',
-      minutes: props.getAmount('دقیقه غيبت'),
+      minutes: props.getPayrollItemByLabel('دقیقه غيبت').amount,
     },
     {
       label: 'مرخصی بدون حقوق',
-      minutes: props.getAmount('دقیقه مرخصی بدون حقوق'),
+      minutes: props.getPayrollItemByLabel('دقیقه مرخصی بدون حقوق').amount,
     },
     {
       label: 'اضافه‌کاری',
-      minutes: props.getAmount('دقیقه اضافه كاری عادی'),
+      minutes: props.getPayrollItemByLabel('دقیقه اضافه كاری عادی').amount,
     },
     {
       label: 'جمعه‌کاری',
-      minutes: props.getAmount('دقیقه جمعه كاری'),
+      minutes: props.getPayrollItemByLabel('دقیقه جمعه كاری').amount,
     },
   ].filter(attendance => attendance.minutes),
 )
