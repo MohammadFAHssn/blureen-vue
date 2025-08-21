@@ -61,6 +61,7 @@
     "extendRef": true,
     "formatDate": true,
     "formatDateToMonthShort": true,
+    "formatNumber": true,
     "getActivePinia": true,
     "getCurrentInstance": true,
     "getCurrentScope": true,

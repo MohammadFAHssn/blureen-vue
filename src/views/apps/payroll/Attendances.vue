@@ -67,7 +67,7 @@ const attendances = computed(() =>
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ attendance.minutes }}
+                {{ formatNumber(attendance.minutes) }}
               </div>
             </div>
           </template>

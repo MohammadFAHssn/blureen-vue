@@ -96,7 +96,7 @@ const total = computed(() => {
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ allowanceItem.amount }}
+                {{ formatNumber(allowanceItem.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <div
@@ -146,7 +146,7 @@ const total = computed(() => {
               <template #append>
                 <div class="d-flex gap-x-4">
                   <div class="text-body-1">
-                    {{ welfareItem.amount }}
+                    {{ formatNumber(welfareItem.amount) }}
                   </div>
                   <div style="min-inline-size: 70px;" class="d-flex justify-end">
                     <div
@@ -194,7 +194,7 @@ const total = computed(() => {
               <template #append>
                 <div class="d-flex gap-x-4">
                   <div class="text-body-1">
-                    {{ allowanceDeductions.amount }}
+                    {{ formatNumber(allowanceDeductions.amount) }}
                   </div>
                 </div>
               </template>
@@ -226,7 +226,7 @@ const total = computed(() => {
           </div>
 
           <h6 class="text-h6 amount">
-            {{ total.amount }}
+            {{ formatNumber(total.amount) }}
           </h6>
           <div v-if="total.percentChange" class="percent-change">
             <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-light-green' : 'text-error'}`">

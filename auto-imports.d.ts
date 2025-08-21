@@ -51,6 +51,8 @@ declare global {
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const formatDate: typeof import('./src/@core/utils/formatters.js')['formatDate']
   const formatDateToMonthShort: typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']
+  const formatNumber: typeof import('./src/composables/formatNumber.js')['formatNumber']
+  const formatNumberWithCommas: typeof import('./src/composables/formatNumberWithCommas.js')['formatNumberWithCommas']
   const getActivePinia: typeof import('pinia')['getActivePinia']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -420,6 +422,7 @@ declare module 'vue' {
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly formatDate: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDate']>
     readonly formatDateToMonthShort: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['formatDateToMonthShort']>
+    readonly formatNumber: UnwrapRef<typeof import('./src/composables/formatNumber.js')['formatNumber']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>

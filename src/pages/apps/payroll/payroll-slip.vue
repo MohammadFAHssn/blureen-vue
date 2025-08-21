@@ -228,7 +228,7 @@ function getPayrollItemByLabel(label) {
           </div>
 
           <h6 class="text-h6 amount">
-            {{ getPayrollItemByLabel('جمع کل پرداختی').amount }}
+            {{ formatNumber(getPayrollItemByLabel('جمع کل پرداختی').amount) }}
           </h6>
           <div
             v-if="getPayrollItemByLabel('جمع کل پرداختی').percentChange"

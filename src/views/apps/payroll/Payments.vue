@@ -51,7 +51,8 @@ const payments = computed(() =>
     {
       label: 'پایه سنوات سالیانه',
       amount: props.getPayrollItemByLabel('پايه سنوات ساليانه').amount,
-      percentChange: props.getPayrollItemByLabel('پايه سنوات ساليانه').percentChange,
+      percentChange:
+        props.getPayrollItemByLabel('پايه سنوات ساليانه').percentChange,
     },
     {
       label: 'مزد سنوات',
@@ -71,12 +72,14 @@ const payments = computed(() =>
     {
       label: 'ماندگاری محیط کار (سختی کار)',
       amount: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)').amount,
-      percentChange: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)').percentChange,
+      percentChange: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)')
+        .percentChange,
     },
     {
       label: 'محیط کار (سختی کار)',
       amount: props.getPayrollItemByLabel('محيط كار(سختی كار)').amount,
-      percentChange: props.getPayrollItemByLabel('محيط كار(سختی كار)').percentChange,
+      percentChange:
+        props.getPayrollItemByLabel('محيط كار(سختی كار)').percentChange,
     },
     {
       label: 'پاداش مدیریت',
@@ -86,7 +89,8 @@ const payments = computed(() =>
     {
       label: 'ماندگاری پاداش مدیریت',
       amount: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت').amount,
-      percentChange: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت').percentChange,
+      percentChange: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت')
+        .percentChange,
     },
     {
       label: 'سایر مزایا',
@@ -114,10 +118,10 @@ const payments = computed(() =>
 const total = computed(() => {
   return {
     amount: props.getPayrollItemByLabel('جمع ناخالص پرداختی').amount,
-    percentChange: props.getPayrollItemByLabel('جمع ناخالص پرداختی').percentChange,
+    percentChange:
+      props.getPayrollItemByLabel('جمع ناخالص پرداختی').percentChange,
   }
-},
-)
+})
 </script>
 
 <template>
@@ -151,7 +155,7 @@ const total = computed(() => {
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ payment.amount }}
+                {{ formatNumber(payment.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <div
@@ -189,7 +193,7 @@ const total = computed(() => {
           </div>
 
           <h6 class="text-h6 amount">
-            {{ total.amount }}
+            {{ formatNumber(total.amount) }}
           </h6>
           <div v-if="total.percentChange" class="percent-change">
             <div
@@ -203,7 +207,9 @@ const total = computed(() => {
 
               <VIcon
                 :icon="
-                  total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'
+                  total.percentChange > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
                 "
                 size="20"
                 class="mr-1"

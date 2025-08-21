@@ -58,7 +58,7 @@ const total = computed(() => {
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ item.amount }}
+                {{ formatNumber(item.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <div
@@ -94,7 +94,7 @@ const total = computed(() => {
           </div>
 
           <h6 class="text-h6 amount">
-            {{ total.amount }}
+            {{ formatNumber(total.amount) }}
           </h6>
           <div v-if="total.percentChange" class="percent-change">
             <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-success' : 'text-error'}`">

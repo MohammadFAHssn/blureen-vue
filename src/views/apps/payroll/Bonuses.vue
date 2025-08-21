@@ -79,7 +79,7 @@ const total = computed(() => {
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ bonus.amount }}
+                {{ formatNumber(bonus.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <div v-if="bonus.percentChange" :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
@@ -112,7 +112,7 @@ const total = computed(() => {
       </div>
 
       <h6 class="text-h6 text-white amount">
-        {{ total.amount }}
+        {{ formatNumber(total.amount) }}
       </h6>
       <div v-if="total.percentChange" class="percent-change">
         <VChip
