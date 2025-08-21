@@ -1,28 +1,39 @@
 <script setup>
-const bonuses = [
-  {
-    label: 'پاداش شناور فردی (ارزیابی)',
-    period: 'هجدهم',
-    group: 'عالی',
-    amount: '35,485,962',
-    percentChange: 4.2,
+const props = defineProps({
+  getAmount: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'پاداش شناور گروهی (بهره‌وری)',
-    amount: '1,523,489',
-    percentChange: 1.8,
-  },
-  {
-    label: 'پاداش شناور مدیر واحد',
-    amount: '9,123,456',
-    percentChange: 0.5,
-  },
-  {
-    label: 'فوق‌العاده بهره‌وری',
-    amount: '1,100,000',
-    percentChange: 2.3,
-  },
-]
+})
+
+const bonuses = computed(() =>
+  [
+    {
+      label: 'پاداش شناور فردی (ارزیابی)',
+      period: props.getAmount('دوره ارزیابی'),
+      group: props.getAmount('گروه ارزیابی'),
+      amount: props.getAmount('پاداش شناور فردی(ارزيابی)'),
+      percentChange: 4.2,
+    },
+    {
+      label: 'پاداش شناور گروهی (بهره‌وری)',
+      amount: props.getAmount('پاداش شناور گروهی(بهره وری)'),
+      percentChange: 1.8,
+    },
+    {
+      label: 'پاداش شناور مدیر واحد',
+      amount: props.getAmount('پاداش شناور مدير واحد'),
+      percentChange: 0.5,
+    },
+    {
+      label: 'فوق‌العاده بهره‌وری',
+      amount: props.getAmount('فوق العاده بهره وری'),
+      percentChange: 2.3,
+    },
+  ].filter(bonus => bonus.amount),
+)
+
+const totalBonuses = computed(() => props.getAmount('جمع پاداش'))
 </script>
 
 <template>
@@ -90,20 +101,20 @@ const bonuses = [
       </div>
 
       <h6 class="text-h6 text-white amount">
-        12,500,000
+        {{ totalBonuses }}
       </h6>
       <div class="percent-change">
-        <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+        <VChip
+          variant="flat"
+          :color="`${totalBonuses > 0 ? 'success' : 'error'}`"
+          class="d-flex align-center"
+        >
           <div class="text-sm">
-            {{ Math.abs(3.2) }}%
+            {{ Math.abs(totalBonuses) }}%
           </div>
 
           <VIcon
-            :icon="
-              3.2 > 0
-                ? 'tabler-chevron-up'
-                : 'tabler-chevron-down'
-            "
+            :icon="totalBonuses > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
             size="20"
             class="mr-1"
           />

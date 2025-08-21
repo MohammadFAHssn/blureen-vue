@@ -184,7 +184,7 @@ function getAmount(label) {
       xl="4"
       xxl="4"
     >
-      <Bonuses />
+      <Bonuses :get-amount="getAmount" />
     </VCol>
   </VRow>
 
