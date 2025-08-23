@@ -63,6 +63,13 @@ function getPayrollItemByLabel(label) {
 
   currentAmount = currentAmount || 0
 
+  if (!payrollSlipOfPreviousPeriod.value) {
+    return {
+      amount: currentAmount,
+      percentChange: undefined,
+    }
+  }
+
   let previousAmount
   payrollSlipOfPreviousPeriod.value.payroll_items.forEach((item) => {
     if (item.item_title === label) {
