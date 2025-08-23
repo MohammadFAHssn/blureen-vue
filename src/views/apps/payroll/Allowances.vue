@@ -88,6 +88,8 @@ const total = computed(() => {
           v-for="allowanceItem in allowanceItems"
           :key="allowanceItem.label"
           class="pa-2"
+          :variant="`${!isFinite(allowanceItem.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(allowanceItem.percentChange) ? 'light-green' : ''}`"
         >
           <VListItemTitle class="text-wrap">
             {{ allowanceItem.label }}
@@ -95,12 +97,22 @@ const total = computed(() => {
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(allowanceItem.percentChange) ? 'light-green' : ''}`"
+              >
                 {{ formatNumber(allowanceItem.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <VIcon
+                  v-if="!isFinite(allowanceItem.percentChange)"
+                  icon="tabler-plus"
+                  size="20"
+                  class="mr-1"
+                />
+
                 <div
-                  v-if="allowanceItem.percentChange"
+                  v-else-if="allowanceItem.percentChange"
                   :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
                 >
                   <div class="text-sm">
@@ -138,6 +150,8 @@ const total = computed(() => {
               v-for="welfareItem in welfareItems"
               :key="welfareItem.label"
               class="pa-2"
+              :variant="`${!isFinite(welfareItem.percentChange) ? 'outlined' : 'text'}`"
+              :base-color="`${!isFinite(welfareItem.percentChange) ? 'light-green' : ''}`"
             >
               <VListItemTitle class="text-wrap">
                 {{ welfareItem.label }}
@@ -145,12 +159,22 @@ const total = computed(() => {
 
               <template #append>
                 <div class="d-flex gap-x-4">
-                  <div class="text-body-1">
+                  <div
+                    class="text-body-1"
+                    :style="`color: ${!isFinite(welfareItem.percentChange) ? 'light-green' : ''}`"
+                  >
                     {{ formatNumber(welfareItem.amount) }}
                   </div>
                   <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                    <VIcon
+                      v-if="!isFinite(allowanceItem.percentChange)"
+                      icon="tabler-plus"
+                      size="20"
+                      class="mr-1"
+                    />
+
                     <div
-                      v-if="welfareItem.percentChange"
+                      v-else-if="welfareItem.percentChange"
                       :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
                     >
                       <div class="text-sm">
@@ -235,7 +259,11 @@ const total = computed(() => {
               </div>
 
               <VIcon
-                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="
+                  total.percentChange > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
                 size="20"
                 class="mr-1"
               />

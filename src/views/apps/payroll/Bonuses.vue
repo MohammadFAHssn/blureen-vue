@@ -59,7 +59,13 @@ const total = computed(() => {
 
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem v-for="bonus in bonuses" :key="bonus.label" class="pa-2">
+        <VListItem
+          v-for="bonus in bonuses"
+          :key="bonus.label"
+          class="pa-2"
+          :variant="`${!isFinite(bonus.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(bonus.percentChange) ? 'primary' : ''}`"
+        >
           <VListItemTitle class="text-wrap">
             {{ bonus.label }}
             <div v-if="bonus.period">
@@ -78,11 +84,21 @@ const total = computed(() => {
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(bonus.percentChange) ? 'primary' : ''}`"
+              >
                 {{ formatNumber(bonus.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
-                <div v-if="bonus.percentChange" :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
+                <VIcon
+                  v-if="!isFinite(bonus.percentChange)"
+                  icon="tabler-plus"
+                  size="20"
+                  class="mr-1"
+                />
+
+                <div v-else-if="bonus.percentChange" :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
                   <div class="text-sm">
                     {{ Math.abs(bonus.percentChange) }}%
                   </div>

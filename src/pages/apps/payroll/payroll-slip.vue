@@ -61,7 +61,7 @@ function getPayrollItemByLabel(label) {
     }
   })
 
-  currentAmount = currentAmount == 0 ? 0 : currentAmount
+  currentAmount = currentAmount || 0
 
   let previousAmount
   payrollSlipOfPreviousPeriod.value.payroll_items.forEach((item) => {
@@ -70,13 +70,13 @@ function getPayrollItemByLabel(label) {
     }
   })
 
-  previousAmount = previousAmount == 0 ? 0 : previousAmount
+  previousAmount = previousAmount || 0
 
   return {
     amount: currentAmount,
     percentChange:
-      currentAmount && !previousAmount
-        ? 100
+      !previousAmount && !currentAmount
+        ? undefined
         : Number.parseFloat(
             (((currentAmount - previousAmount) / previousAmount) * 100).toFixed(
               1,

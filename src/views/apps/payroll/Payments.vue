@@ -147,6 +147,8 @@ const total = computed(() => {
           v-for="payment in payments"
           :key="payment.label"
           class="pa-2"
+          :variant="`${!isFinite(payment.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(payment.percentChange) ? 'teal' : ''}`"
         >
           <VListItemTitle class="text-wrap">
             {{ payment.label }}
@@ -154,12 +156,22 @@ const total = computed(() => {
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(payment.percentChange) ? 'teal' : ''}`"
+              >
                 {{ formatNumber(payment.amount) }}
               </div>
               <div style="min-inline-size: 70px;" class="d-flex justify-end">
+                <VIcon
+                  v-if="!isFinite(payment.percentChange)"
+                  icon="tabler-plus"
+                  size="20"
+                  class="mr-1"
+                />
+
                 <div
-                  v-if="payment.percentChange"
+                  v-else-if="payment.percentChange"
                   :class="`d-flex align-center ${
                     payment.percentChange > 0 ? 'text-teal' : 'text-error'
                   }`"
