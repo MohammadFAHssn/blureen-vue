@@ -167,7 +167,7 @@ const total = computed(() => {
                   </div>
                   <div style="min-inline-size: 70px;" class="d-flex justify-end">
                     <VIcon
-                      v-if="!isFinite(allowanceItem.percentChange)"
+                      v-if="!isFinite(welfareItem.percentChange)"
                       icon="tabler-plus"
                       size="20"
                       class="mr-1"
