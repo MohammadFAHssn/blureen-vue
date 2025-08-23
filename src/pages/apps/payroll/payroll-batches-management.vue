@@ -14,7 +14,34 @@ const uiState = reactive({
 
 const pendingState = reactive({
   createPayrollBatch: false,
+  fetchingPayrollBatches: false,
 })
+
+const payrollBatches = ref([])
+// ----- -----
+
+pendingState.fetchingPayrollBatches = true
+try {
+  const { data, error } = await useApi(
+    createUrl('/payroll/payroll-batch', {
+      query: {
+        'fields[uploaded_bies]': 'id,first_name,last_name',
+        'include': 'uploadedBy',
+      },
+    }),
+  )
+
+  pendingState.fetchingPayrollBatches = false
+
+  if (error.value) throw error.value
+
+  payrollBatches.value = data.value.data
+}
+catch (e) {
+  console.error('Error fetching payrollBatches:', e)
+  uiState.hasError = true
+  uiState.errorMessage = e.message || 'خطا در دریافت فیش‌های حقوقی'
+}
 
 async function onCreatePayrollBatch(payload) {
   const formData = new FormData()
