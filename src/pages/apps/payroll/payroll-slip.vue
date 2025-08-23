@@ -50,7 +50,6 @@ catch (e) {
 }
 
 const payrollSlipOfCurrentPeriod = computed(() => payrollSlips.value[0])
-// TODO: if it is for 2 or 3 later period, i mean if we have no previous period?
 const payrollSlipOfPreviousPeriod = computed(() => payrollSlips.value[1])
 
 function getPayrollItemByLabel(label) {
