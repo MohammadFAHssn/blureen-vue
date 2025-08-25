@@ -1,10 +1,4 @@
 <script setup>
-import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
-import { AgGridVue } from 'ag-grid-vue3'
-// ----- start ag-grid -----
-//  TODO: make theses globally
-import MultiValuedCell from '@/plugins/ag-grid/components/MultiValuedCell.vue'
-
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
@@ -18,6 +12,8 @@ const uiState = reactive({
 })
 
 const users = ref([])
+
+// ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
 
@@ -33,7 +29,7 @@ const columnDefs = ref([
     headerName: 'نوع کاربر',
     field: 'roles',
     flex: 3,
-    cellRenderer: MultiValuedCell,
+    cellRenderer: 'MultiValuedCell',
     cellStyle: { 'display': 'flex', 'align-items': 'center' },
   },
   { headerName: 'شماره تلفن', field: 'mobileNumber', flex: 2 },
@@ -87,14 +83,13 @@ await fetchUsers()
 
     <section class="ag-grid-sec">
       <AgGridVue
-        style="block-size: 100%; inline-size: 100%"
+        style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
         :default-col-def="defaultColDef"
         enable-rtl
         row-numbers
         pagination
-        :locale-text="AG_GRID_LOCALE_IR"
         :theme="theme"
       />
     </section>

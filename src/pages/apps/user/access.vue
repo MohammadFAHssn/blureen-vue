@@ -1,7 +1,5 @@
 <script setup>
 // ----- start ag-grid -----
-import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
-import { AgGridVue } from 'ag-grid-vue3'
 
 definePage({
   meta: {
@@ -264,7 +262,6 @@ const rowData = computed(() => {
         pagination
         row-group-panel-show="always"
         :get-context-menu-items="getContextMenuItems"
-        :locale-text="AG_GRID_LOCALE_IR"
         @grid-ready="onGridReady"
       />
     </section>
