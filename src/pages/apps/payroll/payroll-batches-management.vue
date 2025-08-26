@@ -18,6 +18,37 @@ const pendingState = reactive({
 })
 
 const payrollBatches = ref([])
+
+// ----- start ag-grid -----
+
+const { theme } = useAGGridTheme()
+
+const columnDefs = ref([
+  { headerName: 'ماه', field: 'monthName', flex: 1 },
+  { headerName: 'سال', field: 'year', flex: 1 },
+  { headerName: 'بارگذاری توسط', field: 'uploadedBy', flex: 2 },
+  {
+    headerName: 'تاریخ بارگذاری',
+    field: 'createdAt',
+    flex: 2,
+    valueFormatter: params => moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format('jYYYY/jMM/jD HH:mm:ss'),
+  },
+])
+
+const rowData = computed(() =>
+  payrollBatches.value?.map((batch) => {
+    return {
+      monthName: batch.month_name,
+      year: batch.year,
+      uploadedBy: `${batch.uploaded_by.first_name} ${batch.uploaded_by.last_name}`,
+      createdAt: moment(batch.created_at).format('jYYYY-jMM-jDD HH:mm:ss'),
+
+    }
+  }),
+)
+
+// ----- end ag-grid -----
+
 // ----- -----
 
 pendingState.fetchingPayrollBatches = true
@@ -87,6 +118,18 @@ async function onCreatePayrollBatch(payload) {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <section style="block-size: 100%;">
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%;"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        enable-rtl
+        row-numbers
+        pagination
+        :theme="theme"
+      />
+    </section>
+
     <PayrollBatchCreateDialog
       v-if="uiState.isPayrollBatchCreateDialogVisible"
       v-model:is-dialog-visible="uiState.isPayrollBatchCreateDialogVisible"
@@ -114,7 +157,7 @@ async function onCreatePayrollBatch(payload) {
 
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto;
+  grid-template-rows: 1fr auto;
 }
 
 .v-application {
