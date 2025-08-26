@@ -17,10 +17,6 @@ const users = ref([])
 
 const { theme } = useAGGridTheme()
 
-const defaultColDef = ref({
-  filter: true,
-})
-
 const columnDefs = ref([
   { headerName: 'کد پرسنلی', field: 'personnelCode', flex: 1 },
   { headerName: 'نام', field: 'firstName', flex: 2 },
@@ -81,12 +77,11 @@ await fetchUsers()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <section class="ag-grid-sec">
+    <section style="block-size: 100%;">
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
-        :default-col-def="defaultColDef"
         enable-rtl
         row-numbers
         pagination
@@ -106,9 +101,5 @@ await fetchUsers()
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto;
-}
-
-.ag-grid-sec {
-  block-size: 100%;
 }
 </style>

@@ -78,6 +78,7 @@ function getContextMenuItems(params) {
             uiState.isEditAccessDialogVisible = true
           },
         },
+        'separator',
         ...params.defaultItems,
       ]
     : [...params.defaultItems]
