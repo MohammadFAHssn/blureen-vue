@@ -9,12 +9,14 @@ definePage({
 
 // states
 const uiState = reactive({
-  isPayrollBatchCreateDialogVisible: false,
+  hasError: false,
+  errorMessage: '',
 })
 
 const pendingState = reactive({
   createPayrollBatch: false,
   fetchingPayrollBatches: false,
+  deletePayrollBatches: false,
 })
 
 const payrollBatches = ref([])
@@ -56,6 +58,7 @@ const columnDefs = ref([
 const rowData = computed(() =>
   payrollBatches.value?.map((batch) => {
     return {
+      id: batch.id,
       monthName: batch.month_name,
       year: batch.year,
       uploadedBy: `${batch.uploaded_by.first_name} ${batch.uploaded_by.last_name}`,
@@ -127,8 +130,30 @@ async function onCreatePayrollBatch(payload) {
   }
 }
 
-function onDeleteClick() {
-  console.log('Delete clicked')
+async function onDeleteClick(batchId) {
+  pendingState.deletePayrollBatches = true
+  try {
+    await $api('/payroll/payroll-batch', {
+      method: 'DELETE',
+      body: {
+        ids: [batchId],
+      },
+      onResponseError({ response }) {
+        pendingState.deletePayrollBatches = false
+        uiState.hasError = true
+        uiState.errorMessage
+          = response._data.message || 'خطا در حذف فیش حقوقی'
+      },
+    })
+
+    pendingState.deletePayrollBatches = false
+    payrollBatches.value = payrollBatches.value.filter(
+      batch => batch.id !== batchId,
+    )
+  }
+  catch (err) {
+    console.error(err)
+  }
 }
 </script>
 
