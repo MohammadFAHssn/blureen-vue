@@ -40,6 +40,7 @@
     "eslint-plugin-regexp": "2.10.0",
     "jwt-decode": "4.0.0",
     "mapbox-gl": "^3.13.0",
+    "moment-jalaali": "^0.10.4",
     "ofetch": "1.4.1",
     "pinia": "^3.0.3",
     "prismjs": "1.30.0",

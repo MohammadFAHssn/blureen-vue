@@ -87,6 +87,7 @@ declare global {
   const mapWritableState: typeof import('pinia')['mapWritableState']
   const markRaw: typeof import('vue')['markRaw']
   const mobileNumberValidator: typeof import('./src/@core/utils/validators.js')['mobileNumberValidator']
+  const moment: typeof import('moment-jalaali')['default']
   const nextTick: typeof import('vue')['nextTick']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']
@@ -457,6 +458,7 @@ declare module 'vue' {
     readonly mapWritableState: UnwrapRef<typeof import('pinia')['mapWritableState']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly mobileNumberValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['mobileNumberValidator']>
+    readonly moment: UnwrapRef<typeof import('moment-jalaali')['default']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>

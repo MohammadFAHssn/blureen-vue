@@ -27,7 +27,7 @@ export default defineConfig({
           .replace(/([a-z\d])([A-Z])/g, '$1-$2')
           .toLowerCase()
       },
-      beforeWriteFiles: (root) => {
+      beforeWriteFiles: (_root) => {
         // root.insert("/apps/email/:filter", "/src/pages/apps/email/index.vue")
         // root.insert("/apps/email/:label", "/src/pages/apps/email/index.vue")
       },
@@ -82,6 +82,8 @@ export default defineConfig({
         '@vueuse/math',
         'vue-i18n',
         'pinia',
+        // Auto import default export of moment-jalaali as `moment`
+        { 'moment-jalaali': [['default', 'moment']] },
       ],
       dirs: [
         './src/@core/utils',

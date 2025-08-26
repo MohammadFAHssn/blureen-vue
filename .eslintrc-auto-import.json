@@ -96,6 +96,7 @@
     "mapWritableState": true,
     "markRaw": true,
     "mobileNumberValidator": true,
+    "moment": true,
     "nextTick": true,
     "onActivated": true,
     "onBeforeMount": true,
