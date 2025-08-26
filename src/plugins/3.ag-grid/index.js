@@ -1,6 +1,25 @@
-import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
+import { AG_GRID_LOCALE_IR as AG_GRID_LOCALE_IR_BASE } from '@ag-grid-community/locale'
 import { AgGridVue as CoreAgGridVue } from 'ag-grid-vue3'
 import { defineComponent, h } from 'vue'
+
+const AG_GRID_LOCALE_IR = {
+  ...AG_GRID_LOCALE_IR_BASE,
+  january: 'فروردین',
+  february: 'اردیبهشت',
+  march: 'خرداد',
+  april: 'تیر',
+  may: 'مرداد',
+  june: 'شهریور',
+  july: 'مهر',
+  august: 'آبان',
+  september: 'آذر',
+  october: 'دی',
+  november: 'بهمن',
+  december: 'اسفند',
+}
+
+// اگر در فایل‌های دیگر خواستید استفاده کنید
+export { AG_GRID_LOCALE_IR }
 
 export default function (app) {
   app.component(
