@@ -31,7 +31,25 @@ const columnDefs = ref([
     headerName: 'تاریخ بارگذاری',
     field: 'createdAt',
     flex: 2,
-    valueFormatter: params => moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format('jYYYY/jMM/jD HH:mm:ss'),
+    valueFormatter: params =>
+      moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
+        'jYYYY/jMM/jD HH:mm:ss',
+      ),
+  },
+  { headerName: 'نام فایل بارگذاری شده', field: 'fileName', flex: 2 },
+  // { headerName: 'وضعیت ارسال پیامک', field: 'smsSent', flex: 2 },
+  {
+    headerName: 'عملیات',
+    field: 'actions',
+    cellRendererSelector: (params) => {
+      return {
+        component: 'Actions',
+        params: {
+          onDeleteClick,
+        },
+      }
+    },
+    flex: 1,
   },
 ])
 
@@ -42,7 +60,11 @@ const rowData = computed(() =>
       year: batch.year,
       uploadedBy: `${batch.uploaded_by.first_name} ${batch.uploaded_by.last_name}`,
       createdAt: moment(batch.created_at).format('jYYYY-jMM-jDD HH:mm:ss'),
-
+      fileName: batch.filename,
+      // smsSent: batch.sms_sent,
+      actions: {
+        deletable: true,
+      },
     }
   }),
 )
@@ -103,6 +125,10 @@ async function onCreatePayrollBatch(payload) {
   catch (err) {
     console.error(err)
   }
+}
+
+function onDeleteClick() {
+  console.log('Delete clicked')
 }
 </script>
 
