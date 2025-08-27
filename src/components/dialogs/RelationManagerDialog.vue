@@ -92,6 +92,7 @@ function save() {
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
 
     <VCard>
+      // TODO: fix this
       <VToolbar color="transparent" flat>
         <VToolbarTitle>{{ title }}</VToolbarTitle>
       </VToolbar>
