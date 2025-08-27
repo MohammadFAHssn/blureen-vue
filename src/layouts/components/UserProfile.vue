@@ -89,6 +89,7 @@ const userProfileList = [
     offset-y="2"
     color="success"
   >
+    // TODO: add personnel avatars
     <VAvatar
       size="38"
       class="cursor-pointer"
