@@ -14,40 +14,46 @@ const uiState = reactive({
 })
 
 const payrollSlips = ref([]) // the current and previous month
+const PayrollSlipPeriod = ref()
 
 const pendingState = reactive({
   fetchingPayrollSlips: false,
 })
 
-const month = ref(4)
-const year = ref(1404)
 const last = 2
 
 // ----- -----
 
-pendingState.fetchingPayrollSlips = true
-try {
-  const { data, error } = await useApi(
-    createUrl('/payroll/payroll-slip/get-the-last-few-months', {
-      query: {
-        month: month.value,
-        year: year.value,
-        last,
-      },
-    }),
-  )
+const month = computed(() => PayrollSlipPeriod.value?.split('/')[1])
+const year = computed(() => PayrollSlipPeriod.value?.split('/')[0])
 
-  pendingState.fetchingPayrollSlips = false
+async function fetchPayrollSlips() {
+  pendingState.fetchingPayrollSlips = true
+  try {
+    const { data, error } = await useApi(
+      createUrl('/payroll/payroll-slip/get-the-last-few-months', {
+        query: {
+          month: month.value ? Number(month.value) : month.value,
+          year: year.value ? Number(year.value) : year.value,
+          last,
+        },
+      }),
+    )
 
-  if (error.value) throw error.value
+    pendingState.fetchingPayrollSlips = false
 
-  payrollSlips.value = data.value.data
+    if (error.value) throw error.value
+
+    payrollSlips.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching payrollSlips:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت فیش حقوقی'
+  }
 }
-catch (e) {
-  console.error('Error fetching payrollSlips:', e)
-  uiState.hasError = true
-  uiState.errorMessage = e.message || 'خطا در دریافت فیش حقوقی'
-}
+
+fetchPayrollSlips()
 
 const payrollSlipOfCurrentPeriod = computed(() => payrollSlips.value[0])
 const payrollSlipOfPreviousPeriod = computed(() => payrollSlips.value[1])
@@ -105,169 +111,189 @@ function getPayrollItemByLabel(label) {
 
   <VRow>
     <VCol>
-      <p class="text-lg font-weight-bold mb-1">
-        گروه کارخانجات شیشه اردکان
-      </p>
-
-      <p class="text-lg mb-0">
-        فیش حقوقی فروردین 1404
-      </p>
+      <VInput>
+        <PersianDatetimePicker
+          v-model="PayrollSlipPeriod"
+          type="year-month"
+          simple
+          label="دوره فیش"
+          @change="fetchPayrollSlips"
+        />
+      </VInput>
     </VCol>
   </VRow>
 
-  <VRow>
-    <VCol>
-      <EmployeeInfo :get-payroll-item-by-label="getPayrollItemByLabel" />
-    </VCol>
-  </VRow>
+  <div v-if="payrollSlipOfCurrentPeriod">
+    <VRow>
+      <VCol>
+        <p class="text-lg font-weight-bold mb-1">
+          گروه کارخانجات شیشه اردکان
+        </p>
 
-  <div class="my-6">
-    <v-divider color="info" thickness="3" class="border-opacity-50">
-      <template #default>
-        <span class="v-card-title px-2 text-info v-card-title">پرداختی اول</span>
-      </template>
-    </v-divider>
-  </div>
+        <p class="text-lg mb-0">
+          فیش حقوقی فروردین 1404
+        </p>
+      </VCol>
+    </VRow>
 
-  <VRow>
-    <VCol
-      cols="12"
-      sm="12"
-      md="4"
-      lg="4"
-      xl="4"
-      xxl="4"
-    >
-      <Attendance :get-payroll-item-by-label="getPayrollItemByLabel" />
-      <br />
-      <Payments :get-payroll-item-by-label="getPayrollItemByLabel" />
-    </VCol>
+    <VRow>
+      <VCol>
+        <EmployeeInfo :get-payroll-item-by-label="getPayrollItemByLabel" />
+      </VCol>
+    </VRow>
 
-    <VCol
-      cols="12"
-      sm="12"
-      md="4"
-      lg="4"
-      xl="4"
-      xxl="4"
-    >
-      <Deductions :get-payroll-item-by-label="getPayrollItemByLabel" />
-    </VCol>
+    <div class="my-6">
+      <v-divider color="info" thickness="3" class="border-opacity-50">
+        <template #default>
+          <span class="v-card-title px-2 text-info v-card-title">پرداختی اول</span>
+        </template>
+      </v-divider>
+    </div>
 
-    <VCol
-      cols="12"
-      sm="12"
-      md="4"
-      lg="4"
-      xl="4"
-      xxl="4"
-    >
-      <OverTime :get-payroll-item-by-label="getPayrollItemByLabel" />
-      <br />
-      <Allowances :get-payroll-item-by-label="getPayrollItemByLabel" />
-      <br />
-      <VCard color="primary">
-        <VCardText class="pa-3 sum-of-amounts-card">
-          <div class="label v-card-title pa-0 text-white text-wrap">
-            جمع خالص پرداختی‌های اول
-          </div>
+    <VRow>
+      <VCol
+        cols="12"
+        sm="12"
+        md="4"
+        lg="4"
+        xl="4"
+        xxl="4"
+      >
+        <Attendance :get-payroll-item-by-label="getPayrollItemByLabel" />
+        <br />
+        <Payments :get-payroll-item-by-label="getPayrollItemByLabel" />
+      </VCol>
 
-          <h6 class="text-h6 text-white amount">
-            12,500,000
-          </h6>
-          <div class="percent-change">
-            <VChip
-              variant="flat"
-              :color="`${3.2 > 0 ? 'success' : 'error'}`"
-              class="d-flex align-center"
+      <VCol
+        cols="12"
+        sm="12"
+        md="4"
+        lg="4"
+        xl="4"
+        xxl="4"
+      >
+        <Deductions :get-payroll-item-by-label="getPayrollItemByLabel" />
+      </VCol>
+
+      <VCol
+        cols="12"
+        sm="12"
+        md="4"
+        lg="4"
+        xl="4"
+        xxl="4"
+      >
+        <OverTime :get-payroll-item-by-label="getPayrollItemByLabel" />
+        <br />
+        <Allowances :get-payroll-item-by-label="getPayrollItemByLabel" />
+        <br />
+        <VCard color="primary">
+          <VCardText class="pa-3 sum-of-amounts-card">
+            <div class="label v-card-title pa-0 text-white text-wrap">
+              جمع خالص پرداختی‌های اول
+            </div>
+
+            <h6 class="text-h6 text-white amount">
+              12,500,000
+            </h6>
+            <div class="percent-change">
+              <VChip
+                variant="flat"
+                :color="`${3.2 > 0 ? 'success' : 'error'}`"
+                class="d-flex align-center"
+              >
+                <div class="text-sm">
+                  {{ Math.abs(3.2) }}%
+                </div>
+
+                <VIcon
+                  :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                  size="20"
+                  class="mr-1"
+                />
+              </VChip>
+            </div>
+          </VCardText>
+        </VCard>
+      </VCol>
+    </VRow>
+
+    <div class="my-6">
+      <v-divider color="info" thickness="3" class="border-opacity-50">
+        <template #default>
+          <span class="v-card-title px-2 text-info v-card-title">پرداختی دوم</span>
+        </template>
+      </v-divider>
+    </div>
+
+    <VRow>
+      <VCol
+        cols="12"
+        sm="12"
+        md="6"
+        lg="6"
+        xl="4"
+        xxl="4"
+      >
+        <Bonuses :get-payroll-item-by-label="getPayrollItemByLabel" />
+      </VCol>
+    </VRow>
+
+    <VRow justify="center" align="center">
+      <VCol
+        cols="12"
+        sm="12"
+        md="6"
+        lg="4"
+        xl="4"
+        xxl="4"
+      >
+        <VCard color="warning">
+          <VCardText class="pa-3 sum-of-amounts-card">
+            <div class="label v-card-title pa-0 text-wrap">
+              جمع کل پرداخت‌ها
+            </div>
+
+            <h6 class="text-h6 amount">
+              {{ formatNumber(getPayrollItemByLabel('جمع کل پرداختی').amount) }}
+            </h6>
+            <div
+              v-if="getPayrollItemByLabel('جمع کل پرداختی').percentChange"
+              class="percent-change"
             >
-              <div class="text-sm">
-                {{ Math.abs(3.2) }}%
-              </div>
-
-              <VIcon
-                :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
-                size="20"
-                class="mr-1"
-              />
-            </VChip>
-          </div>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
-
-  <div class="my-6">
-    <v-divider color="info" thickness="3" class="border-opacity-50">
-      <template #default>
-        <span class="v-card-title px-2 text-info v-card-title">پرداختی دوم</span>
-      </template>
-    </v-divider>
-  </div>
-
-  <VRow>
-    <VCol
-      cols="12"
-      sm="12"
-      md="6"
-      lg="6"
-      xl="4"
-      xxl="4"
-    >
-      <Bonuses :get-payroll-item-by-label="getPayrollItemByLabel" />
-    </VCol>
-  </VRow>
-
-  <VRow justify="center" align="center">
-    <VCol
-      cols="12"
-      sm="12"
-      md="6"
-      lg="4"
-      xl="4"
-      xxl="4"
-    >
-      <VCard color="warning">
-        <VCardText class="pa-3 sum-of-amounts-card">
-          <div class="label v-card-title pa-0 text-wrap">
-            جمع کل پرداخت‌ها
-          </div>
-
-          <h6 class="text-h6 amount">
-            {{ formatNumber(getPayrollItemByLabel('جمع کل پرداختی').amount) }}
-          </h6>
-          <div
-            v-if="getPayrollItemByLabel('جمع کل پرداختی').percentChange"
-            class="percent-change"
-          >
-            <VChip
-              variant="flat"
-              :color="`${getPayrollItemByLabel('جمع کل پرداختی').percentChange > 0 ? 'success' : 'error'}`"
-              class="d-flex align-center"
-            >
-              <div class="text-sm">
-                {{
-                  Math.abs(
-                    getPayrollItemByLabel('جمع کل پرداختی').percentChange,
-                  )
-                }}%
-              </div>
-
-              <VIcon
-                :icon="
+              <VChip
+                variant="flat"
+                :color="`${
                   getPayrollItemByLabel('جمع کل پرداختی').percentChange > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
-                size="20"
-                class="mr-1"
-              />
-            </VChip>
-          </div>
-        </VCardText>
-      </VCard>
-    </VCol>
-  </VRow>
+                    ? 'success'
+                    : 'error'
+                }`"
+                class="d-flex align-center"
+              >
+                <div class="text-sm">
+                  {{
+                    Math.abs(
+                      getPayrollItemByLabel('جمع کل پرداختی').percentChange,
+                    )
+                  }}%
+                </div>
+
+                <VIcon
+                  :icon="
+                    getPayrollItemByLabel('جمع کل پرداختی').percentChange > 0
+                      ? 'tabler-chevron-up'
+                      : 'tabler-chevron-down'
+                  "
+                  size="20"
+                  class="mr-1"
+                />
+              </VChip>
+            </div>
+          </VCardText>
+        </VCard>
+      </VCol>
+    </VRow>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -307,5 +333,9 @@ function getPayrollItemByLabel(label) {
       grid-area: 1 / 3 / 2 / 4;
     }
   }
+}
+
+:deep(.v-input__control) {
+  justify-content: center;
 }
 </style>
