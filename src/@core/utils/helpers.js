@@ -49,5 +49,5 @@ export function getJalaliMonthNameByIndex(monthIndex) {
     'اسفند',
   ]
 
-  return jalaliMonthNames[monthIndex] ?? null
+  return jalaliMonthNames[monthIndex - 1] ?? null
 }
