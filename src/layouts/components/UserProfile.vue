@@ -79,6 +79,7 @@ const userProfileList = [
 ]
 </script>
 
+// TODO: add personnel avatars
 <template>
   <VBadge
     v-if="userData"
@@ -89,7 +90,6 @@ const userProfileList = [
     offset-y="2"
     color="success"
   >
-    // TODO: add personnel avatars
     <VAvatar
       size="38"
       class="cursor-pointer"
