@@ -31,3 +31,23 @@ export function isToday(date) {
     && date.getFullYear() === today.getFullYear()
   )
 }
+
+// 👉 Get Jalali Month Name By Index
+export function getJalaliMonthNameByIndex(monthIndex) {
+  const jalaliMonthNames = [
+    'فروردین',
+    'اردیبهشت',
+    'خرداد',
+    'تیر',
+    'مرداد',
+    'شهریور',
+    'مهر',
+    'آبان',
+    'آذر',
+    'دی',
+    'بهمن',
+    'اسفند',
+  ]
+
+  return jalaliMonthNames[monthIndex] ?? null
+}

@@ -1,12 +1,13 @@
 <script setup>
+import { getJalaliMonthNameByIndex } from '@core/utils/helpers'
 import Allowances from '@/views/apps/payroll/Allowances.vue'
 import Attendance from '@/views/apps/payroll/Attendances.vue'
 import Bonuses from '@/views/apps/payroll/Bonuses.vue'
 import Deductions from '@/views/apps/payroll/Deductions.vue'
 import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import OverTime from '@/views/apps/payroll/OverTime.vue'
-import Payments from '@/views/apps/payroll/Payments.vue'
 
+import Payments from '@/views/apps/payroll/Payments.vue'
 // states
 const uiState = reactive({
   hasError: false,
@@ -131,7 +132,13 @@ function getPayrollItemByLabel(label) {
         </p>
 
         <p class="text-lg mb-0">
-          فیش حقوقی فروردین 1404
+          فیش حقوقی
+          {{
+            getJalaliMonthNameByIndex(
+              payrollSlipOfCurrentPeriod.payroll_batch.month,
+            )
+          }}
+          {{ payrollSlipOfCurrentPeriod.payroll_batch.year }}
         </p>
       </VCol>
     </VRow>
