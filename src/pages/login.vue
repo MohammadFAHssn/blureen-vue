@@ -71,12 +71,6 @@ async function login() {
 
     const { accessToken, userData, userAbilityRules } = res
 
-    // TODO: suppliers !!!
-    userAbilityRules.push({
-      action: 'use',
-      subject: 'app',
-    })
-
     useCookie('userAbilityRules').value = userAbilityRules
     ability.update(userAbilityRules)
     useCookie('userData').value = userData
