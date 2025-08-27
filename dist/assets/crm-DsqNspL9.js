@@ -1,0 +1,1 @@
+import{M as c,f as o,o as r}from"./index-3XR9ZcrJ.js";import{V as t}from"./VRow-CE_-DnA3.js";/* empty css              */const e={};function s(a,n){return r(),o(t,{class:"match-height"})}const i=c(e,[["render",s]]);export{i as default};
