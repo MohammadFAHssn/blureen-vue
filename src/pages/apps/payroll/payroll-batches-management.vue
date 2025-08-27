@@ -1,4 +1,5 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import PayrollBatchCreateDialog from '@/views/apps/payroll/PayrollBatchCreateDialog.vue'
 
 definePage({
@@ -11,6 +12,7 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
+  isPayrollBatchDeleteDialogVisible: false,
 })
 
 const pendingState = reactive({
@@ -21,6 +23,7 @@ const pendingState = reactive({
 
 const payrollBatches = ref([])
 
+const selectedNodes = ref([])
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
@@ -47,7 +50,10 @@ const columnDefs = ref([
       return {
         component: 'Actions',
         params: {
-          onDeleteClick,
+          onDeleteClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            uiState.isPayrollBatchDeleteDialogVisible = true
+          },
         },
       }
     },
@@ -130,25 +136,25 @@ async function onCreatePayrollBatch(payload) {
   }
 }
 
-async function onDeleteClick(batchId) {
+async function onDelete() {
   pendingState.deletePayrollBatches = true
   try {
     await $api('/payroll/payroll-batch', {
       method: 'DELETE',
       body: {
-        ids: [batchId],
+        ids: [selectedNodes.value[0].data.id],
       },
       onResponseError({ response }) {
         pendingState.deletePayrollBatches = false
         uiState.hasError = true
-        uiState.errorMessage
-          = response._data.message || 'خطا در حذف فیش حقوقی'
+        uiState.errorMessage = response._data.message || 'خطا در حذف فیش حقوقی'
       },
     })
 
     pendingState.deletePayrollBatches = false
+    uiState.isPayrollBatchDeleteDialogVisible = false
     payrollBatches.value = payrollBatches.value.filter(
-      batch => batch.id !== batchId,
+      batch => batch.id !== selectedNodes.value[0].data.id,
     )
   }
   catch (err) {
@@ -186,6 +192,14 @@ async function onDeleteClick(batchId) {
       v-model:is-dialog-visible="uiState.isPayrollBatchCreateDialogVisible"
       :loading="pendingState.createPayrollBatch"
       @submit="onCreatePayrollBatch"
+    />
+
+    <AreYouSureDialog
+      v-if="uiState.isPayrollBatchDeleteDialogVisible"
+      v-model:is-dialog-visible="uiState.isPayrollBatchDeleteDialogVisible"
+      title="آیا از حذف این فیش اطمینان دارید؟"
+      :loading="pendingState.deletePayrollBatches"
+      @confirm="onDelete"
     />
 
     <VApp>
