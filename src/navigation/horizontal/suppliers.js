@@ -16,16 +16,8 @@ export default [
             icon: { icon: 'tabler-checkbox' },
 
             to: 'apps-supplier-tender-active-tenders',
-            action: 'see',
-            subject: 'Tender-Navbar',
-          },
-          {
-            title: 'Tender History',
-            icon: { icon: 'tabler-history' },
-
-            to: 'apps-supplier-tender-tender-history',
-            action: 'see',
-            subject: 'Tender-Navbar',
+            action: 'read',
+            subject: 'Active-Tenders',
           },
         ],
       },

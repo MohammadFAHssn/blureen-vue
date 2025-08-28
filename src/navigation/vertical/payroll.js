@@ -1,8 +1,8 @@
 export default [
   {
     heading: 'Payroll',
-    action: 'see',
-    subject: 'Payroll-Navbar',
+    action: 'use',
+    subject: 'app',
   },
   {
     title: 'Payroll Slip',
