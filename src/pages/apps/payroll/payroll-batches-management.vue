@@ -24,9 +24,15 @@ const pendingState = reactive({
 const payrollBatches = ref([])
 
 const selectedNodes = ref([])
+const gridApi = ref(null)
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
+
+function onGridReady(params) {
+  gridApi.value = params.api
+  gridApi.value.setGridOption('loading', true)
+}
 
 const columnDefs = ref([
   { headerName: 'ماه', field: 'monthName', flex: 1 },
@@ -82,28 +88,34 @@ const rowData = computed(() =>
 
 // ----- -----
 
-pendingState.fetchingPayrollBatches = true
-try {
-  const { data, error } = await useApi(
-    createUrl('/payroll/payroll-batch', {
-      query: {
-        'fields[uploaded_bies]': 'id,first_name,last_name',
-        'include': 'uploadedBy',
-      },
-    }),
-  )
+async function fetchPayrollBatches() {
+  pendingState.fetchingPayrollBatches = true
+  gridApi.value?.setGridOption('loading', true)
+  try {
+    const { data, error } = await useApi(
+      createUrl('/payroll/payroll-batch', {
+        query: {
+          'fields[uploaded_bies]': 'id,first_name,last_name',
+          'include': 'uploadedBy',
+        },
+      }),
+    )
 
-  pendingState.fetchingPayrollBatches = false
+    pendingState.fetchingPayrollBatches = false
+    gridApi.value?.setGridOption('loading', false)
 
-  if (error.value) throw error.value
+    if (error.value) throw error.value
 
-  payrollBatches.value = data.value.data
+    payrollBatches.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching payrollBatches:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت فیش‌های حقوقی'
+  }
 }
-catch (e) {
-  console.error('Error fetching payrollBatches:', e)
-  uiState.hasError = true
-  uiState.errorMessage = e.message || 'خطا در دریافت فیش‌های حقوقی'
-}
+
+fetchPayrollBatches()
 
 async function onCreatePayrollBatch(payload) {
   const formData = new FormData()
@@ -129,7 +141,7 @@ async function onCreatePayrollBatch(payload) {
     pendingState.createPayrollBatch = false
     uiState.isPayrollBatchCreateDialogVisible = false
 
-    // UpdateUserRoles(newUserRoles)
+    fetchPayrollBatches()
   }
   catch (err) {
     console.error(err)
@@ -184,6 +196,7 @@ async function onDelete() {
         row-numbers
         pagination
         :theme="theme"
+        @grid-ready="onGridReady"
       />
     </section>
 
