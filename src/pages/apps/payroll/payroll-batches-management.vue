@@ -145,6 +145,7 @@ async function onCreatePayrollBatch(payload) {
   }
   catch (err) {
     console.error(err)
+    fetchPayrollBatches()
   }
 }
 
