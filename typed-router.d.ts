@@ -29,6 +29,7 @@ declare module 'vue-router/auto-routes' {
     'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
+    'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-supplier': RouteRecordInfo<'login-supplier', '/login-supplier', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
@@ -88,6 +89,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/dashboards/crm.vue': {
       routes: 'dashboards-crm'
+      views: never
+    }
+    'src/pages/dashboards/PayrollChart.vue': {
+      routes: 'dashboards-payroll-chart'
       views: never
     }
     'src/pages/login.vue': {

@@ -84,6 +84,7 @@ export function getLineChartSimpleConfig(themeColors) {
       parentHeightOffset: 0,
       zoom: { enabled: false },
       toolbar: { show: false },
+      fontFamily: 'Shabnam, sans-serif',
     },
     colors: ['#ff9f43'],
     stroke: { curve: 'straight' },
@@ -110,7 +111,11 @@ export function getLineChartSimpleConfig(themeColors) {
     },
     yaxis: {
       labels: {
-        style: { colors: themeDisabledTextColor, fontSize: '0.8125rem' },
+        style: {
+          colors: themeDisabledTextColor,
+          fontSize: '0.8125rem',
+          fontFamily: 'Shabnam, sans-serif',
+        },
       },
     },
     xaxis: {
@@ -120,7 +125,13 @@ export function getLineChartSimpleConfig(themeColors) {
         stroke: { color: themeBorderColor },
       },
       labels: {
-        style: { colors: themeDisabledTextColor, fontSize: '0.8125rem' },
+        style: {
+          colors: themeDisabledTextColor,
+          fontSize: '0.8125rem',
+          fontFamily: 'Shabnam, sans-serif',
+        },
+        rotate: -90,
+        rotateAlways: true,
       },
       categories: [
         '7/12',
