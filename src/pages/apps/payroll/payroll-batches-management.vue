@@ -131,20 +131,19 @@ async function onCreatePayrollBatch(payload) {
       method: 'POST',
       body: formData,
       onResponseError({ response }) {
-        pendingState.createPayrollBatch = false
         uiState.hasError = true
         uiState.errorMessage
           = response._data.message || 'خطا در ایجاد فیش حقوقی'
       },
     })
 
-    pendingState.createPayrollBatch = false
     uiState.isPayrollBatchCreateDialogVisible = false
-
-    fetchPayrollBatches()
   }
   catch (err) {
     console.error(err)
+  }
+  finally {
+    pendingState.createPayrollBatch = false
     fetchPayrollBatches()
   }
 }
