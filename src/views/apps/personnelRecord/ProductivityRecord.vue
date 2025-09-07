@@ -58,13 +58,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <VRow class="m3-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        ⚠️سامانه بهره وری / تخلفات
-      </h3>
-    </VCol>
-  </VRow>
   <!-- نمایش برای دسکتاپ (نمودار + جدول کنار هم) -->
   <VRow class="d-none d-md-flex mt-6">
     <!-- نمودار -->

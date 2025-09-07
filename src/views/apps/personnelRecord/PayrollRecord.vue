@@ -8,13 +8,6 @@ defineProps({
 </script>
 
 <template>
-  <VRow class="m3-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        💰سامانه فیش حقوقی
-      </h3>
-    </VCol>
-  </VRow>
   <VRow
     v-for="(year, index) in payrollData"
     :key="index"

@@ -8,14 +8,6 @@ defineProps({
 </script>
 
 <template>
-  <VRow class="m3-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        📊سامانه ارزیابی عملکرد
-      </h3>
-    </VCol>
-  </VRow>
-
   <!-- نمایش برای دسکتاپ (جدول) -->
   <VRow class="d-none d-md-flex">
     <VCol cols="12">

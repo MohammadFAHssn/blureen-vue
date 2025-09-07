@@ -22,8 +22,8 @@ const userData = {
   full_name: 'امیرحسین کریمی',
   unit: 'واحد برنامه نویسی',
   job_position: 'کارمند دفتری (اداری)',
-  introduced_date: '2024-12-22',
-  recruitment_date: '2024-12-22',
+  introduced_date: '1403/10/02',
+  recruitment_date: '1403/10/02',
 }
 
 const educationData = {
@@ -304,24 +304,89 @@ await fetchUsers()
       </VCard>
     </VCol>
   </VRow>
+  <UserInfo :user-data="userData" class="mb-3" />
 
-  <UserInfo :user-data="userData" />
+  <VExpansionPanels multiple>
+    <!-- آموزش بدو استخدام -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        📘 سامانه آموزش / بدو استخدام
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <EducationRecord :education-data="educationData.employment" type="employment" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <EducationRecord :education-data="educationData.employment" type="employment" />
+    <!-- سوابق جابجایی -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        ♻️ سامانه کارگزینی / سوابق جابجایی
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <ReassignmentRecord :reassignment-data="reassignmentData" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <ReassignmentRecord :reassignment-data="reassignmentData" />
+    <!-- آموزش پس از جابجایی -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        📘 سامانه آموزش / جابجایی
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <EducationRecord :education-data="educationData.reassignment" type="reassignment" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <EducationRecord :education-data="educationData.reassignment" type="reassignment" />
+    <!-- ارزیابی عملکرد -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        📊سامانه ارزیابی عملکرد
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <AssessmentRecord :assessment-data="assessmentData" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <AssessmentRecord :assessment-data="assessmentData" />
+    <!-- فیش حقوقی -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        💰سامانه فیش حقوقی
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <PayrollRecord :payroll-data="payrollData" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <PayrollRecord :payroll-data="payrollData" />
+    <!-- رزرو غذا -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        🍴سامانه رزرو غذا
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <FoodReservationRecord :food-data="foodData" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <FoodReservationRecord :food-data="foodData" />
+    <!-- تخلفات -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        ⚠️سامانه بهره وری / تخلفات
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <ProductivityRecord :productivity-data="productivityData" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
 
-  <ProductivityRecord :productivity-data="productivityData" />
-
-  <BirthdayGiftRecord :birthday-gifts="birthdayGifts" />
+    <!-- هدیه تولد -->
+    <VExpansionPanel>
+      <VExpansionPanelTitle>
+        🎁سامانه هدایای تولد
+      </VExpansionPanelTitle>
+      <VExpansionPanelText>
+        <BirthdayGiftRecord :birthday-gifts="birthdayGifts" />
+      </VExpansionPanelText>
+    </VExpansionPanel>
+  </VExpansionPanels>
 </template>
 
 <style scoped lang="scss">

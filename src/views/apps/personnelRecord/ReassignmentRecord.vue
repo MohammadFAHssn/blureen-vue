@@ -9,13 +9,6 @@ defineProps({
 
 <template>
   <!-- نمایش برای دسکتاپ (جدول) -->
-  <VRow class="mt-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        🔄 سامانه کارگزینی / سوابق جابجایی
-      </h3>
-    </VCol>
-  </VRow>
   <VRow class="d-none d-md-flex ">
     <VCol cols="12">
       <VCard class="pa-4">

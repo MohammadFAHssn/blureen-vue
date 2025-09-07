@@ -107,13 +107,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <VRow class="m3-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        🍴سامانه رزرو غذا
-      </h3>
-    </VCol>
-  </VRow>
   <VRow class="mt-6">
     <!-- نمودار کلی نرمال / اضطراری -->
     <VCol cols="12" md="6">

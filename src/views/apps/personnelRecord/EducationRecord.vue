@@ -11,15 +11,6 @@ defineProps({
 </script>
 
 <template>
-  <VRow class="m3-3">
-    <VCol cols="12">
-      <h3 class="text-lg font-weight-bold">
-        📘سامانه آموزش /
-        {{ type === 'employment' ? 'آموزش های بدو استخدام' : 'آموزش های هنگام جابجایی' }}
-      </h3>
-    </VCol>
-  </VRow>
-
   <!-- دسکتاپ: نمایش با جدول -->
   <VRow v-for="(trainings, index) in educationData" :key="index" class="d-none d-md-flex mt-3">
     <VCol cols="12" md="7">
