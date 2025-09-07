@@ -34,7 +34,7 @@ const columnDefs = ref([
     field: 'roles',
     flex: 3,
     cellRenderer: MultiValuedCell,
-    cellStyle: { display: 'flex', 'align-items': 'center' },
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
   },
   { headerName: 'شماره تلفن', field: 'mobileNumber', flex: 2 },
 ])

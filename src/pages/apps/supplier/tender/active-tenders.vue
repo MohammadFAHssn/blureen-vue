@@ -25,7 +25,8 @@ async function fetchTenders() {
     if (error.value) throw error.value
 
     tenders.value = data.value.data
-  } catch (e) {
+  }
+  catch (e) {
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت مناقصات فعال'
   }
