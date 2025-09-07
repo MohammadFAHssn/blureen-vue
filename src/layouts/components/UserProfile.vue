@@ -13,7 +13,8 @@ async function logout() {
   // Redirect to login page
   if (userData.value.role.includes('supplier')) {
     await router.replace('/login-supplier')
-  } else {
+  }
+  else {
     await router.replace('/login')
   }
 
@@ -78,6 +79,7 @@ const userProfileList = [
 ]
 </script>
 
+// TODO: add personnel avatars
 <template>
   <VBadge
     v-if="userData"

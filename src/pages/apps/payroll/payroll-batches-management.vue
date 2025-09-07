@@ -1,4 +1,5 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import PayrollBatchCreateDialog from '@/views/apps/payroll/PayrollBatchCreateDialog.vue'
 
 definePage({
@@ -9,12 +10,112 @@ definePage({
 
 // states
 const uiState = reactive({
-  isPayrollBatchCreateDialogVisible: false,
+  hasError: false,
+  errorMessage: '',
+  isPayrollBatchDeleteDialogVisible: false,
 })
 
 const pendingState = reactive({
   createPayrollBatch: false,
+  fetchingPayrollBatches: false,
+  deletePayrollBatches: false,
 })
+
+const payrollBatches = ref([])
+
+const selectedNodes = ref([])
+const gridApi = ref(null)
+// ----- start ag-grid -----
+
+const { theme } = useAGGridTheme()
+
+function onGridReady(params) {
+  gridApi.value = params.api
+  gridApi.value.setGridOption('loading', true)
+}
+
+const columnDefs = ref([
+  { headerName: 'ماه', field: 'monthName', flex: 1 },
+  { headerName: 'سال', field: 'year', flex: 1 },
+  { headerName: 'بارگذاری توسط', field: 'uploadedBy', flex: 2 },
+  {
+    headerName: 'تاریخ بارگذاری',
+    field: 'createdAt',
+    flex: 2,
+    valueFormatter: params =>
+      moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
+        'jYYYY/jMM/jD HH:mm:ss',
+      ),
+  },
+  { headerName: 'نام فایل بارگذاری شده', field: 'fileName', flex: 2 },
+  // { headerName: 'وضعیت ارسال پیامک', field: 'smsSent', flex: 2 },
+  {
+    headerName: 'عملیات',
+    field: 'actions',
+    cellRendererSelector: (params) => {
+      return {
+        component: 'Actions',
+        params: {
+          onDeleteClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            uiState.isPayrollBatchDeleteDialogVisible = true
+          },
+        },
+      }
+    },
+    flex: 1,
+  },
+])
+
+const rowData = computed(() =>
+  payrollBatches.value?.map((batch) => {
+    return {
+      id: batch.id,
+      monthName: batch.month_name,
+      year: batch.year,
+      uploadedBy: `${batch.uploaded_by.first_name} ${batch.uploaded_by.last_name}`,
+      createdAt: moment(batch.created_at).format('jYYYY-jMM-jDD HH:mm:ss'),
+      fileName: batch.filename,
+      // smsSent: batch.sms_sent,
+      actions: {
+        deletable: true,
+      },
+    }
+  }),
+)
+
+// ----- end ag-grid -----
+
+// ----- -----
+
+async function fetchPayrollBatches() {
+  pendingState.fetchingPayrollBatches = true
+  gridApi.value?.setGridOption('loading', true)
+  try {
+    const { data, error } = await useApi(
+      createUrl('/payroll/payroll-batch', {
+        query: {
+          'fields[uploaded_bies]': 'id,first_name,last_name',
+          'include': 'uploadedBy',
+        },
+      }),
+    )
+
+    pendingState.fetchingPayrollBatches = false
+    gridApi.value?.setGridOption('loading', false)
+
+    if (error.value) throw error.value
+
+    payrollBatches.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching payrollBatches:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت فیش‌های حقوقی'
+  }
+}
+
+fetchPayrollBatches()
 
 async function onCreatePayrollBatch(payload) {
   const formData = new FormData()
@@ -32,16 +133,44 @@ async function onCreatePayrollBatch(payload) {
       onResponseError({ response }) {
         pendingState.createPayrollBatch = false
         uiState.hasError = true
-        uiState.errorMessage =
-          response._data.message || 'خطا در ایجاد فیش حقوقی'
+        uiState.errorMessage
+          = response._data.message || 'خطا در ایجاد فیش حقوقی'
       },
     })
 
     pendingState.createPayrollBatch = false
     uiState.isPayrollBatchCreateDialogVisible = false
 
-    // UpdateUserRoles(newUserRoles)
-  } catch (err) {
+    fetchPayrollBatches()
+  }
+  catch (err) {
+    console.error(err)
+    fetchPayrollBatches()
+  }
+}
+
+async function onDelete() {
+  pendingState.deletePayrollBatches = true
+  try {
+    await $api('/payroll/payroll-batch', {
+      method: 'DELETE',
+      body: {
+        ids: [selectedNodes.value[0].data.id],
+      },
+      onResponseError({ response }) {
+        pendingState.deletePayrollBatches = false
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در حذف فیش حقوقی'
+      },
+    })
+
+    pendingState.deletePayrollBatches = false
+    uiState.isPayrollBatchDeleteDialogVisible = false
+    payrollBatches.value = payrollBatches.value.filter(
+      batch => batch.id !== selectedNodes.value[0].data.id,
+    )
+  }
+  catch (err) {
     console.error(err)
   }
 }
@@ -59,11 +188,32 @@ async function onCreatePayrollBatch(payload) {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <section style="block-size: 100%;">
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%;"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        enable-rtl
+        row-numbers
+        pagination
+        :theme="theme"
+        @grid-ready="onGridReady"
+      />
+    </section>
+
     <PayrollBatchCreateDialog
       v-if="uiState.isPayrollBatchCreateDialogVisible"
       v-model:is-dialog-visible="uiState.isPayrollBatchCreateDialogVisible"
       :loading="pendingState.createPayrollBatch"
       @submit="onCreatePayrollBatch"
+    />
+
+    <AreYouSureDialog
+      v-if="uiState.isPayrollBatchDeleteDialogVisible"
+      v-model:is-dialog-visible="uiState.isPayrollBatchDeleteDialogVisible"
+      title="آیا از حذف این فیش اطمینان دارید؟"
+      :loading="pendingState.deletePayrollBatches"
+      @confirm="onDelete"
     />
 
     <VApp>
@@ -86,7 +236,7 @@ async function onCreatePayrollBatch(payload) {
 
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto;
+  grid-template-rows: 1fr auto;
 }
 
 .v-application {

@@ -43,7 +43,9 @@ function dialogModelValueUpdate(val) {
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h5 class="text-h5 mb-2">Verify Your Mobile Number for SMS</h5>
+        <h5 class="text-h5 mb-2">
+          Verify Your Mobile Number for SMS
+        </h5>
         <p class="text-body-1 mb-6">
           Enter your mobile phone number with country code and we will send you
           a verification code.

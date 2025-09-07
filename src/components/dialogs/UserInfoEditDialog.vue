@@ -66,7 +66,9 @@ function dialogModelValueUpdate(val) {
     <VCard class="pa-sm-10 pa-2">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-2">Edit User Information</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Edit User Information
+        </h4>
         <p class="text-body-1 text-center mb-6">
           Updating user details will receive a privacy audit.
         </p>
@@ -172,7 +174,9 @@ function dialogModelValueUpdate(val) {
 
             <!-- 👉 Submit and Cancel -->
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit"> Submit </VBtn>
+              <VBtn type="submit">
+                Submit
+              </VBtn>
 
               <VBtn color="secondary" variant="tonal" @click="onFormReset">
                 Cancel

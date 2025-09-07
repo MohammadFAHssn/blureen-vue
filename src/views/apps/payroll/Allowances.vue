@@ -1,56 +1,68 @@
 <script setup>
-const allowanceItems = [
-  {
-    label: 'ماندگاری',
-    amount: '1,000',
-    percentChange: -1.2,
-
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'پاداش فنی',
-    amount: '2,000',
-    percentChange: 0.8,
+})
 
-  },
-  {
-    label: 'فوق العاده مدیریت',
-    amount: '30,000',
-    percentChange: 0.5,
-
-  },
-]
+const allowanceItems = computed(() =>
+  [
+    {
+      label: 'ماندگاری در شرکت',
+      amount: props.getPayrollItemByLabel('ماندگاری در شركت').amount,
+      percentChange:
+        props.getPayrollItemByLabel('ماندگاری در شركت').percentChange,
+    },
+    {
+      label: 'پاداش فنی',
+      amount: props.getPayrollItemByLabel('پاداش فنی').amount,
+      percentChange: props.getPayrollItemByLabel('پاداش فنی').percentChange,
+    },
+    {
+      label: 'فوق‌العاده مدیریت',
+      amount: props.getPayrollItemByLabel('فوق العاده مدیریت').amount,
+      percentChange:
+        props.getPayrollItemByLabel('فوق العاده مدیریت').percentChange,
+    },
+  ].filter(item => item.amount || item.percentChange),
+)
 
 const welfareItems = [
   {
     label: 'کمک هزینه درمان',
-    amount: '1,200',
-    percentChange: -2.0,
-
+    amount: props.getPayrollItemByLabel('کمک هزینه درمان').amount,
+    percentChange: props.getPayrollItemByLabel('کمک هزینه درمان').percentChange,
   },
   {
     label: 'کمک هزینه سفر',
-    amount: '2,500',
-    percentChange: 1.1,
-
+    amount: props.getPayrollItemByLabel('کمک هزینه سفر').amount,
+    percentChange: props.getPayrollItemByLabel('کمک هزینه سفر').percentChange,
   },
   {
     label: 'کمک هزینه فرهنگی، ورزشی، سرگرمی',
-    amount: '3,200',
-    percentChange: 3.4,
-
+    amount: props.getPayrollItemByLabel('فرهنگی ورزشی').amount,
+    percentChange: props.getPayrollItemByLabel('فرهنگی ورزشی').percentChange,
   },
   {
     label: 'کمک هزینه حمایت از خانواده',
-    amount: '550,520,000',
-    percentChange: -0.3,
-
+    amount: props.getPayrollItemByLabel('حمایت از خانواده').amount,
+    percentChange:
+      props.getPayrollItemByLabel('حمایت از خانواده').percentChange,
   },
 ]
 
 const allowanceDeductions = {
-  amount: '1,200',
-  reason: 'دلوم موخواد',
+  amount: props.getPayrollItemByLabel('كسر فوق العاده').amount,
+  reason: props.getPayrollItemByLabel('علت کسر پاداش').amount,
 }
+
+const total = computed(() => {
+  return {
+    amount: props.getPayrollItemByLabel('جمع فوق العاده').amount,
+    percentChange: props.getPayrollItemByLabel('جمع فوق العاده').percentChange,
+  }
+})
 </script>
 
 <template>
@@ -64,9 +76,11 @@ const allowanceDeductions = {
           icon="tabler-medal"
         />
       </template>
-      <VCardTitle>فوق‌العاده پرداخت‌ها</VCardTitle>
+      <VCardTitle>فوق‌العاده جذب</VCardTitle>
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
+
+    <VDivider />
 
     <VCardText class="pa-3 pt-0">
       <VList>
@@ -74,6 +88,8 @@ const allowanceDeductions = {
           v-for="allowanceItem in allowanceItems"
           :key="allowanceItem.label"
           class="pa-2"
+          :variant="`${!isFinite(allowanceItem.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(allowanceItem.percentChange) ? 'light-green' : ''}`"
         >
           <VListItemTitle class="text-wrap">
             {{ allowanceItem.label }}
@@ -81,23 +97,38 @@ const allowanceDeductions = {
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
-                {{ allowanceItem.amount }}
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(allowanceItem.percentChange) ? 'light-green' : ''}`"
+              >
+                {{ formatNumber(allowanceItem.amount) }}
               </div>
-              <div :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(allowanceItem.percentChange) }}%
-                </div>
-
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <VIcon
-                  :icon="
-                    allowanceItem.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
+                  v-if="!isFinite(allowanceItem.percentChange)"
+                  icon="tabler-plus"
                   size="20"
                   class="mr-1"
                 />
+
+                <div
+                  v-else-if="allowanceItem.percentChange"
+                  :class="`d-flex align-center ${allowanceItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(allowanceItem.percentChange) }}%
+                  </div>
+
+                  <VIcon
+                    :icon="
+                      allowanceItem.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -119,6 +150,8 @@ const allowanceDeductions = {
               v-for="welfareItem in welfareItems"
               :key="welfareItem.label"
               class="pa-2"
+              :variant="`${!isFinite(welfareItem.percentChange) ? 'outlined' : 'text'}`"
+              :base-color="`${!isFinite(welfareItem.percentChange) ? 'light-green' : ''}`"
             >
               <VListItemTitle class="text-wrap">
                 {{ welfareItem.label }}
@@ -126,23 +159,38 @@ const allowanceDeductions = {
 
               <template #append>
                 <div class="d-flex gap-x-4">
-                  <div class="text-body-1">
-                    {{ welfareItem.amount }}
+                  <div
+                    class="text-body-1"
+                    :style="`color: ${!isFinite(welfareItem.percentChange) ? 'light-green' : ''}`"
+                  >
+                    {{ formatNumber(welfareItem.amount) }}
                   </div>
-                  <div :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
-                    <div class="text-sm">
-                      {{ Math.abs(welfareItem.percentChange) }}%
-                    </div>
-
+                  <div style="min-inline-size: 70px;" class="d-flex justify-end">
                     <VIcon
-                      :icon="
-                        welfareItem.percentChange > 0
-                          ? 'tabler-chevron-up'
-                          : 'tabler-chevron-down'
-                      "
+                      v-if="!isFinite(welfareItem.percentChange)"
+                      icon="tabler-plus"
                       size="20"
                       class="mr-1"
                     />
+
+                    <div
+                      v-else-if="welfareItem.percentChange"
+                      :class="`d-flex align-center ${welfareItem.percentChange > 0 ? 'text-light-green' : 'text-error'}`"
+                    >
+                      <div class="text-sm">
+                        {{ Math.abs(welfareItem.percentChange) }}%
+                      </div>
+
+                      <VIcon
+                        :icon="
+                          welfareItem.percentChange > 0
+                            ? 'tabler-chevron-up'
+                            : 'tabler-chevron-down'
+                        "
+                        size="20"
+                        class="mr-1"
+                      />
+                    </div>
                   </div>
                 </div>
               </template>
@@ -152,11 +200,11 @@ const allowanceDeductions = {
       </VCard>
     </VCardText>
 
-    <VCardText>
+    <VCardText v-if="allowanceDeductions.amount">
       <VCard variant="outlined" color="error-lighten-2">
         <VCardItem class="pa-3">
           <VCardTitle class="v-list-item-title font-weight-bold">
-            کسورات فوق‌العاده
+            کسورات فوق‌العاده جذب
           </VCardTitle>
         </VCardItem>
 
@@ -170,7 +218,7 @@ const allowanceDeductions = {
               <template #append>
                 <div class="d-flex gap-x-4">
                   <div class="text-body-1">
-                    {{ allowanceDeductions.amount }}
+                    {{ formatNumber(allowanceDeductions.amount) }}
                   </div>
                 </div>
               </template>
@@ -196,23 +244,23 @@ const allowanceDeductions = {
 
     <VCardText>
       <VCard variant="tonal" color="light-green">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع فوق‌العاده پرداخت‌ها</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
+            جمع فوق‌العاده جذب
+          </div>
 
-        <VCardText class="pa-3">
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
-              12,500,000
-            </h6>
-            <div :class="`d-flex align-center ${-5 > 0 ? 'text-light-green' : 'text-error'}`">
+          <h6 class="text-h6 amount">
+            {{ formatNumber(total.amount) }}
+          </h6>
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-light-green' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(-5) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
                 :icon="
-                  -5 > 0
+                  total.percentChange > 0
                     ? 'tabler-chevron-up'
                     : 'tabler-chevron-down'
                 "
@@ -230,5 +278,43 @@ const allowanceDeductions = {
 <style lang="scss" scoped>
 .allowances-card {
   border-block: 2px solid rgb(var(--v-theme-light-green));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

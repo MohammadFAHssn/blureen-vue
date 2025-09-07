@@ -8,7 +8,8 @@ export function setupGuards(router) {
      * If it's a public route, continue navigation. This kind of pages are allowed to visited by login & non-login users. Basically, without any restrictions.
      * Examples of public routes are, 404, under maintenance, etc.
      */
-    if (to.meta.public) return
+    if (to.meta.public)
+      return
 
     /**
      * Check if user is logged in by checking if token & user data exists in local storage
@@ -24,7 +25,8 @@ export function setupGuards(router) {
           (WARN: Don't allow executing further by return statement because next code will check for permissions)
          */
     if (to.meta.unauthenticatedOnly) {
-      if (isLoggedIn) return '/'
+      if (isLoggedIn)
+        return '/'
       else return undefined
     }
 

@@ -17,13 +17,6 @@ export default [
         action: 'read',
         subject: 'Active-Tenders',
       },
-      {
-        title: 'Tender History',
-        to: 'apps-supplier-tender-tender-history',
-        icon: { icon: 'tabler-history' },
-        action: 'read',
-        subject: 'Tenders-History',
-      },
     ],
   },
 ]

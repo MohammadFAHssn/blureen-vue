@@ -1,6 +1,7 @@
 // 👉 IsEmpty
 export function isEmpty(value) {
-  if (value === null || value === undefined || value === '') return true
+  if (value === null || value === undefined || value === '')
+    return true
 
   return !!(Array.isArray(value) && value.length === 0)
 }
@@ -25,8 +26,28 @@ export function isToday(date) {
   const today = new Date()
 
   return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
+    date.getDate() === today.getDate()
+    && date.getMonth() === today.getMonth()
+    && date.getFullYear() === today.getFullYear()
   )
+}
+
+// 👉 Get Jalali Month Name By Index
+export function getJalaliMonthNameByIndex(monthIndex) {
+  const jalaliMonthNames = [
+    'فروردین',
+    'اردیبهشت',
+    'خرداد',
+    'تیر',
+    'مرداد',
+    'شهریور',
+    'مهر',
+    'آبان',
+    'آذر',
+    'دی',
+    'بهمن',
+    'اسفند',
+  ]
+
+  return jalaliMonthNames[monthIndex - 1] ?? null
 }

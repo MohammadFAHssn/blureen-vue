@@ -1,254 +1,275 @@
 <script setup>
-const deductions = [
-  {
-    label: 'بیمه سهم کارمند',
-    amount: '347,821-',
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'مالیات ماه',
-    amount: '1,892,456-',
-  },
-  {
-    label: 'خرید کارکنان 1',
-    amount: '623,789-',
-  },
-  {
-    label: 'خرید کارکنان 2',
-    amount: '298,543-',
-  },
-  {
-    label: 'کسر جاری کارکنان',
-    amount: '187,234-',
-  },
-  {
-    label: 'بیمه تکمیلی',
-    amount: '2,891-',
-  },
-  {
-    label: 'وام ضروری',
-    amount: '456,789-',
-  },
-  {
-    label: 'وام ضروری 3',
-    amount: '312,567-',
-  },
-  {
-    label: 'بیمه تکمیلی فروردین',
-    amount: '1,834-',
-  },
-  // {
-  //   label: 'بن کارت خرید اردیبهشت ابوطالبی',
-  //   amount: '134,567-',
-  // },
-  // {
-  //   label: 'بن کارت خرید خرداد ابوطالبی',
-  //   amount: '89,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید تیر ابوطالبی',
-  //   amount: '156,789-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مرداد ابوطالبی',
-  //   amount: '92,345-',
-  // },
-  // {
-  //   label: 'بن کارت خرید شهریور ابوطالبی',
-  //   amount: '178,912-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مهر ابوطالبی',
-  //   amount: '123,678-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آبان ابوطالبی',
-  //   amount: '87,543-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آذر ابوطالبی',
-  //   amount: '145,892-',
-  // },
-  // {
-  //   label: 'بن کارت خرید دی ابوطالبی',
-  //   amount: '76,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید بهمن ابوطالبی',
-  //   amount: '198,567-',
-  // },
-  // {
-  //   label: 'بن کارت خرید فروردین آریا',
-  //   amount: '112,789-',
-  // },
-  // {
-  //   label: 'بن کارت خرید اردیبهشت آریا',
-  //   amount: '89,456-',
-  // },
-  // {
-  //   label: 'بن کارت خرید خرداد آریا',
-  //   amount: '167,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید تیر آریا',
-  //   amount: '94,567-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مرداد آریا',
-  //   amount: '134,890-',
-  // },
-  // {
-  //   label: 'بن کارت خرید شهریور آریا',
-  //   amount: '78,912-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مهر آریا',
-  //   amount: '156,345-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آبان آریا',
-  //   amount: '123,567-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آذر آریا',
-  //   amount: '91,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید دی آریا',
-  //   amount: '178,456-',
-  // },
-  // {
-  //   label: 'بن کارت خرید بهمن آریا',
-  //   amount: '87,789-',
-  // },
-  // {
-  //   label: 'بن کارت خرید فروردین چادرملو',
-  //   amount: '145,123-',
-  // },
-  // {
-  //   label: 'بن کارت خرید اردیبهشت چادرملو',
-  //   amount: '76,890-',
-  // },
-  // {
-  //   label: 'بن کارت خرید خرداد چادرملو',
-  //   amount: '198,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید تیر چادرملو',
-  //   amount: '112,567-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مرداد چادرملو',
-  //   amount: '89,345-',
-  // },
-  // {
-  //   label: 'بن کارت خرید شهریور چادرملو',
-  //   amount: '167,789-',
-  // },
-  // {
-  //   label: 'بن کارت خرید مهر چادرملو',
-  //   amount: '94,123-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آبان چادرملو',
-  //   amount: '134,456-',
-  // },
-  // {
-  //   label: 'بن کارت خرید آذر چادرملو',
-  //   amount: '78,234-',
-  // },
-  // {
-  //   label: 'بن کارت خرید دی چادرملو',
-  //   amount: '156,890-',
-  // },
-  // {
-  //   label: 'بن کارت خرید بهمن چادرملو',
-  //   amount: '123,345-',
-  // },
-  // {
-  //   label: 'خرید فروردین شیشه',
-  //   amount: '91,567-',
-  // },
-  // {
-  //   label: 'خرید اردیبهشت شیشه',
-  //   amount: '178,789-',
-  // },
-  // {
-  //   label: 'خرید خرداد شیشه',
-  //   amount: '87,123-',
-  // },
-  // {
-  //   label: 'خرید تیر شیشه',
-  //   amount: '145,456-',
-  // },
-  // {
-  //   label: 'خرید مرداد شیشه',
-  //   amount: '76,234-',
-  // },
-  // {
-  //   label: 'خرید شهریور شیشه',
-  //   amount: '198,890-',
-  // },
-  // {
-  //   label: 'خرید مهر شیشه',
-  //   amount: '112,345-',
-  // },
-  // {
-  //   label: 'خرید آبان شیشه',
-  //   amount: '89,567-',
-  // },
-  // {
-  //   label: 'خرید آذر شیشه',
-  //   amount: '167,789-',
-  // },
-  // {
-  //   label: 'خرید دی شیشه',
-  //   amount: '94,123-',
-  // },
-  // {
-  //   label: 'خرید بهمن شیشه',
-  //   amount: '134,456-',
-  // },
-  // {
-  //   label: 'خرید اردیبهشت سالار',
-  //   amount: '78,890-',
-  // },
-  // {
-  //   label: 'خرید خرداد سالار',
-  //   amount: '156,234-',
-  // },
-  // {
-  //   label: 'خرید تیر سالار',
-  //   amount: '123,567-',
-  // },
-  // {
-  //   label: 'خرید مرداد سالار',
-  //   amount: '91,345-',
-  // },
-  // {
-  //   label: 'خرید شهریور سالار',
-  //   amount: '178,789-',
-  // },
-  // {
-  //   label: 'خرید مهر سالار',
-  //   amount: '87,123-',
-  // },
-  // {
-  //   label: 'خرید آبان سالار',
-  //   amount: '145,456-',
-  // },
-  // {
-  //   label: 'خرید آذر سالار',
-  //   amount: '76,890-',
-  // },
-  // {
-  //   label: 'خرید دی سالار',
-  //   amount: '198,234-',
-  // },
-  // {
-  //   label: 'خرید بهمن سالار',
-  //   amount: '112,567-',
-  // },
-]
+})
+
+const deductions = computed(() =>
+  [
+    {
+      label: 'بیمه سهم کارمند',
+      amount: props.getPayrollItemByLabel('بيمه سهم كارمند').amount,
+    },
+    {
+      label: 'مالیات ماه',
+      amount: props.getPayrollItemByLabel('ماليات ماه').amount,
+    },
+    {
+      label: 'بیمه تکمیلی',
+      amount: props.getPayrollItemByLabel('بيمه تكميلی').amount,
+    },
+    {
+      label: 'کسر جاری کارکنان',
+      amount: props.getPayrollItemByLabel('كسر جاری كاركنان').amount,
+    },
+    {
+      label: 'وام ضروری',
+      amount: props.getPayrollItemByLabel('وام ضروری').amount,
+    },
+    {
+      label: 'وام ضروری 3',
+      amount: props.getPayrollItemByLabel('وام ضروری 3').amount,
+    },
+    {
+      label: 'خرید کارکنان 1',
+      amount: props.getPayrollItemByLabel('خريد كاركنان 1').amount,
+    },
+    {
+      label: 'خرید کارکنان 2',
+      amount: props.getPayrollItemByLabel('خريد كاركنان 2').amount,
+    },
+
+    {
+      label: 'خرید فروردین آریا',
+      amount: props.getPayrollItemByLabel('خريد فروردين آريا').amount,
+    },
+    {
+      label: 'خرید اردیبهشت آریا',
+      amount: props.getPayrollItemByLabel('خريد اريبهشت آريا').amount,
+    },
+    {
+      label: 'خرید خرداد آریا',
+      amount: props.getPayrollItemByLabel('خريد خرداد آريا').amount,
+    },
+    {
+      label: 'خرید تیر آریا',
+      amount: props.getPayrollItemByLabel('خرید تیر آریا').amount,
+    },
+    {
+      label: 'خرید مرداد آریا',
+      amount: props.getPayrollItemByLabel('خريد مرداد آريا').amount,
+    },
+    {
+      label: 'خرید شهریور آریا',
+      amount: props.getPayrollItemByLabel('خريد شهريور آريا').amount,
+    },
+    {
+      label: 'خرید مهر آریا',
+      amount: props.getPayrollItemByLabel('خريد مهر آريا').amount,
+    },
+    {
+      label: 'خرید آبان آریا',
+      amount: props.getPayrollItemByLabel('خريد آبان آريا').amount,
+    },
+    {
+      label: 'خرید آذر آریا',
+      amount: props.getPayrollItemByLabel('خريد آذر آريا').amount,
+    },
+    {
+      label: 'خرید دی آریا',
+      amount: props.getPayrollItemByLabel('خريد دی آريا').amount,
+    },
+    {
+      label: 'خرید بهمن آریا',
+      amount: props.getPayrollItemByLabel('خريد بهمن آريا').amount,
+    },
+    {
+      label: 'خرید فروردین چادرملو',
+      amount: props.getPayrollItemByLabel('خريد فروردين چادرملو').amount,
+    },
+    {
+      label: 'خرید اردیبهشت چادرملو',
+      amount: props.getPayrollItemByLabel('خريد ارديبهشت چادرملو').amount,
+    },
+    {
+      label: 'خرید خرداد چادرملو',
+      amount: props.getPayrollItemByLabel('خريد خرداد چادرملو').amount,
+    },
+    {
+      label: 'خرید تیر چادرملو',
+      amount: props.getPayrollItemByLabel('خريد تير چادرملو').amount,
+    },
+    {
+      label: 'خرید مرداد چادرملو',
+      amount: props.getPayrollItemByLabel('خريد مرداد چادرملو').amount,
+    },
+    {
+      label: 'خرید شهریور چادرملو',
+      amount: props.getPayrollItemByLabel('خريد شهريور چادرملو').amount,
+    },
+    {
+      label: 'خرید مهر چادرملو',
+      amount: props.getPayrollItemByLabel('خريد مهر چادرملو').amount,
+    },
+    {
+      label: 'خرید آبان چادرملو',
+      amount: props.getPayrollItemByLabel('خريد آبان چادرملو').amount,
+    },
+    {
+      label: 'خرید آذر چادرملو',
+      amount: props.getPayrollItemByLabel('خريد آذر چادرملو').amount,
+    },
+    {
+      label: 'خرید دی چادرملو',
+      amount: props.getPayrollItemByLabel('خريد دي چادرملو').amount,
+    },
+    {
+      label: 'خرید بهمن چادرملو',
+      amount: props.getPayrollItemByLabel('خريد بهمن چادرملو').amount,
+    },
+    {
+      label: 'فروردین ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد فروردين ابوطالبی').amount,
+    },
+    {
+      label: 'اردیبهشت ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد ارديبهشت ابوطالبی').amount,
+    },
+    {
+      label: 'خرداد ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد خرداد ابوطالبی').amount,
+    },
+    {
+      label: 'تیر ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد تير ابوطالبی').amount,
+    },
+    {
+      label: 'مرداد ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد مرداد ابوطالبی').amount,
+    },
+    {
+      label: 'شهریور ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد شهريور ابوطالبی').amount,
+    },
+    {
+      label: 'مهر ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد مهر ابوطالبی').amount,
+    },
+    {
+      label: 'آبان ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد آبان ابوطالبی').amount,
+    },
+    {
+      label: 'آذر ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد آذر ابوطالبی').amount,
+    },
+    {
+      label: 'دی ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد دي ابوطالبی').amount,
+    },
+    {
+      label: 'بهمن ابوطالبی',
+      amount: props.getPayrollItemByLabel('خريد بهمن ابوطالبی').amount,
+    },
+    {
+      label: 'خرید فروردین شیشه',
+      amount: props.getPayrollItemByLabel('خريد فروردين شیشه').amount,
+    },
+    {
+      label: 'خرید اردیبهشت شیشه',
+      amount: props.getPayrollItemByLabel('خرید اردیبهشت شیشه').amount,
+    },
+    {
+      label: 'خرید خرداد شیشه',
+      amount: props.getPayrollItemByLabel('خريد خرداد شیشه').amount,
+    },
+    {
+      label: 'خرید تیر شیشه',
+      amount: props.getPayrollItemByLabel('خريد تير شیشه').amount,
+    },
+    {
+      label: 'خرید مرداد شیشه',
+      amount: props.getPayrollItemByLabel('خريد مرداد شیشه').amount,
+    },
+    {
+      label: 'خرید شهریور شیشه',
+      amount: props.getPayrollItemByLabel('خريد شهريور شیشه').amount,
+    },
+    {
+      label: 'خرید مهر شیشه',
+      amount: props.getPayrollItemByLabel('خريد مهر شیشه').amount,
+    },
+    {
+      label: 'خرید آبان شیشه',
+      amount: props.getPayrollItemByLabel('خريد آبان شیشه').amount,
+    },
+    {
+      label: 'خرید آذر شیشه',
+      amount: props.getPayrollItemByLabel('خريد آذر شیشه').amount,
+    },
+    {
+      label: 'خرید دی شیشه',
+      amount: props.getPayrollItemByLabel('خريد دي شیشه').amount,
+    },
+    {
+      label: 'خرید بهمن شیشه',
+      amount: props.getPayrollItemByLabel('خريد بهمن شیشه').amount,
+    },
+    {
+      label: 'خرید فروردین سالار',
+      amount: props.getPayrollItemByLabel('خرید فروردین سالار').amount,
+    },
+    {
+      label: 'خرید اردیبهشت سالار',
+      amount: props.getPayrollItemByLabel('خرید اردیبهشت سالار').amount,
+    },
+    {
+      label: 'خرید خرداد سالار',
+      amount: props.getPayrollItemByLabel('خريد خرداد سالار').amount,
+    },
+    {
+      label: 'خرید تیر سالار',
+      amount: props.getPayrollItemByLabel('خريد تير سالار').amount,
+    },
+    {
+      label: 'خرید مرداد سالار',
+      amount: props.getPayrollItemByLabel('خريد مرداد سالار').amount,
+    },
+    {
+      label: 'خرید شهریور سالار',
+      amount: props.getPayrollItemByLabel('خريد شهريور سالار').amount,
+    },
+    {
+      label: 'خرید مهر سالار',
+      amount: props.getPayrollItemByLabel('خريد مهر سالار').amount,
+    },
+    {
+      label: 'خرید آبان سالار',
+      amount: props.getPayrollItemByLabel('خريد آبان سالار').amount,
+    },
+    {
+      label: 'خرید آذر سالار',
+      amount: props.getPayrollItemByLabel('خريد آذر سالار').amount,
+    },
+    {
+      label: 'خرید دی سالار',
+      amount: props.getPayrollItemByLabel('خريد دي سالار').amount,
+    },
+    {
+      label: 'خرید بهمن سالار',
+      amount: props.getPayrollItemByLabel('خريد بهمن سالار').amount,
+    },
+  ].filter(deduction => deduction.amount),
+)
+
+const total = computed(() => {
+  return {
+    amount: props.getPayrollItemByLabel('جمع کسورات').amount,
+    percentChange: props.getPayrollItemByLabel('جمع کسورات').percentChange,
+  }
+})
 </script>
 
 <template>
@@ -266,6 +287,8 @@ const deductions = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
+    <VDivider />
+
     <VCardText class="pa-3 pt-0">
       <VList>
         <VListItem
@@ -280,7 +303,7 @@ const deductions = [
           <template #append>
             <div class="d-flex gap-x-4">
               <div class="text-body-1">
-                {{ deduction.amount }}
+                {{ formatNumber(deduction.amount) }}
               </div>
             </div>
           </template>
@@ -290,26 +313,22 @@ const deductions = [
 
     <VCardText>
       <VCard variant="tonal" color="error">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع کسورات</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
+            جمع کسورات
+          </div>
 
-        <VCardText class="pa-3">
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
-              12,500,000
-            </h6>
-            <div :class="`d-flex align-center ${3.3 > 0 ? 'text-error' : 'text-success'}`">
+          <h6 class="text-h6 amount">
+            {{ formatNumber(total.amount) }}
+          </h6>
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-error' : 'text-success'}`">
               <div class="text-sm">
-                {{ Math.abs(3.3) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="
-                  3.3 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />
@@ -324,5 +343,43 @@ const deductions = [
 <style lang="scss" scoped>
 .deductions-card {
   border-block: 2px solid rgb(var(--v-theme-error));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

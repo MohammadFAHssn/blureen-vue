@@ -1,28 +1,48 @@
 <script setup>
-const bonuses = [
-  {
-    label: 'پاداش شناور فردی (ارزیابی)',
-    period: 'هجدهم',
-    group: 'عالی',
-    amount: '35,485,962',
-    percentChange: 4.2,
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'پاداش شناور گروهی (بهره‌وری)',
-    amount: '1,523,489',
-    percentChange: 1.8,
-  },
-  {
-    label: 'پاداش شناور مدیر واحد',
-    amount: '9,123,456',
-    percentChange: 0.5,
-  },
-  {
-    label: 'فوق‌العاده بهره‌وری',
-    amount: '1,100,000',
-    percentChange: 2.3,
-  },
-]
+})
+
+const bonuses = computed(() =>
+  [
+    {
+      label: 'پاداش شناور فردی (ارزیابی)',
+      period: props.getPayrollItemByLabel('دوره ارزیابی').amount,
+      group: props.getPayrollItemByLabel('گروه ارزیابی').amount,
+      amount: props.getPayrollItemByLabel('پاداش شناور فردی(ارزيابی)').amount,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور فردی(ارزيابی)')
+        .percentChange,
+    },
+    {
+      label: 'پاداش شناور گروهی (بهره‌وری)',
+      amount: props.getPayrollItemByLabel('پاداش شناور گروهی(بهره وری)').amount,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور گروهی(بهره وری)')
+        .percentChange,
+    },
+    {
+      label: 'پاداش شناور مدیر واحد',
+      amount: props.getPayrollItemByLabel('پاداش شناور مدير واحد').amount,
+      percentChange: props.getPayrollItemByLabel('پاداش شناور مدير واحد')
+        .percentChange,
+    },
+    {
+      label: 'فوق‌العاده بهره‌وری',
+      amount: props.getPayrollItemByLabel('فوق العاده بهره وری').amount,
+      percentChange: props.getPayrollItemByLabel('فوق العاده بهره وری')
+        .percentChange,
+    },
+  ].filter(bonus => bonus.amount || bonus.percentChange),
+)
+
+const total = computed(() => {
+  return {
+    amount: props.getPayrollItemByLabel('جمع پاداش').amount,
+    percentChange: props.getPayrollItemByLabel('جمع پاداش').percentChange,
+  }
+})
 </script>
 
 <template>
@@ -35,9 +55,17 @@ const bonuses = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
+    <VDivider />
+
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem v-for="bonus in bonuses" :key="bonus.label" class="pa-2">
+        <VListItem
+          v-for="bonus in bonuses"
+          :key="bonus.label"
+          class="pa-2"
+          :variant="`${!isFinite(bonus.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(bonus.percentChange) ? 'primary' : ''}`"
+        >
           <VListItemTitle class="text-wrap">
             {{ bonus.label }}
             <div v-if="bonus.period">
@@ -56,23 +84,35 @@ const bonuses = [
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
-                {{ bonus.amount }}
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(bonus.percentChange) ? 'primary' : ''}`"
+              >
+                {{ formatNumber(bonus.amount) }}
               </div>
-              <div :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(bonus.percentChange) }}%
-                </div>
-
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <VIcon
-                  :icon="
-                    bonus.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
+                  v-if="!isFinite(bonus.percentChange)"
+                  icon="tabler-plus"
                   size="20"
                   class="mr-1"
                 />
+
+                <div v-else-if="bonus.percentChange" :class="`d-flex align-center ${bonus.percentChange > 0 ? 'text-success' : 'text-error'}`">
+                  <div class="text-sm">
+                    {{ Math.abs(bonus.percentChange) }}%
+                  </div>
+
+                  <VIcon
+                    :icon="
+                      bonus.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -82,28 +122,26 @@ const bonuses = [
   </VCard>
 
   <VCard color="primary">
-    <VCardItem class="pa-3 pb-0">
-      <VCardTitle class="text-white">
+    <VCardText class="pa-3 sum-of-amounts-card">
+      <div class="label v-card-title pa-0 text-white text-wrap">
         جمع پاداش‌ها (پرداختی دوم)
-      </VCardTitle>
-    </VCardItem>
+      </div>
 
-    <VCardText class="pa-3">
-      <div class="d-flex align-center justify-space-between">
-        <h6 class="text-h6 text-center text-white">
-          12,500,000
-        </h6>
-        <VChip variant="flat" :color="`${3.2 > 0 ? 'success' : 'error'}`" class="d-flex align-center">
+      <h6 class="text-h6 text-white amount">
+        {{ formatNumber(total.amount) }}
+      </h6>
+      <div v-if="total.percentChange" class="percent-change">
+        <VChip
+          variant="flat"
+          :color="`${total.percentChange > 0 ? 'success' : 'error'}`"
+          class="d-flex align-center"
+        >
           <div class="text-sm">
-            {{ Math.abs(3.2) }}%
+            {{ Math.abs(total.percentChange) }}%
           </div>
 
           <VIcon
-            :icon="
-              3.2 > 0
-                ? 'tabler-chevron-up'
-                : 'tabler-chevron-down'
-            "
+            :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
             size="20"
             class="mr-1"
           />
@@ -116,5 +154,43 @@ const bonuses = [
 <style lang="scss" scoped>
 .bonuses-card {
   border-block: 2px solid rgb(var(--v-theme-primary));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

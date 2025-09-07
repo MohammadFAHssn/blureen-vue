@@ -1,18 +1,34 @@
 <script setup>
-const overtimeItems = [
-  {
-    label: 'اضافه کاری عادی',
-    minutes: '15,555',
-    amount: '350,485,962',
-    percentChange: 100.123,
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'جمعه کاری',
-    minutes: '15,555',
-    amount: '100,523,489',
-    percentChange: -100.123,
-  },
-]
+})
+
+const overtimeItems = computed(() =>
+  [
+    {
+      label: 'اضافه‌کاری عادی',
+      amount: props.getPayrollItemByLabel('اضافه كاري عادی*').amount,
+      percentChange:
+        props.getPayrollItemByLabel('اضافه كاري عادی*').percentChange,
+    },
+    {
+      label: 'جمعه‌کاری',
+      amount: props.getPayrollItemByLabel('جمعه كاری*').amount,
+      percentChange: props.getPayrollItemByLabel('جمعه كاری*').percentChange,
+    },
+  ].filter(item => item.amount || item.percentChange),
+)
+
+const total = computed(() => {
+  return {
+    amount: props.getPayrollItemByLabel('جمع اضافه کاری / جمعه کاری').amount,
+    percentChange: props.getPayrollItemByLabel('جمع اضافه کاری / جمعه کاری')
+      .percentChange,
+  }
+})
 </script>
 
 <template>
@@ -27,57 +43,58 @@ const overtimeItems = [
         />
       </template>
       <VCardTitle>اضافه‌کاری</VCardTitle>
+      <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
+
+    <VDivider />
 
     <VCardText class="pa-3 pt-0">
       <VList>
-        <VListItem class="pa-2 custom-v-list-item">
-          <VListItemTitle class="text-wrap" />
-
-          <template #append>
-            <div class="d-flex justify-space-between gap-x-4">
-              <div class="text-body-1 font-weight-bold w-33">
-                دقیقه
-              </div>
-              <div class="text-body-1 font-weight-bold w-33">
-                پرداختی
-              </div>
-              <div class="w-33" />
-            </div>
-          </template>
-        </VListItem>
-
         <VListItem
           v-for="item in overtimeItems"
           :key="item.label"
-          class="pa-2 custom-v-list-item"
+          class="pa-2"
+          :variant="`${!isFinite(item.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(item.percentChange) ? 'success' : ''}`"
         >
           <VListItemTitle class="text-wrap">
             {{ item.label }}
           </VListItemTitle>
 
           <template #append>
-            <div class="d-flex justify-space-between gap-x-4">
-              <div class="text-body-1">
-                {{ item.minutes }}
+            <div class="d-flex gap-x-4">
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(item.percentChange) ? 'success' : ''}`"
+              >
+                {{ formatNumber(item.amount) }}
               </div>
-              <div class="text-body-1">
-                {{ item.amount }}
-              </div>
-              <div :class="`d-flex align-center ${item.percentChange > 0 ? 'text-success' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(item.percentChange) }}%
-                </div>
-
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <VIcon
-                  :icon="
-                    item.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
+                  v-if="!isFinite(item.percentChange)"
+                  icon="tabler-plus"
                   size="20"
                   class="mr-1"
                 />
+
+                <div
+                  v-else-if="item.percentChange"
+                  :class="`d-flex align-center ${item.percentChange > 0 ? 'text-success' : 'text-error'}`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(item.percentChange) }}%
+                  </div>
+
+                  <VIcon
+                    :icon="
+                      item.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -87,26 +104,22 @@ const overtimeItems = [
 
     <VCardText>
       <VCard variant="tonal" color="success">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع پرداختی اضافه‌کاری</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
+            جمع پرداختی اضافه‌کاری
+          </div>
 
-        <VCardText class="pa-3">
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
-              12,500,000
-            </h6>
-            <div :class="`d-flex align-center ${10 > 0 ? 'text-success' : 'text-error'}`">
+          <h6 class="text-h6 amount">
+            {{ formatNumber(total.amount) }}
+          </h6>
+          <div v-if="total.percentChange" class="percent-change">
+            <div :class="`d-flex align-center ${total.percentChange > 0 ? 'text-success' : 'text-error'}`">
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="
-                  10 > 0
-                    ? 'tabler-chevron-up'
-                    : 'tabler-chevron-down'
-                "
+                :icon="total.percentChange > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
                 size="20"
                 class="mr-1"
               />
@@ -123,11 +136,41 @@ const overtimeItems = [
   border-block: 2px solid rgb(var(--v-theme-success));
 }
 
-.custom-v-list-item {
-  grid-template-columns: 1px auto 250px;
-}
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
 
-:deep(.v-list-item__append) {
-  display: block;
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

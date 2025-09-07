@@ -72,7 +72,8 @@ async function onFinish() {
         isOtpCodeInserted.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
-        } else {
+        }
+        else {
           errors.value.other = response._data.message
           hasError.value = true
         }
@@ -88,7 +89,8 @@ async function onFinish() {
     await nextTick(() => {
       router.replace(route.query.to ? String(route.query.to) : '/')
     })
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }
@@ -139,7 +141,9 @@ async function onFinish() {
         </VCardItem>
 
         <VCardText>
-          <h4 class="text-h4 mb-1">احراز هویت دو مرحله‌ای</h4>
+          <h4 class="text-h4 mb-1">
+            احراز هویت دو مرحله‌ای
+          </h4>
           <p class="mb-1">
             کد تأیید به تلفن همراه شما ارسال شد. لطفاً کد دریافتی را در کادر زیر
             وارد کنید
@@ -190,7 +194,7 @@ async function onFinish() {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @use '@core/scss/template/pages/page-auth';
 
 .v-otpCode-input {

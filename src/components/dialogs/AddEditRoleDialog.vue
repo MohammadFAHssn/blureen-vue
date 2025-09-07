@@ -96,7 +96,7 @@ const isIndeterminate = computed(
 )
 
 watch(isSelectAll, (val) => {
-  permissions.value = permissions.value.map((permission) => ({
+  permissions.value = permissions.value.map(permission => ({
     ...permission,
     read: val,
     write: val,
@@ -121,7 +121,7 @@ watch(
       role.value = props.rolePermissions.name
       permissions.value = permissions.value.map((permission) => {
         const rolePermission = props.rolePermissions?.permissions.find(
-          (item) => item.name === permission.name,
+          item => item.name === permission.name,
         )
 
         if (rolePermission) {
@@ -171,7 +171,9 @@ function onReset() {
         <h4 class="text-h4 text-center mb-2">
           {{ props.rolePermissions.name ? 'Edit' : 'Add New' }} Role
         </h4>
-        <p class="text-body-1 text-center mb-6">Set Role Permissions</p>
+        <p class="text-body-1 text-center mb-6">
+          Set Role Permissions
+        </p>
 
         <!-- 👉 Form -->
         <VForm ref="refPermissionForm">
@@ -182,7 +184,9 @@ function onReset() {
             placeholder="Enter Role Name"
           />
 
-          <h5 class="text-h5 my-6">Role Permissions</h5>
+          <h5 class="text-h5 my-6">
+            Role Permissions
+          </h5>
 
           <!-- 👉 Role Permissions -->
 
@@ -190,7 +194,9 @@ function onReset() {
             <!-- 👉 Admin  -->
             <tr>
               <td>
-                <h6 class="text-h6">Administrator Access</h6>
+                <h6 class="text-h6">
+                  Administrator Access
+                </h6>
               </td>
               <td colspan="3">
                 <div class="d-flex justify-end">
@@ -232,7 +238,9 @@ function onReset() {
 
           <!-- 👉 Actions button -->
           <div class="d-flex align-center justify-center gap-4">
-            <VBtn @click="onSubmit"> Submit </VBtn>
+            <VBtn @click="onSubmit">
+              Submit
+            </VBtn>
 
             <VBtn color="secondary" variant="tonal" @click="onReset">
               Cancel
@@ -247,8 +255,7 @@ function onReset() {
 <style lang="scss">
 .permission-table {
   td {
-    border-block-end: 1px solid
-      rgba(var(--v-border-color), var(--v-border-opacity));
+    border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
     padding-block: 0.5rem;
 
     .v-checkbox {

@@ -84,7 +84,9 @@ const membersList = [
 
     <VCard class="share-project-dialog pa-2 pa-sm-10">
       <VCardText>
-        <h4 class="text-h4 text-center mb-2">Share Project</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Share Project
+        </h4>
         <p class="text-body-1 text-center mb-6">
           Share project with a team members
         </p>
@@ -105,7 +107,9 @@ const membersList = [
           </template>
         </AppAutocomplete>
 
-        <h5 class="text-h5 mb-4 mt-6">8 Members</h5>
+        <h5 class="text-h5 mb-4 mt-6">
+          8 Members
+        </h5>
 
         <VList class="card-list">
           <VListItem v-for="member in membersList" :key="member.name">
@@ -152,9 +156,7 @@ const membersList = [
           </VListItem>
         </VList>
 
-        <div
-          class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-3 mt-6"
-        >
+        <div class="d-flex align-center justify-center justify-sm-space-between flex-wrap gap-3 mt-6">
           <h6 class="text-h6 font-weight-medium d-flex align-start">
             <VIcon icon="tabler-users" class="me-2" size="20" />
             <div>Public to Vuexy - Pixinvent</div>

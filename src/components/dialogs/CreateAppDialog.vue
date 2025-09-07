@@ -164,7 +164,9 @@ function onSubmit() {
     <VCard class="create-app-dialog" min-height="590">
       <VCardText class="pa-5 pa-sm-16">
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-2">Create App</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Create App
+        </h4>
         <p class="text-body-1 text-center mb-6">
           Provide data with this form to create your app.
         </p>
@@ -192,7 +194,9 @@ function onSubmit() {
                   placeholder="Application Name"
                 />
 
-                <h5 class="text-h5 mt-6 mb-4">Category</h5>
+                <h5 class="text-h5 mt-6 mb-4">
+                  Category
+                </h5>
                 <VRadioGroup v-model="createAppData.category">
                   <VList class="card-list">
                     <VListItem
@@ -230,7 +234,9 @@ function onSubmit() {
 
               <!-- 👉 Frameworks -->
               <VWindowItem>
-                <h5 class="text-h5 mb-4">Select Framework</h5>
+                <h5 class="text-h5 mb-4">
+                  Select Framework
+                </h5>
                 <VRadioGroup v-model="createAppData.framework">
                   <VList class="card-list">
                     <VListItem
@@ -268,7 +274,9 @@ function onSubmit() {
               <VWindowItem>
                 <AppTextField label="Database Name" placeholder="UserDB" />
 
-                <h5 class="text-h5 mt-6 mb-4">Select Database Engine</h5>
+                <h5 class="text-h5 mt-6 mb-4">
+                  Select Database Engine
+                </h5>
                 <VRadioGroup v-model="createAppData.database">
                   <VList class="card-list">
                     <VListItem
@@ -304,7 +312,9 @@ function onSubmit() {
 
               <!-- 👉 Billing form -->
               <VWindowItem>
-                <h6 class="text-h6 mb-6">Payment Details</h6>
+                <h6 class="text-h6 mb-6">
+                  Payment Details
+                </h6>
 
                 <VForm>
                   <VRow>
@@ -352,8 +362,12 @@ function onSubmit() {
               </VWindowItem>
 
               <VWindowItem class="text-center">
-                <h5 class="text-h5 mb-1">Submit</h5>
-                <p class="text-sm mb-4">Submit to kickstart your project.</p>
+                <h5 class="text-h5 mb-1">
+                  Submit
+                </h5>
+                <p class="text-sm mb-4">
+                  Submit to kickstart your project.
+                </p>
 
                 <VImg :src="laptopGirl" width="176" class="mx-auto" />
               </VWindowItem>

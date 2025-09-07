@@ -17,9 +17,7 @@ import navItems from '@/navigation/horizontal'
       <RouterLink to="/" class="app-logo d-flex align-center gap-x-3">
         <VNodeRenderer :nodes="themeConfig.app.logo" />
 
-        <h1
-          class="app-title font-weight-bold leading-normal text-xl text-capitalize"
-        >
+        <h1 class="app-title font-weight-bold leading-normal text-xl text-capitalize">
           {{ themeConfig.app.title }}
         </h1>
       </RouterLink>

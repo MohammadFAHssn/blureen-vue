@@ -53,7 +53,9 @@ function dialogModelValueUpdate(val) {
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h4 text-center mb-2">Upgrade Plan</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Upgrade Plan
+        </h4>
         <p class="text-body-1 text-center mb-6">
           Choose the best plan for user.
         </p>
@@ -72,11 +74,15 @@ function dialogModelValueUpdate(val) {
 
         <VDivider class="my-6" />
 
-        <p class="text-body-1 mb-1">User current plan is standard plan</p>
+        <p class="text-body-1 mb-1">
+          User current plan is standard plan
+        </p>
         <div class="d-flex justify-space-between align-center flex-wrap">
           <div class="d-flex align-center gap-1 me-3">
             <sup class="text-body-1 text-primary">$</sup>
-            <h1 class="text-h1 text-primary">99</h1>
+            <h1 class="text-h1 text-primary">
+              99
+            </h1>
             <sub class="text-body-2 mt-5"> / month </sub>
           </div>
           <VBtn

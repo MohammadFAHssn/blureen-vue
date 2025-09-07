@@ -1,121 +1,127 @@
 <script setup>
-const payments = [
-  {
-    label: 'حقوق پایه',
-    amount: '35,485,962',
-    percentChange: 4.2,
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
   },
-  {
-    label: 'حق اولاد',
-    amount: '1,523,489',
-    percentChange: 1.8,
-  },
-  {
-    label: 'حق مسکن',
-    amount: '9,123,456',
-    percentChange: -0.5,
-  },
-  {
-    label: 'خواربار',
-    amount: '1,100,000',
-    percentChange: 2.3,
-  },
-  {
-    label: 'حق تأهل',
-    amount: '5,000,000',
-    percentChange: 3.1,
-  },
-  {
-    label: 'نوبت کاری 10%',
-    amount: '258,321',
-    percentChange: -1.1,
-  },
-  {
-    label: 'نوبت کاری 15%',
-    amount: '387,481',
-    percentChange: 1.6,
-  },
-  {
-    label: 'شب کاری 35%',
-    amount: '904,123',
-    percentChange: 4.5,
-  },
-  {
-    label: 'بن کارگری',
-    amount: '1,250,000',
-    percentChange: 0.9,
-  },
-  {
-    label: 'پایه سنوات',
-    amount: '750,000',
-    percentChange: 0.7,
-  },
-  {
-    label: 'مزد سنوات',
-    amount: '850,000',
-    percentChange: -1.2,
-  },
-  {
-    label: 'حق پست',
-    amount: '1,800,000',
-    percentChange: 2.1,
-  },
-  {
-    label: 'ماندگاری حق پست',
-    amount: '450,000',
-    percentChange: 0.4,
-  },
-  {
-    label: 'محیط کار (سختی کار)',
-    amount: '2,100,000',
-    percentChange: 2.5,
-  },
-  {
-    label: 'ماندگاری محیط کار(سختی کار)',
-    amount: '1,000,000,000',
-    percentChange: 99.99,
-  },
-  {
-    label: 'حق پست جدید',
-    amount: '1,950,000',
-    percentChange: 2.2,
-  },
-  {
-    label: 'ماندگاری پست جدید',
-    amount: '487,500',
-    percentChange: 0.5,
-  },
-  {
-    label: 'پاداش مدیریت',
-    amount: '15,000,000',
-    percentChange: 10.0,
-  },
-  {
-    label: 'ماندگاری پاداش مدیریت',
-    amount: '3,750,000',
-    percentChange: 2.5,
-  },
-  {
-    label: 'حق ماموریت',
-    amount: '3,200,000',
-    percentChange: -3.0,
-  },
-  {
-    label: 'پرداختی معوق',
-    amount: '7,800,000',
-    percentChange: 5.0,
-  },
-  {
-    label: 'سایر مزایا',
-    amount: '450,000',
-    percentChange: 0.8,
-  },
-  {
-    label: 'رتبه بندی',
-    amount: '4,500,000',
-    percentChange: 4.1,
-  },
-]
+})
+
+const payments = computed(() =>
+  [
+    {
+      label: 'حقوق پایه',
+      amount: props.getPayrollItemByLabel('حقوق پايه').amount,
+      percentChange: props.getPayrollItemByLabel('حقوق پايه').percentChange,
+    },
+    {
+      label: 'حق اولاد',
+      amount: props.getPayrollItemByLabel('حق اولاد').amount,
+      percentChange: props.getPayrollItemByLabel('حق اولاد').percentChange,
+    },
+    {
+      label: 'حق مسکن',
+      amount: props.getPayrollItemByLabel('حق مسكن').amount,
+      percentChange: props.getPayrollItemByLabel('حق مسكن').percentChange,
+    },
+    {
+      label: 'خواربار',
+      amount: props.getPayrollItemByLabel('خواربار').amount,
+      percentChange: props.getPayrollItemByLabel('خواربار').percentChange,
+    },
+    {
+      label: 'حق تأهل',
+      amount: props.getPayrollItemByLabel('حق تاهل').amount,
+      percentChange: props.getPayrollItemByLabel('حق تاهل').percentChange,
+    },
+    {
+      label: 'نوبت کاری 10%',
+      amount: props.getPayrollItemByLabel('نوبتكاری 10%').amount,
+      percentChange: props.getPayrollItemByLabel('نوبتكاری 10%').percentChange,
+    },
+    {
+      label: 'نوبت کاری 15%',
+      amount: props.getPayrollItemByLabel('نوبتكاری 15%').amount,
+      percentChange: props.getPayrollItemByLabel('نوبتكاری 15%').percentChange,
+    },
+    {
+      label: 'بن کارگری',
+      amount: props.getPayrollItemByLabel('بن كارگری').amount,
+      percentChange: props.getPayrollItemByLabel('بن كارگری').percentChange,
+    },
+    {
+      label: 'پایه سنوات سالیانه',
+      amount: props.getPayrollItemByLabel('پايه سنوات ساليانه').amount,
+      percentChange:
+        props.getPayrollItemByLabel('پايه سنوات ساليانه').percentChange,
+    },
+    {
+      label: 'مزد سنوات',
+      amount: props.getPayrollItemByLabel('مزد سنوات').amount,
+      percentChange: props.getPayrollItemByLabel('مزد سنوات').percentChange,
+    },
+    {
+      label: 'حق پست',
+      amount: props.getPayrollItemByLabel('حق پست').amount,
+      percentChange: props.getPayrollItemByLabel('حق پست').percentChange,
+    },
+    {
+      label: 'ماندگاری پست',
+      amount: props.getPayrollItemByLabel('ماندگاری پست').amount,
+      percentChange: props.getPayrollItemByLabel('ماندگاری پست').percentChange,
+    },
+    {
+      label: 'ماندگاری محیط کار (سختی کار)',
+      amount: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)').amount,
+      percentChange: props.getPayrollItemByLabel('ماندگاری محيط كار(سختی كار)')
+        .percentChange,
+    },
+    {
+      label: 'محیط کار (سختی کار)',
+      amount: props.getPayrollItemByLabel('محيط كار(سختی كار)').amount,
+      percentChange:
+        props.getPayrollItemByLabel('محيط كار(سختی كار)').percentChange,
+    },
+    {
+      label: 'پاداش مدیریت',
+      amount: props.getPayrollItemByLabel('پاداش مدیریت').amount,
+      percentChange: props.getPayrollItemByLabel('پاداش مدیریت').percentChange,
+    },
+    {
+      label: 'ماندگاری پاداش مدیریت',
+      amount: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت').amount,
+      percentChange: props.getPayrollItemByLabel('ماندگاری پاداش مدیریت')
+        .percentChange,
+    },
+    {
+      label: 'سایر مزایا',
+      amount: props.getPayrollItemByLabel('ساير مزايا').amount,
+      percentChange: props.getPayrollItemByLabel('ساير مزايا').percentChange,
+    },
+    {
+      label: 'رتبه‌بندی',
+      amount: props.getPayrollItemByLabel('رتبه بندی').amount,
+      percentChange: props.getPayrollItemByLabel('رتبه بندی').percentChange,
+    },
+    {
+      label: 'حق مأموریت',
+      amount: props.getPayrollItemByLabel('حق ماموريت').amount,
+      percentChange: props.getPayrollItemByLabel('حق ماموريت').percentChange,
+    },
+    {
+      label: 'پرداختی معوق',
+      amount: props.getPayrollItemByLabel('پرداختی معوق').amount,
+      percentChange: props.getPayrollItemByLabel('پرداختی معوق').percentChange,
+    },
+  ].filter(payment => payment.amount || payment.percentChange),
+)
+
+const total = computed(() => {
+  return {
+    amount: props.getPayrollItemByLabel('جمع ناخالص پرداختی').amount,
+    percentChange:
+      props.getPayrollItemByLabel('جمع ناخالص پرداختی').percentChange,
+  }
+})
 </script>
 
 <template>
@@ -133,12 +139,16 @@ const payments = [
       <VCardSubtitle> ریال </VCardSubtitle>
     </VCardItem>
 
+    <VDivider />
+
     <VCardText class="pa-3 pt-0">
       <VList>
         <VListItem
           v-for="payment in payments"
           :key="payment.label"
           class="pa-2"
+          :variant="`${!isFinite(payment.percentChange) ? 'outlined' : 'text'}`"
+          :base-color="`${!isFinite(payment.percentChange) ? 'teal' : ''}`"
         >
           <VListItemTitle class="text-wrap">
             {{ payment.label }}
@@ -146,23 +156,40 @@ const payments = [
 
           <template #append>
             <div class="d-flex gap-x-4">
-              <div class="text-body-1">
-                {{ payment.amount }}
+              <div
+                class="text-body-1"
+                :style="`color: ${!isFinite(payment.percentChange) ? 'teal' : ''}`"
+              >
+                {{ formatNumber(payment.amount) }}
               </div>
-              <div :class="`d-flex align-center ${payment.percentChange > 0 ? 'text-teal' : 'text-error'}`">
-                <div class="text-sm">
-                  {{ Math.abs(payment.percentChange) }}%
-                </div>
-
+              <div style="min-inline-size: 70px;" class="d-flex justify-end">
                 <VIcon
-                  :icon="
-                    payment.percentChange > 0
-                      ? 'tabler-chevron-up'
-                      : 'tabler-chevron-down'
-                  "
+                  v-if="!isFinite(payment.percentChange)"
+                  icon="tabler-plus"
                   size="20"
                   class="mr-1"
                 />
+
+                <div
+                  v-else-if="payment.percentChange"
+                  :class="`d-flex align-center ${
+                    payment.percentChange > 0 ? 'text-teal' : 'text-error'
+                  }`"
+                >
+                  <div class="text-sm">
+                    {{ Math.abs(payment.percentChange) }}%
+                  </div>
+
+                  <VIcon
+                    :icon="
+                      payment.percentChange > 0
+                        ? 'tabler-chevron-up'
+                        : 'tabler-chevron-down'
+                    "
+                    size="20"
+                    class="mr-1"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -172,22 +199,30 @@ const payments = [
 
     <VCardText>
       <VCard variant="tonal" color="teal">
-        <VCardItem class="pa-3 pb-0">
-          <VCardTitle>جمع پایه پرداخت‌ها</VCardTitle>
-        </VCardItem>
+        <VCardText class="pa-3 sum-of-amounts-card">
+          <div class="label v-card-title pa-0 text-wrap">
+            جمع پایه‌ پرداخت‌ها
+          </div>
 
-        <VCardText class="pa-3">
-          <div class="d-flex align-center justify-space-between">
-            <h6 class="text-h6 text-center">
-              12,500,000
-            </h6>
-            <div :class="`d-flex align-center ${10 > 0 ? 'text-teal' : 'text-error'}`">
+          <h6 class="text-h6 amount">
+            {{ formatNumber(total.amount) }}
+          </h6>
+          <div v-if="total.percentChange" class="percent-change">
+            <div
+              :class="`d-flex align-center ${
+                total.percentChange > 0 ? 'text-teal' : 'text-error'
+              }`"
+            >
               <div class="text-sm">
-                {{ Math.abs(10) }}%
+                {{ Math.abs(total.percentChange) }}%
               </div>
 
               <VIcon
-                :icon="10 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                :icon="
+                  total.percentChange > 0
+                    ? 'tabler-chevron-up'
+                    : 'tabler-chevron-down'
+                "
                 size="20"
                 class="mr-1"
               />
@@ -202,5 +237,43 @@ const payments = [
 <style lang="scss" scoped>
 .payments-card {
   border-block: 2px solid rgb(var(--v-theme-teal));
+}
+
+.sum-of-amounts-card {
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(2, 1fr);
+
+  .label {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .amount {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .percent-change {
+    grid-area: 1 / 2 / 3 / 3;
+    place-self: center center;
+  }
+
+  @media (min-width: 1700px) {
+    grid-gap: 0 1rem;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr;
+
+    .label {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .amount {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .percent-change {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 }
 </style>

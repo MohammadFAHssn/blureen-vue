@@ -1,10 +1,4 @@
 <script setup>
-import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
-import { AgGridVue } from 'ag-grid-vue3'
-// ----- start ag-grid -----
-//  TODO: make theses globally
-import MultiValuedCell from '@/plugins/ag-grid/components/MultiValuedCell.vue'
-
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
@@ -19,11 +13,9 @@ const uiState = reactive({
 
 const users = ref([])
 
-const { theme } = useAGGridTheme()
+// ----- start ag-grid -----
 
-const defaultColDef = ref({
-  filter: true,
-})
+const { theme } = useAGGridTheme()
 
 const columnDefs = ref([
   { headerName: 'کد پرسنلی', field: 'personnelCode', flex: 1 },
@@ -33,7 +25,7 @@ const columnDefs = ref([
     headerName: 'نوع کاربر',
     field: 'roles',
     flex: 3,
-    cellRenderer: MultiValuedCell,
+    cellRenderer: 'MultiValuedCell',
     cellStyle: { 'display': 'flex', 'align-items': 'center' },
   },
   { headerName: 'شماره تلفن', field: 'mobileNumber', flex: 2 },
@@ -45,7 +37,7 @@ const rowData = computed(() =>
       personnelCode: Number.parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
-      roles: user.roles?.map((role) => role.name),
+      roles: user.roles?.map(role => role.name),
       mobileNumber: user.mobile_number,
     }
   }),
@@ -62,7 +54,8 @@ async function fetchUsers() {
     if (error.value) throw error.value
 
     users.value = data.value.data
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error fetching users:', e)
     uiState.hasError = true
     uiState.errorMessage = 'خطا در دریافت کاربران'
@@ -84,16 +77,14 @@ await fetchUsers()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <section class="ag-grid-sec">
+    <section style="block-size: 100%;">
       <AgGridVue
-        style="block-size: 100%; inline-size: 100%"
+        style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
-        :default-col-def="defaultColDef"
         enable-rtl
         row-numbers
         pagination
-        :locale-text="AG_GRID_LOCALE_IR"
         :theme="theme"
       />
     </section>
@@ -110,9 +101,5 @@ await fetchUsers()
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto;
-}
-
-.ag-grid-sec {
-  block-size: 100%;
 }
 </style>

@@ -23,7 +23,9 @@ definePage({
       description="We couldn't find the page you are looking for."
     />
 
-    <VBtn to="/" class="mb-11"> Back to Home </VBtn>
+    <VBtn to="/" class="mb-11">
+      Back to Home
+    </VBtn>
 
     <!-- 👉 Image -->
     <div class="misc-avatar w-100 text-center">

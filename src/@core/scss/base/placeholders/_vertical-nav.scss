@@ -42,16 +42,11 @@
     (1.5rem - 0.9rem) / 2 => 0.6rem / 2 => 0.3rem
   */
   $vertical-nav-items-nested-icon-margin-inline: calc(
-    (
-        variables.$vertical-nav-items-icon-size -
-          variables.$vertical-nav-items-nested-icon-size
-      ) /
-      2
+    (variables.$vertical-nav-items-icon-size - variables.$vertical-nav-items-nested-icon-size) / 2
   );
 
   font-size: variables.$vertical-nav-items-nested-icon-size;
-  margin-inline: $vertical-nav-items-nested-icon-margin-inline
-    $vertical-nav-items-nested-icon-margin-inline +
+  margin-inline: $vertical-nav-items-nested-icon-margin-inline $vertical-nav-items-nested-icon-margin-inline +
     variables.$vertical-nav-items-icon-margin-inline-end;
 }
 

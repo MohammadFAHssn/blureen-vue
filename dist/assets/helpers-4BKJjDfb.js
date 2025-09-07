@@ -1,0 +1,1 @@
+function t(n){return n==null||n===""?!0:!!(Array.isArray(n)&&n.length===0)}function i(n){return n==null}function e(n){return Array.isArray(n)&&n.length===0}function a(n){return["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"][n-1]??null}export{i as a,e as b,a as g,t as i};

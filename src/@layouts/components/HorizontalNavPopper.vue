@@ -97,7 +97,7 @@ NOTE: This issue starts from third level children (Top Level > Sub item > Sub it
 }
 
 until(() => configStore.horizontalNavType)
-  .toMatch((type) => type === 'static')
+  .toMatch(type => type === 'static')
   .then(() => {
     useEventListener('scroll', updatePopper)
 
@@ -178,9 +178,7 @@ watch(() => route.fullPath, hideContent)
     </template>
 
     <!-- 👉 CSS Transition -->
-    <template
-      v-else-if="typeof themeConfig.horizontalNav.transition === 'string'"
-    >
+    <template v-else-if="typeof themeConfig.horizontalNav.transition === 'string'">
       <Transition :name="themeConfig.horizontalNav.transition">
         <div
           v-show="isContentShown"

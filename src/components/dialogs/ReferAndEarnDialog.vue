@@ -47,11 +47,12 @@ const referAndEarnSteps = [
 
     <VCard class="pa-2 pa-sm-10">
       <VCardText>
-        <h4 class="text-h4 text-center mb-2">Refer & Earn</h4>
+        <h4 class="text-h4 text-center mb-2">
+          Refer & Earn
+        </h4>
         <p class="text-body-1 mb-6 text-center">
           Invite your friend to
-          <span class="text-capitalize">{{ themeConfig.app.title }}</span
-          >, if they sign up, you and your friend will get 30 days free trial
+          <span class="text-capitalize">{{ themeConfig.app.title }}</span>, if they sign up, you and your friend will get 30 days free trial
         </p>
 
         <VRow class="text-center mt-8">
@@ -74,7 +75,9 @@ const referAndEarnSteps = [
 
         <VDivider class="mt-12 mb-6" />
 
-        <h5 class="text-h5 mb-6">Invite your friends</h5>
+        <h5 class="text-h5 mb-6">
+          Invite your friends
+        </h5>
 
         <VForm
           class="d-flex align-center flex-wrap gap-4"
@@ -85,10 +88,14 @@ const referAndEarnSteps = [
             label="Enter your friend's email address and invite them to join Vuexy 😍"
           />
 
-          <VBtn class="align-self-end" type="submit"> Send </VBtn>
+          <VBtn class="align-self-end" type="submit">
+            Send
+          </VBtn>
         </VForm>
 
-        <h5 class="text-h5 my-6">Share the referral link</h5>
+        <h5 class="text-h5 my-6">
+          Share the referral link
+        </h5>
 
         <VForm
           class="d-flex align-center flex-wrap gap-4"
@@ -100,7 +107,9 @@ const referAndEarnSteps = [
             class="refer-link-input"
           >
             <template #append-inner>
-              <VBtn variant="text"> Copy link </VBtn>
+              <VBtn variant="text">
+                Copy link
+              </VBtn>
             </template>
           </AppTextField>
 

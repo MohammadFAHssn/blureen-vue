@@ -78,10 +78,12 @@ function dialogModelValueUpdate(val) {
     <!-- Dialog close btn -->
     <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
-    <VCard class="pa-sm-10 pa-2">
+    <VCard>
       <VCardText>
         <!-- 👉 Title -->
-        <h4 class="text-h5 text-center mb-2">افزودن فیش حقوقی جدید</h4>
+        <h4 class="text-h5 text-center mb-2">
+          افزودن فیش حقوقی جدید
+        </h4>
 
         <!-- 👉 Form -->
         <VForm

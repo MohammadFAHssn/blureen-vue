@@ -39,19 +39,19 @@ const isAddPermissionDialogVisible = ref(false)
 const permissionName = ref('')
 
 const colors = {
-  support: {
+  'support': {
     color: 'info',
     text: 'Support',
   },
-  users: {
+  'users': {
     color: 'success',
     text: 'Users',
   },
-  manager: {
+  'manager': {
     color: 'warning',
     text: 'Manager',
   },
-  administrator: {
+  'administrator': {
     color: 'primary',
     text: 'Administrator',
   },
@@ -86,11 +86,11 @@ function editPermission(name) {
   <VRow>
     <VCol cols="12">
       <VCard>
-        <VCardText
-          class="d-flex align-center justify-space-between flex-wrap gap-4"
-        >
+        <VCardText class="d-flex align-center justify-space-between flex-wrap gap-4">
           <div class="d-flex gap-2 align-center">
-            <p class="text-body-1 mb-0">Show</p>
+            <p class="text-body-1 mb-0">
+              Show
+            </p>
             <AppSelect
               :model-value="itemsPerPage"
               :items="[
@@ -191,9 +191,7 @@ function editPermission(name) {
         v-model:is-dialog-visible="isPermissionDialogVisible"
         v-model:permission-name="permissionName"
       />
-      <AddEditPermissionDialog
-        v-model:is-dialog-visible="isAddPermissionDialogVisible"
-      />
+      <AddEditPermissionDialog v-model:is-dialog-visible="isAddPermissionDialogVisible" />
     </VCol>
   </VRow>
 </template>

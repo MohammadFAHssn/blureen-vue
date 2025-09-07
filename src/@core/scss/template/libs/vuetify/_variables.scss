@@ -40,36 +40,31 @@ $typography-body-1-line-height: 1.375rem;
         0 2px 4px rgba(var(--v-shadow-key-umbra-color), 0.12),
       ),
       2: (
-        0 1px 6px
-          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xs-opacity)),
+        0 1px 6px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xs-opacity)),
       ),
       3: (
         0 3px 8px rgba(var(--v-shadow-key-umbra-color), 0.14),
       ),
       4: (
-        0 2px 8px
-          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-sm-opacity)),
+        0 2px 8px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-sm-opacity)),
       ),
       5: (
         0 4px 10px rgba(var(--v-shadow-key-umbra-color), 0.15),
       ),
       6: (
-        0 3px 12px
-          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-md-opacity)),
+        0 3px 12px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-md-opacity)),
       ),
       7: (
         0 4px 18px rgba(var(--v-shadow-key-umbra-color), 0.1),
       ),
       8: (
-        0 4px 18px
-          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-lg-opacity)),
+        0 4px 18px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-lg-opacity)),
       ),
       9: (
         0 5px 14px rgba(var(--v-shadow-key-umbra-color), 0.18),
       ),
       10: (
-        0 5px 30px
-          rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xl-opacity)),
+        0 5px 30px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xl-opacity)),
       ),
       11: (
         0 5px 16px rgba(var(--v-shadow-key-umbra-color), 0.2),
@@ -410,11 +405,7 @@ $typography-body-1-line-height: 1.375rem;
 
   // 👉 Expansion Panel
   $expansion-panel-title-padding: 12px 20px 12px 24px !default,
-  $expansion-panel-color: rgba(
-      var(--v-theme-on-surface),
-      var(--v-medium-emphasis-opacity)
-    )
-    !default,
+  $expansion-panel-color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)) !default,
   $expansion-panel-active-title-min-height: 46px !default,
   $expansion-panel-title-min-height: 46px !default,
   $expansion-panel-text-padding: 0 20px 20px 24px !default,
@@ -510,19 +501,11 @@ $typography-body-1-line-height: 1.375rem;
   $switch-inset-thumb-off-width: 0.875rem !default,
   $switch-thumb-elevation: 2 !default,
   $switch-track-opacity: 1 !default,
-  $switch-track-background: rgba(
-      var(--v-theme-on-surface),
-      var(--v-focus-opacity)
-    )
-    !default,
+  $switch-track-background: rgba(var(--v-theme-on-surface), var(--v-focus-opacity)) !default,
   $switch-thumb-background: rgb(var(--v-theme-on-primary)),
   // 👉 table
   $table-row-height: 50px !default,
-  $table-color: rgba(
-      var(--v-theme-on-surface),
-      var(--v-medium-emphasis-opacity)
-    )
-    !default,
+  $table-color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)) !default,
   $table-font-size: 0.9375rem !default,
 
   // 👉 tabs
@@ -539,11 +522,7 @@ $typography-body-1-line-height: 1.375rem;
   // 👉 timeline
   $timeline-dot-size: 34px !default,
   $timeline-dot-divider-background: rgba(var(--v-border-color), 0.08) !default,
-  $timeline-divider-line-background: rgba(
-      var(--v-border-color),
-      var(--v-border-opacity)
-    )
-    !default,
+  $timeline-divider-line-background: rgba(var(--v-border-color), var(--v-border-opacity)) !default,
   $timeline-divider-line-thickness: 1.5px !default,
   $timeline-item-padding: 16px !default
 );

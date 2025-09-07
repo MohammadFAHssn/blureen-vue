@@ -23,10 +23,7 @@
   }
 
   &.v-chip--variant-elevated {
-    background-color: rgba(
-      var(--v-theme-on-surface),
-      var(--v-activated-opacity)
-    );
+    background-color: rgba(var(--v-theme-on-surface), var(--v-activated-opacity));
     color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
   }
 

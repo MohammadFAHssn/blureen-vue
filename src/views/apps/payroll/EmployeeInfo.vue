@@ -1,9 +1,51 @@
-<!-- icon size -->
+<script setup>
+const props = defineProps({
+  getPayrollItemByLabel: {
+    type: Function,
+    required: true,
+  },
+})
+
+const employeeInfo = computed(() =>
+  [
+    {
+      label: 'کد پرسنلی',
+      value: props.getPayrollItemByLabel('پرسنلی').amount,
+      icon: 'tabler-id',
+    },
+    {
+      label: 'نام و نام خانوادگی',
+      value: `${props.getPayrollItemByLabel('نام').amount} ${props.getPayrollItemByLabel('نام خانوادگی').amount}`,
+      icon: 'tabler-user',
+    },
+    {
+      label: 'واحد کاری',
+      value: props.getPayrollItemByLabel('واحد کاری').amount,
+      icon: 'tabler-building',
+    },
+    {
+      label: 'گروه',
+      value: props.getPayrollItemByLabel('گروه').amount,
+      icon: 'tabler-star',
+    },
+    {
+      label: 'رتبه',
+      value: props.getPayrollItemByLabel('رتبه').amount,
+      icon: 'tabler-tag-starred',
+    },
+  ].filter(info => info.value),
+)
+</script>
+
 <template>
   <VCard>
     <VCardText class="pa-3">
       <VRow>
-        <VCol class="d-flex align-center">
+        <VCol
+          v-for="info in employeeInfo"
+          :key="info.label"
+          class="d-flex align-center"
+        >
           <VAvatar
             variant="text"
             color="primary"
@@ -11,94 +53,14 @@
             size="31"
             class="text-primary me-0"
           >
-            <VIcon icon="tabler-user" size="22" />
+            <VIcon :icon="info.icon" size="22" />
           </VAvatar>
           <div>
             <p class="text-medium-emphasis ma-0 text-no-wrap">
-              نام و نام خانوادگی
+              {{ info.label }}
             </p>
             <p class="text-primary ma-0 text-no-wrap">
-              محمد حسنی احمدآبادی
-            </p>
-          </div>
-        </VCol>
-
-        <VCol class="d-flex align-center">
-          <VAvatar
-            variant="text"
-            color="primary"
-            rounded
-            size="31"
-            class="text-primary me-0"
-          >
-            <VIcon icon="tabler-id" size="22" />
-          </VAvatar>
-          <div>
-            <p class="text-medium-emphasis ma-0 text-no-wrap">
-              کد پرسنلی
-            </p>
-            <p class="text-primary ma-0 text-no-wrap">
-              6649
-            </p>
-          </div>
-        </VCol>
-
-        <VCol class="d-flex align-center">
-          <VAvatar
-            variant="text"
-            color="primary"
-            rounded
-            size="31"
-            class="text-primary me-0"
-          >
-            <VIcon icon="tabler-building" size="22" />
-          </VAvatar>
-          <div>
-            <p class="text-medium-emphasis ma-0 text-no-wrap">
-              واحد
-            </p>
-            <p class="text-primary ma-0 text-no-wrap">
-              برنامه‌نویسی
-            </p>
-          </div>
-        </VCol>
-
-        <VCol class="d-flex align-center">
-          <VAvatar
-            variant="text"
-            color="primary"
-            rounded
-            size="31"
-            class="text-primary me-0"
-          >
-            <VIcon icon="tabler-star" size="22" />
-          </VAvatar>
-          <div>
-            <p class="text-medium-emphasis ma-0 text-no-wrap">
-              گروه
-            </p>
-            <p class="text-primary ma-0 text-no-wrap">
-              10
-            </p>
-          </div>
-        </VCol>
-
-        <VCol class="d-flex align-center">
-          <VAvatar
-            variant="text"
-            color="primary"
-            rounded
-            size="31"
-            class="text-primary me-0"
-          >
-            <VIcon icon="tabler-clock" size="22" />
-          </VAvatar>
-          <div>
-            <p class="text-medium-emphasis ma-0 text-no-wrap">
-              مدت کارکرد
-            </p>
-            <p class="text-primary ma-0 text-no-wrap">
-              13200 دقیقه
+              {{ info.value }}
             </p>
           </div>
         </VCol>

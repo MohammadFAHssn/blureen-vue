@@ -1,7 +1,5 @@
 <script setup>
 // ----- start ag-grid -----
-import { AG_GRID_LOCALE_IR } from '@ag-grid-community/locale'
-import { AgGridVue } from 'ag-grid-vue3'
 
 definePage({
   meta: {
@@ -70,18 +68,19 @@ function getContextMenuItems(params) {
 
   return selectedUsersPersonnelCode.length
     ? [
-      {
-        icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
-        name: 'ویرایش دسترسی',
-        action: () => {
-          updateSelectedUsers(selectedUsersPersonnelCode)
-          updateSelectedUserRoles()
+        {
+          icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+          name: 'ویرایش دسترسی',
+          action: () => {
+            updateSelectedUsers(selectedUsersPersonnelCode)
+            updateSelectedUserRoles()
 
-          uiState.isEditAccessDialogVisible = true
+            uiState.isEditAccessDialogVisible = true
+          },
         },
-      },
-      ...params.defaultItems,
-    ]
+        'separator',
+        ...params.defaultItems,
+      ]
     : [...params.defaultItems]
 }
 
@@ -264,7 +263,6 @@ const rowData = computed(() => {
         pagination
         row-group-panel-show="always"
         :get-context-menu-items="getContextMenuItems"
-        :locale-text="AG_GRID_LOCALE_IR"
         @grid-ready="onGridReady"
       />
     </section>

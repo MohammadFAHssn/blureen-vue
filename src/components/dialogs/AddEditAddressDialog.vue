@@ -78,8 +78,8 @@ const addressTypes = [
         <!-- 👉 Title -->
         <h4 class="text-h4 text-center mb-2">
           {{
-            props.billingAddress.addressLine1 ||
-            props.billingAddress.addressLine2
+            props.billingAddress.addressLine1
+              || props.billingAddress.addressLine2
               ? 'Edit'
               : 'Add New'
           }}
@@ -189,7 +189,9 @@ const addressTypes = [
 
             <!-- 👉 Submit and Cancel button -->
             <VCol cols="12" class="text-center">
-              <VBtn type="submit" class="me-3"> submit </VBtn>
+              <VBtn type="submit" class="me-3">
+                submit
+              </VBtn>
 
               <VBtn variant="tonal" color="secondary" @click="resetForm">
                 Cancel

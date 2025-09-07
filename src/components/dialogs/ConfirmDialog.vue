@@ -73,7 +73,9 @@ function onCancel() {
       </VCardText>
 
       <VCardText class="d-flex align-center justify-center gap-2">
-        <VBtn variant="elevated" @click="onConfirmation"> Confirm </VBtn>
+        <VBtn variant="elevated" @click="onConfirmation">
+          Confirm
+        </VBtn>
 
         <VBtn color="secondary" variant="tonal" @click="onCancel">
           Cancel
@@ -102,7 +104,9 @@ function onCancel() {
 
         <p>{{ props.confirmMsg }}</p>
 
-        <VBtn color="success" @click="unsubscribed = false"> Ok </VBtn>
+        <VBtn color="success" @click="unsubscribed = false">
+          Ok
+        </VBtn>
       </VCardText>
     </VCard>
   </VDialog>
@@ -127,7 +131,9 @@ function onCancel() {
 
         <p>{{ props.cancelMsg }}</p>
 
-        <VBtn color="success" @click="cancelled = false"> Ok </VBtn>
+        <VBtn color="success" @click="cancelled = false">
+          Ok
+        </VBtn>
       </VCardText>
     </VCard>
   </VDialog>

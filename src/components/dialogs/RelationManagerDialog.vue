@@ -45,7 +45,7 @@ const search = ref('')
 
 const selected = ref(
   items.filter((item) => {
-    return props.selected.some((selectedItem) => selectedItem.id === item.id)
+    return props.selected.some(selectedItem => selectedItem.id === item.id)
   }),
 )
 
@@ -92,9 +92,14 @@ function save() {
     <DialogCloseBtn @click="$emit('update:isDialogVisible', false)" />
 
     <VCard>
-      <VToolbar color="transparent" flat>
-        <VToolbarTitle>{{ title }}</VToolbarTitle>
-      </VToolbar>
+      <!-- 👉 Title -->
+      <VCardItem class="text-center">
+        <VCardTitle>
+          <h6 class="text-h6 mb-2 text-wrap">
+            {{ props.title }}
+          </h6>
+        </VCardTitle>
+      </VCardItem>
 
       <VContainer>
         <VRow align="center" justify="start">
@@ -153,8 +158,6 @@ function save() {
       <VDivider />
 
       <VCardActions>
-        <VSpacer />
-
         <VBtn :loading="loading" color="purple" variant="text" @click="save">
           ذخیره
         </VBtn>

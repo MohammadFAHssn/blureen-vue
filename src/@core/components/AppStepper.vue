@@ -36,7 +36,7 @@ const emit = defineEmits(['update:currentStep'])
 const currentStep = ref(props.currentStep || 0)
 
 const activeOrCompletedStepsClasses = computed(
-  () => (index) =>
+  () => index =>
     index < currentStep.value
       ? 'stepper-steps-completed'
       : index === currentStep.value
@@ -45,7 +45,7 @@ const activeOrCompletedStepsClasses = computed(
 )
 
 const isHorizontalAndNotLastStep = computed(
-  () => (index) =>
+  () => index =>
     props.direction === 'horizontal' && props.items.length - 1 !== index,
 )
 
@@ -56,9 +56,9 @@ const isValidationEnabled = computed(() => {
 
 watchEffect(() => {
   if (
-    props.currentStep !== undefined &&
-    props.currentStep < props.items.length &&
-    props.currentStep >= 0
+    props.currentStep !== undefined
+    && props.currentStep < props.items.length
+    && props.currentStep >= 0
   ) {
     currentStep.value = props.currentStep
   }
@@ -82,9 +82,9 @@ watchEffect(() => {
       <div
         class="cursor-pointer app-stepper-step pa-1"
         :class="[
-          !props.isActiveStepValid &&
-            isValidationEnabled &&
-            'stepper-steps-invalid',
+          !props.isActiveStepValid
+            && isValidationEnabled
+            && 'stepper-steps-invalid',
           activeOrCompletedStepsClasses(index),
         ]"
         @click="!isValidationEnabled && emit('update:currentStep', index)"
@@ -138,9 +138,9 @@ watchEffect(() => {
               <template v-if="index >= currentStep">
                 <VAvatar
                   v-if="
-                    !isValidationEnabled ||
-                    props.isActiveStepValid ||
-                    index !== currentStep
+                    !isValidationEnabled
+                      || props.isActiveStepValid
+                      || index !== currentStep
                   "
                   size="38"
                   rounded
@@ -221,10 +221,7 @@ watchEffect(() => {
         align-items: center;
         justify-content: center;
         border-radius: 0.375rem;
-        background-color: rgba(
-          var(--v-theme-on-surface),
-          var(--v-selected-opacity)
-        );
+        background-color: rgba(var(--v-theme-on-surface), var(--v-selected-opacity));
         block-size: 2.375rem;
         color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity));
         inline-size: 2.375rem;
@@ -234,10 +231,7 @@ watchEffect(() => {
     .stepper-steps-active {
       .stepper-icon-step {
         .stepper-icon {
-          @include templateMixins.custom-elevation(
-            var(--v-theme-primary),
-            'sm'
-          );
+          @include templateMixins.custom-elevation(var(--v-theme-primary), 'sm');
 
           background-color: rgb(var(--v-theme-primary));
           color: rgba(var(--v-theme-on-primary));
@@ -339,8 +333,7 @@ watchEffect(() => {
     }
 
     .app-stepper-step {
-      &:not(.stepper-steps-active, .stepper-steps-completed)
-        .v-avatar--variant-tonal {
+      &:not(.stepper-steps-active, .stepper-steps-completed) .v-avatar--variant-tonal {
         --v-activated-opacity: 0.06;
       }
     }

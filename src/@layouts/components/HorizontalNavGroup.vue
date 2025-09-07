@@ -55,10 +55,10 @@ watch(
     content-container-tag="ul"
     :class="[
       {
-        active: isGroupActive,
+        'active': isGroupActive,
         'children-at-end': childrenAtEnd,
         'sub-item': isSubItem,
-        disabled: item.disable,
+        'disabled': item.disable,
       },
     ]"
     :popper-inline-end="childrenAtEnd"

@@ -17,6 +17,12 @@ export default [
             action: 'read',
             subject: 'User',
           },
+          {
+            title: 'Access',
+            to: 'apps-user-access',
+            action: 'read',
+            subject: 'User-Access',
+          },
         ],
       },
       {

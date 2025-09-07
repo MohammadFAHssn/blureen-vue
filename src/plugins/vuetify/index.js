@@ -20,7 +20,7 @@ export default function (app) {
     themes: {
       light: {
         colors: {
-          primary: cookieRef('lightThemePrimaryColor', staticPrimaryColor)
+          'primary': cookieRef('lightThemePrimaryColor', staticPrimaryColor)
             .value,
           'primary-darken-1': cookieRef(
             'lightThemePrimaryDarkenColor',
@@ -30,7 +30,7 @@ export default function (app) {
       },
       dark: {
         colors: {
-          primary: cookieRef('darkThemePrimaryColor', staticPrimaryColor).value,
+          'primary': cookieRef('darkThemePrimaryColor', staticPrimaryColor).value,
           'primary-darken-1': cookieRef(
             'darkThemePrimaryDarkenColor',
             staticPrimaryDarkenColor,

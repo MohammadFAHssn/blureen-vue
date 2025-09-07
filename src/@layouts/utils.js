@@ -30,8 +30,10 @@ export const getComputedNavLinkToProp = computed(() => (link) => {
  // @param {Object, String} link navigation link object/string
  */
 export function resolveNavLinkRouteName(link, router) {
-  if (!link.to) return null
-  if (typeof link.to === 'string') return link.to
+  if (!link.to)
+    return null
+  if (typeof link.to === 'string')
+    return link.to
 
   return router.resolve(link.to).name
 }
@@ -46,12 +48,13 @@ export function isNavLinkActive(link, router) {
 
   // Check if provided route matches route's matched route
   const resolveRoutedName = resolveNavLinkRouteName(link, router)
-  if (!resolveRoutedName) return false
+  if (!resolveRoutedName)
+    return false
 
   return matchedRoutes.some((route) => {
     return (
-      route.name === resolveRoutedName ||
-      route.meta.navActiveLink === resolveRoutedName
+      route.name === resolveRoutedName
+      || route.meta.navActiveLink === resolveRoutedName
     )
   })
 }
@@ -63,7 +66,8 @@ export function isNavLinkActive(link, router) {
 export function isNavGroupActive(children, router) {
   return children.some((child) => {
     // If child have children => It's group => Go deeper(recursive)
-    if ('children' in child) return isNavGroupActive(child.children, router)
+    if ('children' in child)
+      return isNavGroupActive(child.children, router)
 
     // else it's link => Check for matched Route
     return isNavLinkActive(child, router)
@@ -86,7 +90,8 @@ export function _setDirAttr(dir) {
  * @param tag tag to wrap the translation with
  */
 export function getDynamicI18nProps(key, tag = 'span') {
-  if (!layoutConfig.app.i18n.enable) return {}
+  if (!layoutConfig.app.i18n.enable)
+    return {}
 
   return {
     keypath: key,
@@ -121,7 +126,8 @@ export function switchToVerticalNavOnLtOverlayNavBreakpoint() {
   watch(
     () => configStore.appContentLayoutNav,
     (value) => {
-      if (!configStore.isLessThanOverlayNavBreakpoint) lgAndUpNav.value = value
+      if (!configStore.isLessThanOverlayNavBreakpoint)
+        lgAndUpNav.value = value
     },
   )
 
@@ -168,9 +174,9 @@ export function rgbaToHex(rgba, forceRemoveAlpha = false) {
     .replace(/^rgba?\(|\s+|\)$/g, '') // Get's rgba / rgb string values
     .split(',') // splits them at ","
     .filter((string, index) => !forceRemoveAlpha || index !== 3)
-    .map((string) => Number.parseFloat(string)) // Converts them to numbers
+    .map(string => Number.parseFloat(string)) // Converts them to numbers
     .map((number, index) => (index === 3 ? Math.round(number * 255) : number)) // Converts alpha to 255 number
-    .map((number) => number.toString(16)) // Converts numbers to hex
-    .map((string) => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
+    .map(number => number.toString(16)) // Converts numbers to hex
+    .map(string => (string.length === 1 ? `0${string}` : string)) // Adds 0 when length of one number is 1
     .join('')}`
 }

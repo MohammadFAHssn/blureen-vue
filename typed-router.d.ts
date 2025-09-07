@@ -19,9 +19,6 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
-    'apps-payroll-cluade': RouteRecordInfo<'apps-payroll-cluade', '/apps/payroll/cluade', Record<never, never>, Record<never, never>>,
-    'apps-payroll-gemeni': RouteRecordInfo<'apps-payroll-gemeni', '/apps/payroll/gemeni', Record<never, never>, Record<never, never>>,
-    'apps-payroll-gpt5': RouteRecordInfo<'apps-payroll-gpt5', '/apps/payroll/gpt5', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-slip': RouteRecordInfo<'apps-payroll-payroll-slip', '/apps/payroll/payroll-slip', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
@@ -33,6 +30,7 @@ declare module 'vue-router/auto-routes' {
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
     'apps-user-personnel-records': RouteRecordInfo<'apps-user-personnel-records', '/apps/user/personnel-records', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
+    'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-supplier': RouteRecordInfo<'login-supplier', '/login-supplier', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
@@ -52,18 +50,6 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/[...error].vue': {
       routes: '$error'
-      views: never
-    }
-    'src/pages/apps/payroll/cluade.vue': {
-      routes: 'apps-payroll-cluade'
-      views: never
-    }
-    'src/pages/apps/payroll/gemeni.vue': {
-      routes: 'apps-payroll-gemeni'
-      views: never
-    }
-    'src/pages/apps/payroll/gpt5.vue': {
-      routes: 'apps-payroll-gpt5'
       views: never
     }
     'src/pages/apps/payroll/payroll-batches-management.vue': {
@@ -108,6 +94,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/dashboards/crm.vue': {
       routes: 'dashboards-crm'
+      views: never
+    }
+    'src/pages/dashboards/PayrollChart.vue': {
+      routes: 'dashboards-payroll-chart'
       views: never
     }
     'src/pages/login.vue': {

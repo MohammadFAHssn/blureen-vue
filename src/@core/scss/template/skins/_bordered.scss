@@ -20,17 +20,12 @@ $header: '.layout-navbar';
   @if variables.$layout-vertical-nav-navbar-is-contained {
     @include mixins.bordered-skin('.layout-nav-type-vertical #{$header}');
     .layout-nav-type-vertical.window-scrolled #{$header} {
-      border-block-start: 1px
-        solid
-        rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+      border-block-start: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
     }
   }
   /* stylelint-disable-next-line @stylistic/indentation */
   @else {
-    @include mixins.bordered-skin(
-      '.layout-nav-type-vertical #{$header}',
-      'border-bottom'
-    );
+    @include mixins.bordered-skin('.layout-nav-type-vertical #{$header}', 'border-bottom');
   }
 
   // Dialog close button

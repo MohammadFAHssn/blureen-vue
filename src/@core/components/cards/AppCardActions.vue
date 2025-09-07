@@ -113,8 +113,8 @@ function triggeredRemove() {
               <!-- 👉 Collapse button -->
               <IconBtn
                 v-if="
-                  (!(actionRemove || actionRefresh) || actionCollapsed) &&
-                  !noActions
+                  (!(actionRemove || actionRefresh) || actionCollapsed)
+                    && !noActions
                 "
                 @click="triggerCollapse"
               >
@@ -133,8 +133,8 @@ function triggeredRemove() {
               <!-- 👉 Overlay button -->
               <IconBtn
                 v-if="
-                  (!(actionRemove || actionCollapsed) || actionRefresh) &&
-                  !noActions
+                  (!(actionRemove || actionCollapsed) || actionRefresh)
+                    && !noActions
                 "
                 @click="triggerRefresh"
               >
@@ -144,8 +144,8 @@ function triggeredRemove() {
               <!-- 👉 Close button -->
               <IconBtn
                 v-if="
-                  (!(actionRefresh || actionCollapsed) || actionRemove) &&
-                  !noActions
+                  (!(actionRefresh || actionCollapsed) || actionRemove)
+                    && !noActions
                 "
                 @click="triggeredRemove"
               >

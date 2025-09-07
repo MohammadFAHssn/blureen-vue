@@ -27,7 +27,9 @@ const router = useRouter()
         class="d-flex flex-column"
       >
         <VCardItem class="py-3">
-          <h6 class="text-base font-weight-medium">Shortcuts</h6>
+          <h6 class="text-base font-weight-medium">
+            Shortcuts
+          </h6>
 
           <template #append>
             <IconBtn size="small" color="high-emphasis">
