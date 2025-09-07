@@ -28,7 +28,7 @@ const allowanceItems = computed(() =>
   ].filter(item => item.amount || item.percentChange),
 )
 
-const welfareItems = [
+const welfareItems = computed(() => [
   {
     label: 'کمک هزینه درمان',
     amount: props.getPayrollItemByLabel('کمک هزینه درمان').amount,
@@ -50,12 +50,12 @@ const welfareItems = [
     percentChange:
       props.getPayrollItemByLabel('حمایت از خانواده').percentChange,
   },
-]
+])
 
-const allowanceDeductions = {
+const allowanceDeductions = computed(() => ({
   amount: props.getPayrollItemByLabel('كسر فوق العاده').amount,
   reason: props.getPayrollItemByLabel('علت کسر پاداش').amount,
-}
+}))
 
 const total = computed(() => {
   return {
