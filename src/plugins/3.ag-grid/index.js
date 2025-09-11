@@ -40,7 +40,6 @@ export default function (app) {
             filter: true,
             sortable: true,
             resizable: true,
-            flex: 1,
           }),
         },
       },

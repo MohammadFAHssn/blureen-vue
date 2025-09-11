@@ -35,20 +35,19 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'ماه', field: 'monthName', flex: 1 },
-  { headerName: 'سال', field: 'year', flex: 1 },
-  { headerName: 'بارگذاری توسط', field: 'uploadedBy', flex: 2 },
+  { headerName: 'ماه', field: 'monthName' },
+  { headerName: 'سال', field: 'year' },
+  { headerName: 'بارگذاری توسط', field: 'uploadedBy' },
   {
     headerName: 'تاریخ بارگذاری',
     field: 'createdAt',
-    flex: 2,
     valueFormatter: params =>
       moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
         'jYYYY/jMM/jD HH:mm:ss',
       ),
   },
-  { headerName: 'نام فایل بارگذاری شده', field: 'fileName', flex: 2 },
-  // { headerName: 'وضعیت ارسال پیامک', field: 'smsSent', flex: 2 },
+  { headerName: 'نام فایل بارگذاری شده', field: 'fileName' },
+  // { headerName: 'وضعیت ارسال پیامک', field: 'smsSent'},
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -63,7 +62,6 @@ const columnDefs = ref([
         },
       }
     },
-    flex: 1,
   },
 ])
 

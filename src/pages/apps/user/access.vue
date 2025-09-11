@@ -47,10 +47,8 @@ const columnDefs = ref([
 ])
 
 const defaultColDef = ref({
-  flex: 1,
   enableRowGroup: true,
   rowGroup: true,
-  filter: true,
 })
 
 function getContextMenuItems(params) {
