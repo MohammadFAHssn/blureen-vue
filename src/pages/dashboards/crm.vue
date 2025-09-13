@@ -4,11 +4,19 @@ import PayrollChart from './PayrollChart.vue'
 </script>
 
 <template>
-  <VRow class="match-height">
+  <VRow>
     <!-- 👉 Payroll  -->
-    <VCol v-if="can('use', 'app')" cols="12">
+    <VCol
+      v-if="can('use', 'app')"
+      cols="12"
+      sm="12"
+      md="12"
+      lg="12"
+      xl="6"
+      xxl="6"
+    >
       <VCard>
-        <VCardItem class="d-flex flex-wrap justify-space-between gap-4">
+        <VCardItem>
           <VCardTitle>حقوق و دستمزد</VCardTitle>
         </VCardItem>
 

@@ -1,7 +1,6 @@
 <script setup>
 import { getLineChartSimpleConfig } from '@core/libs/apex-chart/apexCharConfig'
 import { getJalaliMonthNameByIndex } from '@core/utils/helpers'
-
 import { useTheme } from 'vuetify'
 
 // states
@@ -10,11 +9,11 @@ const uiState = reactive({
   errorMessage: '',
 })
 
-const payrollSlips = ref([]) // the current and previous month
-
 const pendingState = reactive({
   fetchingPayrollSlips: false,
 })
+
+const payrollSlips = ref([])
 
 const last = 13
 
@@ -44,14 +43,12 @@ async function fetchPayrollSlips() {
 
 fetchPayrollSlips()
 
-const xaxis = computed(() => {
-  return {
-    categories: payrollSlips.value.flatMap(slip => slip
-      ? getJalaliMonthNameByIndex(slip?.payroll_batch.month)
-      : [],
-    ).reverse(),
-  }
-})
+const categories = computed(() =>
+  payrollSlips.value.flatMap(slip => slip
+    ? getJalaliMonthNameByIndex(slip.payroll_batch.month)
+    : [],
+  ).reverse(),
+)
 
 const series = computed(() => {
   return [
@@ -69,12 +66,13 @@ const series = computed(() => {
 
 const vuetifyTheme = useTheme()
 const baseChartConfig = getLineChartSimpleConfig(vuetifyTheme.current.value)
+
 const chartConfig = computed(() => {
   return {
     ...baseChartConfig,
     xaxis: {
       ...baseChartConfig.xaxis,
-      categories: xaxis.value.categories,
+      categories: categories.value,
     },
 
   }
@@ -82,9 +80,25 @@ const chartConfig = computed(() => {
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="outlined"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+
+  <VProgressCircular
+    v-if="pendingState.fetchingPayrollSlips"
+    indeterminate
+    color="primary"
+  />
+
   <VueApexCharts
+    v-else
     type="line"
-    height="400"
     :options="chartConfig"
     :series="series"
   />

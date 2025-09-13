@@ -104,7 +104,7 @@ function getPayrollItemByLabel(label) {
     v-model="uiState.hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     {{ uiState.errorMessage }}
@@ -201,20 +201,33 @@ function getPayrollItemByLabel(label) {
             </div>
 
             <h6 class="text-h6 text-white amount">
-              12,500,000
+              {{
+                formatNumber(getPayrollItemByLabel('جمع پرداختی اول').amount)
+              }}
             </h6>
-            <div class="percent-change">
+            <div
+              v-if="getPayrollItemByLabel('جمع پرداختی اول').percentChange"
+              class="percent-change"
+            >
               <VChip
                 variant="flat"
-                :color="`${3.2 > 0 ? 'success' : 'error'}`"
+                :color="`${getPayrollItemByLabel('جمع پرداختی اول').percentChange > 0 ? 'success' : 'error'}`"
                 class="d-flex align-center"
               >
                 <div class="text-sm">
-                  {{ Math.abs(3.2) }}%
+                  {{
+                    Math.abs(
+                      getPayrollItemByLabel('جمع پرداختی اول').percentChange,
+                    )
+                  }}%
                 </div>
 
                 <VIcon
-                  :icon="3.2 > 0 ? 'tabler-chevron-up' : 'tabler-chevron-down'"
+                  :icon="
+                    getPayrollItemByLabel('جمع پرداختی اول').percentChange > 0
+                      ? 'tabler-chevron-up'
+                      : 'tabler-chevron-down'
+                  "
                   size="20"
                   class="mr-1"
                 />
