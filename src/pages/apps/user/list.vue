@@ -18,17 +18,54 @@ const users = ref([])
 const { theme } = useAGGridTheme()
 
 const columnDefs = ref([
-  { headerName: 'کد پرسنلی', field: 'personnelCode', flex: 1 },
-  { headerName: 'نام', field: 'firstName', flex: 2 },
-  { headerName: 'نام خانوادگی', field: 'lastName', flex: 2 },
+  { headerName: 'کد پرسنلی', field: 'personnelCode' },
+  { headerName: 'نام', field: 'firstName' },
+  { headerName: 'نام خانوادگی', field: 'lastName' },
   {
     headerName: 'نوع کاربر',
     field: 'roles',
-    flex: 3,
+
     cellRenderer: 'MultiValuedCell',
     cellStyle: { 'display': 'flex', 'align-items': 'center' },
   },
-  { headerName: 'شماره تلفن', field: 'mobileNumber', flex: 2 },
+  {
+    headerName: 'وضعیت',
+    field: 'active',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
+  { headerName: 'کد ملی', field: 'nationalCode' },
+  { headerName: 'جنسیت', field: 'gender' },
+  { headerName: 'نام پدر', field: 'fatherName' },
+  { headerName: 'محل تولد', field: 'birthPlace' },
+  {
+    headerName: 'تاریخ تولد',
+    field: 'birthDate',
+    valueFormatter: params =>
+      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+  },
+  { headerName: 'وضعیت تاهل', field: 'maritalStatus' },
+  {
+    headerName: 'تاریخ استخدام',
+    field: 'employmentDate',
+    valueFormatter: params =>
+      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+  },
+  {
+    headerName: 'تاریخ شروع به کار',
+    field: 'startDate',
+    valueFormatter: params =>
+      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+  },
+  { headerName: 'سطح تحصیلات', field: 'educationLevel' },
+  { headerName: 'محل کار', field: 'workplace' },
+  { headerName: 'منطقه کاری', field: 'workArea' },
+  { headerName: 'مرکز هزینه', field: 'costCenter' },
+  { headerName: 'سمت شغلی', field: 'jobPosition' },
+  { headerName: 'شماره تلفن همراه', field: 'mobileNumber' },
 ])
 
 const rowData = computed(() =>
@@ -38,7 +75,25 @@ const rowData = computed(() =>
       firstName: user.first_name,
       lastName: user.last_name,
       roles: user.roles?.map(role => role.name),
-      mobileNumber: user.mobile_number,
+      active: user.active,
+      nationalCode: user.profile?.national_code,
+      gender: user.profile?.gender,
+      fatherName: user.profile?.father_name,
+      birthPlace: user.profile?.birth_place,
+      birthDate: user.profile?.birth_date ? moment(user.profile?.birth_date).format('jYYYY-jMM-jDD') : null,
+      mobileNumber: user.profile?.mobile_number,
+      maritalStatus: user.profile?.marital_status,
+      employmentDate: user.profile?.employment_date
+        ? moment(user.profile?.employment_date).format(
+            'jYYYY-jMM-jDD',
+          )
+        : null,
+      startDate: user.profile?.start_date ? moment(user.profile?.start_date).format('jYYYY-jMM-jDD') : null,
+      educationLevel: user.profile?.education_level?.name,
+      workplace: user.profile?.workplace?.name,
+      workArea: user.profile?.work_area?.name,
+      costCenter: user.profile?.cost_center?.name,
+      jobPosition: user.profile?.job_position?.name,
     }
   }),
 )
@@ -48,7 +103,15 @@ const rowData = computed(() =>
 async function fetchUsers() {
   try {
     const { data, error } = await useApi(
-      createUrl('/base/user?fields[roles]=name&include=roles'),
+      createUrl(
+        '/base/user',
+        {
+          query: {
+            'fields[roles]': 'name',
+            'include': 'roles,profile.workplace,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
+          },
+        },
+      ),
     )
 
     if (error.value) throw error.value

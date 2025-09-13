@@ -105,7 +105,7 @@ export function getLineChartSimpleConfig(themeColors) {
     tooltip: {
       custom(data) {
         return `<div class='bar-chart pa-2'>
-          <span>${data.series[data.seriesIndex][data.dataPointIndex]}%</span>
+          <span>${data.series[data.seriesIndex][data.dataPointIndex]}</span>
         </div>`
       },
     },
@@ -130,8 +130,6 @@ export function getLineChartSimpleConfig(themeColors) {
           fontSize: '0.8125rem',
           fontFamily: 'Shabnam, sans-serif',
         },
-        rotate: -90,
-        rotateAlways: true,
       },
       categories: [
         '7/12',
