@@ -5,6 +5,9 @@ defineProps({
     required: true,
   },
 })
+function convertDate(date) {
+  return (date && moment(date).isValid()) ? moment(date, 'YYYY-MM-DD').format('jYYYY/jM/jD') : '-'
+}
 </script>
 
 <template>
@@ -15,7 +18,7 @@ defineProps({
         <table class="transfer-table">
           <thead>
             <tr>
-              <th>کد پرسنلی</th>
+              <th>تاریخ جابجایی</th>
               <th>واحد قبلی</th>
               <th>محل کار</th>
               <th>حوزه کاری</th>
@@ -24,7 +27,7 @@ defineProps({
           </thead>
           <tbody>
             <tr v-for="(item, index) in reassignmentData" :key="index">
-              <td>{{ item.personnel_code }}</td>
+              <td>{{ convertDate(item.reassignment_date) }}</td>
               <td>{{ item.old_unit }}</td>
               <td>{{ item.workplace }}</td>
               <td>{{ item.work_aria }}</td>
@@ -40,7 +43,7 @@ defineProps({
   <VRow class="d-flex d-md-none mt-6">
     <VCol v-for="(item, index) in reassignmentData" :key="index" cols="12">
       <VCard class="pa-4 mb-3">
-        <p><strong>کد پرسنلی:</strong> {{ item.personnel_code }}</p>
+        <p><strong>تاریخ جابجایی:</strong> {{ convertDate(item.reassignment_date) }}</p>
         <p><strong>واحد قبلی:</strong> {{ item.old_unit }}</p>
         <p><strong>محل کار:</strong> {{ item.workplace }}</p>
         <p><strong>حوزه کاری:</strong> {{ item.work_aria }}</p>

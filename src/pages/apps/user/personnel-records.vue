@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import AssessmentRecord from '@/views/apps/personnelRecord/AssessmentRecord.vue'
 import BirthdayGiftRecord from '@/views/apps/personnelRecord/BirthdayGiftRecord.vue'
 import EducationRecord from '@/views/apps/personnelRecord/EducationRecord.vue'
@@ -13,236 +14,63 @@ const uiState = reactive({
   errorMessage: '',
 })
 
+const isLoading = ref(false)
+
+const activePanel = ref(null)
+
 const users = ref([])
 
 const selectedUser = ref([])
 
-const userData = {
-  personnel_code: '6927',
-  full_name: 'امیرحسین کریمی',
-  unit: 'واحد برنامه نویسی',
-  job_position: 'کارمند دفتری (اداری)',
-  introduced_date: '1403/10/02',
-  recruitment_date: '1403/10/02',
-}
+const userData = ref(null)
 
-const educationData = {
-  employment: [
-    {
-      unit_training: [
-        { date: '', title: 'آموزش 1', type: 1, validation: 3 },
-        { date: '', title: 'آموزش 2', type: 1, validation: 5 },
-        { date: '', title: 'آموزش 3', type: 2, validation: 1 },
-      ],
-      hse_training: [
-        { date: '', title: 'آموزش های بدو استخدام' },
-        { date: '', title: 'آموزش های بدو استخدام2' },
-      ],
-    },
-  ],
-  reassignment: [
-    {
-      unit_training: [
-        { date: '', title: 'آموزش 1', type: 1, validation: 3 },
-        { date: '', title: 'آموزش 2', type: 1, validation: 5 },
-        { date: '', title: 'آموزش 3', type: 2, validation: 1 },
-      ],
-      hse_training: [
-        { date: '', title: 'آموزش های بدو استخدام' },
-        { date: '', title: 'آموزش های بدو استخدام2' },
-      ],
-    },
-    {
-      unit_training: [
-        { date: '', title: 'آموزش 1', type: 1, validation: 3 },
-        { date: '', title: 'آموزش 2', type: 1, validation: 5 },
-        { date: '', title: 'آموزش 3', type: 2, validation: 1 },
-      ],
-      hse_training: [
-        { date: '', title: 'آموزش های بدو استخدام' },
-        { date: '', title: 'آموزش های بدو استخدام2' },
-      ],
-    },
-    {
-      unit_training: [
-        { date: '', title: 'آموزش 1', type: 1, validation: 3 },
-        { date: '', title: 'آموزش 2', type: 1, validation: 5 },
-        { date: '', title: 'آموزش 3', type: 2, validation: 1 },
-      ],
-      hse_training: [
-        { date: '', title: 'آموزش های بدو استخدام' },
-        { date: '', title: 'آموزش های بدو استخدام2' },
-      ],
-    },
-  ],
-}
+const educationEmploymentData = ref(null)
 
-const reassignmentData = [
-  {
-    personnel_code: 6013,
-    old_unit: 'واحد تولید آیینه',
-    workplace: 'فلوت مرکزی',
-    work_aria: 'انبار غیرمحصول',
-    new_unit: 'انبار قطعات',
-  },
-  {
-    personnel_code: 6927,
-    old_unit: 'واحد اداری',
-    workplace: 'ساختمان مرکزی',
-    work_aria: 'بخش بایگانی',
-    new_unit: 'واحد برنامه‌نویسی',
-  },
-]
+const educationReassignmentData = ref(null)
 
-const assessmentData = [
-  {
-    personnel_code: '6927',
-    assessment_period: 'هجدهم',
-    assessment_month: '04',
-    assessment_year: '1404',
-    personnel_rank_status: 'عادی',
-    manager_assessment_score: '35',
-    manager_assessment_result: 'عالی',
-    attendance_score: '10',
-    disciplinary_score: '10',
-    hse_score: '10',
-    security_score: '5',
-    final_score: '99.33',
-    final_result: 'بسیار خوب',
-  },
-]
+const reassignmentData = ref(null)
 
-const payrollData = {
-  1404: {
-    1: 1,
-    2: 1,
-    3: 0,
-    4: 1,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-    10: 1,
-    11: 1,
-    12: 0,
-  },
-  1403: {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 1,
-    6: 1,
-    7: 1,
-    8: 0,
-    9: 1,
-    10: 1,
-    11: 1,
-    12: 0,
-  },
-}
+const assessmentData = ref(null)
 
-const foodData = {
-  personnel_code: 6927,
-  total_reserves: 60,
-  normal_reserves: 50,
-  compulsive_reserves: 10,
-  years: {
-    1404: { months: [0, 14, 15, 2, 0, 1, 0, 0, 0, 0, 0, 0], year_total: 32 },
-    1403: { months: [2, 5, 7, 4, 3, 6, 1, 0, 0, 0, 0, 0], year_total: 28 },
-    1402: { months: [8, 3, 10, 4, 3, 6, 1, 5, 0, 4, 0, 0], year_total: 43 },
-  },
-}
+const payrollData = ref(null)
 
-const birthdayGifts = [
-  { year: '1404', month: '03', gift: 'پنکه پایه بلند مدل 4060r' },
-  { year: '1403', month: '05', gift: 'کارت هدیه 500 هزار تومانی' },
-]
+const foodReserveData = ref(null)
 
-const productivityData = [
-  {
-    personnel_code: 6341,
-    month: 4,
-    year: 1403,
-    penalty_title: 'تخلف اداری (تاخیر)',
-    penalty_type: 'اداری',
-    date_of_occurrence: '2024-06-14 07:02:00',
-  },
-  {
-    personnel_code: 6341,
-    month: 6,
-    year: 1404,
-    penalty_title: 'عدم استفاده از تجهیزات حفاظت فردی',
-    penalty_type: 'ایمنی (HSE)',
-    date_of_occurrence: '2025-08-25 21:30:00',
-  },
-  {
-    personnel_code: 6341,
-    month: 5,
-    year: 1404,
-    penalty_title: 'عدم استفاده از تجهیزات حفاظت فردی',
-    penalty_type: 'ایمنی (HSE)',
-    date_of_occurrence: '2025-08-25 21:30:00',
-  },
-  {
-    personnel_code: 6341,
-    month: 5,
-    year: 1404,
-    penalty_title: 'عدم استفاده از تجهیزات حفاظت فردی',
-    penalty_type: 'ایمنی (HSE)',
-    date_of_occurrence: '2025-08-25 21:30:00',
-  },
-  {
-    personnel_code: 6341,
-    month: 5,
-    year: 1404,
-    penalty_title: 'عدم استفاده از تجهیزات حفاظت فردی',
-    penalty_type: 'مدیریت',
-    date_of_occurrence: '2025-08-25 21:30:00',
-  },
-  {
-    personnel_code: 6341,
-    month: 5,
-    year: 1404,
-    penalty_title: 'عدم استفاده از تجهیزات حفاظت فردی',
-    penalty_type: 'مدیریت',
-    date_of_occurrence: '2025-08-25 21:30:00',
-  },
-]
+const productivityData = ref(null)
 
-const birthdayGiftData = ref([])
-
-const foodReserveData = ref([])
+const birthdayGiftData = ref(null)
 
 async function onUserSelected(personnelCode) {
+  isLoading.value = true
   if (personnelCode) {
+    activePanel.value = null
     try {
       const { data, error } = await useApi(
         createUrl(
           `/personnel-records/get-by-personnel_code?personnel_code=${personnelCode}`,
         ),
       )
+      isLoading.value = false
       if (error.value) {
-        console.log(error.value)
+        uiState.hasError = true
+        throw error.value
       }
       if (data.value.data) {
-        const arr = data.value.data
-        const result = Object.assign({}, ...arr)
+        const result = data.value.data
 
-        educationData.value = ref(result.education_data || null)
-        // introductionData.value = ref(result.introduction_data || [])
-        reassignmentData.value = ref(result.reassignment_data || [])
-        productivityData.value = ref(result.productivity_data || [])
-        assessmentData.value = ref(result.assessment_data || [])
-        payrollData.value = ref(result.payroll_data || [])
-        birthdayGiftData.value = ref(result.birthday_gift_data || [])
-        foodReserveData.value = ref(result.food_reserve_data || {})
-
-        console.log(educationData.value.employment)
+        userData.value = result.user_data
+        educationEmploymentData.value = result.education_data.employment
+        educationReassignmentData.value = result.education_data.reassignment
+        reassignmentData.value = result.reassignment_data
+        productivityData.value = result.productivity_data
+        assessmentData.value = result.assessment_data
+        payrollData.value = result.payroll_data
+        birthdayGiftData.value = result.birthday_gift_data
+        foodReserveData.value = result.food_reserve_data
       }
     }
     catch (e) {
+      isLoading.value = false
       uiState.hasError = true
       uiState.errorMessage = e.message || 'خطا در دریافت سوابق پرسنلی'
     }
@@ -253,12 +81,10 @@ async function fetchUsers() {
     const { data, error } = await useApi(
       createUrl('/base/user?fields[roles]=name&include=roles'),
     )
-
     if (error.value) {
-      console.error('Error fetching users:', error.value)
       uiState.hasError = true
       uiState.errorMessage = 'خطا در دریافت کاربران'
-      return
+      throw error.value
     }
 
     if (data.value.data) {
@@ -269,6 +95,7 @@ async function fetchUsers() {
     }
   }
   catch (e) {
+    isLoading.value = false
     console.error('Unexpected error fetching users:', e)
     uiState.hasError = true
     uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران'
@@ -279,6 +106,16 @@ await fetchUsers()
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+
   <VRow>
     <VCol>
       <h2>
@@ -304,86 +141,86 @@ await fetchUsers()
       </VCard>
     </VCol>
   </VRow>
-  <UserInfo :user-data="userData" class="mb-3" />
+  <UserInfo :user-data="userData" :is-loading="isLoading" class="mb-3" />
 
-  <VExpansionPanels multiple>
-    <!-- آموزش بدو استخدام -->
+  <VExpansionPanels v-model="activePanel" multiple>
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        📘 سامانه آموزش / بدو استخدام
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        📘 آموزش / بدو استخدام
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <EducationRecord :education-data="educationData.employment" type="employment" />
+        <EducationRecord v-if="educationEmploymentData" :education-data="educationEmploymentData" type="employment" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- سوابق جابجایی -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        ♻️ سامانه کارگزینی / سوابق جابجایی
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        ♻️ کارگزینی / سوابق جابجایی
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <ReassignmentRecord :reassignment-data="reassignmentData" />
+        <ReassignmentRecord v-if="reassignmentData" :reassignment-data="reassignmentData" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- آموزش پس از جابجایی -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        📘 سامانه آموزش / جابجایی
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        📘 آموزش / جابجایی
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <EducationRecord :education-data="educationData.reassignment" type="reassignment" />
+        <EducationRecord v-if="educationReassignmentData" :education-data="educationReassignmentData" type="reassignment" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- ارزیابی عملکرد -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        📊سامانه ارزیابی عملکرد
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        📊 ارزیابی عملکرد
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <AssessmentRecord :assessment-data="assessmentData" />
+        <AssessmentRecord v-if="assessmentData" :assessment-data="assessmentData" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- فیش حقوقی -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        💰سامانه فیش حقوقی
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        💰 فیش حقوقی
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <PayrollRecord :payroll-data="payrollData" />
+        <PayrollRecord v-if="payrollData" :payroll-data="payrollData" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- رزرو غذا -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        🍴سامانه رزرو غذا
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        🍴 رزرو غذا
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <FoodReservationRecord :food-data="foodData" />
+        <FoodReservationRecord v-if="foodReserveData" :food-data="foodReserveData" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- تخلفات -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        ⚠️سامانه بهره وری / تخلفات
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        ⚠️ بهره وری / تخلفات
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <ProductivityRecord :productivity-data="productivityData" />
+        <ProductivityRecord v-if="productivityData" :productivity-data="productivityData" />
       </VExpansionPanelText>
     </VExpansionPanel>
 
-    <!-- هدیه تولد -->
     <VExpansionPanel>
-      <VExpansionPanelTitle>
-        🎁سامانه هدایای تولد
+      <VSkeletonLoader v-if="isLoading" type="list-item" />
+      <VExpansionPanelTitle v-else>
+        🎁 هدایای تولد
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <BirthdayGiftRecord :birthday-gifts="birthdayGifts" />
+        <BirthdayGiftRecord v-if="birthdayGiftData" :birthday-gifts="birthdayGiftData" />
       </VExpansionPanelText>
     </VExpansionPanel>
   </VExpansionPanels>

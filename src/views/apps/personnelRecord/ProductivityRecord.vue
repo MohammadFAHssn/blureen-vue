@@ -8,9 +8,14 @@ const props = defineProps({
     required: true,
   },
 })
+function convertDate(date) {
+  return (date && moment(date).isValid()) ? moment(date, 'YYYY-MM-DD').format('jYYYY/jM/jD') : '-'
+}
 
 Chart.register(PieController, ArcElement, Tooltip, Legend)
 
+let violationChartDesktop = null
+let violationChartMobile = null
 // مجموع تخلفات
 const totalViolations = computed(() => props.productivityData.length)
 
@@ -23,7 +28,7 @@ const categoryCounts = computed(() => {
   return counts
 })
 
-onMounted(() => {
+function createChart() {
   const chartConfig = {
     type: 'pie',
     data: {
@@ -44,24 +49,37 @@ onMounted(() => {
   //  نمودار دسکتاپ
   const ctxDesktop = document.getElementById('violationPieChartDesktop')
   if (ctxDesktop) {
-    // eslint-disable-next-line no-new
-    new Chart(ctxDesktop.getContext('2d'), chartConfig)
+    if (violationChartDesktop) violationChartDesktop.destroy()
+    violationChartDesktop = new Chart(ctxDesktop.getContext('2d'), chartConfig)
   }
 
   //  نمودار موبایل
   const ctxMobile = document.getElementById('violationPieChartMobile')
   if (ctxMobile) {
-    // eslint-disable-next-line no-new
-    new Chart(ctxMobile.getContext('2d'), chartConfig)
+    if (violationChartMobile) violationChartMobile.destroy()
+    violationChartMobile = new Chart(ctxMobile.getContext('2d'), chartConfig)
   }
+}
+onMounted(async () => {
+  await nextTick()
+  createChart()
 })
+
+watch(
+  () => props.productivityData,
+  async () => {
+    await nextTick()
+    createChart()
+  },
+  { deep: true },
+)
 </script>
 
 <template>
   <!-- نمایش برای دسکتاپ (نمودار + جدول کنار هم) -->
-  <VRow class="d-none d-md-flex mt-6">
+  <VRow class="d-none d-md-flex mt-6" justify="space-evenly">
     <!-- نمودار -->
-    <VCol cols="12" md="4">
+    <VCol cols="12" sm="3" md="4" lg="3" class="box">
       <VCard class="pa-4">
         <h3 class="mb-3">
           تعداد تخلف در هر دسته
@@ -74,7 +92,7 @@ onMounted(() => {
     </VCol>
 
     <!-- جدول -->
-    <VCol cols="12" md="8">
+    <VCol cols="12" sm="12" md="8" lg="9" class="box">
       <VCard class="pa-4 mb-4 mb-md-0">
         <table class="violations-table">
           <thead>
@@ -90,7 +108,7 @@ onMounted(() => {
             <tr v-for="(item, index) in props.productivityData" :key="index">
               <td>{{ item.year }}</td>
               <td>{{ item.month }}</td>
-              <td>{{ item.date_of_occurrence }}</td>
+              <td>{{ convertDate(item.date_of_occurrence) }}</td>
               <td>{{ item.penalty_title }}</td>
               <td>{{ item.penalty_type }}</td>
             </tr>
@@ -120,7 +138,7 @@ onMounted(() => {
       <VCard class="pa-4 mb-3">
         <p><strong>سال:</strong> {{ item.year }}</p>
         <p><strong>ماه:</strong> {{ item.month }}</p>
-        <p><strong>تاریخ:</strong> {{ item.date_of_occurrence }}</p>
+        <p><strong>تاریخ:</strong> {{ convertDate(item.date_of_occurrence) }}</p>
         <p><strong>عنوان:</strong> {{ item.penalty_title }}</p>
         <p><strong>دسته‌بندی:</strong> {{ item.penalty_type }}</p>
       </VCard>

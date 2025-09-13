@@ -8,12 +8,14 @@ defineProps({
 </script>
 
 <template>
-  <VRow
-    v-for="(year, index) in payrollData"
-    :key="index"
-    class="mt-6"
-  >
-    <VCol cols="12">
+  <VRow>
+    <VCol
+      v-for="(year, index) in payrollData"
+      :key="index"
+      cols="12"
+      md="6"
+      lg="6"
+    >
       <VCard class="pa-4">
         <h3 class="mb-3">
           فیش حقوقی سال({{ index }})

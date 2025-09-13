@@ -8,6 +8,9 @@ defineProps({
     required: true,
   },
 })
+function convertDate(date) {
+  return (date && moment(date).isValid()) ? moment(date, 'YYYY-MM-DD').format('jYYYY/jM/jD') : '-'
+}
 </script>
 
 <template>
@@ -84,7 +87,7 @@ defineProps({
               index === item.length - 1,
           }"
         >
-          <p><strong>تاریخ:</strong> {{ item.date }}</p>
+          <p><strong>تاریخ:</strong> {{ convertDate(item.date) }}</p>
           <p><strong>عنوان:</strong> {{ item.title }}</p>
           <p><strong>نوع:</strong> {{ item.type }}</p>
           <p><strong>اعتبارسنجی:</strong> {{ item.validation }}</p>
@@ -106,7 +109,7 @@ defineProps({
               index === item.length - 1,
           }"
         >
-          <p><strong>تاریخ:</strong> {{ item.date }}</p>
+          <p><strong>تاریخ:</strong> {{ convertDate(item.date) }}</p>
           <p><strong>عنوان:</strong> {{ item.title }}</p>
         </div>
       </VCard>
@@ -130,7 +133,6 @@ defineProps({
   font-weight: bold;
 }
 
-/* استایل موبایل */
 .mobile-training-row {
   padding: 10px 0;
   border-bottom: 1px solid #ddd;

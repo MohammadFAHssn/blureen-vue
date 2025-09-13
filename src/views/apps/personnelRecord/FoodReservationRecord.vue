@@ -19,6 +19,11 @@ const props = defineProps({
   },
 })
 
+let reserveTypeChart = null
+let mealReserveChart = null
+let reservePerYearChart = null
+let reservePerMonthCharts = []
+
 Chart.register(
   PieController,
   ArcElement,
@@ -31,41 +36,96 @@ Chart.register(
 )
 
 onMounted(() => {
-  const ctxPie = document.getElementById('foodPieChart').getContext('2d')
-  // eslint-disable-next-line no-new
-  new Chart(ctxPie, {
+  createCharts()
+})
+
+watch(
+  () => props.foodData,
+  async () => {
+    destroyCharts()
+    await nextTick()
+    createCharts()
+  },
+  { deep: true },
+)
+
+function createCharts() {
+  const mrcPie = document.getElementById('meal-reserve-chart').getContext('2d')
+  mealReserveChart = new Chart(mrcPie, {
     type: 'pie',
     data: {
-      labels: ['رزرو معمولی', 'رزرو اضطراری'],
+      labels: ['شام', 'ناهار'],
       datasets: [
         {
-          data: [props.foodData.normal_reserves, props.foodData.compulsive_reserves],
-          backgroundColor: ['#238a04', '#ff6b02'],
+          data: [props.foodData.dinner_reserves, props.foodData.launch_reserves],
+          label: `تعداد رزرو`,
+          backgroundColor: ['#e4f533', '#7930c7'],
         },
       ],
     },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+      },
+    },
   })
 
-  console.log(props.foodData.years)
-  const ctxYearShare = document.getElementById('foodYearSharePie').getContext('2d')
-  // eslint-disable-next-line no-new
-  new Chart(ctxYearShare, {
+  const rtcPie = document.getElementById('reserve-type-chart').getContext('2d')
+  reserveTypeChart = new Chart(rtcPie, {
+    type: 'pie',
+    data: {
+      labels: ['رزرو اضطراری', 'رزرو معمولی'],
+      datasets: [
+        {
+          data: [props.foodData.compulsive_reserves, props.foodData.normal_reserves],
+          label: `تعداد رزرو`,
+          backgroundColor: ['#ff6b02', '#238a04'],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+      },
+    },
+  })
+
+  const rpyPie = document.getElementById('reserve-per-year-chart').getContext('2d')
+  reservePerYearChart = new Chart(rpyPie, {
     type: 'pie',
     data: {
       labels: Object.keys(props.foodData.years),
       datasets: [
         {
           data: Object.values(props.foodData.years).map(y => y.year_total),
+          label: `تعداد رزرو در سال`,
           backgroundColor: ['#038efd', '#fa2f2b', '#e4f533', '#49e751', '#ff9b08'],
         },
       ],
     },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+      },
+    },
   })
 
   Object.entries(props.foodData.years).forEach(([year, yearData]) => {
-    const ctxBar = document.getElementById(`foodBarChart-${year}`).getContext('2d')
-    // eslint-disable-next-line no-new
-    new Chart(ctxBar, {
+    const canvas = document.getElementById(`foodBarChart-${year}`)
+    if (!canvas) return
+
+    const ctxBar = canvas.getContext('2d')
+
+    const newChart = new Chart(ctxBar, {
       type: 'bar',
       data: {
         labels: [
@@ -84,7 +144,7 @@ onMounted(() => {
         ],
         datasets: [
           {
-            label: `رزرو غذا در سال ${year}`,
+            label: `تعداد رزرو در ماه`,
             data: yearData.months,
             backgroundColor: '#8e24aa',
           },
@@ -94,50 +154,70 @@ onMounted(() => {
         responsive: true,
         plugins: {
           legend: {
-            position: 'bottom',
-          },
-          title: {
-            display: true,
+            display: false,
           },
         },
       },
     })
+    reservePerMonthCharts.push(newChart)
   })
-})
+}
+
+function destroyCharts() {
+  [reserveTypeChart, mealReserveChart, reservePerYearChart].forEach((chart) => {
+    if (chart) chart.destroy()
+  })
+
+  reservePerMonthCharts.forEach((chart) => {
+    if (chart) chart.destroy()
+  })
+  reservePerMonthCharts = []
+}
 </script>
 
 <template>
-  <VRow class="mt-6">
-    <!-- نمودار کلی نرمال / اضطراری -->
-    <VCol cols="12" md="6">
-      <VCard class="pa-4">
-        <canvas id="foodPieChart" />
-        <p class="text-center mt-3">
-          مجموع رزروها: <strong>{{ props.foodData.total_reserves }}</strong>
+  <VRow class="mt-6" justify="space-evenly">
+    <!-- نمودار تعداد ناهار و شام -->
+    <VCol cols="11" sm="5" md="3" lg="3">
+      <VCard class="pa-4 box">
+        <p class="font-weight-bold mt-3">
+          مقایسه تعداد رزرو ناهار و شام(تعداد کل:{{ props.foodData.total_reserves }})
         </p>
+        <canvas id="meal-reserve-chart" />
+      </VCard>
+    </VCol>
+    <!-- نمودار کلی نرمال / اضطراری -->
+    <VCol cols="11" sm="5" md="3" lg="3">
+      <VCard class="pa-4 box">
+        <p class="font-weight-bold mt-3">
+          مقایسه تعداد رزرو معمولی و اضطراری
+        </p>
+        <canvas id="reserve-type-chart" />
       </VCard>
     </VCol>
 
     <!-- نمودار نسبت سال‌ها -->
-    <VCol cols="12" md="6">
-      <VCard class="pa-4">
-        <canvas id="foodYearSharePie" />
-        <p class="text-center mt-3">
+    <VCol cols="11" sm="5" md="3" lg="3">
+      <VCard class="pa-4 box">
+        <p class="font-weight-bold mt-3">
           مقایسه سهم هر سال از کل رزروها
         </p>
+        <canvas id="reserve-per-year-chart" />
       </VCard>
     </VCol>
   </VRow>
 
   <!-- نمودار میله‌ای برای هر سال -->
-  <VRow>
+  <VRow justify="space-evenly">
     <VCol
       v-for="(yearData, year) in props.foodData.years"
       :key="year"
       cols="12"
-      md="6"
+      sm="6"
+      md="4"
+      lg="4"
     >
-      <VCard class="pa-4 mt-4">
+      <VCard class="pa-4 mt-4 box">
         <p class="font-weight-bold mb-2">
           سال {{ year }}
         </p>
