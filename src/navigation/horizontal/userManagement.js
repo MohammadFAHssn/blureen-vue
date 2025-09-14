@@ -24,6 +24,12 @@ export default [
             subject: 'User-Access',
           },
           {
+            title: 'Personnel Records',
+            to: 'apps-user-personnel-records',
+            action: 'read',
+            subject: 'Personnel-Records',
+          },
+          {
             title: 'Approval Levels',
             to: 'apps-user-organization-chart',
             action: 'read',
