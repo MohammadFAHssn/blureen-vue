@@ -5,6 +5,8 @@ import PayrollBatchCreateDialog from '@/views/apps/payroll/PayrollBatchCreateDia
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Payroll-Batches',
   },
 })
 
