@@ -3,7 +3,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
-    subject: 'User',
+    subject: 'User-Details',
   },
 })
 

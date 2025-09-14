@@ -7,14 +7,14 @@ export default [
   {
     title: 'Users',
     icon: { icon: 'tabler-users' },
-    action: 'read',
+    action: 'see',
     subject: 'User',
     children: [
       {
         title: 'List',
         to: 'apps-user-list',
         action: 'read',
-        subject: 'User',
+        subject: 'User-Details',
       },
       {
         title: 'Access',
