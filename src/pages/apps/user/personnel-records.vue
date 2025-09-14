@@ -86,7 +86,7 @@ async function onUserSelected(personnelCode) {
 async function fetchUsers() {
   try {
     const { data, error } = await useApi(
-      createUrl('/base/user'),
+      createUrl('/base/user?fields[roles]=name&include=roles'),
     )
     if (error.value) {
       uiState.hasError = true
