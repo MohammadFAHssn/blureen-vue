@@ -23,6 +23,12 @@ export default [
             action: 'read',
             subject: 'User-Access',
           },
+          {
+            title: 'Personnel Records',
+            to: 'apps-user-personnel-records',
+            action: 'read',
+            subject: 'Personnel-Records',
+          },
         ],
       },
       {

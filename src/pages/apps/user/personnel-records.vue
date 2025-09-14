@@ -9,6 +9,13 @@ import ProductivityRecord from '@/views/apps/personnelRecord/ProductivityRecord.
 import ReassignmentRecord from '@/views/apps/personnelRecord/ReassignmentRecord.vue'
 import UserInfo from '@/views/apps/personnelRecord/UserInfo.vue'
 
+definePage({
+  meta: {
+    action: 'read',
+    subject: 'Personnel-Records',
+  },
+})
+
 const uiState = reactive({
   hasError: false,
   errorMessage: '',

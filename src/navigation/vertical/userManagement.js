@@ -22,12 +22,11 @@ export default [
         action: 'read',
         subject: 'User-Access',
       },
-      //* todo: Add actions and subjects for Personnel Records*/
       {
         title: 'Personnel Records',
         to: 'apps-user-personnel-records',
         action: 'read',
-        subject: 'User-Access',
+        subject: 'Personnel-Records',
       },
     ],
   },
