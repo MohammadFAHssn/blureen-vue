@@ -20,27 +20,30 @@ const users = ref([])
 const { theme } = useAGGridTheme()
 
 const columnDefs = ref([
-  { headerName: 'محل کار', field: 'workplace' },
-  { headerName: 'منطقه کاری', field: 'workArea' },
-  { headerName: 'مرکز هزینه', field: 'costCenter' },
-  { headerName: 'سمت شغلی', field: 'jobPosition' },
-  { headerName: 'کاربر', field: 'user' },
+  { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
+  { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
+  { headerName: 'مرکز هزینه', field: 'costCenter', rowGroup: true, hide: true },
+  { headerName: 'سمت شغلی', field: 'jobPosition', rowGroup: true, hide: true },
+  { headerName: 'کد پرسنلی', field: 'personnelCode' },
+  { headerName: 'نام', field: 'firstName' },
+  { headerName: 'نام خانوادگی', field: 'lastName' },
 ])
 
-const defaultColDef = ref({
-  enableRowGroup: true,
-  rowGroup: true,
-})
+const rowSelection = ref({
+  mode: 'multiRow',
+  enableClickSelection: true,
+  selectAll: 'filtered',
 
-const autoGroupColumnDef = ref({
-  minWidth: 460,
+  groupSelects: 'filteredDescendants',
 })
 
 const rowData = computed(() =>
   users.value?.flatMap(user =>
     user.active
       ? {
-          user: `${user.personnel_code} - ${user.first_name} ${user.last_name}`,
+          personnelCode: Number.parseInt(user.personnel_code),
+          firstName: user.first_name,
+          lastName: user.last_name,
           workplace: user.profile?.workplace?.name,
           workArea: user.profile?.work_area?.name,
           costCenter: user.profile?.cost_center?.name,
@@ -49,6 +52,40 @@ const rowData = computed(() =>
       : [],
   ),
 )
+
+function getContextMenuItems(params) {
+  console.log(params)
+
+  if (!params.node.isSelected()) {
+    params.api.deselectAll()
+    params.node.setSelected(true)
+  }
+
+  const selectedNodes = params.api.getSelectedNodes()
+  console.log(selectedNodes)
+
+  // const selectedUsersPersonnelCode = []
+  // selectedNodes.forEach((node) => {
+  //   selectedUsersPersonnelCode.push(node.groupValue.split('-')[0].trim())
+  // })
+
+  return 0
+    ? [
+        // {
+        //   icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+        //   name: 'ویرایش دسترسی',
+        //   action: () => {
+        //     updateSelectedUsers(selectedUsersPersonnelCode)
+        //     updateSelectedUserRoles()
+
+        //     uiState.isEditAccessDialogVisible = true
+        //   },
+        // },
+        'separator',
+        ...params.defaultItems,
+      ]
+    : [...params.defaultItems]
+}
 
 // ----- end ag-grid -----
 
@@ -95,12 +132,14 @@ await fetchUsers()
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
-        :default-col-def="defaultColDef"
-        :auto-group-column-def="autoGroupColumnDef"
         enable-rtl
         row-numbers
         pagination
         row-group-panel-show="always"
+        cell-selection
+        :row-selection="rowSelection"
+        :get-context-menu-items="getContextMenuItems"
+        group-display-type="multipleColumns"
         :theme="theme"
       />
     </section>
