@@ -22,6 +22,12 @@ export default [
         action: 'read',
         subject: 'User-Access',
       },
+      {
+        title: 'Approval Levels',
+        to: 'apps-user-organization-chart',
+        action: 'read',
+        subject: 'Approval-Levels',
+      },
     ],
   },
   {

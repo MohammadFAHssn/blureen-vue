@@ -28,6 +28,7 @@ declare module 'vue-router/auto-routes' {
     'apps-supplier-tender-tender-history': RouteRecordInfo<'apps-supplier-tender-tender-history', '/apps/supplier/tender/tender-history', Record<never, never>, Record<never, never>>,
     'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
+    'apps-user-organization-chart': RouteRecordInfo<'apps-user-organization-chart', '/apps/user/organization-chart', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
@@ -85,6 +86,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/user/list.vue': {
       routes: 'apps-user-list'
+      views: never
+    }
+    'src/pages/apps/user/organization-chart.vue': {
+      routes: 'apps-user-organization-chart'
       views: never
     }
     'src/pages/dashboards/crm.vue': {
