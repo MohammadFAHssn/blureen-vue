@@ -14,16 +14,27 @@ const uiState = reactive({
 })
 
 const users = ref([])
+const gridApi = ref(null)
 
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
 
+function onGridReady(params) {
+  gridApi.value = params.api
+}
+
 const columnDefs = ref([
   { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
   { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
   { headerName: 'مرکز هزینه', field: 'costCenter', rowGroup: true, hide: true },
-  { headerName: 'سمت شغلی', field: 'jobPosition', rowGroup: true, hide: true },
+  {
+    headerName: 'سمت شغلی',
+    field: 'jobPosition',
+    valueFormatter: params => params.value?.name,
+    rowGroup: true,
+    hide: true,
+  },
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
@@ -33,8 +44,6 @@ const rowSelection = ref({
   mode: 'multiRow',
   enableClickSelection: true,
   selectAll: 'filtered',
-
-  groupSelects: 'filteredDescendants',
 })
 
 const rowData = computed(() =>
@@ -47,40 +56,66 @@ const rowData = computed(() =>
           workplace: user.profile?.workplace?.name,
           workArea: user.profile?.work_area?.name,
           costCenter: user.profile?.cost_center?.name,
-          jobPosition: user.profile?.job_position?.name,
+          jobPosition: user.profile?.job_position,
         }
       : [],
   ),
 )
 
 function getContextMenuItems(params) {
-  console.log(params)
-
   if (!params.node.isSelected()) {
     params.api.deselectAll()
     params.node.setSelected(true)
   }
 
+  console.log(params.api.getSelectedNodes())
+
   const selectedNodes = params.api.getSelectedNodes()
-  console.log(selectedNodes)
 
-  // const selectedUsersPersonnelCode = []
-  // selectedNodes.forEach((node) => {
-  //   selectedUsersPersonnelCode.push(node.groupValue.split('-')[0].trim())
-  // })
+  const requester = []
+  for (const node of selectedNodes) {
+    if (node.group && node.field === 'jobPosition') {
+      requester.push(
+        {
+          type: 'jobPosition',
+          rayvarzId: node.groupValue.rayvarz_id,
+          name: node.groupValue.name,
+        },
+      )
+    }
+    else if (!node.group) {
+      requester.push(
+        {
+          type: 'user',
+          personnelCode: node.data.personnelCode,
+          name: `${node.data.firstName} ${node.data.lastName}`,
+        },
+      )
+    }
+  }
 
-  return 0
+  return requester.length > 0
     ? [
-        // {
-        //   icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
-        //   name: 'ویرایش دسترسی',
-        //   action: () => {
-        //     updateSelectedUsers(selectedUsersPersonnelCode)
-        //     updateSelectedUserRoles()
-
-        //     uiState.isEditAccessDialogVisible = true
-        //   },
-        // },
+        {
+          icon: '<i class="tabler tabler-shield-check" style="font-size: 18px;"></i>',
+          name: 'تخصیص تأییدیه برای',
+          subMenu: [
+            {
+              icon: '<i class="tabler tabler-calendar-time" style="font-size: 18px;"></i>',
+              name: 'درخواست مرخصی',
+              action: () => {
+                console.log('Edit access for:', requester)
+              },
+            },
+            {
+              icon: '<i class="tabler tabler-box" style="font-size: 18px;"></i>',
+              name: 'درخواست کالا',
+              action: () => {
+                console.log('Edit access for:', requester)
+              },
+            },
+          ],
+        },
         'separator',
         ...params.defaultItems,
       ]
@@ -136,11 +171,12 @@ await fetchUsers()
         row-numbers
         pagination
         row-group-panel-show="always"
+        group-display-type="multipleColumns"
         cell-selection
         :row-selection="rowSelection"
         :get-context-menu-items="getContextMenuItems"
-        group-display-type="multipleColumns"
         :theme="theme"
+        @grid-ready="onGridReady"
       />
     </section>
   </VLayout>
