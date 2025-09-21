@@ -1,4 +1,6 @@
 <script setup>
+import ApprovalFlow from '@/views/apps/user/ApprovalFlow.vue'
+
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
@@ -14,6 +16,8 @@ const uiState = reactive({
 })
 
 const users = ref([])
+const jobPositions = ref([])
+const approvalFlow = ref([])
 const gridApi = ref(null)
 
 // ----- start ag-grid -----
@@ -47,20 +51,23 @@ const rowSelection = ref({
 })
 
 const rowData = computed(() =>
-  users.value?.flatMap(user =>
-    user.active
-      ? {
-          personnelCode: Number.parseInt(user.personnel_code),
-          firstName: user.first_name,
-          lastName: user.last_name,
-          workplace: user.profile?.workplace?.name,
-          workArea: user.profile?.work_area?.name,
-          costCenter: user.profile?.cost_center?.name,
-          jobPosition: user.profile?.job_position,
-        }
-      : [],
-  ),
+  users.value?.map((user) => {
+    return {
+      personnelCode: Number.parseInt(user.personnel_code),
+      firstName: user.first_name,
+      lastName: user.last_name,
+      workplace: user.profile?.workplace?.name,
+      workArea: user.profile?.work_area?.name,
+      costCenter: user.profile?.cost_center?.name,
+      jobPosition: user.profile?.job_position,
+      approvalFlowAsRequester: user.approval_flows_as_requester,
+    }
+  }),
 )
+
+const autoGroupColumnDef = ref({
+  filter: 'agGroupColumnFilter',
+})
 
 function getContextMenuItems(params) {
   if (!params.node.isSelected()) {
@@ -75,22 +82,18 @@ function getContextMenuItems(params) {
   const requester = []
   for (const node of selectedNodes) {
     if (node.group && node.field === 'jobPosition') {
-      requester.push(
-        {
-          type: 'jobPosition',
-          rayvarzId: node.groupValue.rayvarz_id,
-          name: node.groupValue.name,
-        },
-      )
+      requester.push({
+        type: 'jobPosition',
+        rayvarzId: node.groupValue.rayvarz_id,
+        name: node.groupValue.name,
+      })
     }
     else if (!node.group) {
-      requester.push(
-        {
-          type: 'user',
-          personnelCode: node.data.personnelCode,
-          name: `${node.data.firstName} ${node.data.lastName}`,
-        },
-      )
+      requester.push({
+        type: 'user',
+        personnelCode: node.data.personnelCode,
+        name: `${node.data.firstName} ${node.data.lastName}`,
+      })
     }
   }
 
@@ -122,16 +125,60 @@ function getContextMenuItems(params) {
     : [...params.defaultItems]
 }
 
+function onSelectionChanged() {
+  const selectedNodes = gridApi.value.getSelectedNodes()
+
+  if (selectedNodes.length !== 1) {
+    approvalFlow.value = []
+    return
+  }
+
+  if (selectedNodes[0].group && selectedNodes[0].field === 'jobPosition') {
+    approvalFlow.value = jobPositions.value
+      .filter(
+        jp => jp.rayvarz_id === selectedNodes[0].groupValue.rayvarz_id,
+      )[0]
+      .approval_flows_as_requester
+      .map((af) => {
+        if (af.approver_user_id) {
+          return {
+            name: `${af.approver_user.first_name} ${af.approver_user.last_name}`,
+          }
+        }
+        else {
+          return {
+            name: af.approver_position.name,
+          }
+        }
+      })
+  }
+
+  if (!selectedNodes[0].group) {
+    approvalFlow.value = selectedNodes[0].data.approvalFlowAsRequester.map(
+      (af) => {
+        if (af.approver_user_id) {
+          return {
+            name: `${af.approver_user.first_name} ${af.approver_user.last_name}`,
+          }
+        }
+        else {
+          return {
+            name: af.approver_position.name,
+          }
+        }
+      },
+    )
+  }
+}
+
 // ----- end ag-grid -----
 
 async function fetchUsers() {
   try {
     const { data, error } = await useApi(
-      createUrl('/base/user', {
+      createUrl('/base/user/approval-flows-as-requester', {
         query: {
-          'fields[roles]': 'name',
-          'include':
-            'roles,profile.workplace,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
+          requestTypeId: 1,
         },
       }),
     )
@@ -147,7 +194,29 @@ async function fetchUsers() {
   }
 }
 
-await fetchUsers()
+async function fetchJobPositions() {
+  try {
+    const { data, error } = await useApi(
+      createUrl('/base/job-position/approval-flows-as-requester', {
+        query: {
+          requestTypeId: 1,
+        },
+      }),
+    )
+
+    if (error.value) throw error.value
+
+    jobPositions.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching job positions:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطا در دریافت سمت‌های شغلی'
+  }
+}
+
+fetchUsers()
+await fetchJobPositions()
 </script>
 
 <template>
@@ -162,6 +231,8 @@ await fetchUsers()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <ApprovalFlow :approval-flow="approvalFlow" />
+
     <section style="block-size: 100%;">
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
@@ -172,11 +243,13 @@ await fetchUsers()
         pagination
         row-group-panel-show="always"
         group-display-type="multipleColumns"
+        :auto-group-column-def="autoGroupColumnDef"
         cell-selection
         :row-selection="rowSelection"
         :get-context-menu-items="getContextMenuItems"
         :theme="theme"
         @grid-ready="onGridReady"
+        @selection-changed="onSelectionChanged"
       />
     </section>
   </VLayout>
@@ -190,7 +263,8 @@ await fetchUsers()
   @include mixins.elevation(vuetify.$card-elevation);
 
   display: grid;
+  box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: auto;
+  grid-template-rows: auto 1fr;
 }
 </style>

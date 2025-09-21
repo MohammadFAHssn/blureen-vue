@@ -109,8 +109,9 @@ async function fetchUsers() {
         '/base/user',
         {
           query: {
+            'fields[users]': 'id,first_name,last_name,personnel_code,active',
             'fields[roles]': 'name',
-            'include': 'roles,profile.workplace,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
+            'include': 'roles,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
           },
         },
       ),
