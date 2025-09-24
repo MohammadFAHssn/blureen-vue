@@ -17,8 +17,11 @@ const uiState = reactive({
 
 const users = ref([])
 const jobPositions = ref([])
+const requester = ref(null)
 const approvalFlow = ref([])
-const gridApi = ref(null)
+const mode = ref('view') // 'view' | 'edit'
+const gridApi = shallowRef(null)
+const selectedNodes = ref([])
 
 // ----- start ag-grid -----
 
@@ -45,9 +48,12 @@ const columnDefs = ref([
 ])
 
 const rowSelection = ref({
-  mode: 'multiRow',
+  mode: 'singleRow',
   enableClickSelection: true,
   selectAll: 'filtered',
+
+  isRowSelectable: rowNode =>
+    !(rowNode.group && rowNode.field !== 'jobPosition'),
 })
 
 const rowData = computed(() =>
@@ -69,106 +75,63 @@ const autoGroupColumnDef = ref({
   filter: 'agGroupColumnFilter',
 })
 
-function getContextMenuItems(params) {
-  if (!params.node.isSelected()) {
-    params.api.deselectAll()
-    params.node.setSelected(true)
-  }
-
-  console.log(params.api.getSelectedNodes())
-
-  const selectedNodes = params.api.getSelectedNodes()
-
-  const requester = []
-  for (const node of selectedNodes) {
-    if (node.group && node.field === 'jobPosition') {
-      requester.push({
-        type: 'jobPosition',
-        rayvarzId: node.groupValue.rayvarz_id,
-        name: node.groupValue.name,
-      })
+function getApproverNode(af) {
+  let approverNode
+  gridApi.value.forEachNode((node) => {
+    if (
+      (af.approver_user_id
+        && node.data?.personnelCode == af.approver_user.personnel_code)
+      || (af.approver_position_id
+        && node.field === 'jobPosition'
+        && node.groupValue?.rayvarz_id == af.approver_position.rayvarz_id)
+    ) {
+      approverNode = node
+      return 'break loop!'
     }
-    else if (!node.group) {
-      requester.push({
-        type: 'user',
-        personnelCode: node.data.personnelCode,
-        name: `${node.data.firstName} ${node.data.lastName}`,
-      })
-    }
-  }
-
-  return requester.length > 0
-    ? [
-        {
-          icon: '<i class="tabler tabler-shield-check" style="font-size: 18px;"></i>',
-          name: 'تخصیص تأییدیه برای',
-          subMenu: [
-            {
-              icon: '<i class="tabler tabler-calendar-time" style="font-size: 18px;"></i>',
-              name: 'درخواست مرخصی',
-              action: () => {
-                console.log('Edit access for:', requester)
-              },
-            },
-            {
-              icon: '<i class="tabler tabler-box" style="font-size: 18px;"></i>',
-              name: 'درخواست کالا',
-              action: () => {
-                console.log('Edit access for:', requester)
-              },
-            },
-          ],
-        },
-        'separator',
-        ...params.defaultItems,
-      ]
-    : [...params.defaultItems]
+  })
+  return approverNode
 }
 
 function onSelectionChanged() {
-  const selectedNodes = gridApi.value.getSelectedNodes()
+  selectedNodes.value = gridApi.value.getSelectedNodes()
 
-  if (selectedNodes.length !== 1) {
-    approvalFlow.value = []
-    return
+  if (mode.value === 'view') {
+    if (selectedNodes.value.length === 0) {
+      approvalFlow.value = []
+      return
+    }
+
+    requester.value = selectedNodes.value[0]
+
+    if (selectedNodes.value[0].field === 'jobPosition') {
+      approvalFlow.value = jobPositions.value
+        .filter(
+          jp =>
+            jp.rayvarz_id === selectedNodes.value[0].groupValue.rayvarz_id,
+        )[0]
+        .approval_flows_as_requester
+        .map(af => getApproverNode(af))
+    }
+
+    if (!selectedNodes.value[0].group) {
+      approvalFlow.value
+        = selectedNodes.value[0].data.approvalFlowAsRequester.map(af =>
+          getApproverNode(af),
+        )
+    }
+  }
+  else if (mode.value === 'edit') {
+    approvalFlow.value = selectedNodes.value
   }
 
-  if (selectedNodes[0].group && selectedNodes[0].field === 'jobPosition') {
-    approvalFlow.value = jobPositions.value
-      .filter(
-        jp => jp.rayvarz_id === selectedNodes[0].groupValue.rayvarz_id,
-      )[0]
-      .approval_flows_as_requester
-      .map((af) => {
-        if (af.approver_user_id) {
-          return {
-            name: `${af.approver_user.first_name} ${af.approver_user.last_name}`,
-          }
-        }
-        else {
-          return {
-            name: af.approver_position.name,
-          }
-        }
-      })
-  }
+  selectedNodes.value.forEach((node) => {
+    let parent = node.parent
 
-  if (!selectedNodes[0].group) {
-    approvalFlow.value = selectedNodes[0].data.approvalFlowAsRequester.map(
-      (af) => {
-        if (af.approver_user_id) {
-          return {
-            name: `${af.approver_user.first_name} ${af.approver_user.last_name}`,
-          }
-        }
-        else {
-          return {
-            name: af.approver_position.name,
-          }
-        }
-      },
-    )
-  }
+    while (parent && parent.group) {
+      parent.setExpanded(true)
+      parent = parent.parent
+    }
+  })
 }
 
 // ----- end ag-grid -----
@@ -215,6 +178,51 @@ async function fetchJobPositions() {
   }
 }
 
+function onEdit() {
+  gridApi.value.setGridOption('rowSelection', {
+    ...rowSelection.value,
+    mode: 'multiRow',
+  })
+
+  mode.value = 'edit'
+
+  gridApi.value.deselectAll()
+  gridApi.value.setNodesSelected({
+    nodes: approvalFlow.value,
+    newValue: true,
+  })
+}
+
+function onSave() {
+  gridApi.value.setGridOption('rowSelection', {
+    ...rowSelection.value,
+    mode: 'singleRow',
+  })
+
+  mode.value = 'view'
+
+  gridApi.value.deselectAll()
+  gridApi.value.setNodesSelected({
+    nodes: [requester.value],
+    newValue: true,
+  })
+}
+
+function onCancel() {
+  gridApi.value.setGridOption('rowSelection', {
+    ...rowSelection.value,
+    mode: 'singleRow',
+  })
+
+  mode.value = 'view'
+
+  gridApi.value.deselectAll()
+  gridApi.value.setNodesSelected({
+    nodes: [requester.value],
+    newValue: true,
+  })
+}
+
 fetchUsers()
 await fetchJobPositions()
 </script>
@@ -231,7 +239,17 @@ await fetchJobPositions()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <ApprovalFlow :approval-flow="approvalFlow" />
+    <div>
+      <ApprovalFlow
+        v-if="selectedNodes.length > 0 || mode === 'edit'"
+        :requester="requester"
+        :approval-flow="approvalFlow"
+        :mode="mode"
+        @edit="onEdit"
+        @save="onSave"
+        @cancel="onCancel"
+      />
+    </div>
 
     <section style="block-size: 100%;">
       <AgGridVue
@@ -241,12 +259,10 @@ await fetchJobPositions()
         enable-rtl
         row-numbers
         pagination
-        row-group-panel-show="always"
         group-display-type="multipleColumns"
         :auto-group-column-def="autoGroupColumnDef"
         cell-selection
         :row-selection="rowSelection"
-        :get-context-menu-items="getContextMenuItems"
         :theme="theme"
         @grid-ready="onGridReady"
         @selection-changed="onSelectionChanged"
