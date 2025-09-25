@@ -16,7 +16,7 @@ const uiState = reactive({
 })
 
 const users = ref([])
-const jobPositions = ref([])
+const approvalFlows = ref([])
 const requester = ref(null)
 const approvalFlow = ref([])
 const mode = ref('view') // 'view' | 'edit'
@@ -34,7 +34,13 @@ function onGridReady(params) {
 const columnDefs = ref([
   { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
   { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
-  { headerName: 'مرکز هزینه', field: 'costCenter', rowGroup: true, hide: true },
+  {
+    headerName: 'مرکز هزینه',
+    field: 'costCenter',
+    valueFormatter: params => params.value?.name,
+    rowGroup: true,
+    hide: true,
+  },
   {
     headerName: 'سمت شغلی',
     field: 'jobPosition',
@@ -75,7 +81,7 @@ const rowData = computed(() =>
       active: user.active,
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
-      costCenter: user.profile?.cost_center?.name,
+      costCenter: user.profile?.cost_center,
       jobPosition: user.profile?.job_position,
       approvalFlowAsRequester: user.approval_flows_as_requester,
     }
@@ -86,15 +92,15 @@ const autoGroupColumnDef = ref({
   filter: 'agGroupColumnFilter',
 })
 
-function getApproverNode(af) {
+function getApproverNode(approvalFlow) {
   let approverNode
   gridApi.value.forEachNode((node) => {
     if (
-      (af.approver_user_id
-        && node.data?.personnelCode == af.approver_user.personnel_code)
-      || (af.approver_position_id
+      (approvalFlow.approver_user_id && node.data?.id == approvalFlow.approver_user_id)
+      || (approvalFlow.approver_position_id
         && node.field === 'jobPosition'
-        && node.groupValue?.rayvarz_id == af.approver_position.rayvarz_id)
+        && node.groupValue?.rayvarz_id == approvalFlow.approver_position_id
+        && node.parent.groupValue?.rayvarz_id == approvalFlow.approver_center_id)
     ) {
       approverNode = node
       return 'break loop!'
@@ -115,19 +121,22 @@ function onSelectionChanged() {
     requester.value = selectedNodes.value[0]
 
     if (selectedNodes.value[0].field === 'jobPosition') {
-      approvalFlow.value = jobPositions.value
+      const position_id = selectedNodes.value[0].groupValue.rayvarz_id
+      const center_id = selectedNodes.value[0].parent.groupValue.rayvarz_id
+
+      approvalFlow.value = approvalFlows.value
         .filter(
-          jp =>
-            jp.rayvarz_id === selectedNodes.value[0].groupValue.rayvarz_id,
-        )[0]
-        .approval_flows_as_requester
-        .map(af => getApproverNode(af))
+          approvalFlow =>
+            approvalFlow.requester_position_id === position_id
+            && approvalFlow.requester_center_id === center_id,
+        )
+        .map(approvalFlow => getApproverNode(approvalFlow))
     }
 
     if (!selectedNodes.value[0].group) {
       approvalFlow.value
-        = selectedNodes.value[0].data.approvalFlowAsRequester.map(af =>
-          getApproverNode(af),
+        = selectedNodes.value[0].data.approvalFlowAsRequester.map(approvalFlow =>
+          getApproverNode(approvalFlow),
         )
     }
   }
@@ -168,24 +177,24 @@ async function fetchUsers() {
   }
 }
 
-async function fetchJobPositions() {
+async function fetchApprovalFlows() {
   try {
     const { data, error } = await useApi(
-      createUrl('/base/job-position/approval-flows-as-requester', {
+      createUrl('/base/approval-flow', {
         query: {
-          requestTypeId: 1,
+          'filter[request_type_id]': 1,
         },
       }),
     )
 
     if (error.value) throw error.value
 
-    jobPositions.value = data.value.data
+    approvalFlows.value = data.value.data
   }
   catch (e) {
-    console.error('Error fetching job positions:', e)
+    console.error('Error fetching approval flows:', e)
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت سمت‌های شغلی'
+    uiState.errorMessage = 'خطا در دریافت رده تأییدیه‌ها'
   }
 }
 
@@ -253,7 +262,7 @@ function updateApprovalFlow({ requester, approvers, requestTypeId }) {
 }
 
 fetchUsers()
-await fetchJobPositions()
+await fetchApprovalFlows()
 </script>
 
 <template>
