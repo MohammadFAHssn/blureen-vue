@@ -45,6 +45,15 @@ const columnDefs = ref([
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
+  {
+    headerName: 'وضعیت',
+    field: 'active',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
 ])
 
 const rowSelection = ref({
@@ -59,9 +68,11 @@ const rowSelection = ref({
 const rowData = computed(() =>
   users.value?.map((user) => {
     return {
+      id: user.id,
       personnelCode: Number.parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
+      active: user.active,
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
       costCenter: user.profile?.cost_center?.name,
@@ -194,6 +205,12 @@ function onEdit() {
 }
 
 function onSave() {
+  updateApprovalFlow({
+    requester: requester.value,
+    approvers: approvalFlow.value,
+    requestTypeId: 1,
+  })
+
   gridApi.value.setGridOption('rowSelection', {
     ...rowSelection.value,
     mode: 'singleRow',
@@ -220,6 +237,18 @@ function onCancel() {
   gridApi.value.setNodesSelected({
     nodes: [requester.value],
     newValue: true,
+  })
+}
+
+function updateApprovalFlow({ requester, approvers, requestTypeId }) {
+  const payload = approvers.map((approver) => {
+    return {
+      requester_user_id: requester.data?.id,
+      requester_position_id: requester.groupValue?.rayvarz_id,
+      approver_user_id: approver.data?.id,
+      approver_position_id: approver.groupValue?.rayvarz_id,
+      request_type_id: requestTypeId,
+    }
   })
 }
 
