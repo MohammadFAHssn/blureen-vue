@@ -15,6 +15,10 @@ const uiState = reactive({
   errorMessage: '',
 })
 
+const pendingState = reactive({
+  updateApprovalFlow: false,
+})
+
 const users = ref([])
 const approvalFlows = ref([])
 const requester = ref(null)
@@ -29,7 +33,11 @@ const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
   gridApi.value = params.api
+
+  gridApi.value.setGridOption('rowData', rowData())
 }
+
+const getRowId = ref(params => params.data.id)
 
 const columnDefs = ref([
   { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
@@ -71,8 +79,8 @@ const rowSelection = ref({
     !(rowNode.group && rowNode.field !== 'jobPosition'),
 })
 
-const rowData = computed(() =>
-  users.value?.map((user) => {
+function rowData() {
+  return users.value?.map((user) => {
     return {
       id: user.id,
       personnelCode: Number.parseInt(user.personnel_code),
@@ -85,22 +93,23 @@ const rowData = computed(() =>
       jobPosition: user.profile?.job_position,
       approvalFlowAsRequester: user.approval_flows_as_requester,
     }
-  }),
-)
+  })
+}
 
 const autoGroupColumnDef = ref({
   filter: 'agGroupColumnFilter',
 })
 
-function getApproverNode(approvalFlow) {
+function getApproverNode(approval) {
   let approverNode
   gridApi.value.forEachNode((node) => {
     if (
-      (approvalFlow.approver_user_id && node.data?.id == approvalFlow.approver_user_id)
-      || (approvalFlow.approver_position_id
+      (approval.approver_user_id
+        && node.data?.id == approval.approver_user_id)
+      || (approval.approver_position_id
         && node.field === 'jobPosition'
-        && node.groupValue?.rayvarz_id == approvalFlow.approver_position_id
-        && node.parent.groupValue?.rayvarz_id == approvalFlow.approver_center_id)
+        && node.groupValue?.rayvarz_id == approval.approver_position_id
+        && node.parent.groupValue?.rayvarz_id == approval.approver_center_id)
     ) {
       approverNode = node
       return 'break loop!'
@@ -111,6 +120,10 @@ function getApproverNode(approvalFlow) {
 
 function onSelectionChanged() {
   selectedNodes.value = gridApi.value.getSelectedNodes()
+
+  for (const selectedNode of selectedNodes.value) {
+    gridApi.value.setRowNodeExpanded(selectedNode, true, true)
+  }
 
   if (mode.value === 'view') {
     if (selectedNodes.value.length === 0) {
@@ -126,32 +139,23 @@ function onSelectionChanged() {
 
       approvalFlow.value = approvalFlows.value
         .filter(
-          approvalFlow =>
-            approvalFlow.requester_position_id === position_id
-            && approvalFlow.requester_center_id === center_id,
+          approval =>
+            approval.requester_position_id === position_id
+            && approval.requester_center_id === center_id,
         )
-        .map(approvalFlow => getApproverNode(approvalFlow))
+        .map(approval => getApproverNode(approval))
     }
 
     if (!selectedNodes.value[0].group) {
       approvalFlow.value
-        = selectedNodes.value[0].data.approvalFlowAsRequester.map(approvalFlow =>
-          getApproverNode(approvalFlow),
+        = selectedNodes.value[0].data.approvalFlowAsRequester.map(approval =>
+          getApproverNode(approval),
         )
     }
   }
   else if (mode.value === 'edit') {
     approvalFlow.value = selectedNodes.value
   }
-
-  selectedNodes.value.forEach((node) => {
-    let parent = node.parent
-
-    while (parent && parent.group) {
-      parent.setExpanded(true)
-      parent = parent.parent
-    }
-  })
 }
 
 // ----- end ag-grid -----
@@ -169,6 +173,7 @@ async function fetchUsers() {
     if (error.value) throw error.value
 
     users.value = data.value.data
+    gridApi.value?.setGridOption('rowData', rowData())
   }
   catch (e) {
     console.error('Error fetching users:', e)
@@ -198,71 +203,99 @@ async function fetchApprovalFlows() {
   }
 }
 
-function onEdit() {
-  gridApi.value.setGridOption('rowSelection', {
-    ...rowSelection.value,
-    mode: 'multiRow',
-  })
+async function onSave() {
+  const approvalDeleted = approvalFlow.value.length === 0
 
-  mode.value = 'edit'
+  const payload = (approvalDeleted ? [null] : approvalFlow.value).map(
+    (approver, index) => {
+      return {
+        requester_user_id: !requester.value.group
+          ? requester.value.data.id
+          : null,
+        requester_position_id: requester.value.group
+          ? requester.value.groupValue.rayvarz_id
+          : null,
+        requester_center_id: requester.value.group
+          ? requester.value.parent.groupValue.rayvarz_id
+          : null,
+        approver_user_id: approvalDeleted
+          ? null
+          : (!approver.group
+              ? approver.data.id
+              : null),
+        approver_position_id: approvalDeleted
+          ? null
+          : (approver.group
+              ? approver.groupValue.rayvarz_id
+              : null),
+        approver_center_id: approvalDeleted
+          ? null
+          : (approver.group
+              ? approver.parent.groupValue.rayvarz_id
+              : null),
+        priority: index + 1,
+        request_type_id: 1,
+      }
+    },
+  )
 
-  gridApi.value.deselectAll()
-  gridApi.value.setNodesSelected({
-    nodes: approvalFlow.value,
-    newValue: true,
-  })
-}
+  pendingState.updateApprovalFlow = true
+  try {
+    await $api('/base/approval-flow/update', {
+      method: 'POST',
+      body: { approvalFlows: payload },
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage
+          = response._data.message || 'خطا در بروزرسانی رده تأییدیه‌ها'
+      },
+    })
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    fetchUsers()
+    await fetchApprovalFlows()
 
-function onSave() {
-  updateApprovalFlow({
-    requester: requester.value,
-    approvers: approvalFlow.value,
-    requestTypeId: 1,
-  })
-
-  gridApi.value.setGridOption('rowSelection', {
-    ...rowSelection.value,
-    mode: 'singleRow',
-  })
-
-  mode.value = 'view'
-
-  gridApi.value.deselectAll()
-  gridApi.value.setNodesSelected({
-    nodes: [requester.value],
-    newValue: true,
-  })
-}
-
-function onCancel() {
-  gridApi.value.setGridOption('rowSelection', {
-    ...rowSelection.value,
-    mode: 'singleRow',
-  })
-
-  mode.value = 'view'
-
-  gridApi.value.deselectAll()
-  gridApi.value.setNodesSelected({
-    nodes: [requester.value],
-    newValue: true,
-  })
-}
-
-function updateApprovalFlow({ requester, approvers, requestTypeId }) {
-  const payload = approvers.map((approver) => {
-    return {
-      requester_user_id: requester.data?.id,
-      requester_position_id: requester.groupValue?.rayvarz_id,
-      approver_user_id: approver.data?.id,
-      approver_position_id: approver.groupValue?.rayvarz_id,
-      request_type_id: requestTypeId,
-    }
-  })
+    pendingState.updateApprovalFlow = false
+    mode.value = 'view'
+  }
 }
 
 fetchUsers()
 await fetchApprovalFlows()
+
+// ----- -----
+
+watch(mode, (newMode) => {
+  if (newMode === 'view') {
+    gridApi.value.setGridOption('rowSelection', {
+      ...rowSelection.value,
+      mode: 'singleRow',
+    })
+
+    gridApi.value.deselectAll()
+    gridApi.value.setNodesSelected({
+      nodes: [gridApi.value.getRowNode(requester.value.id)],
+      newValue: true,
+    })
+  }
+  else if (newMode === 'edit') {
+    gridApi.value.setGridOption('rowSelection', {
+      ...rowSelection.value,
+      mode: 'multiRow',
+    })
+
+    gridApi.value.deselectAll()
+    gridApi.value.setNodesSelected({
+      nodes: approvalFlow.value.map(approval =>
+        gridApi.value.getRowNode(approval.id),
+      ),
+      newValue: true,
+    })
+  }
+})
 </script>
 
 <template>
@@ -283,9 +316,10 @@ await fetchApprovalFlows()
         :requester="requester"
         :approval-flow="approvalFlow"
         :mode="mode"
-        @edit="onEdit"
+        :loading="pendingState.updateApprovalFlow"
+        @edit="mode = 'edit'"
         @save="onSave"
-        @cancel="onCancel"
+        @cancel="mode = 'view'"
       />
     </div>
 
@@ -293,7 +327,7 @@ await fetchApprovalFlows()
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
-        :row-data="rowData"
+        :get-row-id="getRowId"
         enable-rtl
         row-numbers
         pagination

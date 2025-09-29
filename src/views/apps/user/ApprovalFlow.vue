@@ -13,6 +13,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
+
+  loading: {
+    type: Boolean,
+    default: true,
+  },
 })
 </script>
 
@@ -41,10 +46,10 @@ const props = defineProps({
     </VCardText>
 
     <VCardActions>
-      <VBtn v-if="mode === 'edit'" color="success" @click="$emit('save')">
+      <VBtn v-if="mode === 'edit'" color="success" :loading="loading" @click="$emit('save')">
         ذخیره
       </VBtn>
-      <VBtn v-if="mode === 'edit'" color="error" @click="$emit('cancel')">
+      <VBtn v-if="mode === 'edit'" color="error" :disabled="loading" @click="$emit('cancel')">
         بستن
       </VBtn>
 
