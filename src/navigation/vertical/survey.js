@@ -14,8 +14,9 @@ export default [
   {
     title: 'Survey Management',
     icon: { icon: 'tabler-message-cog' },
-    action: 'read',
-    subject: 'Surveys',
+    // TODO: add permission
+    action: 'use',
+    subject: 'app',
     to: 'apps-survey-survey-management',
   },
 ]

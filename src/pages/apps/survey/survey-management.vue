@@ -5,8 +5,9 @@ import SurveyCreateDialog from '@/views/apps/survey/SurveyCreateDialog.vue'
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
-    action: 'read',
-    subject: 'Surveys',
+    // TODO: add permission
+    // action: 'read',
+    // subject: 'Surveys',
   },
 })
 
@@ -109,35 +110,30 @@ async function fetchSurveys() {
 fetchSurveys()
 
 async function onCreateSurvey(payload) {
-  console.log('!')
-  //   const formData = new FormData()
+  pendingState.createSurvey = true
+  try {
+    await $api('/survey/survey/create', {
+      method: 'POST',
+      body: {
+        title: payload.title,
+        porslineId: payload.porslineId,
+      },
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage
+            = response._data.message || 'خطا در ایجاد نظرسنجی'
+      },
+    })
 
-  //   formData.append('month', Number(payload.payrollBatchDate.split('/')[1]))
-  //   formData.append('year', Number(payload.payrollBatchDate.split('/')[0]))
-
-  //   formData.append('file', payload.payrollBatchFile)
-
-  //   pendingState.createSurvey = true
-  //   try {
-  //     await $api('/payroll/payroll-batch/create', {
-  //       method: 'POST',
-  //       body: formData,
-  //       onResponseError({ response }) {
-  //         uiState.hasError = true
-  //         uiState.errorMessage
-  //           = response._data.message || 'خطا در ایجاد فیش حقوقی'
-  //       },
-  //     })
-
-//     uiState.isSurveyCreateDialogVisible = false
-//   }
-//   catch (err) {
-//     console.error(err)
-//   }
-//   finally {
-//     pendingState.createSurvey = false
-//     fetchSurveys()
-//   }
+    uiState.isSurveyCreateDialogVisible = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.createSurvey = false
+    fetchSurveys()
+  }
 }
 
 async function onDelete() {
