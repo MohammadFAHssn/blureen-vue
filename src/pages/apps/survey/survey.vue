@@ -42,13 +42,13 @@ async function fetchSurveys() {
 
 fetchSurveys()
 
-async function participateInSurvey(surveyId) {
+async function participateInSurvey(porslineId) {
   pendingState.participateInSurvey = true
   try {
     await $api('/survey/survey/participate', {
       method: 'POST',
       body: {
-        id: surveyId,
+        porslineId,
       },
       onResponseError({ response }) {
         pendingState.participateInSurvey = false
@@ -93,7 +93,7 @@ async function participateInSurvey(surveyId) {
         </VCardTitle>
 
         <VCardActions class="justify-center">
-          <VBtn variant="elevated" :loading="pendingState.participateInSurvey" :disabled="pendingState.participateInSurvey" @click="participateInSurvey(survey.id)">
+          <VBtn variant="elevated" :loading="pendingState.participateInSurvey" :disabled="pendingState.participateInSurvey" @click="participateInSurvey(survey.porsline_id)">
             شرکت در نظرسنجی
           </VBtn>
         </VCardActions>
