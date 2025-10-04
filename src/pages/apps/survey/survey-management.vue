@@ -20,7 +20,7 @@ const uiState = reactive({
 
 const pendingState = reactive({
   createSurvey: false,
-  fetchingSurveys: false,
+  fetchSurveys: false,
   deleteSurveys: false,
 })
 
@@ -38,7 +38,7 @@ function onGridReady(params) {
   gridApi.value.setGridOption('rowData', rowData())
 }
 
-const getRowId = ref(params => params.data.id)
+const getRowId = ref(params => String(params.data.id))
 
 const columnDefs = ref([
   {
@@ -49,8 +49,17 @@ const columnDefs = ref([
         'jYYYY/jMM/jD HH:mm:ss',
       ),
   },
-  { headerName: 'عنوان نظرسنجی', field: 'title' },
+  { headerName: 'عنوان نظرسنجی', field: 'title', editable: true },
   { headerName: 'شناسه نظرسنجی', field: 'porslineId' },
+  {
+    headerName: 'وضعیت',
+    field: 'active',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -58,9 +67,49 @@ const columnDefs = ref([
       return {
         component: 'Actions',
         params: {
+          onEditClick: (selectedNode) => {
+            gridApi.value.setGridOption('rowData', rowData())
+
+            gridApi.value.setFocusedCell(selectedNode.rowIndex, 'title')
+
+            setTimeout(() => {
+              gridApi.value.startEditingCell({
+                rowIndex: selectedNode.rowIndex,
+                colKey: 'title',
+              })
+            }, 10)
+
+            selectedNode.setDataValue('actions', {
+              ...selectedNode.data.actions,
+              editable: {
+                ...selectedNode.data.actions.editable,
+                mode: 'edit',
+              },
+            })
+          },
+
+          onSaveClick: (selectedNode) => {
+            onSurveyUpdate({
+              id: selectedNode.data.id,
+              title: selectedNode.data.title,
+            })
+          },
+
+          onCancelClick: () => {
+            gridApi.value.setGridOption('rowData', rowData())
+          },
+
           onDeleteClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
             uiState.isSurveyDeleteDialogVisible = true
+          },
+
+          onActivityChange: (selectedNode, event) => {
+            onSurveyUpdate({
+              id: selectedNode.data.id,
+              active: event.target.checked,
+            },
+            )
           },
         },
       }
@@ -75,8 +124,15 @@ function rowData() {
       createdAt: moment(survey.created_at).format('jYYYY-jMM-jDD HH:mm:ss'),
       title: survey.title,
       porslineId: survey.porsline_id,
+      active: survey.active,
       actions: {
+        editable: {
+          status: true,
+          mode: 'view',
+          PrimaryValue: { title: survey.title },
+        },
         deletable: true,
+        activable: true,
       },
     }
   })
@@ -87,13 +143,11 @@ function rowData() {
 // ----- -----
 
 async function fetchSurveys() {
-  pendingState.fetchingSurveys = true
+  pendingState.fetchSurveys = true
   try {
-    const { data, error } = await useApi(
-      createUrl('/survey/survey'),
-    )
+    const { data, error } = await useApi(createUrl('/survey/survey'))
 
-    pendingState.fetchingSurveys = false
+    pendingState.fetchSurveys = false
 
     if (error.value) throw error.value
 
@@ -120,8 +174,7 @@ async function onCreateSurvey(payload) {
       },
       onResponseError({ response }) {
         uiState.hasError = true
-        uiState.errorMessage
-            = response._data.message || 'خطا در ایجاد نظرسنجی'
+        uiState.errorMessage = response._data.message || 'خطا در ایجاد نظرسنجی'
       },
     })
 
@@ -159,6 +212,26 @@ async function onDelete() {
     console.error(err)
   }
 }
+
+async function onSurveyUpdate(data) {
+  try {
+    await $api('/survey/survey/update', {
+      method: 'POST',
+      body: { ...data },
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage
+          = response._data.message || 'خطا در بروزرسانی نظرسنجی'
+      },
+    })
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    fetchSurveys()
+  }
+}
 </script>
 
 <template>
@@ -178,7 +251,8 @@ async function onDelete() {
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :get-row-id="getRowId"
-        :loading="pendingState.fetchingSurveys"
+        :suppress-click-edit="true"
+        :loading="pendingState.fetchSurveys"
         enable-rtl
         row-numbers
         pagination
