@@ -15,6 +15,7 @@ const uiState = reactive({
 
 const pendingState = reactive({
   fetchSurveys: false,
+  participateInSurvey: false,
 })
 
 const surveys = ref([])
@@ -24,7 +25,7 @@ const surveys = ref([])
 async function fetchSurveys() {
   pendingState.fetchSurveys = true
   try {
-    const { data, error } = await useApi(createUrl('/survey/survey'))
+    const { data, error } = await useApi(createUrl('/survey/survey?filter[active]=1'))
 
     pendingState.fetchSurveys = false
 
@@ -40,6 +41,28 @@ async function fetchSurveys() {
 }
 
 fetchSurveys()
+
+async function participateInSurvey(surveyId) {
+  pendingState.participateInSurvey = true
+  try {
+    await $api('/survey/survey/participate', {
+      method: 'POST',
+      body: {
+        id: surveyId,
+      },
+      onResponseError({ response }) {
+        pendingState.participateInSurvey = false
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در شرکت در نظرسنجی'
+      },
+    })
+
+    pendingState.participateInSurvey = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+}
 </script>
 
 <template>
@@ -70,7 +93,7 @@ fetchSurveys()
         </VCardTitle>
 
         <VCardActions class="justify-center">
-          <VBtn variant="elevated">
+          <VBtn variant="elevated" :loading="pendingState.participateInSurvey" :disabled="pendingState.participateInSurvey" @click="participateInSurvey(survey.id)">
             شرکت در نظرسنجی
           </VBtn>
         </VCardActions>
