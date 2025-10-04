@@ -170,7 +170,7 @@ async function onCreateSurvey(payload) {
       method: 'POST',
       body: {
         title: payload.title,
-        porslineId: payload.porslineId,
+        porsline_id: payload.porslineId,
       },
       onResponseError({ response }) {
         uiState.hasError = true
