@@ -24,7 +24,7 @@ const pendingState = reactive({
   deleteSurveys: false,
 })
 
-const Surveys = ref([])
+const surveys = ref([])
 
 const selectedNodes = ref([])
 const gridApi = ref(null)
@@ -118,7 +118,7 @@ const columnDefs = ref([
 ])
 
 function rowData() {
-  return Surveys.value?.map((survey) => {
+  return surveys.value?.map((survey) => {
     return {
       id: survey.id,
       createdAt: moment(survey.created_at).format('jYYYY-jMM-jDD HH:mm:ss'),
@@ -151,11 +151,11 @@ async function fetchSurveys() {
 
     if (error.value) throw error.value
 
-    Surveys.value = data.value.data
+    surveys.value = data.value.data
     gridApi.value.setGridOption('rowData', rowData())
   }
   catch (e) {
-    console.error('Error fetching Surveys:', e)
+    console.error('Error fetching surveys:', e)
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت نظرسنجی‌ها'
   }
