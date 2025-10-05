@@ -8,6 +8,14 @@ import EmployeeInfo from '@/views/apps/payroll/EmployeeInfo.vue'
 import OverTime from '@/views/apps/payroll/OverTime.vue'
 
 import Payments from '@/views/apps/payroll/Payments.vue'
+
+definePage({
+  meta: {
+    action: 'use',
+    subject: 'app',
+  },
+})
+
 // states
 const uiState = reactive({
   hasError: false,
