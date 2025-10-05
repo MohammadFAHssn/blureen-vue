@@ -45,7 +45,7 @@ fetchSurveys()
 async function participateInSurvey(porslineId) {
   pendingState.participateInSurvey = true
   try {
-    await $api('/survey/survey/participate', {
+    const res = await $api('/survey/survey/participate', {
       method: 'POST',
       body: {
         porslineId,
@@ -58,6 +58,8 @@ async function participateInSurvey(porslineId) {
     })
 
     pendingState.participateInSurvey = false
+
+    window.open(res.data, '_blank', 'noopener,noreferrer')
   }
   catch (err) {
     console.error(err)
