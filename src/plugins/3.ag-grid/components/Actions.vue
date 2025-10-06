@@ -41,7 +41,7 @@ function onCancelClick() {
 
 <template>
   <div class="d-flex gap-1">
-    <div v-if="params.value.editable.status">
+    <div v-if="params.value.editable?.status">
       <IconBtn
         v-if="params.value.editable.mode === 'view'"
         :disabled="isPending"
