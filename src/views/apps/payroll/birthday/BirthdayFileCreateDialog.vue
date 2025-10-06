@@ -87,8 +87,10 @@ function dialogModelValueUpdate(val) {
           <VRow>
             <!-- Time Period -->
             <VCol cols="12" md="6">
+              <VInput :rules="datePickerRules" :disabled="loading">
               <PersianDatetimePicker v-model="birthdayFileDate" :disabled="loading" type="year-month" simple
                 label="دوره هدیه" />
+              </VInput>
             </VCol>
 
             <!-- Excel File -->
