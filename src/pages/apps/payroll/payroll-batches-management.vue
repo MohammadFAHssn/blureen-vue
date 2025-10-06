@@ -15,6 +15,7 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isPayrollBatchDeleteDialogVisible: false,
+  isPayrollBatchCreateDialogVisible: false,
 })
 
 const pendingState = reactive({
