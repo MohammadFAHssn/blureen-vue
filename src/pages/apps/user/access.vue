@@ -103,7 +103,7 @@ async function fetchUserAccess() {
   catch (e) {
     console.error('Error fetching user access:', e)
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت دسترسی کاربران'
+    uiState.errorMessage = e.message || 'خطا در دریافت دسترسی کاربران'
   }
 }
 
@@ -123,7 +123,7 @@ async function fetchRoles() {
   catch (e) {
     console.error('Error fetching roles:', e)
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت لیست نقش‌ها'
+    uiState.errorMessage = e.message || 'خطا در دریافت لیست نقش‌ها'
   }
 }
 

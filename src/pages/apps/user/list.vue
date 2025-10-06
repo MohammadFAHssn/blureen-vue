@@ -124,7 +124,7 @@ async function fetchUsers() {
   catch (e) {
     console.error('Error fetching users:', e)
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت کاربران'
+    uiState.errorMessage = e.message || 'خطا در دریافت کاربران'
   }
 }
 
