@@ -27,6 +27,7 @@ const pendingState = reactive({
 
 const birthdayFiles = ref([])
 
+const selectedBirthdayFile = ref(null)
 const selectedNodes = ref([])
 const gridApi = ref(null)
 // ----- start ag-grid -----
@@ -46,9 +47,9 @@ const columnDefs = ref([
     headerName: 'وضعیت',
     field: 'status',
     cellRenderer: 'Active',
-    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    cellStyle: { display: 'flex', 'align-items': 'center' },
     filterParams: {
-      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+      valueFormatter: (params) => (params.value === 1 ? 'فعال' : 'غیرفعال'),
     },
   },
   { headerName: 'بارگذاری توسط', field: 'uploadedBy' },
@@ -82,6 +83,9 @@ const columnDefs = ref([
           },
           onDetailsClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
+            selectedBirthdayFile.value = birthdayFiles.value.find(
+              (file) => file.id === selectedNode.data.id,
+            )
             uiState.isBirthdayFileDetailsDialogVisible = true
           },
         },
@@ -150,9 +154,7 @@ async function onCreateBirthdayFile(payload) {
       onResponseError({ response }) {
         uiState.hasError = true
         if (response._data?.errors) {
-          const errors = Object.values(response._data.errors)
-            .flat()
-            .join(' | ')
+          const errors = Object.values(response._data.errors).flat().join(' | ')
           uiState.errorMessage = errors
         } else {
           uiState.errorMessage =
@@ -209,9 +211,13 @@ async function onDelete() {
       v-model:is-dialog-visible="uiState.isBirthdayFileCreateDialogVisible" :loading="pendingState.createBirthdayFile"
       @submit="onCreateBirthdayFile" />
 
-    <BirthdayFileDetailsDialog v-if="uiState.isBirthdayFileDetailsDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileDetailsDialogVisible" :loading="pendingState.detailsBirthdayFile"
-      @submit="onCreateBirthdayFile" />
+    <BirthdayFileDetailsDialog
+      v-if="uiState.isBirthdayFileDetailsDialogVisible"
+      v-model:is-dialog-visible="uiState.isBirthdayFileDetailsDialogVisible"
+      :loading="pendingState.detailsBirthdayFile"
+      :file="selectedBirthdayFile"
+      @update:selectedBirthdayFile-users="selectedBirthdayFile.users = $event"
+    />
 
     <AreYouSureDialog v-if="uiState.isBirthdayFileDeleteDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayFileDeleteDialogVisible"
