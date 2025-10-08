@@ -5,7 +5,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
-    subject: 'Approval-Levels',
+    subject: 'Approval-Flows',
   },
 })
 
@@ -17,6 +17,7 @@ const uiState = reactive({
 
 const pendingState = reactive({
   updateApprovalFlow: false,
+  changeRequestType: false,
 })
 
 const users = ref([])
@@ -27,6 +28,8 @@ const mode = ref('view') // 'view' | 'edit'
 const gridApi = shallowRef(null)
 const selectedNodes = ref([])
 
+const requestTypes = ref([])
+const selectedRequestType_or_Types__index = shallowRef(0)
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
@@ -165,7 +168,12 @@ async function fetchUsers() {
     const { data, error } = await useApi(
       createUrl('/base/user/approval-flows-as-requester', {
         query: {
-          requestTypeId: 1,
+          requestTypeId:
+            requestTypes.value[
+              Array.isArray(selectedRequestType_or_Types__index.value)
+                ? selectedRequestType_or_Types__index.value[0]
+                : selectedRequestType_or_Types__index.value
+            ].id,
         },
       }),
     )
@@ -187,7 +195,12 @@ async function fetchApprovalFlows() {
     const { data, error } = await useApi(
       createUrl('/base/approval-flow', {
         query: {
-          'filter[request_type_id]': 1,
+          'filter[request_type_id]':
+            requestTypes.value[
+              Array.isArray(selectedRequestType_or_Types__index.value)
+                ? selectedRequestType_or_Types__index.value[0]
+                : selectedRequestType_or_Types__index.value
+            ].id,
         },
       }),
     )
@@ -203,41 +216,63 @@ async function fetchApprovalFlows() {
   }
 }
 
+async function fetchRequestTypes() {
+  try {
+    const { data, error } = await useApi(createUrl('/base/request-type'))
+
+    if (error.value) throw error.value
+
+    requestTypes.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching request types:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت نوع درخواست‌ها'
+  }
+}
+
 async function onSave() {
   const approvalDeleted = approvalFlow.value.length === 0
 
-  const payload = (approvalDeleted ? [null] : approvalFlow.value).map(
-    (approver, index) => {
-      return {
-        requester_user_id: !requester.value.group
-          ? requester.value.data.id
-          : null,
-        requester_position_id: requester.value.group
-          ? requester.value.groupValue.rayvarz_id
-          : null,
-        requester_center_id: requester.value.group
-          ? requester.value.parent.groupValue.rayvarz_id
-          : null,
-        approver_user_id: approvalDeleted
-          ? null
-          : (!approver.group
-              ? approver.data.id
-              : null),
-        approver_position_id: approvalDeleted
-          ? null
-          : (approver.group
+  if (!Array.isArray(selectedRequestType_or_Types__index.value)) {
+    selectedRequestType_or_Types__index.value = [selectedRequestType_or_Types__index.value]
+  }
+
+  const payload = []
+  for (const selectedRequestTypeIndex of selectedRequestType_or_Types__index.value) {
+    (approvalDeleted ? [null] : approvalFlow.value).forEach(
+      (approver, approverIndex) => {
+        payload.push({
+          requester_user_id: !requester.value.group
+            ? requester.value.data.id
+            : null,
+          requester_position_id: requester.value.group
+            ? requester.value.groupValue.rayvarz_id
+            : null,
+          requester_center_id: requester.value.group
+            ? requester.value.parent.groupValue.rayvarz_id
+            : null,
+          approver_user_id: approvalDeleted
+            ? null
+            : !approver.group
+                ? approver.data.id
+                : null,
+          approver_position_id: approvalDeleted
+            ? null
+            : approver.group
               ? approver.groupValue.rayvarz_id
-              : null),
-        approver_center_id: approvalDeleted
-          ? null
-          : (approver.group
+              : null,
+          approver_center_id: approvalDeleted
+            ? null
+            : approver.group
               ? approver.parent.groupValue.rayvarz_id
-              : null),
-        priority: index + 1,
-        request_type_id: 1,
-      }
-    },
-  )
+              : null,
+          priority: approverIndex + 1,
+          request_type_id: requestTypes.value[selectedRequestTypeIndex].id,
+        })
+      },
+    )
+  }
 
   pendingState.updateApprovalFlow = true
   try {
@@ -258,11 +293,23 @@ async function onSave() {
     fetchUsers()
     await fetchApprovalFlows()
 
+    selectedRequestType_or_Types__index.value = selectedRequestType_or_Types__index.value[0]
     pendingState.updateApprovalFlow = false
     mode.value = 'view'
   }
 }
 
+async function onSelectedRequestTypeChange() {
+  if (mode.value === 'view') {
+    pendingState.changeRequestType = true
+    fetchUsers()
+    await fetchApprovalFlows()
+    onSelectionChanged()
+    pendingState.changeRequestType = false
+  }
+}
+
+await fetchRequestTypes()
 fetchUsers()
 await fetchApprovalFlows()
 
@@ -310,6 +357,38 @@ watch(mode, (newMode) => {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <VCard class="mb-3">
+      <v-card-text class="pa-3">
+        <v-chip-group
+          v-model="selectedRequestType_or_Types__index"
+          column
+          :multiple="mode === 'edit'"
+          mandatory
+          @update:model-value="onSelectedRequestTypeChange"
+        >
+          <v-chip
+            v-for="(type, index) in requestTypes"
+            :key="type.id"
+            variant="outlined"
+            filter
+            :disabled="pendingState.changeRequestType"
+          >
+            {{ type.name }}
+            <v-progress-circular
+              v-if="
+                pendingState.changeRequestType
+                  && index === selectedRequestType_or_Types__index
+              "
+              class="mr-2"
+              :size="20"
+              :width="2"
+              indeterminate
+            />
+          </v-chip>
+        </v-chip-group>
+      </v-card-text>
+    </VCard>
+
     <div>
       <ApprovalFlow
         v-if="selectedNodes.length > 0 || mode === 'edit'"
@@ -353,6 +432,6 @@ watch(mode, (newMode) => {
   display: grid;
   box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
 }
 </style>
