@@ -12,8 +12,12 @@ const birthdayGiftName = ref(props.file.selectedBirthdayGift.name)
 const birthdayGiftCode = ref(props.file.selectedBirthdayGift.code)
 const birthdayGiftAmount = ref(props.file.selectedBirthdayGift.amount)
 const refVForm = ref()
+const allStatus = ref([
+  { label: 'فعال', value: 1 },
+  { label: 'غیرفعال', value: 0 },
+])
 const birthdayGiftImage = ref(props.file.selectedBirthdayGift.iamge)
-const birthdayGiftStatus = ref(props.file.selectedBirthdayGift.name)
+const birthdayGiftStatus = ref(props.file.selectedBirthdayGift.status)
 
 const imageInputRules = [
   (file) => {
@@ -29,20 +33,6 @@ const imageInputRules = [
     return true
   },
 ]
-
-// watch(
-//   () => props.file,
-//   (newFile) => {
-//     if (newFile) {
-//       birthdayGiftName.value = newFile.name || ''
-//       birthdayGiftCode.value = newFile.code || ''
-//       birthdayGiftAmount.value = newFile.amount || ''
-//       birthdayGiftStatus.value = newFile.status || 'active'
-//       birthdayGiftImage.value = null // reset image input (user may upload new one)
-//     }
-//   },
-//   { immediate: true },
-// )
 
 // methods
 function onFormSubmit() {
@@ -63,10 +53,6 @@ function onFormReset() {
   emit('update:isDialogVisible', false)
 }
 
-function testMethod() {
-  console.log(props.file)
-}
-
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
@@ -83,7 +69,7 @@ function dialogModelValueUpdate(val) {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          افزودن هدیه جدید
+          ویرایش هدیه
         </h4>
 
         <!-- 👉 Form -->
@@ -124,44 +110,32 @@ function dialogModelValueUpdate(val) {
               />
             </VCol>
 
-            <!-- Gift Image -->
+            <!-- Gift Status -->
             <VCol cols="12" md="6">
+              <VSelect
+                v-model="birthdayGiftStatus"
+                :items="allStatus"
+                item-title="label"
+                item-value="value"
+                label="وضعیت"
+                variant="outlined"
+                clearable
+              />
+            </VCol>
+
+            <!-- Gift Image -->
+            <VCol cols="12" class="mb-3">
               <VFileInput
                 v-model="birthdayGiftImage"
                 :disabled="loading"
                 label="تصویر"
                 accept=".jpeg, .png, .jpg"
-                :rules="[requiredValidator, ...imageInputRules]"
+                :rules="imageInputRules"
               />
-            </VCol>
-
-            <!-- Gift Status -->
-            <VCol cols="12" md="6">
-              <label class="text-subtitle-2 mb-2 d-block">وضعیت</label>
-              <VBtnToggle
-                v-model="birthdayGiftStatus"
-                :disabled="loading"
-                divided
-                mandatory
-              >
-                <VBtn value="1">
-                  فعال
-                </VBtn>
-                <VBtn value="0">
-                  غیرفعال
-                </VBtn>
-              </VBtnToggle>
             </VCol>
 
             <!-- Submit and Cancel -->
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn
-                :disabled="loading"
-                :loading="loading"
-                @click="testMethod()"
-              >
-                تست
-              </VBtn>
               <VBtn
                 type="submit"
                 :disabled="loading"
