@@ -1,7 +1,8 @@
 <script setup>
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import BirthdayGiftCreateDialog from '@/views/apps/payroll/birthday/BirthdayGiftCreateDialog.vue'
-import BirthdayGiftImageDialog from '@/views/apps/payroll/birthday/BirthdayGiftImageDialog.vue'
+import BirthdayGiftDetailsDialog from '@/views/apps/payroll/birthday/BirthdayGiftDetailsDialog.vue'
+import BirthdayGiftEditDialog from '@/views/apps/payroll/birthday/BirthdayGiftEditDialog.vue'
 
 definePage({
   meta: {
@@ -14,12 +15,14 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isBirthdayGiftCreateDialogVisible: false,
+  isBirthdayGiftEditDialogVisible: false,
   isBirthdayGiftDeleteDialogVisible: false,
   isBirthdayGiftImageDialogVisible: false,
 })
 
 const pendingState = reactive({
   createBirthdayGift: false,
+  editBirthdayGift: false,
   fetchingsBirthdayGifts: false,
   deleteBirthdayGift: false,
   detailsBirthdayGift: false,
@@ -45,26 +48,12 @@ const columnDefs = ref([
   { headerName: 'نام', field: 'name' },
   { headerName: 'کد', field: 'code' },
   {
-    headerName: 'تصویر',
-    field: 'image',
-    cellRenderer: ({ value }) => {
-      if (!value) return ''
-      return `<img src="${value}" style="width:50px; height:auto; cursor:pointer;" />`
-    },
-    cellRendererParams: {
-      onClick: (params) => {
-        selectedImage.value = params.value
-        showImageDialog.value = true
-      },
-    },
-  },
-  {
     headerName: 'وضعیت',
     field: 'status',
     cellRenderer: 'Active',
-    cellStyle: { display: 'flex', 'align-items': 'center' },
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
     filterParams: {
-      valueFormatter: (params) => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
     },
   },
   { headerName: 'موجودی', field: 'amount' },
@@ -73,7 +62,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ ایجاد',
     field: 'createdAt',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
         'jYYYY/jMM/jD HH:mm:ss',
       ),
@@ -81,7 +70,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ آخرین ویرایش',
     field: 'updatedAt',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
         'jYYYY/jMM/jD HH:mm:ss',
       ),
@@ -89,7 +78,7 @@ const columnDefs = ref([
   {
     headerName: 'عملیات',
     field: 'actions',
-    cellRendererSelector: (params) => {
+    cellRendererSelector: (_params) => {
       return {
         component: 'Actions',
         params: {
@@ -100,9 +89,16 @@ const columnDefs = ref([
           onDetailsClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
             selectedBirthdayGift.value = birthdayGifts.value.find(
-              (gift) => gift.id === selectedNode.data.id,
+              gift => gift.id === selectedNode.data.id,
             )
             uiState.isBirthdayGiftImageDialogVisible = true
+          },
+          onEditClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            selectedBirthdayGift.value = birthdayGifts.value.find(
+              gift => gift.id === selectedNode.data.id,
+            )
+            uiState.isBirthdayGiftEditDialogVisible = true
           },
         },
       }
@@ -116,7 +112,6 @@ const rowData = computed(() =>
       id: gift.id,
       name: gift.name,
       code: gift.code,
-      image: gift.image,
       status: gift.status,
       amount: gift.amount,
       createdBy: gift.createdBy?.fullName || '--',
@@ -126,6 +121,7 @@ const rowData = computed(() =>
       actions: {
         deletable: true,
         detailsable: true,
+        editable: true,
       },
     }
   }),
@@ -142,11 +138,13 @@ async function fetchBirthdayGifts() {
     const res = await $api('/birthday/gift/', { method: 'GET' })
 
     birthdayGifts.value = res?.data?.birthdayGifts || []
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error fetching birthdayGifts:', e)
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت هدایا'
-  } finally {
+  }
+  finally {
     pendingState.fetchingsBirthdayGifts = false
     gridApi.value?.setGridOption('loading', false)
   }
@@ -173,17 +171,61 @@ async function onCreateBirthdayGift(payload) {
         if (response._data?.errors) {
           const errors = Object.values(response._data.errors).flat().join(' | ')
           uiState.errorMessage = errors
-        } else {
+        }
+        else {
           uiState.errorMessage = response._data?.message || 'خطا در ایجاد هدیه'
         }
       },
     })
 
     uiState.isBirthdayGiftCreateDialogVisible = false
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
-  } finally {
+  }
+  finally {
     pendingState.createBirthdayGift = false
+    fetchBirthdayGifts()
+  }
+}
+
+async function onEditBirthdayGift(payload) {
+  const formData = new FormData()
+
+  formData.append('name', payload.birthdayGiftName)
+  formData.append('code', payload.birthdayGiftCode)
+  formData.append('amount', payload.birthdayGiftAmount)
+  if (payload.birthdayGiftImage) {
+    formData.append('image', payload.birthdayGiftImage)
+  }
+  formData.append('status', payload.birthdayGiftStatus)
+
+  const id = selectedNodes.value[0].data.id
+  pendingState.editBirthdayGift = true
+
+  try {
+    await $api(`/birthday/gift/${id}`, {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage = response._data?.message || 'خطا در ویرایش هدیه'
+        }
+      },
+    })
+
+    uiState.isBirthdayGiftEditDialogVisible = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.editBirthdayGift = false
     fetchBirthdayGifts()
   }
 }
@@ -204,9 +246,10 @@ async function onDelete() {
     pendingState.deleteBirthdayGift = false
     uiState.isBirthdayGiftDeleteDialogVisible = false
     birthdayGifts.value = birthdayGifts.value.filter(
-      (gift) => gift.id !== selectedNodes.value[0].data.id,
+      gift => gift.id !== selectedNodes.value[0].data.id,
     )
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }
@@ -244,7 +287,15 @@ async function onDelete() {
       @submit="onCreateBirthdayGift"
     />
 
-    <BirthdayGiftImageDialog
+    <BirthdayGiftEditDialog
+      v-if="uiState.isBirthdayGiftEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isBirthdayGiftEditDialogVisible"
+      :loading="pendingState.editBirthdayGift"
+      :file="{ selectedBirthdayGift }"
+      @submit="onEditBirthdayGift"
+    />
+
+    <BirthdayGiftDetailsDialog
       v-model:is-dialog-visible="showImageDialog"
       :file="{ image: selectedImage }"
     />
