@@ -33,30 +33,31 @@ async function addNewUser() {
       }),
     })
 
-    const createdItems =
-      res?.created?.filter((item) => !item.skipped)?.map((item) => item.data) ||
-      []
+    const createdItems
+      = res?.created?.filter(item => !item.skipped)?.map(item => item.data)
+        || []
 
     localUsers.value = [
       ...localUsers.value,
-      ...createdItems.map((data) => ({
+      ...createdItems.map(data => ({
         id: data.id,
         status: data.status ? 1 : 0,
         gift: data.gift,
-        user: users.value.find((u) => u.id === data.userId),
+        user: users.value.find(u => u.id === data.userId),
       })),
     ]
 
     emit('update:selectedBirthdayFile-users', localUsers.value)
 
     selectedNewUsers.value = []
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error adding users:', err)
   }
 }
 
 async function downloadStatisticsFile() {
-  const file = props.file;
+  const file = props.file
   try {
     const res = await $api('/birthday/file/statistics', {
       method: 'GET',
@@ -75,7 +76,8 @@ async function downloadStatisticsFile() {
     link.click()
     document.body.removeChild(link)
     window.URL.revokeObjectURL(url)
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error fetching statistics file:', e)
   }
 }
@@ -89,13 +91,14 @@ async function deleteUser() {
     })
 
     localUsers.value = localUsers.value.filter(
-      (user) => !selectedUsers.value.includes(user.id),
+      user => !selectedUsers.value.includes(user.id),
     )
 
     emit('update:selectedBirthdayFile-users', localUsers.value)
 
     selectedUsers.value = []
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error deleting user:', err)
   }
 }
@@ -116,7 +119,8 @@ async function toggleUserStatus(u) {
       u.status = res.data[0].status
       console.log(`User ${u.user.fullName} status updated to: ${u.status}`)
     }
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Error toggling user status:', err)
   }
 }
@@ -131,12 +135,13 @@ async function fetchUsers() {
     }
 
     if (data.value.data) {
-      users.value = data.value.data.map((u) => ({
+      users.value = data.value.data.map(u => ({
         ...u,
         fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
       }))
     }
-  } catch (e) {
+  }
+  catch (e) {
     isLoading.value = false
     console.error('Unexpected error fetching users:', e)
     uiState.hasError = true
@@ -229,7 +234,7 @@ await fetchUsers()
           <VTable density="comfortable">
             <thead>
               <tr>
-                <th></th>
+                <th />
                 <th>ردیف</th>
                 <th>نام</th>
                 <th>کد پرسنلی</th>
@@ -261,13 +266,13 @@ await fetchUsers()
                 </td>
                 <td>
                   {{
-                    u.gift ? u.gift.name + ' - ' + u.gift.code : 'انتخاب نکرده'
+                    u.gift ? `${u.gift.name} - ${u.gift.code}` : 'انتخاب نکرده'
                   }}
                 </td>
                 <td class="text-center">
                   <VIcon
                     icon="tabler-power"
-                    :color="u.status == true ? 'red' : 'green'"
+                    :color="u.status ? 'red' : 'green'"
                     size="24"
                     style="cursor: pointer"
                     @click="toggleUserStatus(u)"
