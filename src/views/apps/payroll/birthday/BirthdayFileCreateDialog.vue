@@ -20,11 +20,9 @@ const birthdayFileDate = ref(null)
 const refVForm = ref()
 const birthdayFile = ref(null)
 
-//
-
 const fileInputRules = [
   (fileList) => {
-    // if no file is selected yet
+    
     if (!fileList.length) {
       return true
     }
@@ -47,7 +45,6 @@ const datePickerRules = [
 ]
 
 // methods
-
 function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
@@ -60,7 +57,6 @@ function onFormSubmit() {
 }
 
 function onFormReset() {
-  // userData.value = structuredClone(toRaw(props.userData))
   emit('update:isDialogVisible', false)
 }
 
@@ -72,12 +68,12 @@ function dialogModelValueUpdate(val) {
 <template>
   <VDialog :width="$vuetify.display.smAndDown ? 'auto' : 900" :model-value="props.isDialogVisible"
     @update:model-value="dialogModelValueUpdate">
-    <!-- Dialog close btn -->
+    
     <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardText>
-        <!-- 👉 Title -->
+        
         <h4 class="text-h5 text-center mb-2">
           افزودن فایل هدیه جدید
         </h4>
