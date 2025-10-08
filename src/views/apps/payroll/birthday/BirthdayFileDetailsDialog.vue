@@ -33,12 +33,10 @@ async function addNewUser() {
       }),
     })
 
-    // Extract successfully created users from response
     const createdItems =
       res?.created?.filter((item) => !item.skipped)?.map((item) => item.data) ||
       []
 
-    // Merge new users into local list
     localUsers.value = [
       ...localUsers.value,
       ...createdItems.map((data) => ({
@@ -49,10 +47,8 @@ async function addNewUser() {
       })),
     ]
 
-    // Emit updated list to parent
     emit('update:selectedBirthdayFile-users', localUsers.value)
 
-    // Clear selection
     selectedNewUsers.value = []
   } catch (err) {
     console.error('Error adding users:', err)
@@ -61,34 +57,27 @@ async function addNewUser() {
 
 async function downloadStatisticsFile() {
   const file = props.file;
-  console.log(file);
-  // try {
-  //   const res = await $api('/birthday/file/statistics', {
-  //     method: 'GET',
-  //     params: { id: file.value.id }, // ✅ correct query param syntax
-  //     responseType: 'blob', // ✅ tell $api to expect a binary file
-  //   })
+  try {
+    const res = await $api('/birthday/file/statistics', {
+      method: 'GET',
+      params: { id: file.id },
+      responseType: 'blob',
+    })
 
-  //   // ✅ Handle blob correctly
-  //   const url = window.URL.createObjectURL(new Blob([res]))
-  //   const link = document.createElement('a')
-  //   link.href = url
-  //   link.setAttribute(
-  //     'download',
-  //     `آمار-کاربران-${file.value.year}.${file.value.month}.xlsx`,
-  //   )
-  //   document.body.appendChild(link)
-  //   link.click()
-  //   document.body.removeChild(link)
-  //   window.URL.revokeObjectURL(url)
-  // } catch (e) {
-  //   console.error('Error fetching statistics file:', e)
-  //   uiState.hasError = true
-  //   uiState.errorMessage = e.message || 'خطا در دریافت فایل آمار'
-  // } finally {
-  //   pendingState.fetchingBirthdayFiles = false
-  //   gridApi.value?.setGridOption('loading', false)
-  // }
+    const url = window.URL.createObjectURL(new Blob([res]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute(
+      'download',
+      `آمار-کاربران-${file.year}.${file.month}.xlsx`,
+    )
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  } catch (e) {
+    console.error('Error fetching statistics file:', e)
+  }
 }
 
 async function deleteUser() {
@@ -99,15 +88,12 @@ async function deleteUser() {
       body: JSON.stringify({ codes: selectedUsers.value }),
     })
 
-    // Remove deleted users from localUsers
     localUsers.value = localUsers.value.filter(
       (user) => !selectedUsers.value.includes(user.id),
     )
 
-    // Emit updated list to parent
     emit('update:selectedBirthdayFile-users', localUsers.value)
 
-    // Clear selection
     selectedUsers.value = []
   } catch (err) {
     console.error('Error deleting user:', err)
@@ -126,7 +112,6 @@ async function toggleUserStatus(u) {
       },
     })
 
-    // update local status after successful API call
     if (res?.data?.length) {
       u.status = res.data[0].status
       console.log(`User ${u.user.fullName} status updated to: ${u.status}`)
