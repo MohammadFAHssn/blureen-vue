@@ -100,7 +100,7 @@ const columnDefs = ref([
           onDetailsClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
             selectedBirthdayGift.value = birthdayGifts.value.find(
-              (file) => file.id === selectedNode.data.id,
+              (gift) => gift.id === selectedNode.data.id,
             )
             uiState.isBirthdayGiftImageDialogVisible = true
           },
@@ -160,12 +160,7 @@ async function onCreateBirthdayGift(payload) {
   formData.append('name', payload.birthdayGiftName)
   formData.append('code', payload.birthdayGiftCode)
   formData.append('amount', payload.birthdayGiftAmount)
-
-  // handle both single & multiple files
-  const file = Array.isArray(payload.birthdayGiftImage)
-    ? payload.birthdayGiftImage[0]
-    : payload.birthdayGiftImage
-  if (file) formData.append('image', file)
+  formData.append('image', payload.birthdayGiftImage)
 
   pendingState.createBirthdayGift = true
 
@@ -209,7 +204,7 @@ async function onDelete() {
     pendingState.deleteBirthdayGift = false
     uiState.isBirthdayGiftDeleteDialogVisible = false
     birthdayGifts.value = birthdayGifts.value.filter(
-      (file) => file.id !== selectedNodes.value[0].data.id,
+      (gift) => gift.id !== selectedNodes.value[0].data.id,
     )
   } catch (err) {
     console.error(err)
