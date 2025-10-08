@@ -40,8 +40,6 @@ function onGridReady(params) {
   gridApi.value.setGridOption('rowData', rowData())
 }
 
-const getRowId = ref(params => params.data.id)
-
 const columnDefs = ref([
   { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
   { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
@@ -406,7 +404,7 @@ watch(mode, (newMode) => {
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
-        :get-row-id="getRowId"
+        :get-row-id="params => params.data.id"
         enable-rtl
         row-numbers
         pagination
