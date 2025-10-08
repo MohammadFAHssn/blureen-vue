@@ -22,7 +22,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <VCard class="mb-9">
+  <VCard class="mb-3">
     <VCardTitle>
       رده تأییدیه‌های
       <v-chip variant="outlined" color="info">
