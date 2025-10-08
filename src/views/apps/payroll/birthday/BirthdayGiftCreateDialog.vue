@@ -35,8 +35,6 @@ const imageInputRules = [
   },
 ]
 
-const requiredValidator = (v) => !!v || 'این فیلد الزامی است'
-
 // methods
 function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
