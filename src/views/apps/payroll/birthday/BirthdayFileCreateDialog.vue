@@ -22,7 +22,6 @@ const birthdayFile = ref(null)
 
 const fileInputRules = [
   (fileList) => {
-    
     if (!fileList.length) {
       return true
     }
@@ -66,14 +65,15 @@ function dialogModelValueUpdate(val) {
 </script>
 
 <template>
-  <VDialog :width="$vuetify.display.smAndDown ? 'auto' : 900" :model-value="props.isDialogVisible"
-    @update:model-value="dialogModelValueUpdate">
-    
+  <VDialog
+    :width="$vuetify.display.smAndDown ? 'auto' : 900"
+    :model-value="props.isDialogVisible"
+    @update:model-value="dialogModelValueUpdate"
+  >
     <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardText>
-        
         <h4 class="text-h5 text-center mb-2">
           افزودن فایل هدیه جدید
         </h4>
@@ -84,15 +84,25 @@ function dialogModelValueUpdate(val) {
             <!-- Time Period -->
             <VCol cols="12" md="6">
               <VInput :rules="datePickerRules" :disabled="loading">
-              <PersianDatetimePicker v-model="birthdayFileDate" :disabled="loading" type="year-month" simple
-                label="دوره هدیه" />
+                <PersianDatetimePicker
+                  v-model="birthdayFileDate"
+                  :disabled="loading"
+                  type="year-month"
+                  simple
+                  label="دوره هدیه"
+                />
               </VInput>
             </VCol>
 
             <!-- Excel File -->
             <VCol cols="12" md="6">
-              <VFileInput v-model="birthdayFile" :disabled="loading" label="فایل اکسل" accept=".xlsx, .xls"
-                :rules="[requiredValidator, ...fileInputRules]" />
+              <VFileInput
+                v-model="birthdayFile"
+                :disabled="loading"
+                label="فایل اکسل"
+                accept=".xlsx, .xls"
+                :rules="[requiredValidator, ...fileInputRules]"
+              />
             </VCol>
 
             <!-- Submit and Cancel -->
@@ -107,7 +117,6 @@ function dialogModelValueUpdate(val) {
             </VCol>
           </VRow>
         </VForm>
-
       </VCardText>
     </VCard>
   </VDialog>
