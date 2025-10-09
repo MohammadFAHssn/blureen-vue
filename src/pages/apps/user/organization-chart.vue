@@ -355,7 +355,7 @@ watch(mode, (newMode) => {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <VCard class="mb-3">
+    <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : 'white'">
       <v-card-text class="pa-3">
         <v-chip-group
           v-model="selectedRequestType_or_Types__index"

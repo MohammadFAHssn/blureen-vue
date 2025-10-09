@@ -22,7 +22,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <VCard class="mb-3">
+  <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : 'white'">
     <VCardTitle>
       رده تأییدیه‌های
       <v-chip variant="outlined" color="info">
