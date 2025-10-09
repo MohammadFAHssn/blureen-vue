@@ -20,6 +20,7 @@ const pendingState = reactive({
 })
 
 const birthdayGifts = ref([])
+const theGift = ref([])
 
 const selectedNodes = ref([])
 const gridApi = ref(null)
@@ -36,7 +37,15 @@ const columnDefs = ref([
   { headerName: 'نام', field: 'name' },
   { headerName: 'کد', field: 'code' },
   { headerName: 'تصویر', field: 'image' },
-  { headerName: 'موجودی', field: 'amount' },
+  {
+    headerName: 'موجودی',
+    field: 'amount',
+    cellRenderer: 'Amount',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value > 0 ? 'موجود' : 'ناموجود'),
+    },
+  },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -55,13 +64,13 @@ const columnDefs = ref([
 ])
 
 const rowData = computed(() =>
-  birthdayGifts.value?.map((file) => {
+  birthdayGifts.value?.map((gift) => {
     return {
-      id: file.id,
-      name: file.name,
-      code: file.code,
-      image: file.image,
-      amount: file.amount,
+      id: gift.id,
+      name: gift.name,
+      code: gift.code,
+      image: gift.image,
+      amount: gift.amount,
       actions: {
         chooseable: true,
       },
@@ -116,8 +125,26 @@ async function onChoose() {
   finally {
     pendingState.chooseBirthdayGift = false
     uiState.isBirthdayGiftChooseDialogVisible = false
+    fetchbirthdayGifts()
+    canSee()
   }
 }
+async function canSee() {
+  gridApi.value?.setGridOption('loading', true)
+  try {
+    const res = await $api('/birthday/user/check', { method: 'GET' })
+    theGift.value = res?.data ?? []
+  }
+  catch (e) {
+    console.error('Error checking access:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در بررسی دسترسی'
+  }
+  finally {
+    gridApi.value?.setGridOption('loading', false)
+  }
+}
+canSee()
 </script>
 
 <template>
