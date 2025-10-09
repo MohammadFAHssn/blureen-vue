@@ -22,7 +22,7 @@ const pendingState = reactive({
 
 const users = ref([])
 const approvalFlows = ref([])
-const requester = ref(null)
+const requesters = ref([])
 const approvalFlow = ref([])
 const mode = ref('view') // 'view' | 'edit'
 const gridApi = shallowRef(null)
@@ -72,7 +72,7 @@ const columnDefs = ref([
 ])
 
 const rowSelection = ref({
-  mode: 'singleRow',
+  mode: 'multiRow',
   enableClickSelection: true,
   selectAll: 'filtered',
 
@@ -127,12 +127,12 @@ function onSelectionChanged() {
   }
 
   if (mode.value === 'view') {
-    if (selectedNodes.value.length === 0) {
+    requesters.value = selectedNodes.value
+
+    if (selectedNodes.value.length !== 1) {
       approvalFlow.value = []
       return
     }
-
-    requester.value = selectedNodes.value[0]
 
     if (selectedNodes.value[0].field === 'jobPosition') {
       const position_id = selectedNodes.value[0].groupValue.rayvarz_id
@@ -193,12 +193,13 @@ async function fetchApprovalFlows() {
     const { data, error } = await useApi(
       createUrl('/base/approval-flow', {
         query: {
-          'filter[request_type_id]':
-            `\${${requestTypes.value[
+          'filter[request_type_id]': `\${${
+            requestTypes.value[
               Array.isArray(selectedRequestType_or_Types__index.value)
                 ? selectedRequestType_or_Types__index.value[0]
                 : selectedRequestType_or_Types__index.value
-            ].id}}`,
+            ].id
+          }}`,
         },
       }),
     )
@@ -233,43 +234,47 @@ async function onSave() {
   const approvalDeleted = approvalFlow.value.length === 0
 
   if (!Array.isArray(selectedRequestType_or_Types__index.value)) {
-    selectedRequestType_or_Types__index.value = [selectedRequestType_or_Types__index.value]
+    selectedRequestType_or_Types__index.value = [
+      selectedRequestType_or_Types__index.value,
+    ]
   }
 
   const payload = []
   for (const selectedRequestTypeIndex of selectedRequestType_or_Types__index.value) {
-    (approvalDeleted ? [null] : approvalFlow.value).forEach(
-      (approver, approverIndex) => {
-        payload.push({
-          requester_user_id: !requester.value.group
-            ? requester.value.data.id
-            : null,
-          requester_position_id: requester.value.group
-            ? requester.value.groupValue.rayvarz_id
-            : null,
-          requester_center_id: requester.value.group
-            ? requester.value.parent.groupValue.rayvarz_id
-            : null,
-          approver_user_id: approvalDeleted
-            ? null
-            : !approver.group
-                ? approver.data.id
+    for (const requester of requesters.value) {
+      (approvalDeleted ? [null] : approvalFlow.value).forEach(
+        (approver, approverIndex) => {
+          payload.push({
+            requester_user_id: !requester.group
+              ? requester.data.id
+              : null,
+            requester_position_id: requester.group
+              ? requester.groupValue.rayvarz_id
+              : null,
+            requester_center_id: requester.group
+              ? requester.parent.groupValue.rayvarz_id
+              : null,
+            approver_user_id: approvalDeleted
+              ? null
+              : !approver.group
+                  ? approver.data.id
+                  : null,
+            approver_position_id: approvalDeleted
+              ? null
+              : approver.group
+                ? approver.groupValue.rayvarz_id
                 : null,
-          approver_position_id: approvalDeleted
-            ? null
-            : approver.group
-              ? approver.groupValue.rayvarz_id
-              : null,
-          approver_center_id: approvalDeleted
-            ? null
-            : approver.group
-              ? approver.parent.groupValue.rayvarz_id
-              : null,
-          priority: approverIndex + 1,
-          request_type_id: requestTypes.value[selectedRequestTypeIndex].id,
-        })
-      },
-    )
+            approver_center_id: approvalDeleted
+              ? null
+              : approver.group
+                ? approver.parent.groupValue.rayvarz_id
+                : null,
+            priority: approverIndex + 1,
+            request_type_id: requestTypes.value[selectedRequestTypeIndex].id,
+          })
+        },
+      )
+    }
   }
 
   pendingState.updateApprovalFlow = true
@@ -291,7 +296,8 @@ async function onSave() {
     fetchUsers()
     await fetchApprovalFlows()
 
-    selectedRequestType_or_Types__index.value = selectedRequestType_or_Types__index.value[0]
+    selectedRequestType_or_Types__index.value
+      = selectedRequestType_or_Types__index.value[0]
     pendingState.updateApprovalFlow = false
     mode.value = 'view'
   }
@@ -315,23 +321,13 @@ await fetchApprovalFlows()
 
 watch(mode, (newMode) => {
   if (newMode === 'view') {
-    gridApi.value.setGridOption('rowSelection', {
-      ...rowSelection.value,
-      mode: 'singleRow',
-    })
-
     gridApi.value.deselectAll()
     gridApi.value.setNodesSelected({
-      nodes: [gridApi.value.getRowNode(requester.value.id)],
+      nodes: requesters.value.map(requester => gridApi.value.getRowNode(requester.id)),
       newValue: true,
     })
   }
   else if (newMode === 'edit') {
-    gridApi.value.setGridOption('rowSelection', {
-      ...rowSelection.value,
-      mode: 'multiRow',
-    })
-
     gridApi.value.deselectAll()
     gridApi.value.setNodesSelected({
       nodes: approvalFlow.value.map(approval =>
@@ -390,7 +386,7 @@ watch(mode, (newMode) => {
     <div>
       <ApprovalFlow
         v-if="selectedNodes.length > 0 || mode === 'edit'"
-        :requester="requester"
+        :requesters="requesters"
         :approval-flow="approvalFlow"
         :mode="mode"
         :loading="pendingState.updateApprovalFlow"
@@ -404,7 +400,7 @@ watch(mode, (newMode) => {
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
-        :get-row-id="params => params.data.id"
+        :get-row-id="(params) => String(params.data.id)"
         enable-rtl
         row-numbers
         pagination

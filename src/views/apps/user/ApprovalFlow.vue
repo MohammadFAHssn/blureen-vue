@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  requester: {
+  requesters: {
     required: true,
   },
 
@@ -23,9 +23,9 @@ const props = defineProps({
 
 <template>
   <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : 'white'">
-    <VCardTitle>
+    <VCardTitle class="text-wrap">
       رده تأییدیه‌های
-      <v-chip variant="outlined" color="info">
+      <v-chip v-for="requester in props.requesters" :key="requester.id" variant="outlined" color="info" class="ml-3 mb-3">
         {{ requester.data?.firstName }} {{ requester.data?.lastName }} {{ requester.groupValue?.name }}
       </v-chip>
     </VCardTitle>
