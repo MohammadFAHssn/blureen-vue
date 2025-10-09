@@ -194,11 +194,11 @@ async function fetchApprovalFlows() {
       createUrl('/base/approval-flow', {
         query: {
           'filter[request_type_id]':
-            requestTypes.value[
+            `\${${requestTypes.value[
               Array.isArray(selectedRequestType_or_Types__index.value)
                 ? selectedRequestType_or_Types__index.value[0]
                 : selectedRequestType_or_Types__index.value
-            ].id,
+            ].id}}`,
         },
       }),
     )
