@@ -20,6 +20,7 @@ const selectedNewUsers = ref([])
 const selectedUsers = ref([])
 
 const users = ref([])
+const altUsers = ref([])
 
 // Actions
 async function addNewUser() {
@@ -43,7 +44,7 @@ async function addNewUser() {
         id: data.id,
         status: data.status ? 1 : 0,
         gift: data.gift,
-        user: users.value.find(u => u.id === data.userId),
+        user: altUsers.value.find(u => u.id === data.userId),
       })),
     ]
 
@@ -138,6 +139,10 @@ async function fetchUsers() {
       users.value = data.value.data.map(u => ({
         ...u,
         fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+      }))
+      altUsers.value = data.value.data.map(u => ({
+        ...u,
+        fullName: `${u.first_name} ${u.last_name}`,
       }))
     }
   }
