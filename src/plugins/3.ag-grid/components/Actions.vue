@@ -9,5 +9,8 @@
     <IconBtn v-if="params.value.detailsable" @click="params.onDetailsClick(params.node)">
       <VIcon icon="tabler-file-description" />
     </IconBtn>
+    <IconBtn v-if="params.value.chooseable" @click="params.onChooseClick(params.node)">
+      <VIcon icon="tabler-select" />
+    </IconBtn>
   </div>
 </template>
