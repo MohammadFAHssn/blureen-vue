@@ -47,9 +47,9 @@ const columnDefs = ref([
     headerName: 'وضعیت',
     field: 'status',
     cellRenderer: 'Active',
-    cellStyle: { display: 'flex', 'align-items': 'center' },
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
     filterParams: {
-      valueFormatter: (params) => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
     },
   },
   { headerName: 'بارگذاری توسط', field: 'uploadedBy' },
@@ -57,7 +57,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ بارگذاری',
     field: 'createdAt',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
         'jYYYY/jMM/jD HH:mm:ss',
       ),
@@ -65,7 +65,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ آخرین ویرایش',
     field: 'updatedAt',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
         'jYYYY/jMM/jD HH:mm:ss',
       ),
@@ -73,7 +73,7 @@ const columnDefs = ref([
   {
     headerName: 'عملیات',
     field: 'actions',
-    cellRendererSelector: (params) => {
+    cellRendererSelector: (_params) => {
       return {
         component: 'Actions',
         params: {
@@ -84,7 +84,7 @@ const columnDefs = ref([
           onDetailsClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
             selectedBirthdayFile.value = birthdayFiles.value.find(
-              (file) => file.id === selectedNode.data.id,
+              file => file.id === selectedNode.data.id,
             )
             uiState.isBirthdayFileDetailsDialogVisible = true
           },
@@ -125,11 +125,13 @@ async function fetchbirthdayFiles() {
     const res = await $api('/birthday/file/', { method: 'GET' })
 
     birthdayFiles.value = res?.data?.birthdayFiles || []
-  } catch (e) {
+  }
+  catch (e) {
     console.error('Error fetching birthdayFiles:', e)
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت فایل‌های هدیه'
-  } finally {
+  }
+  finally {
     pendingState.fetchingBirthdayFiles = false
     gridApi.value?.setGridOption('loading', false)
   }
@@ -156,17 +158,20 @@ async function onCreateBirthdayFile(payload) {
         if (response._data?.errors) {
           const errors = Object.values(response._data.errors).flat().join(' | ')
           uiState.errorMessage = errors
-        } else {
-          uiState.errorMessage =
-            response._data?.message || 'خطا در آپلود فایل هدیه'
+        }
+        else {
+          uiState.errorMessage
+            = response._data?.message || 'خطا در آپلود فایل هدیه'
         }
       },
     })
 
     uiState.isBirthdayFileCreateDialogVisible = false
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
-  } finally {
+  }
+  finally {
     pendingState.createBirthdayFile = false
     fetchbirthdayFiles()
   }
@@ -188,9 +193,10 @@ async function onDelete() {
     pendingState.deleteBirthdayFile = false
     uiState.isBirthdayFileDeleteDialogVisible = false
     birthdayFiles.value = birthdayFiles.value.filter(
-      (file) => file.id !== selectedNodes.value[0].data.id,
+      file => file.id !== selectedNodes.value[0].data.id,
     )
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err)
   }
 }
@@ -203,25 +209,40 @@ async function onDelete() {
     </VSnackbar>
 
     <section style="block-size: 100%">
-      <AgGridVue style="block-size: 100%; inline-size: 100%" :column-defs="columnDefs" :row-data="rowData" enable-rtl
-        row-numbers pagination :theme="theme" @grid-ready="onGridReady" />
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        enable-rtl
+        row-numbers
+        pagination
+        :theme="theme"
+        @grid-ready="onGridReady"
+      />
     </section>
 
-    <BirthdayFileCreateDialog v-if="uiState.isBirthdayFileCreateDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileCreateDialogVisible" :loading="pendingState.createBirthdayFile"
-      @submit="onCreateBirthdayFile" />
+    <BirthdayFileCreateDialog
+      v-if="uiState.isBirthdayFileCreateDialogVisible"
+      v-model:is-dialog-visible="uiState.isBirthdayFileCreateDialogVisible"
+      :loading="pendingState.createBirthdayFile"
+      @submit="onCreateBirthdayFile"
+    />
 
     <BirthdayFileDetailsDialog
       v-if="uiState.isBirthdayFileDetailsDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayFileDetailsDialogVisible"
       :loading="pendingState.detailsBirthdayFile"
       :file="selectedBirthdayFile"
-      @update:selectedBirthdayFile-users="selectedBirthdayFile.users = $event"
+      @update:selected-birthday-file-users="selectedBirthdayFile.users = $event"
     />
 
-    <AreYouSureDialog v-if="uiState.isBirthdayFileDeleteDialogVisible"
+    <AreYouSureDialog
+      v-if="uiState.isBirthdayFileDeleteDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayFileDeleteDialogVisible"
-      title="آیا از حذف این فایل هدیه اطمینان دارید؟" :loading="pendingState.deleteBirthdayFile" @confirm="onDelete" />
+      title="آیا از حذف این فایل هدیه اطمینان دارید؟"
+      :loading="pendingState.deleteBirthdayFile"
+      @confirm="onDelete"
+    />
 
     <VApp>
       <VFab app icon="tabler-plus" size="x-large" @click="uiState.isBirthdayFileCreateDialogVisible = true" />
