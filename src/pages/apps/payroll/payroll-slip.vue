@@ -111,7 +111,7 @@ async function print() {
   pendingState.print = true
   try {
     const { data, error } = await useApi(
-      createUrl('/payroll/payroll-slip/print'),
+      createUrl('/payroll/payroll-slip/print/1'),
     )
 
     pendingState.print = false
