@@ -27,6 +27,7 @@ const PayrollSlipPeriod = ref()
 
 const pendingState = reactive({
   fetchingPayrollSlips: false,
+  print: false,
 })
 
 const last = 2
@@ -103,6 +104,24 @@ function getPayrollItemByLabel(label) {
               1,
             ),
           ),
+  }
+}
+
+async function print() {
+  pendingState.print = true
+  try {
+    const { data, error } = await useApi(
+      createUrl('/payroll/payroll-slip/print/1'),
+    )
+
+    pendingState.print = false
+
+    if (error.value) throw error.value
+  }
+  catch (e) {
+    console.error('Error printing payrollSlip:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در چاپ فیش حقوقی'
   }
 }
 </script>
@@ -219,7 +238,11 @@ function getPayrollItemByLabel(label) {
             >
               <VChip
                 variant="flat"
-                :color="`${getPayrollItemByLabel('جمع پرداختی اول').percentChange > 0 ? 'success' : 'error'}`"
+                :color="`${
+                  getPayrollItemByLabel('جمع پرداختی اول').percentChange > 0
+                    ? 'success'
+                    : 'error'
+                }`"
                 class="d-flex align-center"
               >
                 <div class="text-sm">
@@ -322,9 +345,26 @@ function getPayrollItemByLabel(label) {
       </VCol>
     </VRow>
   </div>
+
+  <VBtn
+    class="print-btn"
+    icon
+    size="x-large"
+    :disabled="pendingState.print"
+    :loading="pendingState.print"
+    @click="print"
+  >
+    <VIcon icon="tabler-printer" size="x-large" />
+  </VBtn>
 </template>
 
 <style lang="scss" scoped>
+.print-btn {
+  position: fixed;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+}
+
 .sum-of-amounts-card {
   display: grid;
   grid-gap: 0;
