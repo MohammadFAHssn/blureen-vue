@@ -9,7 +9,6 @@ definePage({
   },
 })
 
-// ---------- State ----------
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
@@ -27,7 +26,7 @@ const theGift = ref(null)
 const selectedGift = ref(null)
 const selectedImage = ref('')
 
-// ---------- Fetch gifts ----------
+// Fetch gifts
 async function fetchBirthdayGifts() {
   pendingState.fetchingBirthdayGifts = true
   try {
@@ -35,7 +34,6 @@ async function fetchBirthdayGifts() {
     birthdayGifts.value = res?.data?.birthdayGifts || []
   }
   catch (e) {
-    console.error('Error fetching birthday gifts:', e)
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در دریافت هدایا'
   }
@@ -44,7 +42,7 @@ async function fetchBirthdayGifts() {
   }
 }
 
-// ---------- Choose gift ----------
+// Choose gift
 async function onChoose() {
   const id = selectedGift.value?.id
   if (!id) return
@@ -56,13 +54,10 @@ async function onChoose() {
       body: JSON.stringify({ id }),
       onResponseError({ response }) {
         uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage = response._data?.error || 'خطا در انتخاب هدیه'
-        }
+        uiState.errorMessage
+          = response._data?.error
+            || Object.values(response._data?.errors || {}).flat().join(' | ')
+            || 'خطا در انتخاب هدیه'
       },
     })
   }
@@ -77,20 +72,19 @@ async function onChoose() {
   }
 }
 
-// ---------- Check access ----------
+// Check user access
 async function canSee() {
   try {
     const res = await $api('/birthday/user/check', { method: 'GET' })
-    theGift.value = res.data ?? null
+    theGift.value = res?.data ?? null
   }
   catch (e) {
-    console.error('Error checking access:', e)
     uiState.hasError = true
     uiState.errorMessage = e.message || 'خطا در بررسی دسترسی'
   }
 }
 
-// ---------- Dialog handlers ----------
+// Dialog handlers
 function openChooseDialog(gift) {
   selectedGift.value = gift
   uiState.isBirthdayGiftChooseDialogVisible = true
@@ -101,14 +95,13 @@ function openImageDialog(gift) {
   uiState.isImageDialogVisible = true
 }
 
-// ---------- Init ----------
+// Init
 await fetchBirthdayGifts()
 await canSee()
 </script>
 
 <template>
   <VLayout class="app-layout pa-4">
-    <!-- Snackbar for errors -->
     <VSnackbar
       v-model="uiState.hasError"
       :timeout="2000"
@@ -119,19 +112,13 @@ await canSee()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <!-- No Access -->
-    <div
-      v-if="theGift === null"
-      class="no-access-message text-center"
-    >
+    <!-- No access -->
+    <div v-if="theGift === null" class="no-access-message">
       در حال حاضر شما اجازه مشاهده یا انتخاب هدیه را ندارید.
     </div>
 
-    <!-- Gift Cards -->
-    <div
-      v-else
-      class="gift-grid-container"
-    >
+    <!-- Gift list -->
+    <div v-else class="gift-grid-container">
       <VProgressCircular
         v-if="pendingState.fetchingBirthdayGifts"
         indeterminate
@@ -140,10 +127,7 @@ await canSee()
         class="mx-auto mt-10"
       />
 
-      <div
-        v-else-if="birthdayGifts.length"
-        class="gift-grid"
-      >
+      <div v-else-if="birthdayGifts.length" class="gift-grid">
         <div
           v-for="gift in birthdayGifts"
           :key="gift.id"
@@ -151,7 +135,7 @@ await canSee()
           :class="{ 'selected-gift': theGift === gift.id }"
         >
           <img
-            :src="`http://172.16.14.43:8080/storage/${gift.image}`"
+            :src="`${storageBase}/${gift.image}`"
             alt="gift image"
             class="gift-image"
             @click="openImageDialog(gift)"
@@ -161,43 +145,33 @@ await canSee()
             <p class="gift-name">
               {{ gift.name }}
             </p>
-            <p class="gift-code">
-              کد: {{ gift.code }}
-            </p>
-            <p class="gift-amount">
-              {{ gift.amount > 0 ? 'موجود' : 'ناموجود' }}
-            </p>
           </div>
 
-          <!-- Show Choose button only if user has access and not chosen yet -->
           <VBtn
-            color="primary"
+            :color="gift.amount > 0 ? 'primary' : 'error'"
             variant="flat"
             :disabled="gift.amount <= 0"
-            @click="openChooseDialog(gift)"
+            @click="gift.amount > 0 && openChooseDialog(gift)"
           >
-            انتخاب هدیه
+            {{ gift.amount > 0 ? 'انتخاب هدیه' : 'ناموجود' }}
           </VBtn>
 
-          <!-- If this is the chosen gift -->
+          <!-- Already chosen -->
           <span
             v-if="theGift === gift.id"
-            class="chosen-text"
+            style="color: #5abe5f; font-size: 0.9rem; margin-top: 0.5rem;"
           >
-            🎉 این هدیه توسط شما انتخاب شده است
+            هدیه شما
           </span>
         </div>
       </div>
 
-      <p
-        v-else
-        class="text-center mt-6 text-gray-500"
-      >
+      <p v-else class="text-center">
         هیچ هدیه‌ای یافت نشد.
       </p>
     </div>
 
-    <!-- Confirmation Dialog -->
+    <!-- Confirm Dialog -->
     <AreYouSureDialog
       v-if="uiState.isBirthdayGiftChooseDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayGiftChooseDialogVisible"
@@ -235,12 +209,9 @@ await canSee()
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
   background-color: #fafafa;
-  padding-bottom: 1rem;
 }
 
-/* Scrolling content area */
 .gift-grid-container {
   flex: 1;
   overflow-y: auto;
@@ -263,7 +234,7 @@ await canSee()
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: all 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
   position: relative;
 
   &:hover {
@@ -272,7 +243,6 @@ await canSee()
   }
 }
 
-/* Highlight selected gift */
 .selected-gift {
   border: 2px solid #1976d2;
   box-shadow: 0 0 10px rgba(25, 118, 210, 0.4);
@@ -302,7 +272,7 @@ await canSee()
 }
 
 .chosen-text {
-  color: #2e7d32;
+  color: #5abe5f;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
