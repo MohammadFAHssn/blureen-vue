@@ -172,20 +172,12 @@ await fetchUsers()
           <VCol cols="12" sm="6">
             <p><strong>ماه:</strong> {{ props.file.month }}</p>
             <p><strong>سال:</strong> {{ props.file.year }}</p>
-            <p>
-              <strong>وضعیت:</strong>
-              {{ props.file.status === 1 ? 'فعال' : 'غیرفعال' }}
-            </p>
           </VCol>
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>آپلود توسط:</strong>
-              {{ props.file.uploadedBy?.fullName || '--' }}
-            </p>
-            <p>
-              <strong>ویرایش توسط:</strong>
-              {{ props.file.editedBy?.fullName || '--' }}
+              <strong>وضعیت:</strong>
+              {{ props.file.status === 1 ? 'فعال' : 'غیرفعال' }}
             </p>
             <p>
               <strong>تعداد کاربران:</strong>
