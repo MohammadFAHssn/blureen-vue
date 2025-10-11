@@ -2,6 +2,7 @@
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import BirthdayFileCreateDialog from '@/views/apps/payroll/birthday/BirthdayFileCreateDialog.vue'
 import BirthdayFileDetailsDialog from '@/views/apps/payroll/birthday/BirthdayFileDetailsDialog.vue'
+import BirthdayFileEditDialog from '@/views/apps/payroll/birthday/BirthdayFileEditDialog.vue'
 
 definePage({
   meta: {
@@ -14,12 +15,14 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isBirthdayFileCreateDialogVisible: false,
+  isBirthdayFileEditDialogVisible: false,
   isBirthdayFileDeleteDialogVisible: false,
   isBirthdayFileDetailsDialogVisible: false,
 })
 
 const pendingState = reactive({
   createBirthdayFile: false,
+  editBirthdayFile: false,
   fetchingBirthdayFiles: false,
   deleteBirthdayFile: false,
   detailsBirthdayFile: false,
@@ -88,6 +91,13 @@ const columnDefs = ref([
             )
             uiState.isBirthdayFileDetailsDialogVisible = true
           },
+          onEditClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            selectedBirthdayFile.value = birthdayFiles.value.find(
+              gift => gift.id === selectedNode.data.id,
+            )
+            uiState.isBirthdayFileEditDialogVisible = true
+          },
         },
       }
     },
@@ -109,6 +119,7 @@ const rowData = computed(() =>
       actions: {
         deletable: true,
         detailsable: true,
+        editable: true,
       },
     }
   }),
@@ -177,6 +188,48 @@ async function onCreateBirthdayFile(payload) {
   }
 }
 
+async function onEditBirthdayFile(payload) {
+  const id = selectedNodes.value[0].data.id
+  const formData = new FormData()
+  if (payload.birthdayFileDate) {
+    formData.append('month', Number(payload.birthdayFileDate.split('/')[1]))
+    formData.append('year', Number(payload.birthdayFileDate.split('/')[0]))
+  }
+  if (payload.birthdayFile) {
+    formData.append('file', payload.birthdayFile)
+    formData.append('file_name', payload.birthdayFile.name)
+  }
+  formData.append('status', payload.birthdayFileStatus)
+
+  pendingState.editBirthdayFile = true
+  try {
+    await $api(`/birthday/file/${id}`, {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage
+            = response._data?.message || 'خطا در ویرایش فایل هدیه'
+        }
+      },
+    })
+
+    uiState.isBirthdayFileEditDialogVisible = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.editBirthdayFile = false
+    fetchbirthdayFiles()
+  }
+}
+
 async function onDelete() {
   const id = selectedNodes.value[0].data.id
   pendingState.deleteBirthdayFile = true
@@ -226,6 +279,14 @@ async function onDelete() {
       v-model:is-dialog-visible="uiState.isBirthdayFileCreateDialogVisible"
       :loading="pendingState.createBirthdayFile"
       @submit="onCreateBirthdayFile"
+    />
+
+    <BirthdayFileEditDialog
+      v-if="uiState.isBirthdayFileEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isBirthdayFileEditDialogVisible"
+      :loading="pendingState.editBirthdayFile"
+      :file="{ selectedBirthdayFile }"
+      @submit="onEditBirthdayFile"
     />
 
     <BirthdayFileDetailsDialog
