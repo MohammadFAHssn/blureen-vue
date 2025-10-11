@@ -119,13 +119,9 @@ await canSee()
 
     <!-- Gift list -->
     <div v-else class="gift-grid-container">
-      <VProgressCircular
-        v-if="pendingState.fetchingBirthdayGifts"
-        indeterminate
-        color="primary"
-        size="64"
-        class="mx-auto mt-10"
-      />
+      <div v-if="pendingState.fetchingBirthdayGifts" class="loading-container">
+        <VProgressCircular indeterminate color="primary" size="64" />
+      </div>
 
       <div v-else-if="birthdayGifts.length" class="gift-grid">
         <div
@@ -283,5 +279,12 @@ await canSee()
   color: #d32f2f;
   text-align: center;
   padding: 2rem;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 </style>
