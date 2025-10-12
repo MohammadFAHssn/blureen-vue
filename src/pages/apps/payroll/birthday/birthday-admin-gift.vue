@@ -1,13 +1,8 @@
 <script setup>
-// computed handy for display (format dates)
-import moment from 'moment-jalaali'
-import { computed, onMounted, reactive, ref } from 'vue'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import BirthdayGiftCreateDialog from '@/views/apps/payroll/birthday/BirthdayGiftCreateDialog.vue'
 import BirthdayGiftDetailsDialog from '@/views/apps/payroll/birthday/BirthdayGiftDetailsDialog.vue'
 import BirthdayGiftEditDialog from '@/views/apps/payroll/birthday/BirthdayGiftEditDialog.vue'
-
-const storageBase = import.meta.env.VITE_STORAGE_BASE_URL
 
 definePage({
   meta: {
@@ -22,48 +17,121 @@ const uiState = reactive({
   isBirthdayGiftCreateDialogVisible: false,
   isBirthdayGiftEditDialogVisible: false,
   isBirthdayGiftDeleteDialogVisible: false,
-  isBirthdayGiftImageDialogVisible: false,
-  // new preview dialog:
-  isImagePreviewVisible: false,
-  previewImageUrl: '',
+  isBirthdayGiftDetailsDialogVisible: false,
 })
 
 const pendingState = reactive({
   createBirthdayGift: false,
   editBirthdayGift: false,
-  imageBirthdayGift: false,
   fetchingsBirthdayGifts: false,
   deleteBirthdayGift: false,
   detailsBirthdayGift: false,
 })
 
 const birthdayGifts = ref([])
+
 const selectedBirthdayGift = ref(null)
+const selectedNodes = ref([])
+const gridApi = ref(null)
 
-// Attempt to resolve storage base (safe fallback)
-// let storageBase = '/storage'
-// try {
-//   const runtime = typeof useRuntimeConfig === 'function' ? useRuntimeConfig() : {}
-//   storageBase = runtime?.public?.storageBase || storageBase
-// }
-// catch (e) {
-//   // fallback kept
-// }
+// ----- start ag-grid -----
+const { theme } = useAGGridTheme()
 
-// helper to build image URL (handles absolute urls too)
-function getImageUrl(gift) {
-  if (!gift) return ''
-  const img = gift.image || gift.image_path || gift.file || ''
-  if (!img) return ''
-  if (img.startsWith('http') || img.startsWith('/')) return img
-  return `${storageBase}/${img}`
+function onGridReady(params) {
+  gridApi.value = params.api
+  gridApi.value.setGridOption('loading', true)
 }
 
-// fetcher (kept your existing API usage)
+const columnDefs = ref([
+  { headerName: 'نام', field: 'name' },
+  { headerName: 'کد', field: 'code' },
+  {
+    headerName: 'وضعیت',
+    field: 'status',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
+  { headerName: 'موجودی', field: 'amount' },
+  { headerName: 'ایجاد شده توسط', field: 'createdBy' },
+  { headerName: 'آخرین ویرایش توسط', field: 'editedBy' },
+  {
+    headerName: 'تاریخ ایجاد',
+    field: 'createdAt',
+    valueFormatter: params =>
+      moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
+        'jYYYY/jMM/jD HH:mm:ss',
+      ),
+  },
+  {
+    headerName: 'تاریخ آخرین ویرایش',
+    field: 'updatedAt',
+    valueFormatter: params =>
+      moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
+        'jYYYY/jMM/jD HH:mm:ss',
+      ),
+  },
+  {
+    headerName: 'عملیات',
+    field: 'actions',
+    cellRendererSelector: (_params) => {
+      return {
+        component: 'Actions',
+        params: {
+          onDeleteClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            uiState.isBirthdayGiftDeleteDialogVisible = true
+          },
+          onDetailsClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            selectedBirthdayGift.value = birthdayGifts.value.find(
+              gift => gift.id === selectedNode.data.id,
+            )
+            uiState.isBirthdayGiftDetailsDialogVisible = true
+          },
+          onEditClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            selectedBirthdayGift.value = birthdayGifts.value.find(
+              gift => gift.id === selectedNode.data.id,
+            )
+            uiState.isBirthdayGiftEditDialogVisible = true
+          },
+        },
+      }
+    },
+  },
+])
+
+const rowData = computed(() =>
+  birthdayGifts.value?.map((gift) => {
+    return {
+      id: gift.id,
+      name: gift.name,
+      code: gift.code,
+      status: gift.status,
+      amount: gift.amount,
+      createdBy: gift.createdBy?.fullName || '--',
+      editedBy: gift.editedBy?.fullName || '--',
+      createdAt: moment(gift.createdAt).format('jYYYY-jMM-jDD HH:mm:ss'),
+      updatedAt: moment(gift.updatedAt).format('jYYYY-jMM-jDD HH:mm:ss'),
+      actions: {
+        deletable: true,
+        detailsable: true,
+        editable: true,
+      },
+    }
+  }),
+)
+// ----- end ag-grid -----
+
 async function fetchBirthdayGifts() {
   pendingState.fetchingsBirthdayGifts = true
+  gridApi.value?.setGridOption('loading', true)
   try {
     const res = await $api('/birthday/gift/', { method: 'GET' })
+
     birthdayGifts.value = res?.data?.birthdayGifts || []
   }
   catch (e) {
@@ -73,16 +141,15 @@ async function fetchBirthdayGifts() {
   }
   finally {
     pendingState.fetchingsBirthdayGifts = false
+    gridApi.value?.setGridOption('loading', false)
   }
 }
 
-onMounted(() => {
-  fetchBirthdayGifts()
-})
+fetchBirthdayGifts()
 
-// create
 async function onCreateBirthdayGift(payload) {
   const formData = new FormData()
+
   formData.append('name', payload.birthdayGiftName)
   formData.append('code', payload.birthdayGiftCode)
   formData.append('amount', payload.birthdayGiftAmount)
@@ -105,6 +172,7 @@ async function onCreateBirthdayGift(payload) {
         }
       },
     })
+
     uiState.isBirthdayGiftCreateDialogVisible = false
   }
   catch (err) {
@@ -116,22 +184,18 @@ async function onCreateBirthdayGift(payload) {
   }
 }
 
-// edit
 async function onEditBirthdayGift(payload) {
   const formData = new FormData()
+
   formData.append('name', payload.birthdayGiftName)
   formData.append('code', payload.birthdayGiftCode)
   formData.append('amount', payload.birthdayGiftAmount)
-  if (payload.birthdayGiftImage) formData.append('image', payload.birthdayGiftImage)
+  if (payload.birthdayGiftImage) {
+    formData.append('image', payload.birthdayGiftImage)
+  }
   formData.append('status', payload.birthdayGiftStatus)
 
-  const id = selectedBirthdayGift.value?.id
-  if (!id) {
-    uiState.hasError = true
-    uiState.errorMessage = 'هدیه‌ای انتخاب نشده است'
-    return
-  }
-
+  const id = selectedNodes.value[0].data.id
   pendingState.editBirthdayGift = true
 
   try {
@@ -149,6 +213,7 @@ async function onEditBirthdayGift(payload) {
         }
       },
     })
+
     uiState.isBirthdayGiftEditDialogVisible = false
   }
   catch (err) {
@@ -160,15 +225,8 @@ async function onEditBirthdayGift(payload) {
   }
 }
 
-// delete
 async function onDelete() {
-  const id = selectedBirthdayGift.value?.id
-  if (!id) {
-    uiState.hasError = true
-    uiState.errorMessage = 'هدیه‌ای انتخاب نشده است'
-    return
-  }
-
+  const id = selectedNodes.value[0].data.id
   pendingState.deleteBirthdayGift = true
   try {
     await $api(`/birthday/gift/${id}`, {
@@ -180,56 +238,23 @@ async function onDelete() {
       },
     })
 
+    pendingState.deleteBirthdayGift = false
     uiState.isBirthdayGiftDeleteDialogVisible = false
-    // optimistic remove
-    birthdayGifts.value = birthdayGifts.value.filter(g => g.id !== id)
+    birthdayGifts.value = birthdayGifts.value.filter(
+      gift => gift.id !== selectedNodes.value[0].data.id,
+    )
   }
   catch (err) {
     console.error(err)
   }
-  finally {
-    pendingState.deleteBirthdayGift = false
-  }
 }
-
-// card actions
-function openEdit(gift) {
-  selectedBirthdayGift.value = gift
-  uiState.isBirthdayGiftEditDialogVisible = true
-}
-
-function openDelete(gift) {
-  selectedBirthdayGift.value = gift
-  uiState.isBirthdayGiftDeleteDialogVisible = true
-}
-
-function openDetails(gift) {
-  selectedBirthdayGift.value = gift
-  uiState.isBirthdayGiftImageDialogVisible = true // if you want to reuse your details dialog
-}
-
-function openImagePreview(gift) {
-  selectedBirthdayGift.value = gift
-  uiState.previewImageUrl = getImageUrl(gift)
-  uiState.isImagePreviewVisible = true
-}
-const displayGifts = computed(() =>
-  birthdayGifts.value.map(gift => ({
-    ...gift,
-    createdByText: gift.createdBy?.fullName || '--',
-    editedByText: gift.editedBy?.fullName || '--',
-    createdAtText: gift.createdAt ? moment(gift.createdAt).format('jYYYY/jMM/jD HH:mm:ss') : '--',
-    updatedAtText: gift.updatedAt ? moment(gift.updatedAt).format('jYYYY/jMM/jD HH:mm:ss') : '--',
-    imageUrl: getImageUrl(gift),
-  })),
-)
 </script>
 
 <template>
   <VLayout class="app-layout">
     <VSnackbar
       v-model="uiState.hasError"
-      :timeout="4000"
+      :timeout="2000"
       location="center"
       variant="flat"
       color="error"
@@ -237,84 +262,19 @@ const displayGifts = computed(() =>
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <section class="cards-section">
-      <div class="cards-container">
-        <template v-if="displayGifts.length">
-          <div class="cards-grid">
-            <VCard
-              v-for="gift in displayGifts"
-              :key="gift.id"
-              class="gift-card"
-              elevation="2"
-            >
-              <VCardText class="card-image-wrap" @click="openImagePreview(gift)">
-                <VImg
-                  :src="`${storageBase}/${gift.image}`"
-                  aspect-ratio="16/9"
-                  class="card-image"
-                  cover
-                >
-                  <template #placeholder>
-                    <div class="image-placeholder">
-                      بدون تصویر
-                    </div>
-                  </template>
-                </VImg>
-              </VCardText>
-
-              <VCardTitle class="card-title">
-                {{ gift.name || 'بدون عنوان' }}
-              </VCardTitle>
-
-              <VCardText class="card-meta">
-                <div>کد: {{ gift.code || '--' }}</div>
-                <div>موجودی: {{ gift.amount ?? '--' }}</div>
-                <div>وضعیت: {{ gift.status === 1 ? 'فعال' : 'غیرفعال' }}</div>
-              </VCardText>
-
-              <VCardActions>
-                <VBtn text small @click="openDetails(gift)">
-                  جزییات
-                </VBtn>
-                <VBtn text small @click="openEdit(gift)">
-                  ویرایش
-                </VBtn>
-                <VBtn text small color="error" @click="openDelete(gift)">
-                  حذف
-                </VBtn>
-              </VCardActions>
-            </VCard>
-          </div>
-        </template>
-
-        <div v-else class="empty-state">
-          هیچ هدیه‌ای برای نمایش وجود ندارد.
-        </div>
-      </div>
+    <section style="block-size: 100%">
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        enable-rtl
+        row-numbers
+        pagination
+        :theme="theme"
+        @grid-ready="onGridReady"
+      />
     </section>
 
-    <!-- image preview dialog (original image) -->
-    <VDialog v-model="uiState.isImagePreviewVisible" persistent max-width="900">
-      <VCard>
-        <VCardTitle>مشاهده تصویر</VCardTitle>
-        <VCardText class="preview-wrap">
-          <img
-            :src="uiState.previewImageUrl"
-            alt="original image"
-            class="preview-image"
-            onerror="this.style.display='none'"
-          />
-        </VCardText>
-        <VCardActions>
-          <VSpacer />
-          <VBtn @click="uiState.isImagePreviewVisible = false">
-            بستن
-          </VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
-
-    <!-- existing dialogs (create / edit / details / delete) -->
     <BirthdayGiftCreateDialog
       v-if="uiState.isBirthdayGiftCreateDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayGiftCreateDialogVisible"
@@ -331,10 +291,10 @@ const displayGifts = computed(() =>
     />
 
     <BirthdayGiftDetailsDialog
-      v-if="uiState.isBirthdayGiftImageDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayGiftImageDialogVisible"
+      v-if="uiState.isBirthdayGiftDetailsDialogVisible"
+      v-model:is-dialog-visible="uiState.isBirthdayGiftDetailsDialogVisible"
       :loading="pendingState.imageBirthdayGift"
-      :file="{ image: selectedBirthdayGift }"
+      :file="selectedBirthdayGift"
     />
 
     <AreYouSureDialog
@@ -356,99 +316,25 @@ const displayGifts = computed(() =>
   </VLayout>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use '@styles/variables/vuetify';
 @use '@core/scss/base/mixins';
 
 .app-layout {
   @include mixins.elevation(vuetify.$card-elevation);
+
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: 1fr auto;
-  height: 100%;
 }
 
-/* make section fill available area, cards container scrollable */
-.cards-section {
-  block-size: 100%;
-  display: flex;
-  padding: 12px;
+.v-application {
+  max-block-size: 100%;
+  min-block-size: 100%;
 }
 
-.cards-container {
-  block-size: 100%;
-  inline-size: 100%;
-  overflow: auto; /* enables scrolling when content overflows */
-  -webkit-overflow-scrolling: touch;
-}
-
-/* responsive grid */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-  align-items: start;
-  padding-bottom: 16px;
-}
-
-/* card styling */
-.gift-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.card-image-wrap {
-  cursor: pointer;
-  padding: 0;
-}
-
-.card-image {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  min-height: 140px;
-  max-height: 180px;
-  object-fit: cover;
-}
-
-.image-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 140px;
-  color: rgba(0, 0, 0, 0.4);
-}
-
-/* content spacing */
-.card-title {
-  font-weight: 600;
-}
-
-.card-meta {
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.7);
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
-/* image preview */
-.preview-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-}
-
-.preview-image {
-  max-width: 100%;
-  max-height: 70vh;
-  object-fit: contain;
-}
-
-/* empty state */
-.empty-state {
-  padding: 40px;
-  text-align: center;
-  color: rgba(0, 0, 0, 0.6);
+:deep(.v-application__wrap) {
+  max-block-size: 100% !important;
+  min-block-size: 100% !important;
 }
 </style>
