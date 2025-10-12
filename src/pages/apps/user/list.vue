@@ -2,6 +2,8 @@
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'User-Details',
   },
 })
 
@@ -107,8 +109,9 @@ async function fetchUsers() {
         '/base/user',
         {
           query: {
+            'fields[users]': 'id,first_name,last_name,personnel_code,active',
             'fields[roles]': 'name',
-            'include': 'roles,profile.workplace,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
+            'include': 'roles,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
           },
         },
       ),
@@ -121,7 +124,7 @@ async function fetchUsers() {
   catch (e) {
     console.error('Error fetching users:', e)
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت کاربران'
+    uiState.errorMessage = e.message || 'خطا در دریافت کاربران'
   }
 }
 

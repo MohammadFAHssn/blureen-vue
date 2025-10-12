@@ -42,6 +42,7 @@
     "vue"
   ],
   "cSpell.words": [
+    "activable",
     "addressline",
     "Composables",
     "Customizer",
@@ -51,6 +52,7 @@
     "Jalali",
     "nuxt",
     "ofetch",
+    "porsline",
     "psudo",
     "stylelint",
     "touchless",

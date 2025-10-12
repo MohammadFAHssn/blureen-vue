@@ -5,6 +5,8 @@ import PayrollBatchCreateDialog from '@/views/apps/payroll/PayrollBatchCreateDia
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Payroll-Batches',
   },
 })
 
@@ -13,6 +15,7 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isPayrollBatchDeleteDialogVisible: false,
+  isPayrollBatchCreateDialogVisible: false,
 })
 
 const pendingState = reactive({
@@ -31,7 +34,6 @@ const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
   gridApi.value = params.api
-  gridApi.value.setGridOption('loading', true)
 }
 
 const columnDefs = ref([
@@ -88,7 +90,6 @@ const rowData = computed(() =>
 
 async function fetchPayrollBatches() {
   pendingState.fetchingPayrollBatches = true
-  gridApi.value?.setGridOption('loading', true)
   try {
     const { data, error } = await useApi(
       createUrl('/payroll/payroll-batch', {
@@ -100,7 +101,6 @@ async function fetchPayrollBatches() {
     )
 
     pendingState.fetchingPayrollBatches = false
-    gridApi.value?.setGridOption('loading', false)
 
     if (error.value) throw error.value
 
@@ -190,6 +190,7 @@ async function onDelete() {
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
+        :loading="pendingState.fetchingPayrollBatches"
         enable-rtl
         row-numbers
         pagination

@@ -29,8 +29,11 @@ declare module 'vue-router/auto-routes' {
     'apps-supplier-token': RouteRecordInfo<'apps-supplier-token', '/apps/supplier/:token', { token: ParamValue<true> }, { token: ParamValue<false> }>,
     'apps-supplier-tender-active-tenders': RouteRecordInfo<'apps-supplier-tender-active-tenders', '/apps/supplier/tender/active-tenders', Record<never, never>, Record<never, never>>,
     'apps-supplier-tender-tender-history': RouteRecordInfo<'apps-supplier-tender-tender-history', '/apps/supplier/tender/tender-history', Record<never, never>, Record<never, never>>,
+    'apps-survey-survey': RouteRecordInfo<'apps-survey-survey', '/apps/survey/survey', Record<never, never>, Record<never, never>>,
+    'apps-survey-survey-management': RouteRecordInfo<'apps-survey-survey-management', '/apps/survey/survey-management', Record<never, never>, Record<never, never>>,
     'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
+    'apps-user-organization-chart': RouteRecordInfo<'apps-user-organization-chart', '/apps/user/organization-chart', Record<never, never>, Record<never, never>>,
     'apps-user-personnel-records': RouteRecordInfo<'apps-user-personnel-records', '/apps/user/personnel-records', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
@@ -95,12 +98,24 @@ declare module 'vue-router/auto-routes' {
       routes: 'apps-supplier-tender-tender-history'
       views: never
     }
+    'src/pages/apps/survey/survey.vue': {
+      routes: 'apps-survey-survey'
+      views: never
+    }
+    'src/pages/apps/survey/survey-management.vue': {
+      routes: 'apps-survey-survey-management'
+      views: never
+    }
     'src/pages/apps/user/access.vue': {
       routes: 'apps-user-access'
       views: never
     }
     'src/pages/apps/user/list.vue': {
       routes: 'apps-user-list'
+      views: never
+    }
+    'src/pages/apps/user/organization-chart.vue': {
+      routes: 'apps-user-organization-chart'
       views: never
     }
     'src/pages/apps/user/personnel-records.vue': {

@@ -9,7 +9,7 @@ export const $api = ofetch.create({
       options.headers.append('Authorization', `Bearer ${accessToken}`)
   },
   async onResponse({ response }) {
-    if (response.status === 401 || response.status === 403) {
+    if (response.status === 401) {
       useLogout()
     }
 
