@@ -119,7 +119,10 @@ const rowData = computed(() =>
       actions: {
         deletable: true,
         detailsable: true,
-        editable: true,
+        editable: {
+          status: true,
+          mode: 'view',
+        },
       },
     }
   }),
