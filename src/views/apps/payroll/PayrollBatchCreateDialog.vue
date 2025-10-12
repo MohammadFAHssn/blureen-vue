@@ -23,18 +23,13 @@ const payrollBatchFile = ref(null)
 //
 
 const fileInputRules = [
-  (fileList) => {
-    // if no file is selected yet
-    if (!fileList.length) {
-      return true
-    }
-
-    const extension = fileList[0].name.split('.').pop().toLowerCase()
+  (file) => {
+    const extension = file.name.split('.').pop().toLowerCase()
     if (extension !== 'xlsx' && extension !== 'xls') {
       return 'لطفا یک فایل اکسل معتبر انتخاب کنید!'
     }
 
-    if (fileList[0].size > constants.MAX_FILE_SIZE) {
+    if (file.size > constants.MAX_FILE_SIZE) {
       return 'حجم فایل باید کمتر از 5 مگابایت باشد!'
     }
 

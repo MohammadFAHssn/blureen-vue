@@ -1,9 +1,8 @@
 <script setup>
 definePage({
   meta: {
-    // TODO: add permission
-    // action: 'read',
-    // subject: 'Surveys',
+    action: 'use',
+    subject: 'app',
   },
 })
 

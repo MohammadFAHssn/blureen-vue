@@ -5,9 +5,8 @@ import SurveyCreateDialog from '@/views/apps/survey/SurveyCreateDialog.vue'
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
-    // TODO: add permission
-    // action: 'read',
-    // subject: 'Surveys',
+    action: 'read',
+    subject: 'Surveys',
   },
 })
 
