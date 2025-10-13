@@ -139,9 +139,6 @@ await canSee()
           >
             <VCard
               class="d-flex flex-column text-center"
-              :elevation="theGift === gift.id ? 10 : 2"
-              :class="{ 'border-primary': theGift === gift.id }"
-              max-width="280"
               width="100%"
             >
               <VImg
@@ -160,23 +157,20 @@ await canSee()
                 </VCardTitle>
 
                 <VBtn
-                  :color="gift.amount > 0 ? 'primary' : 'error'"
+                  :color="gift.id === theGift ? 'success' : gift.amount > 0 ? 'primary' : 'error'"
                   variant="flat"
-                  :disabled="gift.amount <= 0"
+                  :disabled="gift.amount <= 0 || gift.id === theGift"
                   class="mb-2"
                   @click="gift.amount > 0 && openChooseDialog(gift)"
                 >
-                  {{ gift.amount > 0 ? 'انتخاب هدیه' : 'ناموجود' }}
+                  {{
+                    gift.id === theGift
+                      ? 'هدیه شما'
+                      : gift.amount > 0
+                        ? 'انتخاب هدیه'
+                        : 'ناموجود'
+                  }}
                 </VBtn>
-
-                <VChip
-                  v-if="theGift === gift.id"
-                  color="success"
-                  variant="flat"
-                  size="small"
-                >
-                  هدیه شما
-                </VChip>
               </div>
             </VCard>
           </VCol>
@@ -208,17 +202,10 @@ await canSee()
     >
       <VCard>
         <VCardText class="text-center">
-          <VImg
-            :src="selectedImage"
-            alt="gift preview"
-            max-width="100%"
-            max-height="70vh"
-            class="rounded-lg"
-            contain
-          />
+          <VImg :src="selectedImage" />
         </VCardText>
         <VCardActions class="justify-center">
-          <VBtn color="primary" variant="tonal" @click="uiState.isImageDialogVisible = false">
+          <VBtn @click="uiState.isImageDialogVisible = false">
             بستن
           </VBtn>
         </VCardActions>
