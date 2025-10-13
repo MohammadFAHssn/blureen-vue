@@ -217,7 +217,7 @@ await fetchUsers()
 
         <!-- Multi-select users -->
         <VCol cols="12" class="mb-3">
-          <VSelect
+          <v-autocomplete
             v-model="selectedNewUsers"
             :items="users"
             item-title="fullName"
