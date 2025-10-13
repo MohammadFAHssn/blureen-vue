@@ -10,6 +10,11 @@ const emit = defineEmits([
   'update:selectedBirthdayFile-users',
 ])
 
+const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
+})
+
 // Local reactive copy of birthday file users
 const localUsers = ref([...props.file.users])
 
