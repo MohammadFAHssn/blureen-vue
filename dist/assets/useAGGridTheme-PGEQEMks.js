@@ -1,1 +1,0 @@
-import{bg as a,cj as m,Y as r,ck as h,cl as o}from"./index-BjMeilJt.js";function i(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};
