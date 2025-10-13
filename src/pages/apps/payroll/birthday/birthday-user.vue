@@ -101,7 +101,7 @@ await canSee()
 </script>
 
 <template>
-  <VLayout class="app-layout pa-4">
+  <VLayout class="pa-4 d-flex flex-column h-100">
     <VSnackbar
       v-model="uiState.hasError"
       :timeout="2000"
@@ -112,62 +112,87 @@ await canSee()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <!-- No access -->
-    <div v-if="theGift === null" class="no-access-message">
+    <VAlert
+      v-if="theGift === null"
+      type="error"
+      variant="tonal"
+    >
       در حال حاضر شما اجازه مشاهده یا انتخاب هدیه را ندارید.
-    </div>
+    </VAlert>
 
-    <!-- Gift list -->
-    <div v-else class="gift-grid-container">
-      <div v-if="pendingState.fetchingBirthdayGifts" class="loading-container">
+    <div v-else class="flex-grow-1 overflow-y-auto pb-8">
+      <div v-if="pendingState.fetchingBirthdayGifts" class="d-flex justify-center align-center h-100">
         <VProgressCircular indeterminate color="primary" size="64" />
       </div>
 
-      <div v-else-if="birthdayGifts.length" class="gift-grid">
-        <div
-          v-for="gift in birthdayGifts"
-          :key="gift.id"
-          class="gift-card"
-          :class="{ 'selected-gift': theGift === gift.id }"
-        >
-          <img
-            :src="`${storageBase}/${gift.image}`"
-            alt="gift image"
-            class="gift-image"
-            @click="openImageDialog(gift)"
-          />
-
-          <div class="gift-info">
-            <p class="gift-name">
-              {{ gift.name }}
-            </p>
-          </div>
-
-          <VBtn
-            :color="gift.amount > 0 ? 'primary' : 'error'"
-            variant="flat"
-            :disabled="gift.amount <= 0"
-            @click="gift.amount > 0 && openChooseDialog(gift)"
+      <!-- Gift Cards -->
+      <VContainer v-else-if="birthdayGifts.length" fluid>
+        <VRow dense justify="center">
+          <VCol
+            v-for="gift in birthdayGifts"
+            :key="gift.id"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="2"
+            class="d-flex"
           >
-            {{ gift.amount > 0 ? 'انتخاب هدیه' : 'ناموجود' }}
-          </VBtn>
+            <VCard
+              class="d-flex flex-column text-center"
+              :elevation="theGift === gift.id ? 10 : 2"
+              :class="{ 'border-primary': theGift === gift.id }"
+              max-width="280"
+              width="100%"
+            >
+              <VImg
+                :src="`${storageBase}/${gift.image}`"
+                cover
+                height="200"
+                class="flex-sm-grow-0 flex-sm-shrink-0 cursor-pointer"
+                width="100%"
+                min-width="120"
+                @click="openImageDialog(gift)"
+              />
 
-          <!-- Already chosen -->
-          <span
-            v-if="theGift === gift.id"
-            style="color: #5abe5f; font-size: 0.9rem; margin-top: 0.5rem;"
-          >
-            هدیه شما
-          </span>
-        </div>
-      </div>
+              <div class="d-flex flex-column justify-center align-center flex-grow-1 pa-3">
+                <VCardTitle class="text-center text-wrap mb-2">
+                  {{ gift.name }}
+                </VCardTitle>
 
-      <p v-else class="text-center">
+                <VBtn
+                  :color="gift.amount > 0 ? 'primary' : 'error'"
+                  variant="flat"
+                  :disabled="gift.amount <= 0"
+                  class="mb-2"
+                  @click="gift.amount > 0 && openChooseDialog(gift)"
+                >
+                  {{ gift.amount > 0 ? 'انتخاب هدیه' : 'ناموجود' }}
+                </VBtn>
+
+                <VChip
+                  v-if="theGift === gift.id"
+                  color="success"
+                  variant="flat"
+                  size="small"
+                >
+                  هدیه شما
+                </VChip>
+              </div>
+            </VCard>
+          </VCol>
+        </VRow>
+      </VContainer>
+
+      <VAlert
+        v-else
+        type="info"
+        variant="tonal"
+        class="text-center mt-8"
+      >
         هیچ هدیه‌ای یافت نشد.
-      </p>
+      </VAlert>
     </div>
 
-    <!-- Confirm Dialog -->
     <AreYouSureDialog
       v-if="uiState.isBirthdayGiftChooseDialogVisible"
       v-model:is-dialog-visible="uiState.isBirthdayGiftChooseDialogVisible"
@@ -176,7 +201,6 @@ await canSee()
       @confirm="onChoose"
     />
 
-    <!-- Image Preview Dialog -->
     <VDialog
       v-model="uiState.isImageDialogVisible"
       width="500"
@@ -184,10 +208,13 @@ await canSee()
     >
       <VCard>
         <VCardText class="text-center">
-          <img
+          <VImg
             :src="selectedImage"
             alt="gift preview"
-            style="max-width: 100%; max-height: 70vh; border-radius: 8px;"
+            max-width="100%"
+            max-height="70vh"
+            class="rounded-lg"
+            contain
           />
         </VCardText>
         <VCardActions class="justify-center">
@@ -199,91 +226,3 @@ await canSee()
     </VDialog>
   </VLayout>
 </template>
-
-<style lang="scss" scoped>
-.app-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.gift-grid-container {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 2rem;
-}
-
-.gift-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-top: 1rem;
-}
-
-.gift-card {
-  background-color: white;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: 0.2s ease-in-out;
-  position: relative;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  }
-}
-
-.selected-gift {
-  border: 2px solid #1976d2;
-  box-shadow: 0 0 10px rgba(25, 118, 210, 0.4);
-}
-
-.gift-image {
-  height: 60px;
-  margin-bottom: 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  object-fit: contain;
-}
-
-.gift-info {
-  margin-bottom: 0.5rem;
-}
-
-.gift-name {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.gift-code,
-.gift-amount {
-  font-size: 0.875rem;
-  color: #666;
-}
-
-.chosen-text {
-  color: #5abe5f;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-}
-
-.no-access-message {
-  margin: auto;
-  font-size: 1.1rem;
-  color: #d32f2f;
-  text-align: center;
-  padding: 2rem;
-}
-
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-</style>
