@@ -147,7 +147,6 @@ async function fetchUsers() {
     }
   }
   catch (e) {
-    isLoading.value = false
     console.error('Unexpected error fetching users:', e)
     uiState.hasError = true
     uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران'

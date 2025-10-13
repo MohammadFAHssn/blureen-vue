@@ -205,7 +205,6 @@ await canSee()
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #fafafa;
 }
 
 .gift-grid-container {
