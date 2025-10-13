@@ -28,23 +28,23 @@ export default [
   {
     title: 'Payroll Birthday Management',
     icon: { icon: 'tabler-adjustments' },
-    action: 'use',
-    subject: 'app',
+    action: 'read',
+    subject: 'Birthdays',
     children: [
       {
         title: 'Payroll Birthday Management file',
         icon: { icon: 'tabler-file' },
-        action: 'use',
-        subject: 'app',
+        action: 'read',
+        subject: 'Birthdays',
         to: 'apps-payroll-birthday-birthday-admin-file',
       },
       {
         title: 'Payroll Birthday Management gift',
         icon: { icon: 'tabler-gift' },
-        action: 'use',
-        subject: 'app',
+        action: 'read',
+        subject: 'Birthdays',
         to: 'apps-payroll-birthday-birthday-admin-gift',
       },
-    ]
+    ],
   },
 ]

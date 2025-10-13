@@ -7,6 +7,8 @@ import BirthdayGiftEditDialog from '@/views/apps/payroll/birthday/BirthdayGiftEd
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Birthdays',
   },
 })
 

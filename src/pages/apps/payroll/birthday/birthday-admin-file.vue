@@ -7,6 +7,8 @@ import BirthdayFileEditDialog from '@/views/apps/payroll/birthday/BirthdayFileEd
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Birthdays',
   },
 })
 
