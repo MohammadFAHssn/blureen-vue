@@ -5,7 +5,7 @@ export default [
     subject: 'app',
   },
   {
-    title: 'HSE User',
+    title: 'HSE User Health Certificate',
     icon: { icon: 'tabler-clipboard-heart' },
     action: 'use',
     subject: 'app',
