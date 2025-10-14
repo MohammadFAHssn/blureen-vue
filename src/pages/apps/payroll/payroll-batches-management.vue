@@ -20,8 +20,9 @@ const uiState = reactive({
 
 const pendingState = reactive({
   createPayrollBatch: false,
-  fetchingPayrollBatches: false,
+  fetchPayrollBatches: false,
   deletePayrollBatches: false,
+  fetchReports: false,
 })
 
 const payrollBatches = ref([])
@@ -71,6 +72,7 @@ const rowData = computed(() =>
   payrollBatches.value?.map((batch) => {
     return {
       id: batch.id,
+      month: batch.month,
       monthName: batch.month_name,
       year: batch.year,
       uploadedBy: `${batch.uploaded_by.first_name} ${batch.uploaded_by.last_name}`,
@@ -84,12 +86,28 @@ const rowData = computed(() =>
   }),
 )
 
+function getContextMenuItems(params) {
+  console.log(params)
+
+  return [
+    {
+      icon: '<i class="tabler tabler-file-analytics" style="font-size: 18px;"></i>',
+      name: 'گزارشات',
+      action: () => {
+        fetchReports()
+      },
+    },
+    'separator',
+    ...params.defaultItems,
+  ]
+}
+
 // ----- end ag-grid -----
 
 // ----- -----
 
 async function fetchPayrollBatches() {
-  pendingState.fetchingPayrollBatches = true
+  pendingState.fetchPayrollBatches = true
   try {
     const { data, error } = await useApi(
       createUrl('/payroll/payroll-batch', {
@@ -100,7 +118,7 @@ async function fetchPayrollBatches() {
       }),
     )
 
-    pendingState.fetchingPayrollBatches = false
+    pendingState.fetchPayrollBatches = false
 
     if (error.value) throw error.value
 
@@ -171,6 +189,24 @@ async function onDelete() {
     console.error(err)
   }
 }
+
+async function fetchReports(month, year) {
+  pendingState.fetchReports = true
+  try {
+    const { data, error } = await useApi(
+      createUrl('/payroll/payroll-batch/reports'),
+    )
+
+    pendingState.fetchReports = false
+
+    if (error.value) throw error.value
+  }
+  catch (e) {
+    console.error('Error fetching reports:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت گزارشات'
+  }
+}
 </script>
 
 <template>
@@ -190,11 +226,12 @@ async function onDelete() {
         style="block-size: 100%; inline-size: 100%;"
         :column-defs="columnDefs"
         :row-data="rowData"
-        :loading="pendingState.fetchingPayrollBatches"
+        :loading="pendingState.fetchPayrollBatches"
         enable-rtl
         row-numbers
         pagination
         :theme="theme"
+        :get-context-menu-items="getContextMenuItems"
         @grid-ready="onGridReady"
       />
     </section>
