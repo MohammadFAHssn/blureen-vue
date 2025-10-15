@@ -1,10 +1,13 @@
 <script setup>
+const constants = inject('constants')
+
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
 })
+const isLoading = ref(false)
 const startDate = ref('')
 const endDate = ref('')
 const showStartPicker = ref(false)
@@ -21,28 +24,51 @@ function selectEnd(val) {
   showEndPicker.value = false
 }
 
-function submit() {
+async function submit() {
   if (!startDate.value || !endDate.value) {
     uiState.hasError = true
     uiState.errorMessage = 'لطفا بازه تاریخ را انتخاب کنید'
-    return
   }
-  if (startDate.value > endDate.value) {
+  else if (startDate.value > endDate.value) {
     uiState.hasError = true
     uiState.errorMessage = 'تاریخ شروع نمی‌تواند بزرگتر از تاریخ پایان باشد'
-    return
   }
+  else {
+    const requestData = {
+      request_type_id: constants.HR_REQUEST_TYPE_DAILY_LEAVE,
+      user_id: useCookie('userData').value.id,
+      start_date: startDate.value,
+      end_date: endDate.value,
+    }
 
-  uiState.success = true
-  uiState.successMessage = `درخواست مرخصی از ${startDate.value} تا ${endDate.value} ثبت شد`
+    try {
+      await $api('/hr-request/create', {
+        method: 'POST',
+        body: requestData,
+        onResponseError({ response }) {
+          uiState.hasError = true
+          uiState.errorMessage = response._data.message || 'خطا در ثبت مرخصی'
+        },
+      })
 
-  monthlyRequests.value.push({
-    from: startDate.value,
-    to: endDate.value,
-    status: 'رد شده',
-  })
-  startDate.value = ''
-  endDate.value = ''
+      uiState.success = true
+      uiState.successMessage = `درخواست مرخصی از ${startDate.value} تا ${endDate.value} ثبت شد`
+
+      monthlyRequests.value.push({
+        from: startDate.value,
+        to: endDate.value,
+        status_id: constants.HR_REQUEST_PENDING_STATUS,
+      })
+      startDate.value = ''
+      endDate.value = ''
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
 }
 </script>
 
@@ -98,7 +124,7 @@ function submit() {
 
       <VCard class="mb-4 pa-4">
         <label class="font-weight-medium mb-2 d-block text-center">
-          بازه تاریخ مرخصی
+           تاریخ مرخصی
         </label>
 
         <VRow>
@@ -156,7 +182,6 @@ function submit() {
         </VRow>
       </VCard>
 
-      <!-- جدول دسکتاپ -->
       <div class="ma-3 overflow-auto d-none d-md-block">
         <VCard class="pa-4">
           <label class="font-weight-medium mb-4 d-block text-center">
@@ -191,7 +216,6 @@ function submit() {
         </VCard>
       </div>
 
-      <!-- برای نمایش در موبایل -->
       <div class="d-md-none pa-3">
         <VExpansionPanels variant="accordion">
           <VExpansionPanel>

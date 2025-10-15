@@ -19,6 +19,7 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
     'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-slip': RouteRecordInfo<'apps-payroll-payroll-slip', '/apps/payroll/payroll-slip', Record<never, never>, Record<never, never>>,
@@ -54,6 +55,10 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/[...error].vue': {
       routes: '$error'
+      views: never
+    }
+    'src/pages/apps/human-resources/approvals-inbox.vue': {
+      routes: 'apps-human-resources-approvals-inbox'
       views: never
     }
     'src/pages/apps/human-resources/requests.vue': {

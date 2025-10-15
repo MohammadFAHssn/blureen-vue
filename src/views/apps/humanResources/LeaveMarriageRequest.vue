@@ -1,4 +1,6 @@
 <script setup>
+const constants = inject('constants')
+const isLoading = ref(false)
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -39,7 +41,7 @@ function submit() {
   monthlyRequests.value.push({
     from: startDate.value,
     to: endDate.value,
-    status: 'در انتظار تایید',
+    status: constants.HR_REQUEST_PENDING_STATUS,
   })
   startDate.value = ''
   endDate.value = ''
@@ -76,7 +78,7 @@ function submit() {
     <VCol cols="12" md="6" class="mx-auto">
       <VCard class="mb-4 pa-4">
         <label class="font-weight-medium mb-2 d-block text-center">
-          بازه تاریخ مرخصی
+           تاریخ مرخصی
         </label>
 
         <VRow>

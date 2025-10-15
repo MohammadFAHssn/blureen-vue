@@ -54,6 +54,6 @@ function goBack() {
       </VRow>
     </div>
 
-    <component v-else :is="currentComponent" @back="current = 'root'" />
+    <component :is="currentComponent" v-else @back="current = 'root'" />
   </div>
 </template>

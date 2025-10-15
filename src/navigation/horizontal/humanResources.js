@@ -12,6 +12,13 @@ export default [
         action: 'read',
         subject: 'User',
       },
+      {
+        title: 'Approval Requests',
+        to: 'apps-human-resources-approvals-inbox',
+        icon: { icon: 'tabler-inbox' },
+        action: 'read',
+        subject: 'User',
+      },
     ],
   },
 ]

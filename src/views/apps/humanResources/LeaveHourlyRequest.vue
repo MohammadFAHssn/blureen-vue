@@ -1,29 +1,101 @@
 <script setup>
-const leaveDate = ref(null)
+const constants = inject('constants')
+const isLoading = ref(false)
+const uiState = reactive({
+  success: false,
+  successMessage: '',
+  hasError: false,
+  errorMessage: '',
+})
+
+const leaveDate = ref('')
 const startTime = ref('')
 const endTime = ref('')
 const attendanceLogs = ref([
   { in: '07:25', out: '09:27' },
   { in: '11:08', out: '15:00' },
 ])
-const todayRequests = ref([
-  { date: '1404/07/03', from: '12:00', to: '13:00', status: 'تایید شده' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-  { date: '1404/07/06', from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-])
+const currentPeriod = ref('')
+const monthlyRequests = ref([])
+function selectDate(val) {
+  currentPeriod.value = val.format('jYYYY/jMM')
+}
+async function submit() {
+  if (!leaveDate.value || !startTime.value || !endTime.value) {
+    uiState.hasError = true
+    uiState.errorMessage = 'اطلاعات درخواست ناقص است.'
+  }
+/*  else if (startTime.value > endTime.value) {
+    uiState.hasError = true
+    uiState.errorMessage = 'زمان شروع نمی‌تواند بزرگتر از زمان پایان باشد'
+  }*/
+  else {
+    const requestData = {
+      request_type_id: constants.HR_REQUEST_TYPE_HOURLY_LEAVE,
+      user_id: useCookie('userData').value.id,
+      start_date: leaveDate.value,
+      end_date: leaveDate.value,
+      start_time: startTime.value,
+      end_time: endTime.value,
+    }
+
+    try {
+      await $api('/hr-request/create', {
+        method: 'POST',
+        body: requestData,
+        onResponseError({ response }) {
+          uiState.hasError = true
+          uiState.errorMessage = response._data.message || 'خطا در ثبت مرخصی'
+        },
+      })
+
+      uiState.success = true
+      uiState.successMessage = `درخواست مرخصی ساعتی ثبت شد`
+
+      monthlyRequests.value.push({
+        start_date: leaveDate.value,
+        start_time: startTime.value,
+        end_time: endTime.value,
+        status_id: constants.HR_REQUEST_PENDING_STATUS,
+      })
+      leaveDate.value = ''
+      startTime.value = ''
+      endTime.value = ''
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+}
+function getMonthRequests() {
+
+}
 </script>
 
 <template>
+  <p>{{ currentPeriod }}</p>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+  <VSnackbar
+    v-model="uiState.success"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="success"
+  >
+    {{ uiState.successMessage }}
+  </VSnackbar>
+
   <div class="mb-6 text-center">
     <h2 class="text-h5 font-weight-bold text-primary">
       درخواست مرخصی ساعتی
@@ -60,6 +132,7 @@ const todayRequests = ref([
         format="jYYYY/jMM/jDD"
         inline
         custom-input="#custom-input"
+        @change="selectDate"
       />
     </VCol>
 
@@ -100,6 +173,14 @@ const todayRequests = ref([
           جزئیات درخواست
         </label>
         <VRow class="mb-4 px-4">
+          <VCol cols="12" sm="12" md="12">
+            <VTextField
+              v-model="leaveDate"
+              label="تاریخ مرخصی"
+              variant="outlined"
+              readonly
+            />
+          </VCol>
           <VCol cols="12" sm="6">
             <VTextField
               v-model="startTime"
@@ -123,7 +204,7 @@ const todayRequests = ref([
         </VRow>
         <VRow justify="center" class="mb-4">
           <VCol cols="auto">
-            <VBtn color="primary">
+            <VBtn color="primary" @click="submit">
               ثبت درخواست
             </VBtn>
           </VCol>
@@ -148,10 +229,10 @@ const todayRequests = ref([
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in todayRequests" :key="index">
-                <td>{{ item.date }}</td>
-                <td>{{ item.from }}</td>
-                <td>{{ item.to }}</td>
+              <tr v-for="(item, index) in monthlyRequests" :key="index">
+                <td>{{ item.start_date }}</td>
+                <td>{{ item.start_time }}</td>
+                <td>{{ item.end_time }}</td>
                 <td>
                   <VChip
                     :color="
@@ -164,7 +245,7 @@ const todayRequests = ref([
                     size="small"
                     label
                   >
-                    {{ item.status }}
+                    {{ item.status_id }}
                   </VChip>
                 </td>
                 <td>
@@ -194,7 +275,7 @@ const todayRequests = ref([
               <!-- کشوهای داخلی برای هر مرخصی -->
               <VExpansionPanels variant="accordion">
                 <VExpansionPanel
-                  v-for="(item, index) in todayRequests"
+                  v-for="(item, index) in monthlyRequests"
                   :key="index"
                   class="mb-2"
                 >
@@ -219,8 +300,9 @@ const todayRequests = ref([
 
                   <VExpansionPanelText>
                     <div class="pa-2">
-                      <div><strong>ساعت شروع:</strong> {{ item.from }}</div>
-                      <div><strong>ساعت پایان:</strong> {{ item.to }}</div>
+                      <div><strong>تاریخ:</strong> {{ item.start_date }}</div>
+                      <div><strong>ساعت شروع:</strong> {{ item.start_time }}</div>
+                      <div><strong>ساعت پایان:</strong> {{ item.end_time }}</div>
                       <div class="mt-2 text-center">
                         <VBtn color="orange" variant="text" size="small">
                           <VIcon icon="tabler-edit" size="20" />

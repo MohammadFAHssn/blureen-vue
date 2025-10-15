@@ -1,18 +1,97 @@
 <script setup>
-const overtimeDate = ref(null)
+const constants = inject('constants')
+const isLoading = ref(false)
+const uiState = reactive({
+  success: false,
+  successMessage: '',
+  hasError: false,
+  errorMessage: '',
+})
+
+const overtimeDate = ref('')
 const startTime = ref('')
 const endTime = ref('')
 const description = ref('')
-const todayRequests = ref([
-  { from: '12:00', to: '13:00', status: 'تایید شده' },
-  { from: '14:00', to: '15:00', status: 'در انتظار تایید' },
-])
+const monthlyRequests = ref([])
 const attendanceLogs = ref([
   { in: '07:25', out: '09:27' },
 ])
+
+async function submit() {
+  if (!overtimeDate.value || !startTime.value || !endTime.value || !description.value) {
+    uiState.hasError = true
+    uiState.errorMessage = 'اطلاعات درخواست ناقص است.'
+  }
+  /*  else if (startTime.value > endTime.value) {
+    uiState.hasError = true
+    uiState.errorMessage = 'زمان شروع نمی‌تواند بزرگتر از زمان پایان باشد'
+  } */
+  else {
+    const requestData = {
+      request_type_id: constants.HR_REQUEST_TYPE_OVERTIME,
+      user_id: useCookie('userData').value.id,
+      start_date: overtimeDate.value,
+      end_date: overtimeDate.value,
+      start_time: startTime.value,
+      end_time: endTime.value,
+      details: {
+        description: description.value,
+      },
+    }
+
+    try {
+      await $api('/hr-request/create', {
+        method: 'POST',
+        body: requestData,
+        onResponseError({ response }) {
+          uiState.hasError = true
+          uiState.errorMessage = response._data.message || 'خطا در ثبت مرخصی'
+        },
+      })
+
+      uiState.success = true
+      uiState.successMessage = `درخواست اضافه کار ثبت شد`
+
+      monthlyRequests.value.push({
+        start_date: overtimeDate.value,
+        start_time: startTime.value,
+        end_time: endTime.value,
+        status_id: constants.HR_REQUEST_PENDING_STATUS,
+      })
+      overtimeDate.value = ''
+      startTime.value = ''
+      endTime.value = ''
+      description.value = ''
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      isLoading.value = false
+    }
+  }
+}
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+  <VSnackbar
+    v-model="uiState.success"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="success"
+  >
+    {{ uiState.successMessage }}
+  </VSnackbar>
   <div>
     <VBtn variant="text" prepend-icon="tabler-arrow-right" class="mb-4" @click="$emit('back')">
       صفحه اصلی
@@ -72,6 +151,14 @@ const attendanceLogs = ref([
           جزئیات درخواست
         </label>
         <VRow class="mb-4 px-4">
+          <VCol cols="12" sm="12" md="12">
+            <VTextField
+              v-model="overtimeDate"
+              label="تاریخ اضافه کاری"
+              variant="outlined"
+              readonly
+            />
+          </VCol>
           <VCol cols="12" sm="6">
             <VTextField
               v-model="startTime"
@@ -102,25 +189,27 @@ const attendanceLogs = ref([
               placeholder="توضیحات اضافه کار را وارد کنید..."
             />
           </VCol>
-
         </VRow>
         <VRow justify="center" class="mb-4">
           <VCol cols="auto">
-            <VBtn color="primary">
+            <VBtn color="primary" @click="submit">
               ثبت درخواست
             </VBtn>
           </VCol>
         </VRow>
       </VCard>
 
-      <VCard>
-        <label class="font-weight-medium mb-2 mt-2 d-block text-center">
-          درخواست‌های ثبت شده
-        </label>
-        <div class="ma-3 overflow-auto">
+      <!-- برای دسکتاپ -->
+      <div class="ma-3 overflow-auto d-none d-md-block">
+        <VCard class="pa-4">
+          <label class="font-weight-medium mb-4 d-block text-center">
+            اضافه کاری های ماه جاری
+          </label>
+
           <table class="requests-table w-100">
             <thead>
               <tr>
+                <th>تاریخ</th>
                 <th>ساعت شروع</th>
                 <th>ساعت پایان</th>
                 <th>وضعیت</th>
@@ -128,10 +217,25 @@ const attendanceLogs = ref([
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in todayRequests" :key="index">
-                <td>{{ item.from }}</td>
-                <td>{{ item.to }}</td>
-                <td>{{ item.status }}</td>
+              <tr v-for="(item, index) in monthlyRequests" :key="index">
+                <td>{{ item.start_date }}</td>
+                <td>{{ item.start_time }}</td>
+                <td>{{ item.end_time }}</td>
+                <td>
+                  <VChip
+                    :color="
+                      item.status === 'تایید شده'
+                        ? 'success'
+                        : item.status === 'رد شده'
+                          ? 'error'
+                          : 'warning'
+                    "
+                    size="small"
+                    label
+                  >
+                    {{ item.status_id }}
+                  </VChip>
+                </td>
                 <td>
                   <VBtn color="orange" variant="text" size="small">
                     <VIcon icon="tabler-edit" size="20" />
@@ -143,8 +247,66 @@ const attendanceLogs = ref([
               </tr>
             </tbody>
           </table>
-        </div>
-      </VCard>
+        </VCard>
+      </div>
+
+      <!-- برای موبایل -->
+      <div class="d-md-none pa-3">
+        <VExpansionPanels variant="accordion">
+          <!-- کشوی اصلی مربوط به "مرخصی‌های ماه جاری" -->
+          <VExpansionPanel>
+            <VExpansionPanelTitle class="font-weight-bold">
+              اضافه کاری های ماه جاری
+            </VExpansionPanelTitle>
+
+            <VExpansionPanelText>
+              <!-- کشوهای داخلی برای هر مرخصی -->
+              <VExpansionPanels variant="accordion">
+                <VExpansionPanel
+                  v-for="(item, index) in monthlyRequests"
+                  :key="index"
+                  class="mb-2"
+                >
+                  <VExpansionPanelTitle>
+                    <div class="d-flex justify-space-between w-100 align-center">
+                      <span>{{ item.date }}</span>
+                      <VChip
+                        :color="
+                          item.status === 'تایید شده'
+                            ? 'success'
+                            : item.status === 'رد شده'
+                              ? 'error'
+                              : 'warning'
+                        "
+                        size="small"
+                        label
+                      >
+                        {{ item.status }}
+                      </VChip>
+                    </div>
+                  </VExpansionPanelTitle>
+
+                  <VExpansionPanelText>
+                    <div class="pa-2">
+                      <div><strong>تاریخ:</strong> {{ item.start_date }}</div>
+                      <div><strong>ساعت شروع:</strong> {{ item.start_time }}</div>
+                      <div><strong>ساعت پایان:</strong> {{ item.end_time }}</div>
+                      <div class="mt-2 text-center">
+                        <VBtn color="orange" variant="text" size="small">
+                          <VIcon icon="tabler-edit" size="20" />
+                        </VBtn>
+                        <VBtn color="red" variant="text" size="small">
+                          <VIcon icon="tabler-trash" size="20" />
+                        </VBtn>
+                      </div>
+                    </div>
+                  </VExpansionPanelText>
+                </VExpansionPanel>
+              </VExpansionPanels>
+            </VExpansionPanelText>
+          </VExpansionPanel>
+        </VExpansionPanels>
+      </div>
     </VCol>
   </VRow>
 </template>
