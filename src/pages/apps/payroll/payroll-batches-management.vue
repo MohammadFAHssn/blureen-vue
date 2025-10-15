@@ -87,14 +87,12 @@ const rowData = computed(() =>
 )
 
 function getContextMenuItems(params) {
-  console.log(params)
-
   return [
     {
       icon: '<i class="tabler tabler-file-analytics" style="font-size: 18px;"></i>',
       name: 'گزارشات',
       action: () => {
-        fetchReports()
+        fetchReports(params.node.data.month, params.node.data.year)
       },
     },
     'separator',
@@ -193,18 +191,38 @@ async function onDelete() {
 async function fetchReports(month, year) {
   pendingState.fetchReports = true
   try {
-    const { data, error } = await useApi(
-      createUrl('/payroll/payroll-batch/reports'),
-    )
+    const res = await $api('/payroll/payroll-slip/reports', {
+      method: 'GET',
+      query: {
+        month,
+        year,
+      },
+      responseType: 'blob',
+      onResponseError({ response }) {
+        pendingState.fetchReports = false
+        uiState.hasError = true
+        uiState.errorMessage
+          = response._data.message || 'خطا در دریافت گزارش فیش حقوقی'
+      },
+    })
+
+    // Create a download link for the blob
+    const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `گزارش-فیش-حقوقی-${year}-${month}.xlsx`
+    document.body.appendChild(link)
+    link.click()
+
+    // Cleanup
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(link)
 
     pendingState.fetchReports = false
-
-    if (error.value) throw error.value
   }
-  catch (e) {
-    console.error('Error fetching reports:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت گزارشات'
+  catch (err) {
+    console.error(err)
   }
 }
 </script>
