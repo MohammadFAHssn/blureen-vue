@@ -41,7 +41,7 @@ function onCancelClick() {
 
 <template>
   <div class="d-flex gap-1">
-    <div v-if="params.value.editable.status">
+    <div v-if="params.value.editable?.status">
       <IconBtn
         v-if="params.value.editable.mode === 'view'"
         :disabled="isPending"
@@ -76,6 +76,10 @@ function onCancelClick() {
       @click="params.onDeleteClick(params.node)"
     >
       <VIcon icon="tabler-trash" />
+    </IconBtn>
+
+    <IconBtn v-if="params.value.detailsable" @click="params.onDetailsClick(params.node)">
+      <VIcon icon="tabler-file-description" />
     </IconBtn>
 
     <v-switch

@@ -29,10 +29,10 @@ export default [
         subject: 'Personnel-Records',
       },
       {
-        title: 'Approval Levels',
+        title: 'Approval Flows',
         to: 'apps-user-organization-chart',
         action: 'read',
-        subject: 'Approval-Levels',
+        subject: 'Approval-Flows',
       },
     ],
   },

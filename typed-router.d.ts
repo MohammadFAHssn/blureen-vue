@@ -21,6 +21,9 @@ declare module 'vue-router/auto-routes' {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
     'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
+    'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
+    'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
+    'apps-payroll-birthday-birthday-user': RouteRecordInfo<'apps-payroll-birthday-birthday-user', '/apps/payroll/birthday/birthday-user', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-batches-management': RouteRecordInfo<'apps-payroll-payroll-batches-management', '/apps/payroll/payroll-batches-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-payroll-slip': RouteRecordInfo<'apps-payroll-payroll-slip', '/apps/payroll/payroll-slip', Record<never, never>, Record<never, never>>,
     'apps-permissions': RouteRecordInfo<'apps-permissions', '/apps/permissions', Record<never, never>, Record<never, never>>,
@@ -63,6 +66,18 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/human-resources/requests.vue': {
       routes: 'apps-human-resources-requests'
+      views: never
+    }
+    'src/pages/apps/payroll/birthday/birthday-admin-file.vue': {
+      routes: 'apps-payroll-birthday-birthday-admin-file'
+      views: never
+    }
+    'src/pages/apps/payroll/birthday/birthday-admin-gift.vue': {
+      routes: 'apps-payroll-birthday-birthday-admin-gift'
+      views: never
+    }
+    'src/pages/apps/payroll/birthday/birthday-user.vue': {
+      routes: 'apps-payroll-birthday-birthday-user'
       views: never
     }
     'src/pages/apps/payroll/payroll-batches-management.vue': {
