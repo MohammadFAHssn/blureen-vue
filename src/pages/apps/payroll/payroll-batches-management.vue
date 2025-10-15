@@ -211,7 +211,7 @@ async function fetchReports(month, year) {
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `گزارش-فیش-حقوقی-${year}-${month}.xlsx`
+    link.download = `فیش حقوقی مشاهده نشده ماه ${month} سال ${year}.xlsx`
     document.body.appendChild(link)
     link.click()
 
