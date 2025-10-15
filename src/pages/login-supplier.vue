@@ -95,7 +95,7 @@ function onSubmit() {
     v-model="isRedirectedFromUnauthorizedStatus"
     :timeout="5000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
@@ -106,7 +106,7 @@ function onSubmit() {
     v-model="hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     {{ errors.other }}
