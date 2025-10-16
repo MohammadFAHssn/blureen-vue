@@ -23,6 +23,8 @@ definePage({
 const route = useRoute()
 const router = useRouter()
 
+const ability = useAbility()
+
 const otpCode = ref('')
 const isOtpCodeInserted = ref(false)
 
@@ -61,7 +63,7 @@ const timeRemaining = computed(() => {
 async function onFinish() {
   isOtpCodeInserted.value = true
   try {
-    const res = await $api('/verify-forgot-password-otp', {
+    const res = await $api('/verify-user-otp', {
       method: 'POST',
       body: {
         mobileNumber: route.query.mobileNumber,
@@ -79,15 +81,15 @@ async function onFinish() {
       },
     })
 
-    // const { accessToken, userData, userAbilityRules } = res
+    const { accessToken, userData, userAbilityRules } = res
 
-    // useCookie('userAbilityRules').value = userAbilityRules
-    // ability.update(userAbilityRules)
-    // useCookie('userData').value = userData
-    // useCookie('accessToken').value = accessToken
-    // await nextTick(() => {
-    //   router.replace(route.query.to ? String(route.query.to) : '/')
-    // })
+    useCookie('userAbilityRules').value = userAbilityRules
+    ability.update(userAbilityRules)
+    useCookie('userData').value = userData
+    useCookie('accessToken').value = accessToken
+    await nextTick(() => {
+      router.replace(route.query.to ? String(route.query.to) : '/reset-password')
+    })
   }
   catch (err) {
     console.error(err)
