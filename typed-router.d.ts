@@ -37,9 +37,11 @@ declare module 'vue-router/auto-routes' {
     'apps-user-personnel-records': RouteRecordInfo<'apps-user-personnel-records', '/apps/user/personnel-records', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
+    'forgot-password': RouteRecordInfo<'forgot-password', '/forgot-password', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-supplier': RouteRecordInfo<'login-supplier', '/login-supplier', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
+    'two-step-forgot-password': RouteRecordInfo<'two-step-forgot-password', '/two-step-forgot-password', Record<never, never>, Record<never, never>>,
     'two-step-supplier': RouteRecordInfo<'two-step-supplier', '/two-step-supplier', Record<never, never>, Record<never, never>>,
   }
 
@@ -130,6 +132,10 @@ declare module 'vue-router/auto-routes' {
       routes: 'dashboards-payroll-chart'
       views: never
     }
+    'src/pages/forgot-password.vue': {
+      routes: 'forgot-password'
+      views: never
+    }
     'src/pages/login.vue': {
       routes: 'login'
       views: never
@@ -140,6 +146,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/not-authorized.vue': {
       routes: 'not-authorized'
+      views: never
+    }
+    'src/pages/two-step-forgot-password.vue': {
+      routes: 'two-step-forgot-password'
       views: never
     }
     'src/pages/two-step-supplier.vue': {

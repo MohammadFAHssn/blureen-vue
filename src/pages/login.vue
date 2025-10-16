@@ -96,7 +96,7 @@ function onSubmit() {
     v-model="isRedirectedFromUnauthorizedStatus"
     :timeout="5000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
@@ -107,7 +107,7 @@ function onSubmit() {
     v-model="hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     خطایی رخ داده‌است.
@@ -194,7 +194,7 @@ function onSubmit() {
                   <VCheckbox v-model="rememberMe" label="مرا به خاطر بسپار" />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
-                    :to="{ name: 'login' }"
+                    :to="{ name: 'forgot-password' }"
                   >
                     رمز عبور خود را فراموش کرده‌اید؟
                   </RouterLink>
