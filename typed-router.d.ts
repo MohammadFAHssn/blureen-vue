@@ -41,6 +41,7 @@ declare module 'vue-router/auto-routes' {
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-supplier': RouteRecordInfo<'login-supplier', '/login-supplier', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
+    'reset-password': RouteRecordInfo<'reset-password', '/reset-password', Record<never, never>, Record<never, never>>,
     'two-step-forgot-password': RouteRecordInfo<'two-step-forgot-password', '/two-step-forgot-password', Record<never, never>, Record<never, never>>,
     'two-step-supplier': RouteRecordInfo<'two-step-supplier', '/two-step-supplier', Record<never, never>, Record<never, never>>,
   }
@@ -146,6 +147,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/not-authorized.vue': {
       routes: 'not-authorized'
+      views: never
+    }
+    'src/pages/reset-password.vue': {
+      routes: 'reset-password'
       views: never
     }
     'src/pages/two-step-forgot-password.vue': {
