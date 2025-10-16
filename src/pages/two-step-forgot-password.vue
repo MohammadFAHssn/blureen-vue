@@ -140,7 +140,7 @@ async function onFinish() {
         </VCardItem>
 
         <VCardText>
-          <h4 class="text-h4 mb-1">
+          <h4 class="text-h6 mb-1">
             احراز هویت دو مرحله‌ای
           </h4>
           <p class="mb-1">
