@@ -34,10 +34,10 @@ const credentials = ref({
 })
 
 const hasError = ref(false)
-const IsItWaitingServerResponse = ref(false)
+const isItWaitingServerResponse = ref(false)
 
 async function getOtpCode() {
-  IsItWaitingServerResponse.value = true
+  isItWaitingServerResponse.value = true
   try {
     const res = await $api('/get-otp-code', {
       method: 'POST',
@@ -45,7 +45,7 @@ async function getOtpCode() {
         mobileNumber: credentials.value.mobileNumber,
       },
       onResponseError({ response }) {
-        IsItWaitingServerResponse.value = false
+        isItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
         }
@@ -155,8 +155,8 @@ function onSubmit() {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"
-                  :disabled="IsItWaitingServerResponse"
+                  :loading="isItWaitingServerResponse"
+                  :disabled="isItWaitingServerResponse"
                 >
                   ارسال کد تأیید
                 </VBtn>
