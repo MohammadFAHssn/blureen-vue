@@ -97,6 +97,10 @@ async function onFinish() {
     console.error(err)
   }
 }
+
+onUnmounted(() => {
+  clearInterval(intervalId)
+})
 </script>
 
 <template>
