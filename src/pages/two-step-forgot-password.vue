@@ -66,7 +66,7 @@ async function onFinish() {
     const res = await $api('/verify-user-otp', {
       method: 'POST',
       body: {
-        mobileNumber: route.query.mobileNumber,
+        mobileNumber: useCookie('mobileNumber').value,
         otpCode: otpCode.value,
       },
       onResponseError({ response }) {
@@ -88,7 +88,9 @@ async function onFinish() {
     useCookie('userData').value = userData
     useCookie('accessToken').value = accessToken
     await nextTick(() => {
-      router.replace(route.query.to ? String(route.query.to) : '/reset-password')
+      router.replace(
+        route.query.to ? String(route.query.to) : '/reset-password',
+      )
     })
   }
   catch (err) {

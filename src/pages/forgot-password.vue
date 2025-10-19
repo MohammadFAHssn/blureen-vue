@@ -59,10 +59,10 @@ async function getOtpCode() {
     const { otpExpiresAt } = res
 
     useCookie('otpExpiresAt').value = otpExpiresAt
+    useCookie('mobileNumber').value = credentials.value.mobileNumber
     await nextTick(() => {
       router.replace({
         path: '/two-step-forgot-password',
-        query: { mobileNumber: credentials.value.mobileNumber },
       })
     })
   }
@@ -132,7 +132,11 @@ function onSubmit() {
         </VCardText>
 
         <VCardText>
-          <VForm ref="refVForm" validate-on="submit lazy" @submit.prevent="onSubmit">
+          <VForm
+            ref="refVForm"
+            validate-on="submit lazy"
+            @submit.prevent="onSubmit"
+          >
             <VRow>
               <VCol cols="12">
                 <AppTextField
@@ -151,6 +155,8 @@ function onSubmit() {
                 <VBtn
                   block
                   type="submit"
+                  :loading="IsItWaitingServerResponse"
+                  :disabled="IsItWaitingServerResponse"
                 >
                   ارسال کد تأیید
                 </VBtn>

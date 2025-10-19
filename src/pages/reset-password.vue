@@ -11,6 +11,22 @@ definePage({
   },
 })
 
+const route = useRoute()
+const router = useRouter()
+
+// states
+
+const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
+})
+
+const pendingState = reactive({
+  resetPassword: false,
+})
+
+const refVForm = ref()
+
 const form = ref({
   newPassword: '',
   confirmPassword: '',
@@ -18,9 +34,51 @@ const form = ref({
 
 const isPasswordVisible = ref(false)
 const isConfirmPasswordVisible = ref(false)
+
+async function resetPassword() {
+  pendingState.resetPassword = true
+  try {
+    await $api('/base/user/reset-password', {
+      method: 'POST',
+      body: {
+        newPassword: form.value.newPassword,
+      },
+      onResponseError({ response }) {
+        pendingState.resetPassword = false
+        uiState.hasError = true
+        uiState.errorMessage
+          = response._data.message || 'خطا در بازنشانی رمز عبور'
+      },
+    })
+    pendingState.resetPassword = false
+
+    await nextTick(() => {
+      router.replace(route.query.to ? String(route.query.to) : '/')
+    })
+  }
+  catch (err) {
+    console.error(err)
+  }
+}
+
+function onSubmit() {
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) resetPassword()
+  })
+}
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <div class="position-relative my-sm-16">
       <!-- 👉 Top shape -->
@@ -59,12 +117,17 @@ const isConfirmPasswordVisible = ref(false)
             بازنشانی رمز عبور
           </h4>
           <p class="mb-0">
-            برای حفظ امنیت شما، لطفاً رمزی را انتخاب کنید که شامل حداقل 8 کاراکتر، از حروف بزرگ و کوچک انگلیسی و اعداد باشد.
+            برای حفظ امنیت شما، لطفاً رمزی را انتخاب کنید که حداقل ۸ کاراکتر و
+            شامل حروف بزرگ و کوچک انگلیسی و اعداد باشد.
           </p>
         </VCardText>
 
         <VCardText>
-          <VForm @submit.prevent="() => {}">
+          <VForm
+            ref="refVForm"
+            validate-on="submit lazy"
+            @submit.prevent="onSubmit"
+          >
             <VRow>
               <!-- password -->
               <VCol cols="12">
@@ -75,7 +138,11 @@ const isConfirmPasswordVisible = ref(false)
                   placeholder="············"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   autocomplete="password"
-                  :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
+                  tabindex="1"
+                  :append-inner-icon="
+                    isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  :rules="[passwordValidator]"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
               </VCol>
@@ -87,9 +154,17 @@ const isConfirmPasswordVisible = ref(false)
                   label="تأیید رمز عبور"
                   autocomplete="confirm-password"
                   placeholder="············"
+                  tabindex="2"
                   :type="isConfirmPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
-                  @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                  :append-inner-icon="
+                    isConfirmPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'
+                  "
+                  :rules="[
+                    confirmedValidator(form.confirmPassword, form.newPassword),
+                  ]"
+                  @click:append-inner="
+                    isConfirmPasswordVisible = !isConfirmPasswordVisible
+                  "
                 />
               </VCol>
 
@@ -98,6 +173,9 @@ const isConfirmPasswordVisible = ref(false)
                 <VBtn
                   block
                   type="submit"
+                  tabindex="3"
+                  :loading="pendingState.resetPassword"
+                  :disabled="pendingState.resetPassword"
                 >
                   تأیید رمز عبور جدید
                 </VBtn>
