@@ -164,6 +164,12 @@ function onSelectionChanged() {
           lastNode.setSelected(false, false)
         }
       }
+
+      if (lastNode.data?.active === 0) {
+        uiState.hasError = true
+        uiState.errorMessage = 'کاربر غیرفعال را نمی‌توان به عنوان تأییدکننده انتخاب کرد.'
+        lastNode.setSelected(false, false)
+      }
     }
 
     approvalFlow.value = selectedNodes.value
