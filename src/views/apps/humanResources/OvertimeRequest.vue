@@ -40,7 +40,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/create', {
+      await $api('/hr-request/request/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {

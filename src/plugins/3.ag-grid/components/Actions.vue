@@ -81,6 +81,12 @@ function onCancelClick() {
     <IconBtn v-if="params.value.detailsable" @click="params.onDetailsClick(params.node)">
       <VIcon icon="tabler-file-description" />
     </IconBtn>
+    <IconBtn v-if="params.value.approvable" @click="params.onApproveClick(params.node, true)">
+      <VIcon icon="tabler-check" />
+    </IconBtn>
+    <IconBtn v-if="params.value.approvable" @click="params.onApproveClick(params.node, false)">
+      <VIcon icon="tabler-ban" />
+    </IconBtn>
 
     <v-switch
       v-if="params.value.activable"
