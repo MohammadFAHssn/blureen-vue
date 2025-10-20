@@ -1,8 +1,8 @@
 <script setup>
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
-import BirthdayFileCreateDialog from '@/views/apps/payroll/birthday/BirthdayFileCreateDialog.vue'
-import BirthdayFileDetailsDialog from '@/views/apps/payroll/birthday/BirthdayFileDetailsDialog.vue'
-import BirthdayFileEditDialog from '@/views/apps/payroll/birthday/BirthdayFileEditDialog.vue'
+import HealthCertificateCreateDialog from '@/views/apps/hse/HealthCertificateCreateDialog.vue'
+import HealthCertificateDetailsDialog from '@/views/apps/hse/HealthCertificateDetailsDialog.vue'
+import HealthCertificateEditDialog from '@/views/apps/hse/HealthCertificateEditDialog.vue'
 
 definePage({
   meta: {
@@ -16,23 +16,23 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  isBirthdayFileCreateDialogVisible: false,
-  isBirthdayFileEditDialogVisible: false,
-  isBirthdayFileDeleteDialogVisible: false,
-  isBirthdayFileDetailsDialogVisible: false,
+  isHealthCertificateCreateDialogVisible: false,
+  isHealthCertificateEditDialogVisible: false,
+  isHealthCertificateDeleteDialogVisible: false,
+  isHealthCertificateDetailsDialogVisible: false,
 })
 
 const pendingState = reactive({
-  createBirthdayFile: false,
-  editBirthdayFile: false,
-  fetchingBirthdayFiles: false,
-  deleteBirthdayFile: false,
-  detailsBirthdayFile: false,
+  createHealthCertificate: false,
+  editHealthCertificate: false,
+  fetchingHealthCertificates: false,
+  deleteHealthCertificate: false,
+  detailsHealthCertificate: false,
 })
 
-const birthdayFiles = ref([])
+const healthCertificates = ref([])
 
-const selectedBirthdayFile = ref(null)
+const selectedHealthCertificate = ref(null)
 const selectedNodes = ref([])
 const gridApi = ref(null)
 // ----- start ag-grid -----
@@ -45,7 +45,7 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'نام فایل', field: 'name' },
+  { headerName: 'نام', field: 'name' },
   { headerName: 'ماه', field: 'month' },
   { headerName: 'سال', field: 'year' },
   {
@@ -84,21 +84,21 @@ const columnDefs = ref([
         params: {
           onDeleteClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
-            uiState.isBirthdayFileDeleteDialogVisible = true
+            uiState.isHealthCertificateDeleteDialogVisible = true
           },
           onDetailsClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
-            selectedBirthdayFile.value = birthdayFiles.value.find(
+            selectedHealthCertificate.value = healthCertificates.value.find(
               file => file.id === selectedNode.data.id,
             )
-            uiState.isBirthdayFileDetailsDialogVisible = true
+            uiState.isHealthCertificateDetailsDialogVisible = true
           },
           onEditClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
-            selectedBirthdayFile.value = birthdayFiles.value.find(
+            selectedHealthCertificate.value = healthCertificates.value.find(
               gift => gift.id === selectedNode.data.id,
             )
-            uiState.isBirthdayFileEditDialogVisible = true
+            uiState.isHealthCertificateEditDialogVisible = true
           },
         },
       }
@@ -107,7 +107,7 @@ const columnDefs = ref([
 ])
 
 const rowData = computed(() =>
-  birthdayFiles.value?.map((file) => {
+  healthCertificates.value?.map((file) => {
     return {
       id: file.id,
       name: file.name,
@@ -134,39 +134,44 @@ const rowData = computed(() =>
 
 // ----- -----
 
-async function fetchbirthdayFiles() {
-  pendingState.fetchingBirthdayFiles = true
+async function fetchHealthCertificates() {
+  pendingState.fetchingHealthCertificates = true
   gridApi.value?.setGridOption('loading', true)
   try {
-    const res = await $api('/birthday/file/', { method: 'GET' })
+    const res = await $api('/hse/health-certificate/file/', { method: 'GET' })
 
-    birthdayFiles.value = res?.data?.birthdayFiles || []
+    healthCertificates.value = res?.data?.healthCertificates || []
   }
   catch (e) {
-    console.error('Error fetching birthdayFiles:', e)
+    console.error('Error fetching healthCertificates:', e)
     uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت فایل‌های هدیه'
+    uiState.errorMessage = e.message || 'خطا در دریافت دوره‌های شناسنامه‌ها'
   }
   finally {
-    pendingState.fetchingBirthdayFiles = false
+    pendingState.fetchingHealthCertificates = false
     gridApi.value?.setGridOption('loading', false)
   }
 }
 
-fetchbirthdayFiles()
+fetchHealthCertificates()
 
-async function onCreateBirthdayFile(payload) {
+async function onCreateHealthCertificate(payload) {
   const formData = new FormData()
 
-  formData.append('month', Number(payload.birthdayFileDate.split('/')[1]))
-  formData.append('year', Number(payload.birthdayFileDate.split('/')[0]))
+  formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
+  formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
 
-  formData.append('file', payload.birthdayFile)
-  formData.append('file_name', payload.birthdayFile.name)
+  if (payload.healthCertificateImages && payload.healthCertificateImages.length) {
+    for (const file of payload.healthCertificateImages) {
+      formData.append('images[]', file)
+    }
+    // console.log('Number of selected files:', payload.healthCertificateImages.length)
+  }
+  formData.append('file_name', payload.healthCertificateName)
 
-  pendingState.createBirthdayFile = true
+  pendingState.createHealthCertificate = true
   try {
-    await $api('/birthday/file/', {
+    await $api('/hse/health-certificate/file/', {
       method: 'POST',
       body: formData,
       onResponseError({ response }) {
@@ -177,38 +182,40 @@ async function onCreateBirthdayFile(payload) {
         }
         else {
           uiState.errorMessage
-            = response._data?.message || 'خطا در آپلود فایل هدیه'
+            = response._data?.message || 'خطا در ایجاد'
         }
       },
     })
 
-    uiState.isBirthdayFileCreateDialogVisible = false
+    uiState.isHealthCertificateCreateDialogVisible = false
   }
   catch (err) {
     console.error(err)
   }
   finally {
-    pendingState.createBirthdayFile = false
-    fetchbirthdayFiles()
+    pendingState.createHealthCertificate = false
+    fetchHealthCertificates()
   }
 }
 
-async function onEditBirthdayFile(payload) {
+async function onEditHealthCertificate(payload) {
   const id = selectedNodes.value[0].data.id
   const formData = new FormData()
-  if (payload.birthdayFileDate) {
-    formData.append('month', Number(payload.birthdayFileDate.split('/')[1]))
-    formData.append('year', Number(payload.birthdayFileDate.split('/')[0]))
+  if (payload.healthCertificateDate) {
+    formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
+    formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
   }
-  if (payload.birthdayFile) {
-    formData.append('file', payload.birthdayFile)
-    formData.append('file_name', payload.birthdayFile.name)
+  if (payload.healthCertificateImages) {
+    formData.append('file', payload.healthCertificateImages)
+  }
+  if (payload.healthCertificateName) {
+    formData.append('file_name', payload.healthCertificateName)
   }
   formData.append('status', payload.birthdayFileStatus)
 
-  pendingState.editBirthdayFile = true
+  pendingState.editHealthCertificate = true
   try {
-    await $api(`/birthday/file/${id}`, {
+    await $api(`/hse/health-certificate/file/${id}`, {
       method: 'POST',
       body: formData,
       onResponseError({ response }) {
@@ -219,38 +226,38 @@ async function onEditBirthdayFile(payload) {
         }
         else {
           uiState.errorMessage
-            = response._data?.message || 'خطا در ویرایش فایل هدیه'
+            = response._data?.message || 'خطا در ویرایش'
         }
       },
     })
 
-    uiState.isBirthdayFileEditDialogVisible = false
+    uiState.isHealthCertificateEditDialogVisible = false
   }
   catch (err) {
     console.error(err)
   }
   finally {
-    pendingState.editBirthdayFile = false
-    fetchbirthdayFiles()
+    pendingState.editHealthCertificate = false
+    fetchHealthCertificates()
   }
 }
 
 async function onDelete() {
   const id = selectedNodes.value[0].data.id
-  pendingState.deleteBirthdayFile = true
+  pendingState.deleteHealthCertificate = true
   try {
-    await $api(`/birthday/file/${id}`, {
+    await $api(`/hse/health-certificate/file/${id}`, {
       method: 'DELETE',
       onResponseError({ response }) {
-        pendingState.deleteBirthdayFile = false
+        pendingState.deleteHealthCertificate = false
         uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در حذف فایل هدیه'
+        uiState.errorMessage = response._data.message || 'خطا در حذف'
       },
     })
 
-    pendingState.deleteBirthdayFile = false
-    uiState.isBirthdayFileDeleteDialogVisible = false
-    birthdayFiles.value = birthdayFiles.value.filter(
+    pendingState.deleteHealthCertificate = false
+    uiState.isHealthCertificateDeleteDialogVisible = false
+    healthCertificates.value = healthCertificates.value.filter(
       file => file.id !== selectedNodes.value[0].data.id,
     )
   }
@@ -279,39 +286,39 @@ async function onDelete() {
       />
     </section>
 
-    <BirthdayFileCreateDialog
-      v-if="uiState.isBirthdayFileCreateDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileCreateDialogVisible"
-      :loading="pendingState.createBirthdayFile"
-      @submit="onCreateBirthdayFile"
+    <HealthCertificateCreateDialog
+      v-if="uiState.isHealthCertificateCreateDialogVisible"
+      v-model:is-dialog-visible="uiState.isHealthCertificateCreateDialogVisible"
+      :loading="pendingState.createHealthCertificate"
+      @submit="onCreateHealthCertificate"
     />
 
-    <BirthdayFileEditDialog
-      v-if="uiState.isBirthdayFileEditDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileEditDialogVisible"
-      :loading="pendingState.editBirthdayFile"
-      :file="{ selectedBirthdayFile }"
-      @submit="onEditBirthdayFile"
+    <HealthCertificateEditDialog
+      v-if="uiState.isHealthCertificateEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isHealthCertificateEditDialogVisible"
+      :loading="pendingState.editHealthCertificate"
+      :file="{ selectedHealthCertificate }"
+      @submit="onEditHealthCertificate"
     />
 
-    <BirthdayFileDetailsDialog
-      v-if="uiState.isBirthdayFileDetailsDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileDetailsDialogVisible"
-      :loading="pendingState.detailsBirthdayFile"
-      :file="selectedBirthdayFile"
-      @update:selected-birthday-file-users="selectedBirthdayFile.users = $event"
+    <HealthCertificateDetailsDialog
+      v-if="uiState.isHealthCertificateDetailsDialogVisible"
+      v-model:is-dialog-visible="uiState.isHealthCertificateDetailsDialogVisible"
+      :loading="pendingState.detailsHealthCertificate"
+      :file="selectedHealthCertificate"
+      @update:selected-birthday-file-users="selectedHealthCertificate.users = $event"
     />
 
     <AreYouSureDialog
-      v-if="uiState.isBirthdayFileDeleteDialogVisible"
-      v-model:is-dialog-visible="uiState.isBirthdayFileDeleteDialogVisible"
-      title="آیا از حذف این فایل هدیه اطمینان دارید؟"
-      :loading="pendingState.deleteBirthdayFile"
+      v-if="uiState.isHealthCertificateDeleteDialogVisible"
+      v-model:is-dialog-visible="uiState.isHealthCertificateDeleteDialogVisible"
+      title="آیا از حذف این اطمینان دارید؟"
+      :loading="pendingState.deleteHealthCertificate"
       @confirm="onDelete"
     />
 
     <VApp>
-      <VFab app icon="tabler-plus" size="x-large" @click="uiState.isBirthdayFileCreateDialogVisible = true" />
+      <VFab app icon="tabler-plus" size="x-large" @click="uiState.isHealthCertificateCreateDialogVisible = true" />
     </VApp>
   </VLayout>
 </template>
