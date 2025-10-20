@@ -42,14 +42,14 @@ const credentials = ref({
 const rememberMe = ref(false)
 
 const hasError = ref(false)
-const IsItWaitingServerResponse = ref(false)
+const isItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(
   route.query.isRedirectedFromUnauthorizedStatus === 'true',
 )
 
 async function login() {
-  IsItWaitingServerResponse.value = true
+  isItWaitingServerResponse.value = true
   try {
     const res = await $api('/login', {
       method: 'POST',
@@ -58,12 +58,12 @@ async function login() {
         password: credentials.value.password,
       },
       onResponseError({ response }) {
-        IsItWaitingServerResponse.value = false
+        isItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
         }
         else {
-          IsItWaitingServerResponse.value = false
+          isItWaitingServerResponse.value = false
           hasError.value = true
         }
       },
@@ -203,8 +203,8 @@ function onSubmit() {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"
-                  :disabled="IsItWaitingServerResponse"
+                  :loading="isItWaitingServerResponse"
+                  :disabled="isItWaitingServerResponse"
                 >
                   ورود
                 </VBtn>
