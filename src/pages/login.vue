@@ -30,6 +30,7 @@ const ability = useAbility()
 const errors = ref({
   username: undefined,
   password: undefined,
+  other: undefined,
 })
 
 const refVForm = ref()
@@ -63,7 +64,7 @@ async function login() {
           errors.value = response._data.errors
         }
         else {
-          isItWaitingServerResponse.value = false
+          errors.value.other = response._data.message
           hasError.value = true
         }
       },
@@ -110,7 +111,7 @@ function onSubmit() {
     variant="flat"
     color="error"
   >
-    خطایی رخ داده‌است.
+    {{ errors.other }}
   </VSnackbar>
 
   <RouterLink to="/">
