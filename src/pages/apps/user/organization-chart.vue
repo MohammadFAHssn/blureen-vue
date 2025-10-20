@@ -155,6 +155,17 @@ function onSelectionChanged() {
     }
   }
   else if (mode.value === 'edit') {
+    if (selectedNodes.value.length !== 0) {
+      const lastNode = selectedNodes.value[selectedNodes.value.length - 1]
+      if (lastNode.field === 'jobPosition') {
+        if (lastNode.allChildrenCount > 1) {
+          uiState.hasError = true
+          uiState.errorMessage = 'بیش از یک کاربر در سمت شغلی انتخاب شده وجود دارد. لطفاً کاربر مورد نظر خود را در این سمت انتخاب کنید.'
+          lastNode.setSelected(false, false)
+        }
+      }
+    }
+
     approvalFlow.value = selectedNodes.value
   }
 }
