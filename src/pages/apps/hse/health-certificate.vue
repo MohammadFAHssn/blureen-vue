@@ -36,35 +36,36 @@ async function fetchLatestHealthCertificateImage(year = null) {
   }
 }
 
-const downloadHealthCertificateImage = async () => {
-  if (!selectedImage.value) return;
+async function downloadHealthCertificateImage() {
+  if (!selectedImage.value) return
 
-  pendingState.downloadingHealthCertificate = true;
+  pendingState.downloadingHealthCertificate = true
 
   try {
     const res = await $api('/hse/health-certificate/user/image/download', {
       params: { year: year.value },
       responseType: 'blob',
-    });
+    })
 
-    const responseData = res.data ?? res;
-    const headers = (res.headers ?? res?.headers) ?? {};
+    const responseData = res.data ?? res
+    const headers = (res.headers ?? res?.headers) ?? {}
 
-    const contentType = headers['content-type'] ?? headers['Content-Type'] ?? 'application/octet-stream';
-    const blob = new Blob([responseData], { type: contentType });
-    const downloadUrl = URL.createObjectURL(blob);
+    const contentType = headers['content-type'] ?? headers['Content-Type'] ?? 'application/octet-stream'
+    const blob = new Blob([responseData], { type: contentType })
+    const downloadUrl = URL.createObjectURL(blob)
 
     // DEFAULT filename with .jpg suffix (fixed)
-    let filename = `health-certificate-${year.value || 'latest'}.jpg`;
+    let filename = `health-certificate-${year.value || 'latest'}.jpg`
 
-    const contentDisposition = headers['content-disposition'] ?? headers['Content-Disposition'];
+    const contentDisposition = headers['content-disposition'] ?? headers['Content-Disposition']
     if (contentDisposition) {
-      const match = /filename\*?=(?:UTF-8'')?["']?([^;"']+)["']?/i.exec(contentDisposition);
+      const match = /filename\*?=(?:UTF-8'')?["']?([^;"']+)["']?/i.exec(contentDisposition)
       if (match && match[1]) {
         try {
-          filename = decodeURIComponent(match[1]);
-        } catch {
-          filename = match[1];
+          filename = decodeURIComponent(match[1])
+        }
+        catch {
+          filename = match[1]
         }
       }
     }
@@ -72,28 +73,31 @@ const downloadHealthCertificateImage = async () => {
     // fallback: use last segment of public URL if possible
     if (!filename || filename === '') {
       try {
-        const urlObj = new URL(selectedImage.value, window.location.origin);
-        const pathParts = urlObj.pathname.split('/');
-        const lastPart = pathParts[pathParts.length - 1];
-        if (lastPart) filename = lastPart;
-      } catch {
-        console.error('error in filename');
+        const urlObj = new URL(selectedImage.value, window.location.origin)
+        const pathParts = urlObj.pathname.split('/')
+        const lastPart = pathParts[pathParts.length - 1]
+        if (lastPart) filename = lastPart
+      }
+      catch {
+        console.error('error in filename')
       }
     }
 
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(downloadUrl);
-  } catch (downloadErr) {
-    console.error(downloadErr);
-  } finally {
-    pendingState.downloadingHealthCertificate = false;
+    const a = document.createElement('a')
+    a.href = downloadUrl
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(downloadUrl)
   }
-};
+  catch (downloadErr) {
+    console.error(downloadErr)
+  }
+  finally {
+    pendingState.downloadingHealthCertificate = false
+  }
+}
 
 onMounted(async () => {
   const d = new Date()
@@ -145,7 +149,7 @@ onMounted(async () => {
             :disabled="pendingState.fetchingHealthCertificateImage || pendingState.downloadingHealthCertificate"
             @click="downloadHealthCertificateImage"
           >
-              <VProgressCircular v-if="pendingState.downloadingHealthCertificate" indeterminate size="18" />
+            <VProgressCircular v-if="pendingState.downloadingHealthCertificate" indeterminate size="18" />
             <div v-else>
               دانلود
             </div>
