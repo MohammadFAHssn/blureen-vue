@@ -1,1 +1,0 @@
-import{a as i,b as n}from"./helpers-4BKJjDfb.js";function s(r){return i(r)||n(r)||r===!1?"پر کردن این فیلد الزامی است":!!String(r).trim().length||"پر کردن این فیلد الزامی است"}function a(r){const t=String(r);return/^09\d{9}$/.test(t)||"شماره تلفن معتبر نیست"}export{a as m,s as r};
