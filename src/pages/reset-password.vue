@@ -7,7 +7,6 @@ import { themeConfig } from '@themeConfig'
 definePage({
   meta: {
     layout: 'blank',
-    public: true,
   },
 })
 
