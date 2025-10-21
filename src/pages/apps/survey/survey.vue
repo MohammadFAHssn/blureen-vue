@@ -87,6 +87,12 @@ function participateInSurvey() {
   </VSnackbar>
 
   <VRow>
+    <VCol>
+      <VCard v-if="surveys.length === 0" variant="text">
+        نظرسنجی فعالی وجود ندارد.
+      </VCard>
+    </VCol>
+
     <VCol
       v-for="survey in surveys"
       :key="survey.id"
