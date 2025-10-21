@@ -330,6 +330,12 @@ async function onSelectedRequestTypeChange() {
   }
 }
 
+function removeApprover(index) {
+  const approverNode = approvalFlow.value[index]
+  approverNode.setSelected(false, false)
+  approvalFlow.value.splice(index, 1)
+}
+
 await fetchRequestTypes()
 fetchUsers()
 await fetchApprovalFlows()
@@ -410,6 +416,7 @@ watch(mode, (newMode) => {
         @edit="mode = 'edit'"
         @save="onSave"
         @cancel="mode = 'view'"
+        @remove-approver="removeApprover"
       />
     </div>
 
