@@ -32,6 +32,7 @@ declare module 'vue-router/auto-routes' {
     'apps-survey-survey': RouteRecordInfo<'apps-survey-survey', '/apps/survey/survey', Record<never, never>, Record<never, never>>,
     'apps-survey-survey-management': RouteRecordInfo<'apps-survey-survey-management', '/apps/survey/survey-management', Record<never, never>, Record<never, never>>,
     'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
+    'apps-user-approval-flows': RouteRecordInfo<'apps-user-approval-flows', '/apps/user/approval-flows', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
     'apps-user-organization-chart': RouteRecordInfo<'apps-user-organization-chart', '/apps/user/organization-chart', Record<never, never>, Record<never, never>>,
     'apps-user-personnel-records': RouteRecordInfo<'apps-user-personnel-records', '/apps/user/personnel-records', Record<never, never>, Record<never, never>>,
@@ -111,6 +112,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/user/access.vue': {
       routes: 'apps-user-access'
+      views: never
+    }
+    'src/pages/apps/user/approval-flows.vue': {
+      routes: 'apps-user-approval-flows'
       views: never
     }
     'src/pages/apps/user/list.vue': {

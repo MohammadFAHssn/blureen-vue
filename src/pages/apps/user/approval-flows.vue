@@ -5,7 +5,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
-    subject: 'Organization-Chart',
+    subject: 'Approval-Flows',
   },
 })
 

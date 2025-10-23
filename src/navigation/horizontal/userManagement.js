@@ -29,13 +29,20 @@ export default [
             action: 'read',
             subject: 'Personnel-Records',
           },
-          {
-            title: 'Approval Levels',
-            to: 'apps-user-organization-chart',
-            action: 'read',
-            subject: 'Approval-Levels',
-          },
+
         ],
+      },
+      {
+        title: 'Organization Chart',
+        to: 'apps-user-organization-chart',
+        action: 'read',
+        subject: 'Organization-Chart',
+      },
+      {
+        title: 'Approval Levels',
+        to: 'apps-user-approval-flows',
+        action: 'read',
+        subject: 'Approval-Levels',
       },
       {
         title: 'Roles & Permissions',

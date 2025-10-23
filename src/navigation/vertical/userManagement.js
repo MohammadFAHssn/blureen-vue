@@ -28,13 +28,21 @@ export default [
         action: 'read',
         subject: 'Personnel-Records',
       },
-      {
-        title: 'Approval Flows',
-        to: 'apps-user-organization-chart',
-        action: 'read',
-        subject: 'Approval-Flows',
-      },
     ],
+  },
+  {
+    title: 'Organization Chart',
+    icon: { icon: 'tabler-sitemap' },
+    to: 'apps-user-organization-chart',
+    action: 'read',
+    subject: 'Organization-Chart',
+  },
+  {
+    title: 'Approval Flows',
+    icon: { icon: 'tabler-git-branch' },
+    to: 'apps-user-approval-flows',
+    action: 'read',
+    subject: 'Approval-Flows',
   },
   {
     title: 'Roles & Permissions',
