@@ -19,6 +19,8 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-participate-evaluation': RouteRecordInfo<'apps-evaluation-participate-evaluation', '/apps/evaluation/participate-evaluation', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-user': RouteRecordInfo<'apps-payroll-birthday-birthday-user', '/apps/payroll/birthday/birthday-user', Record<never, never>, Record<never, never>>,
@@ -60,6 +62,14 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/[...error].vue': {
       routes: '$error'
+      views: never
+    }
+    'src/pages/apps/evaluation/evaluation-results.vue': {
+      routes: 'apps-evaluation-evaluation-results'
+      views: never
+    }
+    'src/pages/apps/evaluation/participate-evaluation.vue': {
+      routes: 'apps-evaluation-participate-evaluation'
       views: never
     }
     'src/pages/apps/payroll/birthday/birthday-admin-file.vue': {
