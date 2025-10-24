@@ -87,14 +87,15 @@ function participateInSurvey() {
   </VSnackbar>
 
   <VRow>
-    <VCol>
-      <VCard v-if="surveys.length === 0" variant="text">
+    <VCol v-if="surveys.length === 0">
+      <VCard variant="text">
         نظرسنجی فعالی وجود ندارد.
       </VCard>
     </VCol>
 
     <VCol
       v-for="survey in surveys"
+      v-else
       :key="survey.id"
       cols="12"
       sm="12"
