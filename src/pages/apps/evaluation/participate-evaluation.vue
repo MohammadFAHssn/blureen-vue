@@ -6,6 +6,8 @@ definePage({
   },
 })
 
+const userData = useCookie('userData')
+
 // states
 const uiState = reactive({
   hasError: false,
@@ -26,7 +28,13 @@ async function fetchEvaluatees() {
   pendingState.fetchEvaluatees = true
   try {
     const { data, error } = await useApi(
-      createUrl('/evaluation/evaluatee/by-evaluator'),
+      createUrl('/evaluation/evaluatee', {
+        query: {
+          'filter[evaluator.user_id]': userData.value.id,
+          'filter[evaluator.evaluation.active]': true,
+          'include': 'user',
+        },
+      }),
     )
 
     pendingState.fetchEvaluatees = false
