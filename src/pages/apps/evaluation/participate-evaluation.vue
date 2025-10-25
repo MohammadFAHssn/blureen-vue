@@ -14,9 +14,11 @@ const uiState = reactive({
 
 const pendingState = reactive({
   fetchEvaluatees: false,
+  fetchQuestions: false,
 })
 
 const evaluatees = ref([])
+const questions = ref([])
 
 // ----- -----
 
@@ -40,7 +42,28 @@ async function fetchEvaluatees() {
   }
 }
 
-fetchEvaluatees()
+async function fetchQuestions() {
+  pendingState.fetchQuestions = true
+  try {
+    const { data, error } = await useApi(
+      createUrl('/evaluation/evaluation-question/actives'),
+    )
+
+    pendingState.fetchQuestions = false
+
+    if (error.value) throw error.value
+
+    questions.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching questions:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت سوالات ارزیابی'
+  }
+}
+
+await fetchEvaluatees()
+fetchQuestions()
 </script>
 
 <template>
