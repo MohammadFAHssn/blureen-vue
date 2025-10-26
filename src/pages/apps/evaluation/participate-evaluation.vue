@@ -28,13 +28,7 @@ async function fetchEvaluatees() {
   pendingState.fetchEvaluatees = true
   try {
     const { data, error } = await useApi(
-      createUrl('/evaluation/evaluatee', {
-        query: {
-          'filter[evaluator.user_id]': userData.value.id,
-          'filter[evaluator.evaluation.active]': true,
-          'include': 'user',
-        },
-      }),
+      createUrl('/evaluation/evaluatee/by-evaluator'),
     )
 
     pendingState.fetchEvaluatees = false
@@ -106,7 +100,7 @@ fetchQuestions()
       <VCard>
         <VCardTitle class="text-center mb-5 text-wrap">
           {{ evaluatee.user.personnel_code }} -
-          {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }}
+          {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user.profile.cost_center.name }})
         </VCardTitle>
 
         <VCardActions class="justify-center">
