@@ -109,7 +109,9 @@ async function fetchUsers() {
   }
 }
 
-await fetchUsers()
+onMounted(() => {
+  fetchUsers()
+})
 </script>
 
 <template>
