@@ -34,6 +34,11 @@ const props = defineProps({
       <div v-for="(approver, index) in props.approvalFlow" :key="index">
         <v-chip color="primary">
           {{ approver.data?.firstName }} {{ approver.data?.lastName }} {{ approver.groupValue?.name }}
+          <template v-if="mode === 'edit'" #append>
+            <v-btn class="mr-2" size="20" icon @click="$emit('removeApprover', index)">
+              <v-icon icon="tabler-x" size="15" />
+            </v-btn>
+          </template>
         </v-chip>
         <v-chip
           v-if="index !== props.approvalFlow.length - 1"

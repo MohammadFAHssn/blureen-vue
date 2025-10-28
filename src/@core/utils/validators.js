@@ -28,19 +28,19 @@ export function emailValidator(value) {
 
 // 👉 Password Validator
 export function passwordValidator(password) {
-  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/
+  const regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/
   const validPassword = regExp.test(password)
 
   return (
     validPassword
-    || 'Field must contain at least one uppercase, lowercase, special character and digit with min 8 chars'
+    || 'رمز عبور باید حداقل ۸ کاراکتر و شامل حروف بزرگ و کوچک انگلیسی و اعداد باشد'
   )
 }
 
 // 👉 Confirm Password Validator
 export function confirmedValidator(value, target) {
   return (
-    value === target || 'The Confirm Password field confirmation does not match'
+    value === target || 'در این فیلد باید همان مقدار فیلد رمز عبور جدید، عیناً وارد شود'
   )
 }
 

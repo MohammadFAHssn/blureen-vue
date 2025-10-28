@@ -233,7 +233,7 @@ async function fetchReports(month, year) {
       v-model="uiState.hasError"
       :timeout="2000"
       location="center"
-      variant="outlined"
+      variant="flat"
       color="error"
     >
       {{ uiState.errorMessage }}

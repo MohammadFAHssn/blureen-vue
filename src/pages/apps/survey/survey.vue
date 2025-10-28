@@ -80,15 +80,22 @@ function participateInSurvey() {
     v-model="uiState.hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     {{ uiState.errorMessage }}
   </VSnackbar>
 
   <VRow>
+    <VCol v-if="surveys.length === 0">
+      <VCard variant="text">
+        نظرسنجی فعالی وجود ندارد.
+      </VCard>
+    </VCol>
+
     <VCol
       v-for="survey in surveys"
+      v-else
       :key="survey.id"
       cols="12"
       sm="12"

@@ -94,6 +94,10 @@ async function onFinish() {
     console.error(err)
   }
 }
+
+onUnmounted(() => {
+  clearInterval(intervalId)
+})
 </script>
 
 <template>
@@ -157,7 +161,7 @@ async function onFinish() {
               <VCol cols="12">
                 <VOtpInput
                   v-model="otpCode"
-                  style="direction: ltr"
+                  style="direction: ltr;"
                   :disabled="isOtpCodeInserted"
                   type="number"
                   class="pa-0"
