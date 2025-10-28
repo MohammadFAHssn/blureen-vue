@@ -7,13 +7,15 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
 })
-const isLoading = ref(false)
+const requestsLoading = ref(false)
+const remainingLeaveLoading = ref(false)
 const startDate = ref('')
 const endDate = ref('')
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
+const remainingLeave = ref(null)
 
-const monthlyRequests = ref([])
+const currentMonthRequests = ref([])
 
 function selectStart(val) {
   startDate.value = val.format ? val.format('jYYYY/jMM/jDD') : val
@@ -42,7 +44,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/request/create', {
+      await $api('/hr-request/requests/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {
@@ -54,11 +56,7 @@ async function submit() {
       uiState.success = true
       uiState.successMessage = `درخواست مرخصی از ${startDate.value} تا ${endDate.value} ثبت شد`
 
-      monthlyRequests.value.push({
-        from: startDate.value,
-        to: endDate.value,
-        status_id: constants.HR_REQUEST_PENDING_STATUS,
-      })
+      await getCurrentMonthRequests()
       startDate.value = ''
       endDate.value = ''
     }
@@ -66,10 +64,72 @@ async function submit() {
       console.log(err)
     }
     finally {
-      isLoading.value = false
+      requestsLoading.value = false
     }
   }
 }
+
+async function getCurrentMonthRequests() {
+  requestsLoading.value = true
+  try {
+    const { data, error } = await useApi(
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_DAILY_LEAVE}`),
+    )
+    requestsLoading.value = false
+    if (error.value) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت درخواست ها'
+      throw error.value
+    }
+
+    if (data.value.data) {
+      currentMonthRequests.value = data.value.data
+    }
+  }
+  catch (e) {
+    requestsLoading.value = false
+    console.error('Unexpected error fetching users:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
+  }
+}
+
+async function getRemainingLeave() {
+  remainingLeaveLoading.value = true
+  const formData = {
+    user_id: useCookie('userData').value?.id ?? 0,
+  }
+  try {
+    const { data, error } = await $api('/kasra/reports/get-remaining-leave', {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در دریافت مانده مرخصی'
+      },
+    })
+    remainingLeaveLoading.value = false
+
+    if (error) {
+      uiState.hasError = true
+      uiState.errorMessage = error.value || 'خطا در دریافت مانده مرخصی'
+      throw error.value
+    }
+
+    if (data.remaining_leave) {
+      remainingLeave.value = data.remaining_leave
+    }
+  }
+  catch (e) {
+    remainingLeaveLoading.value = false
+    console.error('Unexpected error fetching attendances:', e)
+  }
+}
+
+onMounted(() => {
+  getCurrentMonthRequests()
+  getRemainingLeave()
+})
 </script>
 
 <template>
@@ -115,8 +175,9 @@ async function submit() {
             <div class="text-h6 font-weight-bold text-primary-darken-3">
               مانده مرخصی شما
             </div>
-            <div class="text-h5 font-weight-bold text-success">
-              ۵ روز
+            <VSkeletonLoader v-if="remainingLeaveLoading" type="list-item" />
+            <div v-else class="text-h5 font-weight-bold text-success">
+              {{ remainingLeave }}
             </div>
           </VCol>
         </VRow>
@@ -124,7 +185,7 @@ async function submit() {
 
       <VCard class="mb-4 pa-4">
         <label class="font-weight-medium mb-2 d-block text-center">
-           تاریخ مرخصی
+          تاریخ مرخصی
         </label>
 
         <VRow>
@@ -187,8 +248,8 @@ async function submit() {
           <label class="font-weight-medium mb-4 d-block text-center">
             مرخصی‌های روزانه ماه جاری
           </label>
-
-          <table class="requests-table w-100">
+          <VSkeletonLoader v-if="requestsLoading" type="card" />
+          <table v-else class="requests-table w-100">
             <thead>
               <tr>
                 <th>تاریخ شروع</th>
@@ -198,10 +259,19 @@ async function submit() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in monthlyRequests" :key="index">
-                <td>{{ item.from }}</td>
-                <td>{{ item.to }}</td>
-                <td>{{ item.status }}</td>
+              <tr v-for="(item, index) in currentMonthRequests" :key="index">
+                <td>{{ item.start_date }}</td>
+                <td>{{ item.end_date }}</td>
+                <td>
+                  <VChip
+                    :color="item.status.color"
+                    size="small"
+                    label
+                    variant="tonal"
+                  >
+                    {{ item.status.title }}
+                  </VChip>
+                </td>
                 <td>
                   <VBtn color="orange" variant="text" size="small">
                     <VIcon icon="tabler-edit" size="20" />
@@ -228,29 +298,23 @@ async function submit() {
             <VExpansionPanelText>
               <VRow dense>
                 <VCol
-                  v-for="(item, index) in monthlyRequests"
+                  v-for="(item, index) in currentMonthRequests"
                   :key="index"
                   cols="12"
                 >
                   <VCard outlined class="pa-3 mb-3">
-                    <div><strong>تاریخ شروع:</strong> {{ item.from }}</div>
-                    <div><strong>تاریخ پایان:</strong> {{ item.to }}</div>
+                    <div><strong>تاریخ شروع:</strong> {{ item.start_date }}</div>
+                    <div><strong>تاریخ پایان:</strong> {{ item.end_date }}</div>
 
                     <div class="d-flex align-center mt-1">
                       <strong class="mr-1">وضعیت:</strong>
                       <VChip
-                        :color="
-                          item.status === 'تایید شده'
-                            ? 'success'
-                            : item.status === 'رد شده'
-                              ? 'error'
-                              : 'warning'
-                        "
+                        :color="item.status.color"
                         size="small"
                         label
                         variant="tonal"
                       >
-                        {{ item.status }}
+                        {{ item.status.title }}
                       </VChip>
                     </div>
 
@@ -266,7 +330,7 @@ async function submit() {
                 </VCol>
               </VRow>
 
-              <div v-if="!monthlyRequests.length" class="text-center text-medium-emphasis mt-2">
+              <div v-if="!currentMonthRequests.length" class="text-center text-medium-emphasis mt-2">
                 موردی یافت نشد!
               </div>
             </VExpansionPanelText>

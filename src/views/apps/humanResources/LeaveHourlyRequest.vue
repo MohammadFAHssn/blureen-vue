@@ -1,6 +1,8 @@
 <script setup>
 const constants = inject('constants')
-const isLoading = ref(false)
+const requestsLoading = ref(false)
+const attendancesLoading = ref(false)
+const remainingLeaveLoading = ref(false)
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -11,24 +13,14 @@ const uiState = reactive({
 const leaveDate = ref('')
 const startTime = ref('')
 const endTime = ref('')
-const attendanceLogs = ref([
-  { in: '07:25', out: '09:27' },
-  { in: '11:08', out: '15:00' },
-])
-const currentPeriod = ref('')
-const monthlyRequests = ref([])
-function selectDate(val) {
-  currentPeriod.value = val.format('jYYYY/jMM')
-}
+const attendanceLogs = ref([])
+const currentMonthRequests = ref([])
+const remainingLeave = ref(null)
 async function submit() {
   if (!leaveDate.value || !startTime.value || !endTime.value) {
     uiState.hasError = true
     uiState.errorMessage = 'اطلاعات درخواست ناقص است.'
   }
-/*  else if (startTime.value > endTime.value) {
-    uiState.hasError = true
-    uiState.errorMessage = 'زمان شروع نمی‌تواند بزرگتر از زمان پایان باشد'
-  }*/
   else {
     const requestData = {
       request_type_id: constants.HR_REQUEST_TYPE_HOURLY_LEAVE,
@@ -40,7 +32,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/request/create', {
+      await $api('/hr-request/requests/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {
@@ -52,12 +44,7 @@ async function submit() {
       uiState.success = true
       uiState.successMessage = `درخواست مرخصی ساعتی ثبت شد`
 
-      monthlyRequests.value.push({
-        start_date: leaveDate.value,
-        start_time: startTime.value,
-        end_time: endTime.value,
-        status_id: constants.HR_REQUEST_PENDING_STATUS,
-      })
+      await getCurrentMonthRequests()
       leaveDate.value = ''
       startTime.value = ''
       endTime.value = ''
@@ -66,17 +53,107 @@ async function submit() {
       console.log(err)
     }
     finally {
-      isLoading.value = false
+      requestsLoading.value = false
     }
   }
 }
-function getMonthRequests() {
+async function getCurrentMonthRequests() {
+  requestsLoading.value = true
+  try {
+    const { data, error } = await useApi(
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_HOURLY_LEAVE}`),
+    )
+    requestsLoading.value = false
+    if (error.value) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت درخواست ها'
+      throw error.value
+    }
 
+    if (data.value.data) {
+      currentMonthRequests.value = data.value.data
+    }
+  }
+  catch (e) {
+    requestsLoading.value = false
+    console.error('Unexpected error fetching users:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
+  }
 }
+
+async function getCurrentMonthAttendances() {
+  attendancesLoading.value = true
+  const formData = {
+    user_id: useCookie('userData').value?.id ?? 0,
+    start_date: leaveDate.value,
+    end_date: leaveDate.value,
+  }
+  try {
+    const { data, error } = await $api('/kasra/reports/get-attendance-report', {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در دریافت ترددها'
+      },
+    })
+    attendancesLoading.value = false
+
+    if (error) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت ترددها'
+      throw error.value
+    }
+
+    if (data.attendances) {
+      attendanceLogs.value = data.attendances
+    }
+  }
+  catch (e) {
+    attendancesLoading.value = false
+    console.error('Unexpected error fetching attendances:', e)
+  }
+}
+async function getRemainingLeave() {
+  remainingLeaveLoading.value = true
+  const formData = {
+    user_id: useCookie('userData').value?.id ?? 0,
+  }
+  try {
+    const { data, error } = await $api('/kasra/reports/get-remaining-leave', {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در دریافت مانده مرخصی'
+      },
+    })
+    remainingLeaveLoading.value = false
+
+    if (error) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت مانده مرخصی'
+      throw error.value
+    }
+
+    if (data.remaining_leave) {
+      remainingLeave.value = data.remaining_leave
+    }
+  }
+  catch (e) {
+    remainingLeaveLoading.value = false
+    console.error('Unexpected error fetching attendances:', e)
+  }
+}
+
+onMounted(() => {
+  getCurrentMonthRequests()
+  getRemainingLeave()
+})
 </script>
 
 <template>
-  <p>{{ currentPeriod }}</p>
   <VSnackbar
     v-model="uiState.hasError"
     :timeout="2000"
@@ -115,8 +192,9 @@ function getMonthRequests() {
             <div class="text-h6 font-weight-bold text-primary-darken-3">
               مانده مرخصی شما
             </div>
-            <div class="text-h5 font-weight-bold text-success">
-              ۵ روز
+            <VSkeletonLoader v-if="remainingLeaveLoading" type="list-item" />
+            <div v-else class="text-h5 font-weight-bold text-success">
+              {{ remainingLeave }}
             </div>
           </VCol>
         </VRow>
@@ -132,7 +210,7 @@ function getMonthRequests() {
         format="jYYYY/jMM/jDD"
         inline
         custom-input="#custom-input"
-        @change="selectDate"
+        @change="getCurrentMonthAttendances"
       />
     </VCol>
 
@@ -141,30 +219,26 @@ function getMonthRequests() {
         <label class="font-weight-medium mb-4 mt-2 d-block text-center">
           ترددهای روز
         </label>
-        <VRow justify="center" dense>
-          <template v-if="attendanceLogs.length">
-            <template v-for="(log, i) in attendanceLogs" :key="`pair-${i}`">
-              <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
-                <div class="mb-1 font-weight-medium">
-                  ورود {{ i + 1 }}
-                </div>
-                <div class="text-error">
-                  {{ log.in || '-' }}
-                </div>
-              </VCol>
-              <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
-                <div class="mb-1 font-weight-medium">
-                  خروج {{ i + 1 }}
-                </div>
-                <div class="text-error">
-                  {{ log.out || '-' }}
-                </div>
-              </VCol>
-            </template>
+        <VSkeletonLoader v-if="attendancesLoading" type="card" />
+        <VRow v-else justify="center" dense>
+          <template v-for="(log, i) in attendanceLogs" :key="`pair-${i}`">
+            <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
+              <div class="mb-1 font-weight-medium">
+                ورود {{ i + 1 }}
+              </div>
+              <div class="text-error">
+                {{ log.in || '-' }}
+              </div>
+            </VCol>
+            <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
+              <div class="mb-1 font-weight-medium">
+                خروج {{ i + 1 }}
+              </div>
+              <div class="text-error">
+                {{ log.out || '-' }}
+              </div>
+            </VCol>
           </template>
-          <VCol v-else cols="12" class="text-center text-error">
-            -
-          </VCol>
         </VRow>
       </VCard>
 
@@ -218,7 +292,8 @@ function getMonthRequests() {
             مرخصی‌های ساعتی ماه جاری
           </label>
 
-          <table class="requests-table w-100">
+          <VSkeletonLoader v-if="requestsLoading" type="card" />
+          <table v-else class="requests-table w-100">
             <thead>
               <tr>
                 <th>تاریخ</th>
@@ -229,23 +304,17 @@ function getMonthRequests() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in monthlyRequests" :key="index">
+              <tr v-for="(item, index) in currentMonthRequests" :key="index">
                 <td>{{ item.start_date }}</td>
                 <td>{{ item.start_time }}</td>
                 <td>{{ item.end_time }}</td>
                 <td>
                   <VChip
-                    :color="
-                      item.status === 'تایید شده'
-                        ? 'success'
-                        : item.status === 'رد شده'
-                          ? 'error'
-                          : 'warning'
-                    "
+                    :color="item.status.color"
                     size="small"
                     label
                   >
-                    {{ item.status_id }}
+                    {{ item.status.title }}
                   </VChip>
                 </td>
                 <td>
@@ -275,7 +344,7 @@ function getMonthRequests() {
               <!-- کشوهای داخلی برای هر مرخصی -->
               <VExpansionPanels variant="accordion">
                 <VExpansionPanel
-                  v-for="(item, index) in monthlyRequests"
+                  v-for="(item, index) in currentMonthRequests"
                   :key="index"
                   class="mb-2"
                 >
@@ -283,17 +352,11 @@ function getMonthRequests() {
                     <div class="d-flex justify-space-between w-100 align-center">
                       <span>{{ item.date }}</span>
                       <VChip
-                        :color="
-                          item.status === 'تایید شده'
-                            ? 'success'
-                            : item.status === 'رد شده'
-                              ? 'error'
-                              : 'warning'
-                        "
+                        :color="item.status.color"
                         size="small"
                         label
                       >
-                        {{ item.status }}
+                        {{ item.status.title }}
                       </VChip>
                     </div>
                   </VExpansionPanelTitle>

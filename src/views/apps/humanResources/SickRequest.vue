@@ -14,7 +14,7 @@ const description = ref('')
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
 
-const monthlyRequests = ref([])
+const currentMonthRequests = ref([])
 
 function selectStart(val) {
   startDate.value = val.format ? val.format('jYYYY/jMM/jDD') : val
@@ -46,7 +46,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/request/create', {
+      await $api('/hr-request/requests/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {
@@ -58,7 +58,7 @@ async function submit() {
       uiState.success = true
       uiState.successMessage = `درخواست مرخصی استعلاجی ثبت گردید.`
 
-      monthlyRequests.value.push({
+      currentMonthRequests.value.push({
         start_date: startDate.value,
         end_date: endDate.value,
         status_id: constants.HR_REQUEST_PENDING_STATUS,
@@ -74,6 +74,35 @@ async function submit() {
     }
   }
 }
+
+async function getCurrentMonthRequests() {
+  isLoading.value = true
+  try {
+    const { data, error } = await useApi(
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_SICK_LEAVE}`),
+    )
+    isLoading.value = false
+    if (error.value) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت درخواست ها'
+      throw error.value
+    }
+
+    if (data.value.data) {
+      currentMonthRequests.value = data.value.data
+    }
+  }
+  catch (e) {
+    isLoading.value = false
+    console.error('Unexpected error fetching users:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
+  }
+}
+
+onMounted(() => {
+  getCurrentMonthRequests()
+})
 </script>
 
 <template>
@@ -194,10 +223,19 @@ async function submit() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in monthlyRequests" :key="index">
+              <tr v-for="(item, index) in currentMonthRequests" :key="index">
                 <td>{{ item.start_date }}</td>
                 <td>{{ item.end_date }}</td>
-                <td>{{ item.status_id }}</td>
+                <td>
+                  <VChip
+                    :color="item.status.color"
+                    size="small"
+                    label
+                    variant="tonal"
+                  >
+                    {{ item.status.title }}
+                  </VChip>
+                </td>
                 <td>
                   <VBtn color="orange" variant="text" size="small">
                     <VIcon icon="tabler-edit" size="20" />
@@ -224,7 +262,7 @@ async function submit() {
             <VExpansionPanelText>
               <VRow dense>
                 <VCol
-                  v-for="(item, index) in monthlyRequests"
+                  v-for="(item, index) in currentMonthRequests"
                   :key="index"
                   cols="12"
                 >
@@ -235,18 +273,12 @@ async function submit() {
                     <div class="d-flex align-center mt-1">
                       <strong class="mr-1">وضعیت:</strong>
                       <VChip
-                        :color="
-                          item.status_id === 'تایید شده'
-                            ? 'success'
-                            : item.status_id === 'رد شده'
-                              ? 'error'
-                              : 'warning'
-                        "
+                        :color="item.status.color"
                         size="small"
                         label
                         variant="tonal"
                       >
-                        {{ item.status_id }}
+                        {{ item.status.title }}
                       </VChip>
                     </div>
 
@@ -262,7 +294,7 @@ async function submit() {
                 </VCol>
               </VRow>
 
-              <div v-if="!monthlyRequests.length" class="text-center text-medium-emphasis mt-2">
+              <div v-if="!currentMonthRequests.length" class="text-center text-medium-emphasis mt-2">
                 موردی یافت نشد!
               </div>
             </VExpansionPanelText>

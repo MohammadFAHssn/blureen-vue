@@ -12,7 +12,7 @@ const overtimeDate = ref('')
 const startTime = ref('')
 const endTime = ref('')
 const description = ref('')
-const monthlyRequests = ref([])
+const currentMonthRequests = ref([])
 const attendanceLogs = ref([
   { in: '07:25', out: '09:27' },
 ])
@@ -40,7 +40,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/request/create', {
+      await $api('/hr-request/requests/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {
@@ -52,7 +52,7 @@ async function submit() {
       uiState.success = true
       uiState.successMessage = `درخواست اضافه کار ثبت شد`
 
-      monthlyRequests.value.push({
+      currentMonthRequests.value.push({
         start_date: overtimeDate.value,
         start_time: startTime.value,
         end_time: endTime.value,
@@ -71,6 +71,35 @@ async function submit() {
     }
   }
 }
+
+async function getCurrentMonthRequests() {
+  isLoading.value = true
+  try {
+    const { data, error } = await useApi(
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_OVERTIME}`),
+    )
+    isLoading.value = false
+    if (error.value) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت درخواست ها'
+      throw error.value
+    }
+
+    if (data.value.data) {
+      currentMonthRequests.value = data.value.data
+    }
+  }
+  catch (e) {
+    isLoading.value = false
+    console.error('Unexpected error fetching users:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
+  }
+}
+
+onMounted(() => {
+  getCurrentMonthRequests()
+})
 </script>
 
 <template>
@@ -205,8 +234,8 @@ async function submit() {
           <label class="font-weight-medium mb-4 d-block text-center">
             اضافه کاری های ماه جاری
           </label>
-
-          <table class="requests-table w-100">
+          <VSkeletonLoader v-if="isLoading" type="card" />
+          <table v-else class="requests-table w-100">
             <thead>
               <tr>
                 <th>تاریخ</th>
@@ -217,23 +246,17 @@ async function submit() {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in monthlyRequests" :key="index">
+              <tr v-for="(item, index) in currentMonthRequests" :key="index">
                 <td>{{ item.start_date }}</td>
                 <td>{{ item.start_time }}</td>
                 <td>{{ item.end_time }}</td>
                 <td>
                   <VChip
-                    :color="
-                      item.status === 'تایید شده'
-                        ? 'success'
-                        : item.status === 'رد شده'
-                          ? 'error'
-                          : 'warning'
-                    "
+                    :color="item.status.color"
                     size="small"
                     label
                   >
-                    {{ item.status_id }}
+                    {{ item.status.title }}
                   </VChip>
                 </td>
                 <td>
@@ -263,7 +286,7 @@ async function submit() {
               <!-- کشوهای داخلی برای هر مرخصی -->
               <VExpansionPanels variant="accordion">
                 <VExpansionPanel
-                  v-for="(item, index) in monthlyRequests"
+                  v-for="(item, index) in currentMonthRequests"
                   :key="index"
                   class="mb-2"
                 >
@@ -271,17 +294,12 @@ async function submit() {
                     <div class="d-flex justify-space-between w-100 align-center">
                       <span>{{ item.date }}</span>
                       <VChip
-                        :color="
-                          item.status === 'تایید شده'
-                            ? 'success'
-                            : item.status === 'رد شده'
-                              ? 'error'
-                              : 'warning'
-                        "
+                        :color="item.status.color"
                         size="small"
                         label
+                        variant="tonal"
                       >
-                        {{ item.status }}
+                        {{ item.status.title }}
                       </VChip>
                     </div>
                   </VExpansionPanelTitle>
