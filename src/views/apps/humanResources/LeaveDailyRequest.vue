@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 const constants = inject('constants')
 
 const uiState = reactive({
@@ -14,6 +16,8 @@ const endDate = ref('')
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
 const remainingLeave = ref(null)
+const selectedUser = ref([])
+const users = ref([])
 
 const currentMonthRequests = ref([])
 
@@ -126,9 +130,47 @@ async function getRemainingLeave() {
   }
 }
 
+async function fetchUsers() {
+  try {
+    // todo:rename url
+    const { data, error } = await $api('/base/approval-flow/get-sub-users', {
+      method: 'POST',
+      body: {
+        request_type_id: constants.HR_REQUEST_TYPE_DAILY_LEAVE,
+      },
+      onResponseError({ response }) {
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در دریافت کاربران زیرمجموعه'
+      },
+    })
+    if (error) {
+      uiState.hasError = true
+      uiState.errorMessage = 'خطا در دریافت کاربران'
+      throw error.value
+    }
+
+    if (data) {
+      users.value = data.map(u => ({
+        ...u,
+        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+      }))
+    }
+  }
+  catch (e) {
+    console.error('Unexpected error fetching users:', e)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران زیرمجموعه'
+  }
+}
+
+async function onUserSelected() {
+  alert('ok')
+}
+
 onMounted(() => {
   getCurrentMonthRequests()
   getRemainingLeave()
+  fetchUsers()
 })
 </script>
 
@@ -157,7 +199,25 @@ onMounted(() => {
       درخواست مرخصی روزانه
     </h2>
   </div>
-
+  <VRow justify="center" align="center">
+    <VCol cols="12" sm="12" md="6" lg="6" xl="6">
+      <VCard>
+        <div class="d-flex align-center justify-space-between">
+          <v-autocomplete
+            v-model="selectedUser"
+            :disable="users.length < 2"
+            clearable
+            label="جستجوی پرسنل"
+            :items="users"
+            item-title="fullName"
+            item-value="personnel_code"
+            variant="solo-filled"
+            @update:model-value="onUserSelected"
+          />
+        </div>
+      </VCard>
+    </VCol>
+  </VRow>
   <VRow class="pa-2" dense>
     <VCol cols="12" md="6" class="mx-auto">
       <VCard
@@ -173,7 +233,7 @@ onMounted(() => {
           </VCol>
           <VCol cols="auto">
             <div class="text-h6 font-weight-bold text-primary-darken-3">
-              مانده مرخصی شما
+              مانده مرخصی
             </div>
             <VSkeletonLoader v-if="remainingLeaveLoading" type="list-item" />
             <div v-else class="text-h5 font-weight-bold text-success">
