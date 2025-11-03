@@ -15,7 +15,6 @@ const uiState = reactive({
 
 const users = ref([])
 const gridApi = shallowRef(null)
-const selectedNodes = ref([])
 
 // ----- start ag-grid -----
 
@@ -47,6 +46,15 @@ const columnDefs = ref([
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
+  {
+    headerName: 'وضعیت',
+    field: 'active',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
 ])
 
 const rowSelection = ref({
@@ -64,6 +72,7 @@ function rowData() {
       personnelCode: Number.parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
+      active: user.active,
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
       costCenter: user.profile?.cost_center,
@@ -83,8 +92,8 @@ async function fetchUsers() {
     const { data, error } = await useApi(
       createUrl('/base/user', {
         query: {
-          'fields[users]': 'id,first_name,last_name,personnel_code',
-          'filter[active]': '1',
+          'fields[users]': 'id,first_name,last_name,personnel_code,active',
+          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
           'include':
             'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
         },
