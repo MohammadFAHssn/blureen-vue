@@ -36,13 +36,6 @@ const columnDefs = ref([
     rowGroup: true,
     hide: true,
   },
-  {
-    headerName: 'سمت شغلی',
-    field: 'jobPosition',
-    valueFormatter: params => params.value?.name,
-    rowGroup: true,
-    hide: true,
-  },
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
@@ -62,7 +55,7 @@ const rowSelection = ref({
   enableClickSelection: true,
   selectAll: 'filtered',
 
-  isRowSelectable: rowNode => rowNode.field === 'jobPosition',
+  isRowSelectable: rowNode => rowNode.field === 'costCenter',
 })
 
 function rowData() {
@@ -76,7 +69,6 @@ function rowData() {
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
       costCenter: user.profile?.cost_center,
-      jobPosition: user.profile?.job_position,
     }
   })
 }
@@ -93,9 +85,9 @@ async function fetchUsers() {
       createUrl('/base/user', {
         query: {
           'fields[users]': 'id,first_name,last_name,personnel_code,active',
-          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
+          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id',
           'include':
-            'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
+            'profile.workplace,profile.workArea,profile.costCenter',
         },
       }),
     )
