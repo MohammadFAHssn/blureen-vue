@@ -1,4 +1,6 @@
 <script setup>
+import Positions from '@/views/apps/user/Positions.vue'
+
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
@@ -11,10 +13,18 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
+  mode: 'view',
+})
+
+const pendingState = reactive({
+  updateOrganizationChart: false,
 })
 
 const users = ref([])
+
 const gridApi = shallowRef(null)
+
+const selectedCostCenters = ref([])
 
 // ----- start ag-grid -----
 
@@ -77,6 +87,14 @@ const autoGroupColumnDef = ref({
   filter: 'agGroupColumnFilter',
 })
 
+function onSelectionChanged() {
+  const selectedNodes = gridApi.value.getSelectedNodes()
+
+  selectedCostCenters.value = selectedNodes
+    .filter(node => node.field === 'costCenter')
+    .map(node => node.groupValue)
+}
+
 // ----- end ag-grid -----
 
 async function fetchUsers() {
@@ -104,6 +122,10 @@ async function fetchUsers() {
   }
 }
 
+function onSave() {
+  uiState.mode = 'view'
+}
+
 await fetchUsers()
 </script>
 
@@ -119,6 +141,18 @@ await fetchUsers()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <div>
+      <Positions
+        v-if="selectedCostCenters.length > 0 || uiState.mode === 'edit'"
+        :mode="uiState.mode"
+        :cost-centers="selectedCostCenters"
+        :loading="pendingState.updateOrganizationChart"
+        @edit="uiState.mode = 'edit'"
+        @save="onSave"
+        @cancel="uiState.mode = 'view'"
+      />
+    </div>
+
     <section style="block-size: 100%;">
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
@@ -133,6 +167,7 @@ await fetchUsers()
         :row-selection="rowSelection"
         :theme="theme"
         @grid-ready="onGridReady"
+        @selection-changed="onSelectionChanged"
       />
     </section>
   </VLayout>
@@ -146,7 +181,8 @@ await fetchUsers()
   @include mixins.elevation(vuetify.$card-elevation);
 
   display: grid;
+  box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: auto;
+  grid-template-rows: auto 1fr;
 }
 </style>
