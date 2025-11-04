@@ -21,6 +21,7 @@ const pendingState = reactive({
 })
 
 const users = ref([])
+const orgPositions = ref([])
 
 const gridApi = shallowRef(null)
 
@@ -122,11 +123,29 @@ async function fetchUsers() {
   }
 }
 
+async function fetchOrgPositions() {
+  try {
+    const { data, error } = await useApi(
+      createUrl('/base/org-position'),
+    )
+
+    if (error.value) throw error.value
+
+    orgPositions.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching organization positions:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌ها'
+  }
+}
+
 function onSave() {
   uiState.mode = 'view'
 }
 
-await fetchUsers()
+fetchUsers()
+await fetchOrgPositions()
 </script>
 
 <template>
