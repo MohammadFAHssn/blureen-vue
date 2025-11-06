@@ -1,4 +1,6 @@
 <script setup>
+import AssignUserToPositionDialog from './AssignUserToPositionDialog.vue'
+
 const props = defineProps({
   costCenters: {
     type: Array,
@@ -19,6 +21,12 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+})
+
+const emit = defineEmits(['save', 'cancel', 'edit'])
+
+const uiState = reactive({
+  isAssignUserToPositionDialogVisible: false,
 })
 
 function positionAssignments(costCenters, position) {
@@ -83,7 +91,7 @@ function positionAssignments(costCenters, position) {
               </v-chip>
             </VCardText>
             <VCardActions>
-              <VBtn block>
+              <VBtn block @click="uiState.isAssignUserToPositionDialogVisible = true">
                 <VIcon size="24" icon="tabler-plus" />
               </VBtn>
             </VCardActions>
@@ -96,7 +104,7 @@ function positionAssignments(costCenters, position) {
         v-if="mode === 'edit'"
         color="success"
         :loading="loading"
-        @click="$emit('save')"
+        @click="emit('save')"
       >
         ذخیره
       </VBtn>
@@ -104,16 +112,18 @@ function positionAssignments(costCenters, position) {
         v-if="mode === 'edit'"
         color="error"
         :disabled="loading"
-        @click="$emit('cancel')"
+        @click="emit('cancel')"
       >
         بستن
       </VBtn>
 
-      <VBtn v-if="mode === 'view'" color="warning" @click="$emit('edit')">
+      <VBtn v-if="mode === 'view'" color="warning" @click="emit('edit')">
         ویرایش
       </VBtn>
     </VCardActions>
   </VCard>
+
+  <AssignUserToPositionDialog v-model:is-dialog-visible="uiState.isAssignUserToPositionDialogVisible" />
 </template>
 
 <style>
