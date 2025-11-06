@@ -6,7 +6,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'addUser'])
 
 function dialogVisibleUpdate(val) {
   emit('update:isDialogVisible', val)
@@ -19,9 +19,21 @@ const userItems = computed(() =>
     .filter(user => user.active)
     .map(user => ({
       title: `${user.first_name} ${user.last_name} (${user.personnel_code})`,
-      value: user.id,
+      value: {
+        id: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        personnelCode: user.personnel_code,
+      },
     })),
 )
+
+const selectedUser = ref(null)
+
+function onConfirmBtnClick() {
+  emit('addUser', selectedUser.value)
+  dialogVisibleUpdate(false)
+}
 </script>
 
 <template>
@@ -36,10 +48,10 @@ const userItems = computed(() =>
       </VCardTitle>
 
       <VCardText>
-        <v-autocomplete label="کاربر" :items="userItems" />
+        <v-autocomplete v-model="selectedUser" label="کاربر" :items="userItems" />
       </VCardText>
       <VCardActions>
-        <VBtn @click="dialogVisibleUpdate(false)">
+        <VBtn @click="onConfirmBtnClick">
           تأیید
         </VBtn>
       </VCardActions>

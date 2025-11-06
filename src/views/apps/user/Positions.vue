@@ -38,6 +38,10 @@ function positionAssignments(costCenters, position) {
     orgPosition => orgPosition.id === position.id,
   )
 }
+
+function handleAddUser(addedUser) {
+  console.log('Add user with ID:', addedUser)
+}
 </script>
 
 <template>
@@ -123,7 +127,7 @@ function positionAssignments(costCenters, position) {
     </VCardActions>
   </VCard>
 
-  <AssignUserToPositionDialog v-model:is-dialog-visible="uiState.isAssignUserToPositionDialogVisible" />
+  <AssignUserToPositionDialog v-model:is-dialog-visible="uiState.isAssignUserToPositionDialogVisible" @add-user="handleAddUser" />
 </template>
 
 <style>
