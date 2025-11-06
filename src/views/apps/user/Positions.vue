@@ -58,7 +58,7 @@ function positionAssignments(costCenters, position) {
           xl="2"
           xxl="2"
         >
-          <VCard>
+          <VCard :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
             <VCardTitle>
               <v-chip color="primary">
                 {{ position.name }}
