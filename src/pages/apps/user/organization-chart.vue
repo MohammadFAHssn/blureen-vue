@@ -22,6 +22,7 @@ const pendingState = reactive({
 
 const users = ref([])
 const orgPositions = ref([])
+const costCentersOrgPositions = ref([])
 
 const gridApi = shallowRef(null)
 
@@ -93,7 +94,31 @@ function onSelectionChanged() {
 
   selectedCostCenters.value = selectedNodes
     .filter(node => node.field === 'costCenter')
-    .map(node => node.groupValue)
+    .map((node) => {
+      return {
+        rayvarzId: node.groupValue.rayvarz_id,
+        name: node.groupValue.name,
+        orgPositions: costCentersOrgPositions.value
+          .filter(
+            costCenterOrgPosition =>
+              costCenterOrgPosition.cost_center_id
+              === node.groupValue.rayvarz_id,
+          )
+          .map(costCenterOrgPosition => ({
+            id: costCenterOrgPosition.org_position.id,
+            name: costCenterOrgPosition.org_position.name,
+            level: costCenterOrgPosition.org_position.level,
+            user: {
+              id: costCenterOrgPosition.user.id,
+              firstName: costCenterOrgPosition.user.first_name,
+              lastName: costCenterOrgPosition.user.last_name,
+              personnelCode: costCenterOrgPosition.user.personnel_code,
+            },
+          })),
+      }
+    })
+
+  console.log(selectedCostCenters.value)
 }
 
 // ----- end ag-grid -----
@@ -104,9 +129,9 @@ async function fetchUsers() {
       createUrl('/base/user', {
         query: {
           'fields[users]': 'id,first_name,last_name,personnel_code,active',
-          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id',
-          'include':
-            'profile.workplace,profile.workArea,profile.costCenter',
+          'fields[profiles]':
+            'id,user_id,workplace_id,work_area_id,cost_center_id',
+          'include': 'profile.workplace,profile.workArea,profile.costCenter',
         },
       }),
     )
@@ -125,9 +150,7 @@ async function fetchUsers() {
 
 async function fetchOrgPositions() {
   try {
-    const { data, error } = await useApi(
-      createUrl('/base/org-position'),
-    )
+    const { data, error } = await useApi(createUrl('/base/org-position'))
 
     if (error.value) throw error.value
 
@@ -140,12 +163,35 @@ async function fetchOrgPositions() {
   }
 }
 
+async function fetchCostCentersOrgPositions() {
+  try {
+    const { data, error } = await useApi(
+      createUrl('/base/cost-center-org-position', {
+        query: {
+          'fields[users]': 'id,first_name,last_name,personnel_code,active',
+          'include': 'orgPosition,user',
+        },
+      }),
+    )
+
+    if (error.value) throw error.value
+
+    costCentersOrgPositions.value = data.value.data
+  }
+  catch (e) {
+    console.error('Error fetching cost centers organization positions:', e)
+    uiState.hasError = true
+    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌های مرکز هزینه‌ها'
+  }
+}
+
 function onSave() {
   uiState.mode = 'view'
 }
 
 fetchUsers()
-await fetchOrgPositions()
+fetchOrgPositions()
+await fetchCostCentersOrgPositions()
 </script>
 
 <template>
@@ -165,6 +211,7 @@ await fetchOrgPositions()
         v-if="selectedCostCenters.length > 0 || uiState.mode === 'edit'"
         :mode="uiState.mode"
         :cost-centers="selectedCostCenters"
+        :org-positions="orgPositions"
         :loading="pendingState.updateOrganizationChart"
         @edit="uiState.mode = 'edit'"
         @save="onSave"
