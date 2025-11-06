@@ -11,6 +11,17 @@ const emit = defineEmits(['update:isDialogVisible'])
 function dialogVisibleUpdate(val) {
   emit('update:isDialogVisible', val)
 }
+
+const injectedUsers = inject('users', ref([]))
+
+const userItems = computed(() =>
+  (injectedUsers?.value || [])
+    .filter(user => user.active)
+    .map(user => ({
+      title: `${user.first_name} ${user.last_name} (${user.personnel_code})`,
+      value: user.id,
+    })),
+)
 </script>
 
 <template>
@@ -25,10 +36,7 @@ function dialogVisibleUpdate(val) {
       </VCardTitle>
 
       <VCardText>
-        <v-autocomplete
-          label="کاربر"
-          :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-        />
+        <v-autocomplete label="کاربر" :items="userItems" />
       </VCardText>
       <VCardActions>
         <VBtn @click="dialogVisibleUpdate(false)">

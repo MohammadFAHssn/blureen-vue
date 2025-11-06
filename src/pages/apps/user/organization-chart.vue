@@ -28,6 +28,8 @@ const gridApi = shallowRef(null)
 
 const selectedCostCenters = ref([])
 
+provide('users', users)
+
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
