@@ -32,6 +32,7 @@ const selectedUser = ref(null)
 
 function onConfirmBtnClick() {
   emit('addUser', selectedUser.value)
+  selectedUser.value = null
   dialogVisibleUpdate(false)
 }
 </script>

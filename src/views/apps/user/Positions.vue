@@ -26,8 +26,13 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel', 'edit'])
 
 const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
   isAssignUserToPositionDialogVisible: false,
 })
+
+const costCenters = ref(props.costCenters)
+const selectedPosition = ref(null)
 
 function positionAssignments(costCenters, position) {
   if (costCenters.length > 1) {
@@ -39,17 +44,44 @@ function positionAssignments(costCenters, position) {
   )
 }
 
+function onAddUserBtnClick(position) {
+  selectedPosition.value = position
+  uiState.isAssignUserToPositionDialogVisible = true
+}
+
 function handleAddUser(addedUser) {
-  console.log('Add user with ID:', addedUser)
+  const orgPositions = costCenters.value[0].orgPositions
+
+  if (orgPositions.some(orgPosition => orgPosition.user.id === addedUser.id)) {
+    uiState.hasError = true
+    uiState.errorMessage = 'کاربر انتخاب شده، در این مرکز هزینه دارای سمت می‌باشد'
+    return
+  }
+
+  orgPositions.push(
+    { ...selectedPosition.value, user: addedUser },
+  )
+
+  costCenters.value[0].orgPositions = orgPositions
 }
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+
   <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
     <VCardTitle>
       <span class="ml-3"> سمت‌های </span>
       <v-chip
-        v-for="costCenter in props.costCenters"
+        v-for="costCenter in costCenters"
         :key="costCenter.rayvarzId"
         color="info"
         class="ml-3 mb-3"
@@ -80,7 +112,7 @@ function handleAddUser(addedUser) {
             <VCardText>
               <v-chip
                 v-for="positionAssignment in positionAssignments(
-                  props.costCenters,
+                  costCenters,
                   position,
                 )"
                 :key="positionAssignment.id"
@@ -95,7 +127,10 @@ function handleAddUser(addedUser) {
               </v-chip>
             </VCardText>
             <VCardActions>
-              <VBtn block @click="uiState.isAssignUserToPositionDialogVisible = true">
+              <VBtn
+                block
+                @click="onAddUserBtnClick(position)"
+              >
                 <VIcon size="24" icon="tabler-plus" />
               </VBtn>
             </VCardActions>
@@ -127,7 +162,10 @@ function handleAddUser(addedUser) {
     </VCardActions>
   </VCard>
 
-  <AssignUserToPositionDialog v-model:is-dialog-visible="uiState.isAssignUserToPositionDialogVisible" @add-user="handleAddUser" />
+  <AssignUserToPositionDialog
+    v-model:is-dialog-visible="uiState.isAssignUserToPositionDialogVisible"
+    @add-user="handleAddUser"
+  />
 </template>
 
 <style>
