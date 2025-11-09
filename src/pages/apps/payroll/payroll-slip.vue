@@ -111,7 +111,7 @@ async function print() {
   pendingState.print = true
   try {
     const { data, error } = await useApi(
-      createUrl('/payroll/payroll-slip/print/1'),
+      createUrl('/payroll/payroll-slip/print'),
     )
 
     pendingState.print = false
@@ -346,16 +346,18 @@ async function print() {
     </VRow>
   </div>
 
-  <VBtn
-    class="print-btn"
-    icon
-    size="x-large"
-    :disabled="pendingState.print"
-    :loading="pendingState.print"
-    @click="print"
-  >
-    <VIcon icon="tabler-printer" size="x-large" />
-  </VBtn>
+  <!--
+    <VBtn
+        class="print-btn"
+        icon
+        size="x-large"
+        :disabled="pendingState.print"
+        :loading="pendingState.print"
+        @click="print"
+      >
+        <VIcon icon="tabler-printer" size="x-large" />
+    </VBtn>
+  -->
 </template>
 
 <style lang="scss" scoped>

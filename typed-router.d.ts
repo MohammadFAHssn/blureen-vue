@@ -19,6 +19,8 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-participate-evaluation': RouteRecordInfo<'apps-evaluation-participate-evaluation', '/apps/evaluation/participate-evaluation', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
@@ -34,14 +36,18 @@ declare module 'vue-router/auto-routes' {
     'apps-survey-survey': RouteRecordInfo<'apps-survey-survey', '/apps/survey/survey', Record<never, never>, Record<never, never>>,
     'apps-survey-survey-management': RouteRecordInfo<'apps-survey-survey-management', '/apps/survey/survey-management', Record<never, never>, Record<never, never>>,
     'apps-user-access': RouteRecordInfo<'apps-user-access', '/apps/user/access', Record<never, never>, Record<never, never>>,
+    'apps-user-approval-flows': RouteRecordInfo<'apps-user-approval-flows', '/apps/user/approval-flows', Record<never, never>, Record<never, never>>,
     'apps-user-list': RouteRecordInfo<'apps-user-list', '/apps/user/list', Record<never, never>, Record<never, never>>,
     'apps-user-organization-chart': RouteRecordInfo<'apps-user-organization-chart', '/apps/user/organization-chart', Record<never, never>, Record<never, never>>,
     'apps-user-personnel-records': RouteRecordInfo<'apps-user-personnel-records', '/apps/user/personnel-records', Record<never, never>, Record<never, never>>,
     'dashboards-crm': RouteRecordInfo<'dashboards-crm', '/dashboards/crm', Record<never, never>, Record<never, never>>,
     'dashboards-payroll-chart': RouteRecordInfo<'dashboards-payroll-chart', '/dashboards/PayrollChart', Record<never, never>, Record<never, never>>,
+    'forgot-password': RouteRecordInfo<'forgot-password', '/forgot-password', Record<never, never>, Record<never, never>>,
     'login': RouteRecordInfo<'login', '/login', Record<never, never>, Record<never, never>>,
     'login-supplier': RouteRecordInfo<'login-supplier', '/login-supplier', Record<never, never>, Record<never, never>>,
     'not-authorized': RouteRecordInfo<'not-authorized', '/not-authorized', Record<never, never>, Record<never, never>>,
+    'reset-password': RouteRecordInfo<'reset-password', '/reset-password', Record<never, never>, Record<never, never>>,
+    'two-step-forgot-password': RouteRecordInfo<'two-step-forgot-password', '/two-step-forgot-password', Record<never, never>, Record<never, never>>,
     'two-step-supplier': RouteRecordInfo<'two-step-supplier', '/two-step-supplier', Record<never, never>, Record<never, never>>,
   }
 
@@ -58,6 +64,14 @@ declare module 'vue-router/auto-routes' {
   export interface _RouteFileInfoMap {
     'src/pages/[...error].vue': {
       routes: '$error'
+      views: never
+    }
+    'src/pages/apps/evaluation/evaluation-results.vue': {
+      routes: 'apps-evaluation-evaluation-results'
+      views: never
+    }
+    'src/pages/apps/evaluation/participate-evaluation.vue': {
+      routes: 'apps-evaluation-participate-evaluation'
       views: never
     }
     'src/pages/apps/hse/health-certificate.vue': {
@@ -120,6 +134,10 @@ declare module 'vue-router/auto-routes' {
       routes: 'apps-user-access'
       views: never
     }
+    'src/pages/apps/user/approval-flows.vue': {
+      routes: 'apps-user-approval-flows'
+      views: never
+    }
     'src/pages/apps/user/list.vue': {
       routes: 'apps-user-list'
       views: never
@@ -140,6 +158,10 @@ declare module 'vue-router/auto-routes' {
       routes: 'dashboards-payroll-chart'
       views: never
     }
+    'src/pages/forgot-password.vue': {
+      routes: 'forgot-password'
+      views: never
+    }
     'src/pages/login.vue': {
       routes: 'login'
       views: never
@@ -150,6 +172,14 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/not-authorized.vue': {
       routes: 'not-authorized'
+      views: never
+    }
+    'src/pages/reset-password.vue': {
+      routes: 'reset-password'
+      views: never
+    }
+    'src/pages/two-step-forgot-password.vue': {
+      routes: 'two-step-forgot-password'
       views: never
     }
     'src/pages/two-step-supplier.vue': {

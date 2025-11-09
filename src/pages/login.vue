@@ -30,6 +30,7 @@ const ability = useAbility()
 const errors = ref({
   username: undefined,
   password: undefined,
+  other: undefined,
 })
 
 const refVForm = ref()
@@ -42,14 +43,14 @@ const credentials = ref({
 const rememberMe = ref(false)
 
 const hasError = ref(false)
-const IsItWaitingServerResponse = ref(false)
+const isItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(
   route.query.isRedirectedFromUnauthorizedStatus === 'true',
 )
 
 async function login() {
-  IsItWaitingServerResponse.value = true
+  isItWaitingServerResponse.value = true
   try {
     const res = await $api('/login', {
       method: 'POST',
@@ -58,12 +59,12 @@ async function login() {
         password: credentials.value.password,
       },
       onResponseError({ response }) {
-        IsItWaitingServerResponse.value = false
+        isItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
         }
         else {
-          IsItWaitingServerResponse.value = false
+          errors.value.other = response._data.message
           hasError.value = true
         }
       },
@@ -96,7 +97,7 @@ function onSubmit() {
     v-model="isRedirectedFromUnauthorizedStatus"
     :timeout="5000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
@@ -107,10 +108,10 @@ function onSubmit() {
     v-model="hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
-    خطایی رخ داده‌است.
+    {{ errors.other }}
   </VSnackbar>
 
   <RouterLink to="/">
@@ -194,7 +195,7 @@ function onSubmit() {
                   <VCheckbox v-model="rememberMe" label="مرا به خاطر بسپار" />
                   <RouterLink
                     class="text-primary ms-2 mb-1"
-                    :to="{ name: 'login' }"
+                    :to="{ name: 'forgot-password' }"
                   >
                     رمز عبور خود را فراموش کرده‌اید؟
                   </RouterLink>
@@ -203,8 +204,8 @@ function onSubmit() {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"
-                  :disabled="IsItWaitingServerResponse"
+                  :loading="isItWaitingServerResponse"
+                  :disabled="isItWaitingServerResponse"
                 >
                   ورود
                 </VBtn>

@@ -44,14 +44,14 @@ const credentials = ref({
 })
 
 const hasError = ref(false)
-const IsItWaitingServerResponse = ref(false)
+const isItWaitingServerResponse = ref(false)
 
 const isRedirectedFromUnauthorizedStatus = ref(
   route.query.isRedirectedFromUnauthorizedStatus === 'true',
 )
 
 async function login() {
-  IsItWaitingServerResponse.value = true
+  isItWaitingServerResponse.value = true
   try {
     const res = await $api('/login-supplier', {
       method: 'POST',
@@ -59,7 +59,7 @@ async function login() {
         mobileNumber: credentials.value.mobileNumber,
       },
       onResponseError({ response }) {
-        IsItWaitingServerResponse.value = false
+        isItWaitingServerResponse.value = false
         if (response._data.errors) {
           errors.value = response._data.errors
         }
@@ -95,7 +95,7 @@ function onSubmit() {
     v-model="isRedirectedFromUnauthorizedStatus"
     :timeout="5000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     زمان اعتبار توکن شما 8 ساعت می‌باشد و هم‌اکنون منقضی شده‌است. لطفاً دوباره
@@ -106,7 +106,7 @@ function onSubmit() {
     v-model="hasError"
     :timeout="2000"
     location="center"
-    variant="outlined"
+    variant="flat"
     color="error"
   >
     {{ errors.other }}
@@ -181,8 +181,8 @@ function onSubmit() {
                 <VBtn
                   block
                   type="submit"
-                  :loading="IsItWaitingServerResponse"
-                  :disabled="IsItWaitingServerResponse"
+                  :loading="isItWaitingServerResponse"
+                  :disabled="isItWaitingServerResponse"
                 >
                   ارسال کد تأیید
                 </VBtn>

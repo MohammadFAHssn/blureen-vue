@@ -77,6 +77,7 @@ function onCancelClick() {
     >
       <VIcon icon="tabler-trash" />
     </IconBtn>
+
     <IconBtn v-if="params.value.detailsable" @click="params.onDetailsClick(params.node)">
       <VIcon icon="tabler-file-description" />
     </IconBtn>
