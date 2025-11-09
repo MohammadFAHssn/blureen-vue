@@ -26,7 +26,7 @@ const costCentersOrgPositions = ref([])
 
 const gridApi = shallowRef(null)
 
-const selectedCostCenters = ref([])
+const selectedCostCenter = ref(null)
 
 provide('users', users)
 
@@ -65,7 +65,7 @@ const columnDefs = ref([
 ])
 
 const rowSelection = ref({
-  mode: 'multiRow',
+  mode: 'singleRow',
   enableClickSelection: true,
   selectAll: 'filtered',
 
@@ -92,35 +92,28 @@ const autoGroupColumnDef = ref({
 })
 
 function onSelectionChanged() {
-  const selectedNodes = gridApi.value.getSelectedNodes()
+  const node = gridApi.value.getSelectedNodes()[0]
 
-  selectedCostCenters.value = selectedNodes
-    .filter(node => node.field === 'costCenter')
-    .map((node) => {
-      return {
-        rayvarzId: node.groupValue.rayvarz_id,
-        name: node.groupValue.name,
-        orgPositions: costCentersOrgPositions.value
-          .filter(
-            costCenterOrgPosition =>
-              costCenterOrgPosition.cost_center_id
-              === node.groupValue.rayvarz_id,
-          )
-          .map(costCenterOrgPosition => ({
-            id: costCenterOrgPosition.org_position.id,
-            name: costCenterOrgPosition.org_position.name,
-            level: costCenterOrgPosition.org_position.level,
-            user: {
-              id: costCenterOrgPosition.user.id,
-              firstName: costCenterOrgPosition.user.first_name,
-              lastName: costCenterOrgPosition.user.last_name,
-              personnelCode: costCenterOrgPosition.user.personnel_code,
-            },
-          })),
-      }
-    })
-
-  console.log(selectedCostCenters.value)
+  selectedCostCenter.value = {
+    rayvarzId: node.groupValue.rayvarz_id,
+    name: node.groupValue.name,
+    orgPositions: costCentersOrgPositions.value
+      .filter(
+        costCenterOrgPosition =>
+          costCenterOrgPosition.cost_center_id === node.groupValue.rayvarz_id,
+      )
+      .map(costCenterOrgPosition => ({
+        id: costCenterOrgPosition.org_position.id,
+        name: costCenterOrgPosition.org_position.name,
+        level: costCenterOrgPosition.org_position.level,
+        user: {
+          id: costCenterOrgPosition.user.id,
+          firstName: costCenterOrgPosition.user.first_name,
+          lastName: costCenterOrgPosition.user.last_name,
+          personnelCode: costCenterOrgPosition.user.personnel_code,
+        },
+      })),
+  }
 }
 
 // ----- end ag-grid -----
@@ -210,9 +203,9 @@ await fetchCostCentersOrgPositions()
 
     <div>
       <Positions
-        v-if="selectedCostCenters.length > 0 || uiState.mode === 'edit'"
+        v-if="selectedCostCenter || uiState.mode === 'edit'"
         :mode="uiState.mode"
-        :cost-centers="selectedCostCenters"
+        :cost-center="selectedCostCenter"
         :org-positions="orgPositions"
         :loading="pendingState.updateOrganizationChart"
         @edit="uiState.mode = 'edit'"

@@ -2,8 +2,8 @@
 import AssignUserToPositionDialog from './AssignUserToPositionDialog.vue'
 
 const props = defineProps({
-  costCenters: {
-    type: Array,
+  costCenter: {
+    type: Object,
     required: true,
   },
 
@@ -31,15 +31,11 @@ const uiState = reactive({
   isAssignUserToPositionDialogVisible: false,
 })
 
-const costCenters = ref(props.costCenters)
+const costCenter = ref(props.costCenter)
 const selectedPosition = ref(null)
 
-function positionAssignments(costCenters, position) {
-  if (costCenters.length > 1) {
-    return []
-  }
-
-  return costCenters[0].orgPositions.filter(
+function positionAssignments(costCenter, position) {
+  return costCenter.orgPositions.filter(
     orgPosition => orgPosition.id === position.id,
   )
 }
@@ -50,20 +46,29 @@ function onAddUserBtnClick(position) {
 }
 
 function handleAddUser(addedUser) {
-  const orgPositions = costCenters.value[0].orgPositions
+  const orgPositions = costCenter.value.orgPositions
 
-  if (orgPositions.some(orgPosition => orgPosition.user.id === addedUser.id)) {
+  if (
+    orgPositions.some(orgPosition => orgPosition.user.id === addedUser.id)
+  ) {
     uiState.hasError = true
-    uiState.errorMessage = 'کاربر انتخاب شده، در این مرکز هزینه دارای سمت می‌باشد'
+    uiState.errorMessage
+      = 'کاربر انتخاب شده، در این مرکز هزینه دارای سمت می‌باشد'
     return
   }
 
-  orgPositions.push(
-    { ...selectedPosition.value, user: addedUser },
-  )
+  orgPositions.push({ ...selectedPosition.value, user: addedUser })
 
-  costCenters.value[0].orgPositions = orgPositions
+  costCenter.value.orgPositions = orgPositions
 }
+
+watch(
+  () => props.costCenter,
+  (newVal) => {
+    costCenter.value = newVal
+  },
+  { deep: false },
+)
 </script>
 
 <template>
@@ -80,12 +85,7 @@ function handleAddUser(addedUser) {
   <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
     <VCardTitle>
       <span class="ml-3"> سمت‌های </span>
-      <v-chip
-        v-for="costCenter in costCenters"
-        :key="costCenter.rayvarzId"
-        color="info"
-        class="ml-3 mb-3"
-      >
+      <v-chip color="info" class="ml-3 mb-3">
         {{ costCenter.name }}
       </v-chip>
     </VCardTitle>
@@ -112,7 +112,7 @@ function handleAddUser(addedUser) {
             <VCardText>
               <v-chip
                 v-for="positionAssignment in positionAssignments(
-                  costCenters,
+                  costCenter,
                   position,
                 )"
                 :key="positionAssignment.id"
@@ -127,10 +127,7 @@ function handleAddUser(addedUser) {
               </v-chip>
             </VCardText>
             <VCardActions>
-              <VBtn
-                block
-                @click="onAddUserBtnClick(position)"
-              >
+              <VBtn block @click="onAddUserBtnClick(position)">
                 <VIcon size="24" icon="tabler-plus" />
               </VBtn>
             </VCardActions>
