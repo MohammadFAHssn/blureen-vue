@@ -15,27 +15,9 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
 // states
-const healthCertificateDate = ref(null)
 const refVForm = ref()
-const healthCertificateImages = ref([])
+const healthCertificateDate = ref(null)
 const healthCertificateName = ref([])
-
-const fileInputRules = [
-  (fileList) => {
-    if (!fileList.length) return 'حداقل یک تصویر انتخاب کنید!'
-
-    if (fileList.length > 500) return 'حداکثر می‌توانید 500 تصویر انتخاب کنید!'
-
-    for (const file of fileList) {
-      const ext = file.name.split('.').pop().toLowerCase()
-      if (!['jpg', 'jpeg', 'png'].includes(ext))
-        return 'فقط فایل‌های تصویری (jpg, pn مجاز هستند!'
-      if (file.size > 2 * 1024 * 1024)
-        return `حجم هر تصویر باید کمتر از ${2 * 1024 * 1024 / 1024 / 1024} مگابایت باشد!`
-    }
-    return true
-  },
-]
 
 const datePickerRules = [
   () => !!healthCertificateDate.value || 'لطفا دوره را انتخاب کنید!',
@@ -47,7 +29,6 @@ function onFormSubmit() {
     if (isValid) {
       emit('submit', {
         healthCertificateDate: healthCertificateDate.value,
-        healthCertificateImages: healthCertificateImages.value,
         healthCertificateName: healthCertificateName.value,
       })
     }
@@ -80,10 +61,11 @@ function dialogModelValueUpdate(val) {
         <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onFormSubmit">
           <VRow>
             <!-- Name -->
-            <VCol cols="12" md="12">
-              <VInput :rules="datePickerRules" :disabled="loading">
+            <VCol cols="12" md="6">
+              <VInput :disabled="loading">
                 <VTextField
                   v-model="healthCertificateName"
+                  :rules="[requiredValidator]"
                   :disabled="loading"
                   simple
                   label="نام"
@@ -102,20 +84,6 @@ function dialogModelValueUpdate(val) {
                   label="دوره شناسنامه"
                 />
               </VInput>
-            </VCol>
-
-            <!-- Image Files -->
-            <VCol cols="12" md="6">
-              <VFileInput
-                v-model="healthCertificateImages"
-                multiple
-                chips
-                show-size
-                :disabled="loading"
-                label="تصاویر (حداکثر 500 فایل)"
-                accept="image/*"
-                :rules="fileInputRules"
-              />
             </VCol>
 
             <!-- Submit / Cancel -->
