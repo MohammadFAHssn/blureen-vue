@@ -28,6 +28,7 @@ const uiState = reactive({
 
 const costCenter = ref(props.costCenter)
 const selectedPosition = ref(null)
+const dragOverPositionId = ref(null)
 
 function positionAssignments(costCenter, position) {
   return costCenter.orgPositions.filter(
@@ -61,9 +62,19 @@ function onDragOver(event) {
   event.preventDefault()
 }
 
-function onDrop(event, position) {
-  event.preventDefault()
+function onDragEnter(event, position) {
+  dragOverPositionId.value = position.id
+}
 
+function onDragLeave(event, position) {
+  const to = event.relatedTarget
+  if (to && event.currentTarget.contains(to)) return
+
+  if (dragOverPositionId.value === position.id)
+    dragOverPositionId.value = null
+}
+
+function onDrop(event, position) {
   const jsonData = event.dataTransfer.getData('application/json')
   const data = JSON.parse(jsonData)
 
@@ -77,6 +88,8 @@ function onDrop(event, position) {
   selectedPosition.value = position
 
   handleAddUser(draggedUser)
+
+  dragOverPositionId.value = null
 }
 
 watch(
@@ -122,8 +135,11 @@ watch(
           xxl="2"
         >
           <VCard
+            :class="{ 'drag-over': dragOverPositionId === position.id }"
             @dragover="onDragOver"
-            @drop="onDrop($event, position)"
+            @dragenter.prevent="onDragEnter($event, position)"
+            @dragleave.prevent="onDragLeave($event, position)"
+            @drop.prevent="onDrop($event, position)"
           >
             <VCardTitle>
               <v-chip color="primary">
@@ -187,5 +203,18 @@ watch(
 <style>
 .v-card-title {
   white-space: normal;
+}
+
+/* Drag-over visual effect for position cards */
+.drag-over {
+  border: 2px dashed rgb(var(--v-theme-primary));
+  background-color: rgb(var(--v-theme-primary) / 8%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  transform: translateY(-2px);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease,
+    border-color 0.15s ease;
 }
 </style>
