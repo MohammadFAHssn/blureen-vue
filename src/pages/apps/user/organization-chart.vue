@@ -50,7 +50,13 @@ const columnDefs = ref([
     rowGroup: true,
     hide: true,
   },
-  { headerName: 'کد پرسنلی', field: 'personnelCode' },
+  {
+    headerName: 'کد پرسنلی',
+    field: 'personnelCode',
+    dndSource: (params) => {
+      return params.node.group === false
+    },
+  },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
   {

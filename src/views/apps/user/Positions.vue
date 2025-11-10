@@ -62,6 +62,28 @@ function handleAddUser(addedUser) {
   costCenter.value.orgPositions = orgPositions
 }
 
+function onDragOver(event) {
+  event.preventDefault()
+}
+
+function onDrop(event, position) {
+  event.preventDefault()
+
+  const jsonData = event.dataTransfer.getData('application/json')
+  const data = JSON.parse(jsonData)
+
+  const draggedUser = {
+    id: data.id,
+    personnelCode: data.personnelCode,
+    firstName: data.firstName,
+    lastName: data.lastName,
+  }
+
+  selectedPosition.value = position
+
+  handleAddUser(draggedUser)
+}
+
 watch(
   () => props.costCenter,
   (newVal) => {
@@ -102,7 +124,11 @@ watch(
           xl="2"
           xxl="2"
         >
-          <VCard :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
+          <VCard
+            :color="mode === 'edit' ? 'yellow-lighten-4' : ''"
+            @dragover="onDragOver"
+            @drop="onDrop($event, position)"
+          >
             <VCardTitle>
               <v-chip color="primary">
                 {{ position.name }}
