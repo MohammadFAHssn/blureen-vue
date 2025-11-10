@@ -112,7 +112,7 @@ watch(
       </v-chip>
     </VCardTitle>
 
-    <VCardText class="d-flex align-center pa-5">
+    <VCardText class="pa-5" style="max-block-size: 25vh; overflow-y: auto;">
       <VRow>
         <VCol
           v-for="position in props.orgPositions"
