@@ -35,8 +35,8 @@ const healthCertificates = ref([])
 const selectedHealthCertificate = ref(null)
 const selectedNodes = ref([])
 const gridApi = ref(null)
-// ----- start ag-grid -----
 
+// ----- start ag-grid -----
 const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
@@ -132,8 +132,6 @@ const rowData = computed(() =>
 
 // ----- end ag-grid -----
 
-// ----- -----
-
 async function fetchHealthCertificates() {
   pendingState.fetchingHealthCertificates = true
   gridApi.value?.setGridOption('loading', true)
@@ -160,13 +158,6 @@ async function onCreateHealthCertificate(payload) {
 
   formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
   formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
-
-  if (payload.healthCertificateImages && payload.healthCertificateImages.length) {
-    for (const file of payload.healthCertificateImages) {
-      formData.append('images[]', file)
-    }
-    // console.log('Number of selected files:', payload.healthCertificateImages.length)
-  }
   formData.append('file_name', payload.healthCertificateName)
 
   pendingState.createHealthCertificate = true
@@ -199,19 +190,14 @@ async function onCreateHealthCertificate(payload) {
 }
 
 async function onEditHealthCertificate(payload) {
-  const id = selectedNodes.value[0].data.id
+  const id = selectedHealthCertificate.value.id
   const formData = new FormData()
   if (payload.healthCertificateDate) {
     formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
     formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
   }
-  if (payload.healthCertificateImages) {
-    formData.append('file', payload.healthCertificateImages)
-  }
-  if (payload.healthCertificateName) {
-    formData.append('file_name', payload.healthCertificateName)
-  }
-  formData.append('status', payload.birthdayFileStatus)
+  formData.append('file_name', payload.healthCertificateName)
+  formData.append('status', payload.healthCertificateStatus)
 
   pendingState.editHealthCertificate = true
   try {
@@ -297,7 +283,7 @@ async function onDelete() {
       v-if="uiState.isHealthCertificateEditDialogVisible"
       v-model:is-dialog-visible="uiState.isHealthCertificateEditDialogVisible"
       :loading="pendingState.editHealthCertificate"
-      :file="{ selectedHealthCertificate }"
+      :file="selectedHealthCertificate"
       @submit="onEditHealthCertificate"
     />
 
@@ -312,7 +298,7 @@ async function onDelete() {
     <AreYouSureDialog
       v-if="uiState.isHealthCertificateDeleteDialogVisible"
       v-model:is-dialog-visible="uiState.isHealthCertificateDeleteDialogVisible"
-      title="آیا از حذف این اطمینان دارید؟"
+      title="آیا از حذف این شناسنامه اطمینان دارید؟"
       :loading="pendingState.deleteHealthCertificate"
       @confirm="onDelete"
     />
