@@ -13,7 +13,6 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  mode: 'view',
 })
 
 const pendingState = reactive({
@@ -187,7 +186,9 @@ async function fetchCostCentersOrgPositions() {
 }
 
 function onSave() {
-  uiState.mode = 'view'
+}
+
+function onCancel() {
 }
 
 fetchUsers()
@@ -209,14 +210,12 @@ await fetchCostCentersOrgPositions()
 
     <div>
       <Positions
-        v-if="selectedCostCenter || uiState.mode === 'edit'"
-        :mode="uiState.mode"
+        v-if="selectedCostCenter"
         :cost-center="selectedCostCenter"
         :org-positions="orgPositions"
         :loading="pendingState.updateOrganizationChart"
-        @edit="uiState.mode = 'edit'"
         @save="onSave"
-        @cancel="uiState.mode = 'view'"
+        @cancel="onCancel"
       />
     </div>
 

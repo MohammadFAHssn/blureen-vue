@@ -12,18 +12,13 @@ const props = defineProps({
     required: true,
   },
 
-  mode: {
-    type: String,
-    required: true,
-  },
-
   loading: {
     type: Boolean,
     default: true,
   },
 })
 
-const emit = defineEmits(['save', 'cancel', 'edit'])
+const emit = defineEmits(['save', 'cancel'])
 
 const uiState = reactive({
   hasError: false,
@@ -104,13 +99,15 @@ watch(
     {{ uiState.errorMessage }}
   </VSnackbar>
 
-  <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
+  <VCard class="mb-3">
     <VCardTitle>
       <span class="ml-3"> سمت‌های </span>
       <v-chip color="info" class="ml-3 mb-3">
         {{ costCenter.name }}
       </v-chip>
     </VCardTitle>
+
+    <v-divider />
 
     <VCardText class="pa-5" style="max-block-size: 25vh; overflow-y: auto;">
       <VRow>
@@ -125,7 +122,6 @@ watch(
           xxl="2"
         >
           <VCard
-            :color="mode === 'edit' ? 'yellow-lighten-4' : ''"
             @dragover="onDragOver"
             @drop="onDrop($event, position)"
           >
@@ -161,9 +157,11 @@ watch(
         </VCol>
       </VRow>
     </VCardText>
-    <VCardActions>
+
+    <v-divider />
+
+    <VCardActions class="px-4 py-2">
       <VBtn
-        v-if="mode === 'edit'"
         color="success"
         :loading="loading"
         @click="emit('save')"
@@ -171,16 +169,11 @@ watch(
         ذخیره
       </VBtn>
       <VBtn
-        v-if="mode === 'edit'"
         color="error"
         :disabled="loading"
         @click="emit('cancel')"
       >
-        بستن
-      </VBtn>
-
-      <VBtn v-if="mode === 'view'" color="warning" @click="emit('edit')">
-        ویرایش
+        انصراف
       </VBtn>
     </VCardActions>
   </VCard>
