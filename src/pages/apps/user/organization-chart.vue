@@ -99,26 +99,28 @@ const autoGroupColumnDef = ref({
 function onSelectionChanged() {
   const node = gridApi.value.getSelectedNodes()[0]
 
-  selectedCostCenter.value = {
-    rayvarzId: node.groupValue.rayvarz_id,
-    name: node.groupValue.name,
-    orgPositions: costCentersOrgPositions.value
-      .filter(
-        costCenterOrgPosition =>
-          costCenterOrgPosition.cost_center_id === node.groupValue.rayvarz_id,
-      )
-      .map(costCenterOrgPosition => ({
-        id: costCenterOrgPosition.org_position.id,
-        name: costCenterOrgPosition.org_position.name,
-        level: costCenterOrgPosition.org_position.level,
-        user: {
-          id: costCenterOrgPosition.user.id,
-          firstName: costCenterOrgPosition.user.first_name,
-          lastName: costCenterOrgPosition.user.last_name,
-          personnelCode: costCenterOrgPosition.user.personnel_code,
-        },
-      })),
-  }
+  selectedCostCenter.value = node
+    ? {
+        rayvarzId: node.groupValue.rayvarz_id,
+        name: node.groupValue.name,
+        orgPositions: costCentersOrgPositions.value
+          .filter(
+            costCenterOrgPosition =>
+              costCenterOrgPosition.cost_center_id === node.groupValue.rayvarz_id,
+          )
+          .map(costCenterOrgPosition => ({
+            id: costCenterOrgPosition.org_position.id,
+            name: costCenterOrgPosition.org_position.name,
+            level: costCenterOrgPosition.org_position.level,
+            user: {
+              id: costCenterOrgPosition.user.id,
+              firstName: costCenterOrgPosition.user.first_name,
+              lastName: costCenterOrgPosition.user.last_name,
+              personnelCode: costCenterOrgPosition.user.personnel_code,
+            },
+          })),
+      }
+    : null
 }
 
 // ----- end ag-grid -----
