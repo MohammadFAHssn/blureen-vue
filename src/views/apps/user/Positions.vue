@@ -128,10 +128,10 @@ watch(
           v-for="position in props.orgPositions"
           :key="position.id"
           cols="12"
-          sm="6"
-          md="4"
-          lg="4"
-          xl="2"
+          sm="12"
+          md="5"
+          lg="5"
+          xl="3"
           xxl="2"
         >
           <VCard
@@ -148,21 +148,31 @@ watch(
             </VCardTitle>
 
             <VCardText>
-              <v-chip
+              <VBtnGroup
                 v-for="positionAssignment in positionAssignments(
                   costCenter,
                   position,
                 )"
                 :key="positionAssignment.id"
-                variant="outlined"
-                color="primary"
-                class="ma-1"
+                density="compact"
+                class="overflow-hidden ml-1 mb-1"
               >
-                {{ positionAssignment.user.firstName }}
-                {{ positionAssignment.user.lastName }} ({{
-                  positionAssignment.user.personnelCode
-                }})
-              </v-chip>
+                <VBtn
+                  color="error"
+                  variant="tonal"
+                  icon
+                  class="remove-position-holder-btn"
+                >
+                  <VIcon icon="tabler-x" />
+                </VBtn>
+
+                <VBtn class="position-holder-label" disabled variant="outlined">
+                  {{ positionAssignment.user.firstName }}
+                  {{ positionAssignment.user.lastName }} ({{
+                    positionAssignment.user.personnelCode
+                  }})
+                </VBtn>
+              </VBtnGroup>
             </VCardText>
             <VCardActions>
               <VBtn block @click="onAddUserBtnClick(position)">
@@ -200,7 +210,7 @@ watch(
   />
 </template>
 
-<style>
+<style lang="scss" scoped>
 .v-card-title {
   white-space: normal;
 }
@@ -216,5 +226,16 @@ watch(
     box-shadow 0.15s ease,
     transform 0.15s ease,
     border-color 0.15s ease;
+}
+
+.position-holder-label:disabled {
+  border-color: rgb(var(--v-theme-primary)) !important;
+}
+
+.remove-position-holder-btn {
+  border: thin solid;
+  /* stylelint-disable */
+  border-color: rgba(var(--v-theme-primary), 0.65) !important;
+  /* stylelint-enable */
 }
 </style>
