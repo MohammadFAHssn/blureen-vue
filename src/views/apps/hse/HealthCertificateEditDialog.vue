@@ -11,11 +11,6 @@ const emit = defineEmits(['submit', 'update:isDialogVisible'])
 const refVForm = ref()
 const healthCertificateDate = ref(null)
 const healthCertificateName = ref(props.file.name)
-const healthCertificateStatus = ref(props.file.status)
-const allStatus = ref([
-  { label: 'فعال', value: 1 },
-  { label: 'غیرفعال', value: 0 },
-])
 
 // methods
 function onFormSubmit() {
@@ -24,7 +19,6 @@ function onFormSubmit() {
       emit('submit', {
         healthCertificateDate: healthCertificateDate.value,
         healthCertificateName: healthCertificateName.value,
-        healthCertificateStatus: healthCertificateStatus.value,
       })
     }
   })
@@ -49,7 +43,7 @@ function dialogModelValueUpdate(val) {
 
     <VCard>
       <VCardTitle class="text-h6">
-        ویرایش گروه شناسنامه
+        ویرایش شناسنامه: {{ props.file.name }}
       </VCardTitle>
 
       <VCardText>
@@ -88,19 +82,6 @@ function dialogModelValueUpdate(val) {
                   label="دوره شناسنامه"
                 />
               </VInput>
-            </VCol>
-
-            <!-- Status -->
-            <VCol cols="12" md="12">
-              <VSelect
-                v-model="healthCertificateStatus"
-                :items="allStatus"
-                item-title="label"
-                item-value="value"
-                label="وضعیت"
-                variant="outlined"
-                clearable
-              />
             </VCol>
 
             <!-- Submit / Cancel -->
