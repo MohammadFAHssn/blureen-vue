@@ -1,5 +1,6 @@
 <script setup>
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+import HealthCertificateAddImageDialog from '@/views/apps/hse/HealthCertificateAddImageDialog.vue'
 import HealthCertificateCreateDialog from '@/views/apps/hse/HealthCertificateCreateDialog.vue'
 import HealthCertificateDetailsDialog from '@/views/apps/hse/HealthCertificateDetailsDialog.vue'
 import HealthCertificateEditDialog from '@/views/apps/hse/HealthCertificateEditDialog.vue'
@@ -18,6 +19,7 @@ const uiState = reactive({
   errorMessage: '',
   isHealthCertificateCreateDialogVisible: false,
   isHealthCertificateEditDialogVisible: false,
+  isHealthCertificateAddImageDialogVisible: false,
   isHealthCertificateDeleteDialogVisible: false,
   isHealthCertificateDetailsDialogVisible: false,
 })
@@ -25,6 +27,7 @@ const uiState = reactive({
 const pendingState = reactive({
   createHealthCertificate: false,
   editHealthCertificate: false,
+  addImageHealthCertificate: false,
   fetchingHealthCertificates: false,
   deleteHealthCertificate: false,
   detailsHealthCertificate: false,
@@ -91,6 +94,13 @@ const columnDefs = ref([
             )
             uiState.isHealthCertificateEditDialogVisible = true
           },
+          onAddImageClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            selectedHealthCertificate.value = healthCertificates.value.find(
+              gift => gift.id === selectedNode.data.id,
+            )
+            uiState.isHealthCertificateAddImageDialogVisible = true
+          },
         },
       }
     },
@@ -115,6 +125,7 @@ const rowData = computed(() =>
           status: true,
           mode: 'view',
         },
+        addImage: true,
       },
     }
   }),
@@ -217,6 +228,44 @@ async function onEditHealthCertificate(payload) {
   }
 }
 
+async function onAddImageToHealthCertificate(payload) {
+  const id = selectedHealthCertificate.value.id
+  const formData = new FormData()
+  if (payload.healthCertificateDate) {
+    formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
+    formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
+  }
+  formData.append('file_name', payload.healthCertificateName)
+
+  pendingState.addImageHealthCertificate = true
+  try {
+    await $api(`/hse/health-certificate/file/${id}`, {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage
+            = response._data?.message || 'خطا در ویرایش'
+        }
+      },
+    })
+
+    uiState.isHealthCertificateAddImageDialogVisible = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.addImageHealthCertificate = false
+    fetchHealthCertificates()
+  }
+}
+
 async function onDelete() {
   const id = selectedNodes.value[0].data.id
   pendingState.deleteHealthCertificate = true
@@ -274,6 +323,14 @@ async function onDelete() {
       :loading="pendingState.editHealthCertificate"
       :file="selectedHealthCertificate"
       @submit="onEditHealthCertificate"
+    />
+
+    <HealthCertificateAddImageDialog
+      v-if="uiState.isHealthCertificateAddImageDialogVisible"
+      v-model:is-dialog-visible="uiState.isHealthCertificateAddImageDialogVisible"
+      :loading="pendingState.addImageHealthCertificate"
+      :file="selectedHealthCertificate"
+      @submit="onAddImageToHealthCertificate"
     />
 
     <HealthCertificateDetailsDialog
