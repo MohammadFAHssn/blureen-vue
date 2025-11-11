@@ -48,15 +48,6 @@ const columnDefs = ref([
   { headerName: 'نام', field: 'name' },
   { headerName: 'ماه', field: 'month' },
   { headerName: 'سال', field: 'year' },
-  {
-    headerName: 'وضعیت',
-    field: 'status',
-    cellRenderer: 'Active',
-    cellStyle: { 'display': 'flex', 'align-items': 'center' },
-    filterParams: {
-      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
-    },
-  },
   { headerName: 'بارگذاری توسط', field: 'uploadedBy' },
   { headerName: 'آخرین ویرایش توسط', field: 'editedBy' },
   {
@@ -113,7 +104,6 @@ const rowData = computed(() =>
       name: file.name,
       month: file.month,
       year: file.year,
-      status: file.status,
       uploadedBy: file.uploadedBy?.fullName || '--',
       editedBy: file.editedBy?.fullName || '--',
       createdAt: moment(file.createdAt).format('jYYYY-jMM-jDD HH:mm:ss'),
@@ -197,7 +187,6 @@ async function onEditHealthCertificate(payload) {
     formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
   }
   formData.append('file_name', payload.healthCertificateName)
-  formData.append('status', payload.healthCertificateStatus)
 
   pendingState.editHealthCertificate = true
   try {
@@ -292,7 +281,6 @@ async function onDelete() {
       v-model:is-dialog-visible="uiState.isHealthCertificateDetailsDialogVisible"
       :loading="pendingState.detailsHealthCertificate"
       :file="selectedHealthCertificate"
-      @update:selected-birthday-file-users="selectedHealthCertificate.users = $event"
     />
 
     <AreYouSureDialog
