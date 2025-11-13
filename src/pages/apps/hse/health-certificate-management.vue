@@ -87,13 +87,6 @@ const columnDefs = ref([
             )
             uiState.isHealthCertificateDetailsDialogVisible = true
           },
-          onEditClick: (selectedNode) => {
-            selectedNodes.value = [selectedNode]
-            selectedHealthCertificate.value = healthCertificates.value.find(
-              gift => gift.id === selectedNode.data.id,
-            )
-            uiState.isHealthCertificateEditDialogVisible = true
-          },
           onAddImageClick: (selectedNode) => {
             selectedNodes.value = [selectedNode]
             selectedHealthCertificate.value = healthCertificates.value.find(
@@ -121,10 +114,6 @@ const rowData = computed(() =>
       actions: {
         deletable: true,
         detailsable: true,
-        editable: {
-          status: true,
-          mode: 'view',
-        },
         addImage: true,
       },
     }

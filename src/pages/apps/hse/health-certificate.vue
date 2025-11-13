@@ -14,6 +14,8 @@ const pendingState = reactive({
   downloadingHealthCertificate: false,
 })
 
+const storageBase = import.meta.env.VITE_STORAGE_BASE_URL
+
 const healthCertificatePeriod = ref('')
 const selectedImage = ref('')
 const year = computed(() => healthCertificatePeriod.value)
@@ -135,7 +137,7 @@ onMounted(async () => {
         <!-- Image exists -->
         <VCard v-else-if="selectedImage" class="text-center">
           <VImg
-            :src="selectedImage"
+            :src="`${storageBase}/${selectedImage}`"
             cover
             height="100%"
             class="cursor-pointer"
