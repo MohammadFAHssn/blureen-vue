@@ -1,33 +1,48 @@
 <script setup>
 const props = defineProps({
-  file: Object,
   loading: Boolean,
   isDialogVisible: Boolean,
+
+  // progress-related (fed by parent)
+  progress: { type: Number, default: 0 }, // 0..100
+  total: { type: Number, default: 0 },
+  done: { type: Number, default: 0 },
+  failed: { type: Number, default: 0 },
 })
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
 // states
 const refVForm = ref()
-const healthCertificateDate = ref(null)
-const healthCertificateName = ref(props.file.name)
+const healthCertificateImages = ref([])
+
+const fileInputRules = [
+  (fileList) => {
+    if (!fileList.length) return 'حداقل یک تصویر انتخاب کنید!'
+    if (fileList.length > 3000) return 'حداکثر می‌توانید 3000 تصویر انتخاب کنید!'
+
+    for (const file of fileList) {
+      const ext = file.name.split('.').pop().toLowerCase()
+      if (!['jpg', 'jpeg', 'png'].includes(ext))
+        return 'فقط فایل‌های تصویری (jpg, jpeg, png) مجاز هستند!'
+      if (file.size > 2 * 1024 * 1024)
+        return `حجم هر تصویر باید کمتر از ${2 * 1024 * 1024 / 1024 / 1024} مگابایت باشد!`
+    }
+    return true
+  },
+]
 
 // methods
 function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      emit('submit', {
-        healthCertificateDate: healthCertificateDate.value,
-        healthCertificateName: healthCertificateName.value,
-      })
+      emit('submit', { healthCertificateImages: healthCertificateImages.value })
     }
   })
 }
-
 function onFormReset() {
   emit('update:isDialogVisible', false)
 }
-
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
@@ -43,45 +58,44 @@ function dialogModelValueUpdate(val) {
 
     <VCard>
       <VCardTitle class="text-h6">
-        ویرایش شناسنامه: {{ props.file.name }}
+        افزودن عکس
       </VCardTitle>
 
+      <!-- PROGRESS BAR (visible only while loading) -->
+      <VCardText v-if="loading" class="pt-0">
+        <VProgressLinear
+          :model-value="progress"
+          height="10"
+          color="primary"
+          rounded
+          striped
+          class="mb-2"
+        />
+        <div class="text-caption d-flex justify-space-between">
+          <span>در حال آپلود...</span>
+          <span>
+            {{ done }} / {{ total }}
+            <span v-if="failed"> | ناموفق: {{ failed }}</span>
+            | {{ Math.round(progress) }}%
+          </span>
+        </div>
+      </VCardText>
+
       <VCardText>
-        <VRow>
-          <VCol cols="12" sm="6">
-            <p><strong>ماه:</strong> {{ props.file.month }}</p>
-          </VCol>
-          <VCol cols="12" sm="6">
-            <p><strong>سال:</strong> {{ props.file.year }}</p>
-          </VCol>
-        </VRow>
-
-        <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onFormSubmit">
+        <VForm ref="refVForm" class="mt-2" validate-on="submit lazy" @submit.prevent="onFormSubmit">
           <VRow>
-            <!-- Name -->
-            <VCol cols="12" md="6">
-              <VInput :disabled="loading">
-                <VTextField
-                  v-model="healthCertificateName"
-                  :rules="[requiredValidator]"
-                  :disabled="loading"
-                  simple
-                  label="نام"
-                />
-              </VInput>
-            </VCol>
-
-            <!-- Time Period -->
-            <VCol cols="12" md="6">
-              <VInput :disabled="loading">
-                <PersianDatetimePicker
-                  v-model="healthCertificateDate"
-                  :disabled="loading"
-                  type="year-month"
-                  simple
-                  label="دوره شناسنامه"
-                />
-              </VInput>
+            <!-- Image Files -->
+            <VCol cols="12" md="12">
+              <VFileInput
+                v-model="healthCertificateImages"
+                multiple
+                chips
+                show-size
+                :disabled="loading"
+                label="تصاویر (حداکثر 3000 فایل)"
+                accept="image/*"
+                :rules="fileInputRules"
+              />
             </VCol>
 
             <!-- Submit / Cancel -->
@@ -90,7 +104,7 @@ function dialogModelValueUpdate(val) {
                 ذخیره
               </VBtn>
 
-              <VBtn color="secondary" variant="tonal" @click="onFormReset">
+              <VBtn color="secondary" variant="tonal" :disabled="loading" @click="onFormReset">
                 انصراف
               </VBtn>
             </VCol>
