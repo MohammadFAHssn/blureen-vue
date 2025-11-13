@@ -228,40 +228,81 @@ async function onEditHealthCertificate(payload) {
   }
 }
 
+// progress state
+const upload = reactive({
+  active: false,
+  total: 0,
+  done: 0,
+  failed: 0,
+  percent: 0, // 0..100
+})
+
+function resetUpload() {
+  upload.active = false
+  upload.total = 0
+  upload.done = 0
+  upload.failed = 0
+  upload.percent = 0
+}
+
 async function onAddImageToHealthCertificate(payload) {
   const id = selectedHealthCertificate.value.id
-  const formData = new FormData()
-  if (payload.healthCertificateDate) {
-    formData.append('month', Number(payload.healthCertificateDate.split('/')[1]))
-    formData.append('year', Number(payload.healthCertificateDate.split('/')[0]))
-  }
-  formData.append('file_name', payload.healthCertificateName)
+  const year = selectedHealthCertificate.value.year
+  const files = payload.healthCertificateImages || []
+  const chunkSize = 19
+
+  if (!files.length) return
+
+  // init progress
+  resetUpload()
+  upload.active = true
+  upload.total = files.length
 
   pendingState.addImageHealthCertificate = true
-  try {
-    await $api(`/hse/health-certificate/file/${id}`, {
-      method: 'POST',
-      body: formData,
-      onResponseError({ response }) {
-        uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage
-            = response._data?.message || 'خطا در ویرایش'
-        }
-      },
-    })
+  uiState.hasError = false
+  uiState.errorMessage = ''
 
+  try {
+    for (let i = 0; i < files.length; i += chunkSize) {
+      const chunk = files.slice(i, i + chunkSize)
+
+      const formData = new FormData()
+      chunk.forEach(f => formData.append('images[]', f, f.name))
+      formData.append('id', String(id))
+      formData.append('year', String(year))
+
+      try {
+        await $api('/hse/health-certificate/file/image', {
+          method: 'POST',
+          body: formData,
+        })
+        // success: mark these as done
+        upload.done += chunk.length
+      }
+      catch (e) {
+        console.error('batch upload failed:', e)
+        // failure: count as failed but keep going
+        upload.failed += chunk.length
+        uiState.hasError = true
+        uiState.errorMessage = 'برخی از فایل‌ها بارگذاری نشدند.'
+      }
+
+      // update percent after each batch
+      const completed = upload.done + upload.failed
+      upload.percent = upload.total ? (completed / upload.total) * 100 : 0
+    }
+
+    // close dialog if at least something uploaded and no hard error desired
     uiState.isHealthCertificateAddImageDialogVisible = false
   }
   catch (err) {
     console.error(err)
+    uiState.hasError = true
+    uiState.errorMessage = 'خطای غیرمنتظره در آپلود'
   }
   finally {
     pendingState.addImageHealthCertificate = false
+    upload.active = false
     fetchHealthCertificates()
   }
 }
@@ -328,8 +369,11 @@ async function onDelete() {
     <HealthCertificateAddImageDialog
       v-if="uiState.isHealthCertificateAddImageDialogVisible"
       v-model:is-dialog-visible="uiState.isHealthCertificateAddImageDialogVisible"
-      :loading="pendingState.addImageHealthCertificate"
-      :file="selectedHealthCertificate"
+      :loading="pendingState.addImageHealthCertificate || upload.active"
+      :progress="upload.percent"
+      :total="upload.total"
+      :done="upload.done"
+      :failed="upload.failed"
       @submit="onAddImageToHealthCertificate"
     />
 
