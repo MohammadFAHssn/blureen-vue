@@ -9,7 +9,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
-    subject: 'Birthdays',
+    subject: 'Health-Certificate',
   },
 })
 

@@ -14,13 +14,13 @@ export default [
   {
     title: 'HSE Management',
     icon: { icon: 'tabler-hospital-circle' },
-    action: 'use',
-    subject: 'app',
+    action: 'read',
+    subject: 'Health-Certificate',
     children: [
       {
         title: 'HSE Management Health Certificate',
-        action: 'use',
-        subject: 'app',
+        action: 'read',
+        subject: 'Health-Certificate',
         to: 'apps-hse-health-certificate-management',
       },
     ],
