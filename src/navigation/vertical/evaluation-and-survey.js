@@ -12,16 +12,16 @@ export default [
     subject: 'app',
     children: [
       {
-        title: 'Participate Evaluation',
+        title: 'Peer Evaluation',
         action: 'use',
         subject: 'app',
-        to: 'apps-evaluation-participate-evaluation',
+        to: 'apps-evaluation-peer-evaluation',
       },
       {
-        title: 'Evaluation Results',
+        title: 'Self Evaluation',
         action: 'use',
         subject: 'app',
-        to: 'apps-evaluation-evaluation-results',
+        to: 'apps-evaluation-self-evaluation',
       },
     ],
   },
