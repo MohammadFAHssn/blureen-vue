@@ -168,7 +168,7 @@ onMounted(async () => {
     <VDialog v-model="uiState.isImageDialogVisible" width="1000">
       <VCard>
         <VCardText class="text-center">
-          <VImg :src="selectedImage" />
+          <VImg :src="`${storageBase}/${selectedImage}`" />
         </VCardText>
         <VCardActions class="justify-center">
           <VBtn @click="uiState.isImageDialogVisible = false">
