@@ -220,7 +220,7 @@
   "Payroll": "حقوق و مزایا",
   "Payroll Batches Management": "مدیریت فیش‌های حقوقی",
   "Payroll Slip": "فیش حقوقی",
-  "Payroll Birthday": "هدیه تولد من",
+  "Payroll Birthday": "هدیه تولد",
   "Payroll Birthday Management": "مدیریت هدیه تولد",
   "Payroll Birthday Management file": "فایل‌ها",
   "Payroll Birthday Management gift": "هدایا",
@@ -232,5 +232,9 @@
   "Evaluation": "ارزیابی",
   "Evaluation And Survey": "ارزیابی و نظرسنجی",
   "Peer Evaluation": "ارزیابی همکاران",
-  "Self Evaluation": "خود ارزیابی"
+  "Self Evaluation": "خود ارزیابی",
+  "HSE": "ایمنی و بهداشت",
+  "HSE User Health Certificate": "شناسنامه سلامت",
+  "HSE Management": "مدیریت",
+  "HSE Management Health Certificate": "شناسنامه‌ سلامت"
 }

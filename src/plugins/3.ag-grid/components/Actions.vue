@@ -41,6 +41,10 @@ function onCancelClick() {
 
 <template>
   <div class="d-flex gap-1">
+    <IconBtn v-if="params.value.addImage" @click="params.onAddImageClick(params.node)">
+      <VIcon icon="tabler-photo-plus" />
+    </IconBtn>
+
     <div v-if="params.value.editable?.status">
       <IconBtn
         v-if="params.value.editable.mode === 'view'"

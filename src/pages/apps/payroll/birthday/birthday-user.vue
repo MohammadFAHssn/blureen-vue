@@ -127,7 +127,7 @@ await canSee()
 
       <!-- Gift Cards -->
       <VContainer v-else-if="birthdayGifts.length" fluid>
-        <VRow dense justify="center">
+        <VRow>
           <VCol
             v-for="gift in birthdayGifts"
             :key="gift.id"

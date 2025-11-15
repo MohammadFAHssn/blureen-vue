@@ -21,6 +21,8 @@ declare module 'vue-router/auto-routes' {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
+    'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
+    'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-user': RouteRecordInfo<'apps-payroll-birthday-birthday-user', '/apps/payroll/birthday/birthday-user', Record<never, never>, Record<never, never>>,
@@ -70,6 +72,14 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/evaluation/self-evaluation.vue': {
       routes: 'apps-evaluation-self-evaluation'
+      views: never
+    }
+    'src/pages/apps/hse/health-certificate.vue': {
+      routes: 'apps-hse-health-certificate'
+      views: never
+    }
+    'src/pages/apps/hse/health-certificate-management.vue': {
+      routes: 'apps-hse-health-certificate-management'
       views: never
     }
     'src/pages/apps/payroll/birthday/birthday-admin-file.vue': {
