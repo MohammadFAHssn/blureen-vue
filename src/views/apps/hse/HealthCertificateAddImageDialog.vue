@@ -84,6 +84,18 @@ function dialogModelValueUpdate(val) {
       <VCardText>
         <VForm ref="refVForm" class="mt-2" validate-on="submit lazy" @submit.prevent="onFormSubmit">
           <VRow>
+            <!-- Submit / Cancel -->
+            <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
+              <VBtn type="submit" :disabled="loading" :loading="loading">
+                ذخیره
+              </VBtn>
+
+              <VBtn color="secondary" variant="tonal" :disabled="loading" @click="onFormReset">
+                انصراف
+              </VBtn>
+            </VCol>
+          </VRow>
+          <VRow>
             <!-- Image Files -->
             <VCol cols="12" md="12">
               <VFileInput
@@ -96,17 +108,6 @@ function dialogModelValueUpdate(val) {
                 accept="image/*"
                 :rules="fileInputRules"
               />
-            </VCol>
-
-            <!-- Submit / Cancel -->
-            <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit" :disabled="loading" :loading="loading">
-                ذخیره
-              </VBtn>
-
-              <VBtn color="secondary" variant="tonal" :disabled="loading" @click="onFormReset">
-                انصراف
-              </VBtn>
             </VCol>
           </VRow>
         </VForm>
