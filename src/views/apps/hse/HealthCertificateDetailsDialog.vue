@@ -15,11 +15,13 @@ const uiState = reactive({
   hasError: false,
   message: '',
 })
+const gridApi = ref(null)
 
 // functions
 async function fetchHealthCertificateUsers(id) {
   if (!id) return
   pendingState.fetchingHealthCertificateUsers = true
+  gridApi.value?.setGridOption('loading', true)
   try {
     const res = await $api(`/hse/health-certificate/file/${id}`, { method: 'GET' })
     healthCertificateUsers.value = res?.data ?? []
@@ -34,9 +36,37 @@ async function fetchHealthCertificateUsers(id) {
   }
   finally {
     pendingState.fetchingHealthCertificateUsers = false
+    gridApi.value?.setGridOption('loading', false)
   }
 }
+// ----- start ag-grid -----
+const { theme } = useAGGridTheme()
 
+function onGridReady(params) {
+  gridApi.value = params.api
+  gridApi.value.setGridOption('loading', true)
+}
+
+const columnDefs = ref([
+  { headerName: 'نام', field: 'name' },
+  { headerName: 'کد پرسنلی', field: 'personnel_code' },
+  { headerName: 'شناسنامه', field: 'health_certificate' },
+])
+
+const rowData = computed(() =>
+  healthCertificateUsers.value?.map((user) => {
+    const hasThisCertificate = user.health_certificate?.some(
+      c => c.health_certificate_id === props.file.id,
+    )
+
+    return {
+      name: `${user.first_name} ${user.last_name}`,
+      personnel_code: user.personnel_code,
+      health_certificate: hasThisCertificate ? 'دارد' : 'آپلود نشده',
+    }
+  }),
+)
+// ----- end ag-grid -----
 watch(
   () => props.file?.id,
   (id) => {
@@ -58,36 +88,18 @@ watch(
         کاربران دوره شناسنامه: {{ props.file.name }}
       </VCardTitle>
 
-      <VCardText class="scrollable-content">
-        <div v-if="pendingState.fetchingHealthCertificateUsers" class="d-flex justify-center align-center h-100">
-          <VProgressCircular indeterminate color="primary" size="64" />
-        </div>
-
-        <div v-else-if="healthCertificateUsers">
-          <VTable fixed-header :height="400" density="comfortable">
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>نام</th>
-                <th>کد پرسنلی</th>
-                <th>شناسنامه</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(u, index) in healthCertificateUsers" :key="u.id">
-                <td>{{ index + 1 }}</td>
-                <td>{{ u.first_name }} {{ u.last_name }}</td>
-                <td>{{ u.personnel_code }}</td>
-                <td>{{ u.health_certificate.some(h => h.health_certificate_id === props.file?.id) ? 'آپلود شده' : 'ندارد' }}</td>
-              </tr>
-            </tbody>
-          </VTable>
-        </div>
-
-        <div v-else class="text-center text-medium-emphasis mt-3">
-          هیچ کاربری یافت نشد.
-        </div>
-      </VCardText>
+      <section style="height: 400px">
+        <AgGridVue
+          style="block-size: 100%; inline-size: 100%"
+          :column-defs="columnDefs"
+          :row-data="rowData"
+          enable-rtl
+          row-numbers
+          pagination
+          :theme="theme"
+          @grid-ready="onGridReady"
+        />
+      </section>
 
       <VCardActions class="justify-end">
         <VBtn
@@ -101,3 +113,26 @@ watch(
     </VCard>
   </VDialog>
 </template>
+
+<style lang="scss" scoped>
+@use '@styles/variables/vuetify';
+@use '@core/scss/base/mixins';
+
+.app-layout {
+  @include mixins.elevation(vuetify.$card-elevation);
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 1fr auto;
+}
+
+.v-application {
+  max-block-size: 100%;
+  min-block-size: 100%;
+}
+
+:deep(.v-application__wrap) {
+  max-block-size: 100% !important;
+  min-block-size: 100% !important;
+}
+</style>
