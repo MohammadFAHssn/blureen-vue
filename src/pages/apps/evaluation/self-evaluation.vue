@@ -28,12 +28,6 @@ const formState = reactive({
 const questions = ref([])
 const answersState = reactive({})
 
-const QUESTION_TYPE_LABELS = {
-  1: 'امتیازدهی ۱ تا ۱۰',
-  2: 'انتخاب تکی',
-  3: 'انتخاب چندگانه',
-}
-
 const groupedQuestions = computed(() => {
   const groups = new Map()
 
@@ -97,10 +91,6 @@ function isQuestionAnswered(question) {
     default:
       return !!answer
   }
-}
-
-function questionTypeLabel(question) {
-  return QUESTION_TYPE_LABELS[question.question_type_id] || question?.question_type?.name || 'سوال'
 }
 
 function showQuestionError(question) {
@@ -177,7 +167,7 @@ async function evaluate(answers) {
   pendingState.evaluate = true
   let requestFailed = false
   try {
-    await $api('/evaluation/evaluate', {
+    await $api('/evaluation/self-evaluation/create', {
       method: 'POST',
       body: answers,
       onResponseError({ response }) {
@@ -188,6 +178,7 @@ async function evaluate(answers) {
       },
     })
 
+    fetchQuestions()
     return !requestFailed
   }
   catch (err) {
@@ -297,9 +288,9 @@ await fetchQuestions()
                 class="mb-8"
               >
                 <div class="d-flex align-center mb-4 flex-wrap gap-3">
-                  <div class="text-subtitle-1 font-weight-semibold">
+                  <vCard class="text-subtitle-1 font-weight-bold pa-2" color="primary" variant="tonal">
                     {{ group.name }}
-                  </div>
+                  </vCard>
                   <VDivider class="flex-grow-1" />
                 </div>
 
