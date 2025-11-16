@@ -317,7 +317,7 @@ await fetchQuestions()
                           :length="10"
                           color="amber"
                           active-color="amber"
-                          :size="22"
+                          :size="21"
                           density="comfortable"
                           hover
                         />
