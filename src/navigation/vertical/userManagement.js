@@ -44,20 +44,20 @@ export default [
     action: 'read',
     subject: 'Approval-Flows',
   },
-  {
-    title: 'Roles & Permissions',
-    icon: { icon: 'tabler-lock' },
+  // {
+  //   title: 'Roles & Permissions',
+  //   icon: { icon: 'tabler-lock' },
 
-    // TODO: Add actions and subjects for roles and permissions
-    children: [
-      {
-        title: 'Roles',
-        to: 'apps-roles',
-      },
-      {
-        title: 'Permissions',
-        to: 'apps-permissions',
-      },
-    ],
-  },
+  //   // TODO: Add actions and subjects for roles and permissions
+  //   children: [
+  //     {
+  //       title: 'Roles',
+  //       to: 'apps-roles',
+  //     },
+  //     {
+  //       title: 'Permissions',
+  //       to: 'apps-permissions',
+  //     },
+  //   ],
+  // },
 ]
