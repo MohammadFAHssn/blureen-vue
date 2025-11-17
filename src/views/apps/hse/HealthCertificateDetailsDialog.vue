@@ -50,7 +50,11 @@ function onGridReady(params) {
 const columnDefs = ref([
   { headerName: 'نام', field: 'name' },
   { headerName: 'کد پرسنلی', field: 'personnel_code' },
-  { headerName: 'شناسنامه', field: 'health_certificate' },
+  {
+    headerName: 'شناسنامه',
+    field: 'health_certificate',
+    sort: 'desc', // or 'asc'
+  },
 ])
 
 const rowData = computed(() =>
