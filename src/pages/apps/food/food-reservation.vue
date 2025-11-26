@@ -159,211 +159,213 @@ onMounted(async () => {
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
-  <VSnackbar
-    v-model="uiState.success"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="success"
-  >
-    {{ uiState.successMessage }}
-  </VSnackbar>
+  <VContainer>
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="error"
+    >
+      {{ uiState.errorMessage }}
+    </VSnackbar>
+    <VSnackbar
+      v-model="uiState.success"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="success"
+    >
+      {{ uiState.successMessage }}
+    </VSnackbar>
 
-  <VRow dense>
-    <VCol cols="12" md="12" sm="12">
-      <VCard class="mb-4 pa-8 text-center">
-        <VRow align="center" justify="center" class="gap-4">
-          <VCol v-if="!can('use', 'reserve-for-others')" cols="auto">
-            <div class="text-h6 font-weight-bold text-primary-darken-3">
-              رزرو غذا
-            </div>
-          </VCol>
+    <VRow dense>
+      <VCol cols="12" md="12" sm="12">
+        <VCard class="mb-4 pa-8 text-center">
+          <VRow align="center" justify="center" class="gap-4">
+            <VCol v-if="!can('use', 'reserve-for-others')" cols="auto">
+              <div class="text-h6 font-weight-bold text-primary-darken-3">
+                رزرو غذا
+              </div>
+            </VCol>
 
-          <template v-else>
-            <VBtn density="default">
-              رزرو غذا
-            </VBtn>
+            <template v-else>
+              <VBtn density="default">
+                رزرو غذا
+              </VBtn>
 
-            <VBtn density="default">
-              رزرو غذای میهمان/ پیمانکار
-            </VBtn>
-          </template>
-        </VRow>
-      </VCard>
-    </VCol>
-  </VRow>
-
-  <VRow dense>
-    <VCol cols="12" md="4" class="d-flex justify-center mb-4 mb-md-0">
-      <input id="custom-input" style="display: none" />
-      <PersianDatetimePicker
-        v-model="reserveDate"
-        format="jYYYY/jMM/jDD"
-        inline
-        custom-input="#custom-input"
-        @change="getReservedMealsForDate"
-      />
-    </VCol>
-
-    <VCol cols="12" md="8">
-      <VCard class="mb-4">
-        <label class="font-weight-medium mb-2 mt-2 d-block text-center">
-          جزئیات
-        </label>
-        <VRow class="mb-4 px-4">
-          <VCol cols="12" sm="12" md="12">
-            <VTextField
-              v-model="reserveDate"
-              label="تاریخ رزرو"
-              variant="outlined"
-              readonly
-              :rules="[requiredValidator]"
-            />
-          </VCol>
-          <VCol cols="12" md="12">
-            <VSelect
-              v-model="selectedMeal"
-              :items="meals"
-              item-title="label"
-              item-value="value"
-              label="وعده"
-              variant="outlined"
-              clearable
-              :rules="[requiredValidator]"
-            />
-          </VCol>
-          <VCol cols="12" class="mb-3">
-            <v-autocomplete
-              v-model="selectedPersonnel"
-              :items="users"
-              item-title="fullName"
-              item-value="personnel_code"
-              label="افراد"
-              multiple
-              chips
-              clearable
-              variant="outlined"
-              :rules="[requiredValidator]"
-            />
-          </VCol>
-        </VRow>
-        <VRow justify="center" class="mb-4">
-          <VCol cols="auto">
-            <VBtn color="primary" @click="submit">
-              ثبت
-            </VBtn>
-          </VCol>
-        </VRow>
-      </VCard>
-
-      <!-- برای دسکتاپ -->
-      <div class="ma-3 overflow-auto d-none d-md-block">
-        <VCard class="pa-4">
-          <label class="font-weight-medium mb-4 d-block text-center">
-            رزروهای تاریخ انتخاب شده
-          </label>
-
-          <VTable v-if="!ReservedMealsLoading" density="comfortable">
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>وعده</th>
-                <th>کد تحویل</th>
-                <th>وضعیت</th>
-                <th>تعداد</th>
-                <th>عملیات</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in altFakeReservedMeals" :key="index">
-                <td>{{ index + 1 }}</td>
-                <td>{{ item.mealName }}</td>
-                <td>{{ item.deliveryCode }}</td>
-                <td>
-                  <VChip :color="item.status.color" dark>
-                    {{ item.status.label }}
-                  </VChip>
-                </td>
-                <td>{{ item.count }}</td>
-                <td>
-                  <VBtn color="orange" variant="text" size="small">
-                    <VIcon icon="tabler-edit" size="20" />
-                  </VBtn>
-                  <VBtn color="red" variant="text" size="small">
-                    <VIcon icon="tabler-trash" size="20" />
-                  </VBtn>
-                  <VBtn color="primary" variant="text" size="small">
-                    <VIcon icon="tabler-file-description" size="20" />
-                  </VBtn>
-                </td>
-              </tr>
-            </tbody>
-          </VTable>
-          <VSkeletonLoader v-else type="card" />
+              <VBtn density="default">
+                رزرو غذای میهمان/ پیمانکار
+              </VBtn>
+            </template>
+          </VRow>
         </VCard>
-      </div>
+      </VCol>
+    </VRow>
 
-      <!-- برای موبایل -->
-      <div class="d-md-none pa-3">
-        <VExpansionPanels variant="accordion">
-          <VExpansionPanel>
-            <VExpansionPanelTitle class="font-weight-bold">
+    <VRow dense>
+      <VCol cols="12" md="4" class="d-flex justify-center mb-4 mb-md-0">
+        <input id="custom-input" style="display: none" />
+        <PersianDatetimePicker
+          v-model="reserveDate"
+          format="jYYYY/jMM/jDD"
+          inline
+          custom-input="#custom-input"
+          @change="getReservedMealsForDate"
+        />
+      </VCol>
+
+      <VCol cols="12" md="8">
+        <VCard class="mb-4">
+          <label class="font-weight-medium mb-2 mt-2 d-block text-center">
+            جزئیات
+          </label>
+          <VRow class="mb-4 px-4">
+            <VCol cols="12" sm="12" md="12">
+              <VTextField
+                v-model="reserveDate"
+                label="تاریخ رزرو"
+                variant="outlined"
+                readonly
+                :rules="[requiredValidator]"
+              />
+            </VCol>
+            <VCol cols="12" md="12">
+              <VSelect
+                v-model="selectedMeal"
+                :items="meals"
+                item-title="label"
+                item-value="value"
+                label="وعده"
+                variant="outlined"
+                clearable
+                :rules="[requiredValidator]"
+              />
+            </VCol>
+            <VCol cols="12" class="mb-3">
+              <v-autocomplete
+                v-model="selectedPersonnel"
+                :items="users"
+                item-title="fullName"
+                item-value="personnel_code"
+                label="افراد"
+                multiple
+                chips
+                clearable
+                variant="outlined"
+                :rules="[requiredValidator]"
+              />
+            </VCol>
+          </VRow>
+          <VRow justify="center" class="mb-4">
+            <VCol cols="auto">
+              <VBtn color="primary" @click="submit">
+                ثبت
+              </VBtn>
+            </VCol>
+          </VRow>
+        </VCard>
+
+        <!-- برای دسکتاپ -->
+        <div class="ma-3 overflow-auto d-none d-md-block">
+          <VCard class="pa-4">
+            <label class="font-weight-medium mb-4 d-block text-center">
               رزروهای تاریخ انتخاب شده
-            </VExpansionPanelTitle>
+            </label>
 
-            <VExpansionPanelText v-if="!ReservedMealsLoading">
-              <VExpansionPanels variant="accordion">
-                <VExpansionPanel
-                  v-for="(item, index) in altFakeReservedMeals"
-                  :key="index"
-                  class="mb-2"
-                >
-                  <VExpansionPanelTitle>
-                    <div class="d-flex justify-space-between w-100 align-center">
-                      <span>{{ item.mealName }}</span>
-                      <VChip
-                        :color="item.status.color"
-                        size="small"
-                        label
-                      >
-                        {{ item.status.label }}
-                      </VChip>
-                    </div>
-                  </VExpansionPanelTitle>
-
-                  <VExpansionPanelText>
-                    <div class="pa-2">
-                      <div><strong>کد تحویل:</strong> {{ item.deliveryCode }}</div>
-                      <div><strong>تعداد:</strong> {{ item.count }}</div>
-                      <div class="mt-2 text-center">
-                        <VBtn color="orange" variant="text" size="small">
-                          <VIcon icon="tabler-edit" size="20" />
-                        </VBtn>
-                        <VBtn color="red" variant="text" size="small">
-                          <VIcon icon="tabler-trash" size="20" />
-                        </VBtn>
-                        <VBtn color="primary" variant="text" size="small">
-                          <VIcon icon="tabler-file-description" size="20" />
-                        </VBtn>
-                      </div>
-                    </div>
-                  </VExpansionPanelText>
-                </VExpansionPanel>
-              </VExpansionPanels>
-            </VExpansionPanelText>
+            <VTable v-if="!ReservedMealsLoading" density="comfortable">
+              <thead>
+                <tr>
+                  <th>ردیف</th>
+                  <th>وعده</th>
+                  <th>کد تحویل</th>
+                  <th>وضعیت</th>
+                  <th>تعداد</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in altFakeReservedMeals" :key="index">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ item.mealName }}</td>
+                  <td>{{ item.deliveryCode }}</td>
+                  <td>
+                    <VChip :color="item.status.color" dark>
+                      {{ item.status.label }}
+                    </VChip>
+                  </td>
+                  <td>{{ item.count }}</td>
+                  <td>
+                    <VBtn color="orange" variant="text" size="small">
+                      <VIcon icon="tabler-edit" size="20" />
+                    </VBtn>
+                    <VBtn color="red" variant="text" size="small">
+                      <VIcon icon="tabler-trash" size="20" />
+                    </VBtn>
+                    <VBtn color="primary" variant="text" size="small">
+                      <VIcon icon="tabler-file-description" size="20" />
+                    </VBtn>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
             <VSkeletonLoader v-else type="card" />
-          </VExpansionPanel>
-        </VExpansionPanels>
-      </div>
-    </VCol>
-  </VRow>
+          </VCard>
+        </div>
+
+        <!-- برای موبایل -->
+        <div class="d-md-none pa-3">
+          <VExpansionPanels variant="accordion">
+            <VExpansionPanel>
+              <VExpansionPanelTitle class="font-weight-bold">
+                رزروهای تاریخ انتخاب شده
+              </VExpansionPanelTitle>
+
+              <VExpansionPanelText v-if="!ReservedMealsLoading">
+                <VExpansionPanels variant="accordion">
+                  <VExpansionPanel
+                    v-for="(item, index) in altFakeReservedMeals"
+                    :key="index"
+                    class="mb-2"
+                  >
+                    <VExpansionPanelTitle>
+                      <div class="d-flex justify-space-between w-100 align-center">
+                        <span>{{ item.mealName }}</span>
+                        <VChip
+                          :color="item.status.color"
+                          size="small"
+                          label
+                        >
+                          {{ item.status.label }}
+                        </VChip>
+                      </div>
+                    </VExpansionPanelTitle>
+
+                    <VExpansionPanelText>
+                      <div class="pa-2">
+                        <div><strong>کد تحویل:</strong> {{ item.deliveryCode }}</div>
+                        <div><strong>تعداد:</strong> {{ item.count }}</div>
+                        <div class="mt-2 text-center">
+                          <VBtn color="orange" variant="text" size="small">
+                            <VIcon icon="tabler-edit" size="20" />
+                          </VBtn>
+                          <VBtn color="red" variant="text" size="small">
+                            <VIcon icon="tabler-trash" size="20" />
+                          </VBtn>
+                          <VBtn color="primary" variant="text" size="small">
+                            <VIcon icon="tabler-file-description" size="20" />
+                          </VBtn>
+                        </div>
+                      </div>
+                    </VExpansionPanelText>
+                  </VExpansionPanel>
+                </VExpansionPanels>
+              </VExpansionPanelText>
+              <VSkeletonLoader v-else type="card" />
+            </VExpansionPanel>
+          </VExpansionPanels>
+        </div>
+      </VCol>
+    </VRow>
+  </VContainer>
 </template>
