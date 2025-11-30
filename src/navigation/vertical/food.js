@@ -11,4 +11,11 @@ export default [
     action: 'use',
     subject: 'app',
   },
+  {
+    title: 'FOOD Kitchen',
+    to: 'apps-food-kitchen',
+    icon: { icon: 'tabler-chef-hat' },
+    action: 'use',
+    subject: 'app',
+  },
 ]

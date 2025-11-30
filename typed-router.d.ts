@@ -22,6 +22,7 @@ declare module 'vue-router/auto-routes' {
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-food-food-reservation': RouteRecordInfo<'apps-food-food-reservation', '/apps/food/food-reservation', Record<never, never>, Record<never, never>>,
+    'apps-food-kitchen': RouteRecordInfo<'apps-food-kitchen', '/apps/food/kitchen', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
@@ -77,6 +78,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/food/food-reservation.vue': {
       routes: 'apps-food-food-reservation'
+      views: never
+    }
+    'src/pages/apps/food/kitchen.vue': {
+      routes: 'apps-food-kitchen'
       views: never
     }
     'src/pages/apps/hse/health-certificate.vue': {
