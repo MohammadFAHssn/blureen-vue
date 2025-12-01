@@ -70,6 +70,16 @@ async function submit() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage = response._data?.message || 'خطا در ایجاد'
+        }
+      },
     })
 
     if (pDate) {
@@ -80,7 +90,6 @@ async function submit() {
   }
   catch (err) {
     console.error('Error create plan:', err)
-    throw err
   }
   finally {
     pendingState.createPlan = false
