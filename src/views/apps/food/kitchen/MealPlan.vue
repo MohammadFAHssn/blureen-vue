@@ -271,7 +271,7 @@ onMounted(async () => {
         </VCard>
 
         <!-- برای دسکتاپ -->
-        <div class="ma-3 overflow-auto d-none d-md-block">
+        <!-- <div class="ma-3 overflow-auto d-none d-md-block">
           <VCard class="pa-4">
             <label class="font-weight-medium mb-4 d-block text-center">
               برنامه غذایی تاریخ انتخاب شده
@@ -315,19 +315,16 @@ onMounted(async () => {
                     <VBtn color="orange" variant="text" size="small">
                       <VIcon icon="tabler-edit" size="20" />
                     </VBtn>
-                    <VBtn color="red" variant="text" size="small">
-                      <VIcon icon="tabler-trash" size="20" />
-                    </VBtn>
                   </td>
                 </tr>
               </tbody>
             </VTable>
             <VSkeletonLoader v-else type="card" />
           </VCard>
-        </div>
+        </div> -->
 
         <!-- برای موبایل -->
-        <div class="d-md-none pa-3">
+        <div class="pa-3">
           <VExpansionPanels variant="accordion">
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
@@ -352,14 +349,11 @@ onMounted(async () => {
 
                     <VExpansionPanelText>
                       <div class="pa-2">
-                        <div><strong>ایجاد شده توسط:</strong> {{ item.food.createdBy ? `${item.food.createdBy.fullName} - ${item.food.createdBy.username}` : '—' }}</div>
-                        <div><strong>آخرین ویرایش توسط:</strong> {{ item.food.editedBy ? `${item.food.editedBy.fullName} - ${item.food.editedBy.username}` : '—' }}</div>
+                        <div><strong>ایجاد شده توسط:</strong> {{ item.createdBy ? `${item.createdBy.fullName} - ${item.createdBy.username}` : '—' }}</div>
+                        <div><strong>آخرین ویرایش توسط:</strong> {{ item.editedBy ? `${item.editedBy.fullName} - ${item.editedBy.username}` : '—' }}</div>
                         <div class="mt-2 text-center">
                           <VBtn color="orange" variant="text" size="small">
                             <VIcon icon="tabler-edit" size="20" />
-                          </VBtn>
-                          <VBtn color="red" variant="text" size="small">
-                            <VIcon icon="tabler-trash" size="20" />
                           </VBtn>
                         </div>
                       </div>
