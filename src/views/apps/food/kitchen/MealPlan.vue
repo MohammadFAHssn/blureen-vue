@@ -134,7 +134,7 @@ async function fetchPlansForDate(date) {
 async function fetchMeals() {
   pendingState.fetchingMeals = true
   try {
-    const res = await $api('/food/meal/', { method: 'GET' })
+    const res = await $api('/food/meal/get-actives', { method: 'GET' })
 
     meals.value = res?.data.meals || []
   }
@@ -151,7 +151,7 @@ async function fetchMeals() {
 async function fetchFoods() {
   pendingState.fetchingFoods = true
   try {
-    const res = await $api('/food/food/', { method: 'GET' })
+    const res = await $api('/food/food/get-actives', { method: 'GET' })
 
     foods.value = res?.data.foods || []
   }
@@ -230,7 +230,7 @@ onMounted(async () => {
             <VCol cols="12" sm="12" md="12">
               <VTextField
                 v-model="planDate"
-                label="تاریخ رزرو"
+                label="تاریخ"
                 variant="outlined"
                 readonly
                 :rules="[requiredValidator]"
