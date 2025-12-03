@@ -29,8 +29,8 @@ const planDate = ref('')
 const jdate = ref({ jy: null, jm: null, jd: null })
 
 // choose
-const selectedMeal = ref([])
-const selectedFood = ref([])
+const selectedMeal = ref(null)
+const selectedFood = ref(null)
 
 // methods
 function goBack() {
@@ -44,10 +44,8 @@ function goBack() {
 
 async function submit() {
   pendingState.createPlan = true
-  let pDate = null
   try {
     const [year, month, day] = planDate.value.split('/').map(Number)
-    pDate = { year, month, day }
 
     const selectedKey = year * 10000 + month * 100 + day
     const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
@@ -59,9 +57,7 @@ async function submit() {
     }
 
     const payload = {
-      year,
-      month,
-      day,
+      date: planDate.value,
       meal_id: selectedMeal.value,
       food_id: selectedFood.value,
     }
@@ -82,9 +78,7 @@ async function submit() {
       },
     })
 
-    if (pDate) {
-      await fetchPlansForDate(pDate)
-    }
+    await fetchPlansForDate(planDate.value)
 
     return res
   }
@@ -95,33 +89,24 @@ async function submit() {
     pendingState.createPlan = false
     selectedFood.value = null
     selectedMeal.value = null
-    // planDate.value = null
   }
 }
 
-async function fetchPlansForDate(date) {
+async function fetchPlansForDate() {
   plans.value = []
   pendingState.fetchingPlans = true
 
-  let payload
-
-  if (planDate.value) {
-    const [year, month, day] = planDate.value.split('/').map(Number)
-    payload = { year, month, day }
-  }
-  else {
-    const [year, month, day] = date
-    payload = { year, month, day }
-  }
-
-  const query = new URLSearchParams(payload).toString()
+  const queryDate = planDate.value
 
   try {
-    const res = await $api(`/food/meal-plan/get-for-date?${query}`, {
+    const res = await $api('/food/meal-plan/get-for-date', {
       method: 'GET',
+      params: {
+        date: queryDate,
+      },
     })
 
-    plans.value = res?.data.mealPlans || []
+    plans.value = res?.data?.mealPlans || []
   }
   catch (err) {
     console.error('Error fetching meal plans:', err)
@@ -168,13 +153,13 @@ async function fetchFoods() {
 onMounted(async () => {
   await fetchMeals()
   await fetchFoods()
+
   const d = new Date()
   const temp = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate())
-
   jdate.value = temp
 
-  const date = [temp.jy, temp.jm, temp.jd]
-  await fetchPlansForDate(date)
+  planDate.value = `${temp.jy}/${temp.jm}/${temp.jd}`
+  await fetchPlansForDate()
 })
 </script>
 
