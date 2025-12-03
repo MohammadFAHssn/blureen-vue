@@ -15,6 +15,9 @@ importers:
       '@ag-grid-community/locale':
         specifier: ^34.1.1
         version: 34.2.0
+      '@balkangraph/orgchart.js':
+        specifier: ^8.21.30
+        version: 8.21.30
       '@casl/ability':
         specifier: 6.7.3
         version: 6.7.3
@@ -538,6 +541,9 @@ packages:
   '@babel/types@7.28.4':
     resolution: {integrity: sha512-bkFqkLhh3pMBUQQkpVgWDWq/lqzc2678eUyDlTBhRqhCHFguYYGM0Efga7tYk4TogG/3x0EEl66/OQ+WGbWB/Q==}
     engines: {node: '>=6.9.0'}
+
+  '@balkangraph/orgchart.js@8.21.30':
+    resolution: {integrity: sha512-PjYf1czj4HLA4WGzA3Lu89YPbtK8S9XGnIj6vtDWTb6JY6bD411HXHllhhRx5tJMmwQsRFWUp5N51zTjMRmlPw==}
 
   '@bundled-es-modules/cookie@2.0.1':
     resolution: {integrity: sha512-8o+5fRPLNbjbdGRRmJj3h6Hh1AQJf2dk3qQ/5ZFb+PXkRNiSoMGGUKlsgLfrxneb72axVJyIYji64E2+nNfYyw==}
@@ -5395,6 +5401,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@balkangraph/orgchart.js@8.21.30': {}
 
   '@bundled-es-modules/cookie@2.0.1':
     dependencies:

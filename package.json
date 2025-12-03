@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ag-grid-community/locale": "^34.1.1",
+    "@balkangraph/orgchart.js": "^8.21.30",
     "@casl/ability": "6.7.3",
     "@casl/vue": "2.2.2",
     "@floating-ui/dom": "^1.7.3",
