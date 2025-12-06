@@ -11,6 +11,7 @@
     "ExtractPropTypes": true,
     "ExtractPublicPropTypes": true,
     "InjectionKey": true,
+    "MAX_FILE_SIZE": true,
     "MaybeRef": true,
     "MaybeRefOrGetter": true,
     "PropType": true,
