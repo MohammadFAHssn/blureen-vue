@@ -11,6 +11,7 @@ declare global {
   const COOKIE_MAX_AGE_1_YEAR: typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']
   const EffectScope: typeof import('vue')['EffectScope']
   const MAX_FILE_SIZE: typeof import('./src/utils/constants.js')['MAX_FILE_SIZE']
+  const ORG_POSITION_COLORS: typeof import('./src/utils/constants.js')['ORG_POSITION_COLORS']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const alphaDashValidator: typeof import('./src/@core/utils/validators.js')['alphaDashValidator']
   const alphaValidator: typeof import('./src/@core/utils/validators.js')['alphaValidator']
@@ -386,6 +387,7 @@ declare module 'vue' {
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly MAX_FILE_SIZE: UnwrapRef<typeof import('./src/utils/constants.js')['MAX_FILE_SIZE']>
+    readonly ORG_POSITION_COLORS: UnwrapRef<typeof import('./src/utils/constants.js')['ORG_POSITION_COLORS']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>
     readonly alphaValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaValidator']>

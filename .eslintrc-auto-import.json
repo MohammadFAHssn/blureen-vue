@@ -14,6 +14,7 @@
     "MAX_FILE_SIZE": true,
     "MaybeRef": true,
     "MaybeRefOrGetter": true,
+    "ORG_POSITION_COLORS": true,
     "PropType": true,
     "Ref": true,
     "ShallowRef": true,
