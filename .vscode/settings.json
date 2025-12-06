@@ -16,7 +16,7 @@
     "editor.defaultFormatter": "stylelint.vscode-stylelint"
   },
   "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
@@ -59,7 +59,9 @@
     "stylelint",
     "touchless",
     "triggerer",
-    "vuetify"
+    "vuetify",
+    "خودارزیابی",
+    "سرشیفت"
   ],
   "commentAnchors.tags.anchors": {
     "ℹ️": {

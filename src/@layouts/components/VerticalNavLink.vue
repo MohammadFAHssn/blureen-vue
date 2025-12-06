@@ -34,6 +34,7 @@ const hideTitleAndBadge = configStore.isVerticalNavMini()
           $router,
         ),
       }"
+      style="padding-inline-start: 1rem;"
     >
       <Component
         :is="layoutConfig.app.iconRenderer || 'div'"

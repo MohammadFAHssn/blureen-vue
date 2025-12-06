@@ -1,11 +1,14 @@
 <script setup>
-import { can } from '@layouts/plugins/casl'
-import PayrollChart from './PayrollChart.vue'
+// import { can } from '@layouts/plugins/casl'
+// import PayrollChart from './PayrollChart.vue'
+
+// const overlay = ref(true)
 </script>
 
 <template>
   <VRow>
     <!-- 👉 Payroll  -->
+    <!--
     <VCol
       v-if="can('use', 'app')"
       cols="12"
@@ -16,6 +19,19 @@ import PayrollChart from './PayrollChart.vue'
       xxl="6"
     >
       <VCard>
+        <v-overlay
+          v-model="overlay"
+          class="align-center justify-center"
+          contained
+        >
+          <v-btn
+            color="primary"
+            @click="overlay = false"
+          >
+            نمایش نمودار
+          </v-btn>
+        </v-overlay>
+
         <VCardItem>
           <VCardTitle>حقوق و دستمزد</VCardTitle>
         </VCardItem>
@@ -25,5 +41,12 @@ import PayrollChart from './PayrollChart.vue'
         </VCardText>
       </VCard>
     </VCol>
+      -->
   </VRow>
 </template>
+
+<style>
+/* .v-overlay__scrim {
+  backdrop-filter: blur(5px);
+} */
+</style>

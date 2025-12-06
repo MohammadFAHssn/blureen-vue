@@ -68,7 +68,9 @@ function dialogModelValueUpdate(val) {
 
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">افزودن هدیه جدید</h4>
+        <h4 class="text-h5 text-center mb-2">
+          افزودن هدیه جدید
+        </h4>
 
         <!-- 👉 Form -->
         <VForm

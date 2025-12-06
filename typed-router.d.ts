@@ -19,6 +19,10 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
+    'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
+    'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
+    'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
     'apps-evaluation-participate-evaluation': RouteRecordInfo<'apps-evaluation-participate-evaluation', '/apps/evaluation/participate-evaluation', Record<never, never>, Record<never, never>>,
     'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
@@ -66,12 +70,20 @@ declare module 'vue-router/auto-routes' {
       routes: '$error'
       views: never
     }
-    'src/pages/apps/evaluation/evaluation-results.vue': {
-      routes: 'apps-evaluation-evaluation-results'
+    'src/pages/apps/evaluation/peer-evaluation.vue': {
+      routes: 'apps-evaluation-peer-evaluation'
       views: never
     }
-    'src/pages/apps/evaluation/participate-evaluation.vue': {
-      routes: 'apps-evaluation-participate-evaluation'
+    'src/pages/apps/evaluation/self-evaluation.vue': {
+      routes: 'apps-evaluation-self-evaluation'
+      views: never
+    }
+    'src/pages/apps/hse/health-certificate.vue': {
+      routes: 'apps-hse-health-certificate'
+      views: never
+    }
+    'src/pages/apps/hse/health-certificate-management.vue': {
+      routes: 'apps-hse-health-certificate-management'
       views: never
     }
     'src/pages/apps/human-resources/approvals-inbox.vue': {

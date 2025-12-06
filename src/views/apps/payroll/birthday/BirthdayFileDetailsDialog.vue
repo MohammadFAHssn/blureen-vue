@@ -123,7 +123,6 @@ async function toggleUserStatus(u) {
 
     if (res?.data?.length) {
       u.status = res.data[0].status
-      console.log(`User ${u.user.fullName} status updated to: ${u.status}`)
     }
   }
   catch (err) {
