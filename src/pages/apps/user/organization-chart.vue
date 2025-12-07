@@ -1,11 +1,12 @@
 <script setup>
-import Positions from '@/views/apps/user/Positions.vue'
+import OrgChart from '@balkangraph/orgchart.js'
+import { useTheme } from 'vuetify'
 
 definePage({
   meta: {
-    layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
     subject: 'Organization-Chart',
+    layoutWrapperClasses: 'layout-content-height-fixed',
   },
 })
 
@@ -15,139 +16,44 @@ const uiState = reactive({
   errorMessage: '',
 })
 
-const pendingState = reactive({
-  updateOrganizationChart: false,
-})
-
-const users = ref([])
+const orgChartNodes = ref([])
+const orgChartRef = ref(null)
+const orgChartInstance = ref(null)
 const orgPositions = ref([])
-const costCentersOrgPositions = ref([])
 
-const gridApi = shallowRef(null)
+const vuetifyTheme = useTheme()
 
-const selectedCostCenter = ref(null)
-
-provide('users', users)
-
-// ----- start ag-grid -----
-
-const { theme } = useAGGridTheme()
-
-function onGridReady(params) {
-  gridApi.value = params.api
-
-  gridApi.value.setGridOption('rowData', rowData())
-}
-
-const columnDefs = ref([
-  { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
-  { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
-  {
-    headerName: 'مرکز هزینه',
-    field: 'costCenter',
-    valueFormatter: params => params.value?.name,
-    rowGroup: true,
-    hide: true,
-  },
-  {
-    headerName: 'کد پرسنلی',
-    field: 'personnelCode',
-    dndSource: (params) => {
-      return params.node.group === false
-    },
-  },
-  { headerName: 'نام', field: 'firstName' },
-  { headerName: 'نام خانوادگی', field: 'lastName' },
-  {
-    headerName: 'وضعیت',
-    field: 'active',
-    cellRenderer: 'Active',
-    cellStyle: { 'display': 'flex', 'align-items': 'center' },
-    filterParams: {
-      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
-    },
-  },
-])
-
-const rowSelection = ref({
-  mode: 'singleRow',
-  enableClickSelection: true,
-  selectAll: 'filtered',
-
-  isRowSelectable: rowNode => rowNode.field === 'costCenter',
-})
-
-function rowData() {
-  return users.value?.map((user) => {
-    return {
-      id: user.id,
-      personnelCode: Number.parseInt(user.personnel_code),
-      firstName: user.first_name,
-      lastName: user.last_name,
-      active: user.active,
-      workplace: user.profile?.workplace?.name,
-      workArea: user.profile?.work_area?.name,
-      costCenter: user.profile?.cost_center,
+watch(
+  () => vuetifyTheme.current.value.colors,
+  async () => {
+    if (orgChartInstance.value && orgChartNodes.value.length > 0) {
+      designOrgChart()
+      orgChartInstance.value.draw()
     }
-  })
-}
+  },
+  { deep: true },
+)
 
-const autoGroupColumnDef = ref({
-  filter: 'agGroupColumnFilter',
-})
-
-function onSelectionChanged() {
-  const node = gridApi.value.getSelectedNodes()[0]
-
-  selectedCostCenter.value = node
-    ? {
-        rayvarzId: node.groupValue.rayvarz_id,
-        name: node.groupValue.name,
-        orgPositions: costCentersOrgPositions.value
-          .filter(
-            costCenterOrgPosition =>
-              costCenterOrgPosition.cost_center_id === node.groupValue.rayvarz_id,
-          )
-          .map(costCenterOrgPosition => ({
-            id: costCenterOrgPosition.org_position.id,
-            name: costCenterOrgPosition.org_position.name,
-            level: costCenterOrgPosition.org_position.level,
-            user: {
-              id: costCenterOrgPosition.user.id,
-              firstName: costCenterOrgPosition.user.first_name,
-              lastName: costCenterOrgPosition.user.last_name,
-              personnelCode: costCenterOrgPosition.user.personnel_code,
-            },
-          })),
-      }
-    : null
-}
-
-// ----- end ag-grid -----
-
-async function fetchUsers() {
-  try {
-    const { data, error } = await useApi(
-      createUrl('/base/user', {
-        query: {
-          'fields[users]': 'id,first_name,last_name,personnel_code,active',
-          'fields[profiles]':
-            'id,user_id,workplace_id,work_area_id,cost_center_id',
-          'include': 'profile.workplace,profile.workArea,profile.costCenter',
-        },
-      }),
-    )
-
-    if (error.value) throw error.value
-
-    users.value = data.value.data
-    gridApi.value?.setGridOption('rowData', rowData())
-  }
-  catch (e) {
-    console.error('Error fetching users:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت کاربران'
-  }
+async function fetchOrgChartNodes() {
+  await axiosInstance
+    .get('/base/org-chart-node')
+    .then(({ data: { data } }) => {
+      orgChartNodes.value = data.map((orgChartNode) => {
+        return {
+          id: orgChartNode.id,
+          pid: orgChartNode.parent_id,
+          orgPositionName: orgChartNode.org_position.name,
+          orgUnitName: orgChartNode.org_unit.name,
+          users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
+          tags: [`position-id-${orgChartNode.org_position.id}`],
+        }
+      })
+    })
+    .catch((error) => {
+      console.error('Error fetching org chart nodes:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت چارت سازمانی'
+    })
 }
 
 async function fetchOrgPositions() {
@@ -159,98 +65,153 @@ async function fetchOrgPositions() {
     orgPositions.value = data.value.data
   }
   catch (e) {
-    console.error('Error fetching organization positions:', e)
+    console.error('Error fetching org positions:', e)
     uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌ها'
+    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌های سازمانی'
   }
 }
 
-async function fetchCostCentersOrgPositions() {
-  try {
-    const { data, error } = await useApi(
-      createUrl('/base/cost-center-org-position', {
-        query: {
-          'fields[users]': 'id,first_name,last_name,personnel_code,active',
-          'include': 'orgPosition,user',
-        },
-      }),
+function designOrgChart() {
+  const vuetifyColors = vuetifyTheme.current.value.colors
+
+  // Create custom Vuetify-style template
+  OrgChart.templates.vuetify = Object.assign({}, OrgChart.templates.ana)
+
+  // Node size - card-like dimensions
+  OrgChart.templates.vuetify.size = [220, 136]
+
+  // Field 0 - orgPosition (top rectangle)
+  OrgChart.templates.vuetify.field_0 = `
+    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="24" text-anchor="middle">{val}</text>
+  `
+
+  // Field 1 - orgUnit (middle rectangle)
+  OrgChart.templates.vuetify.field_1 = `
+    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="60" text-anchor="middle">{val}</text>
+  `
+
+  // Link style
+  OrgChart.templates.vuetify.link = `
+    <path stroke-linejoin="round" stroke="${vuetifyColors.primary}" stroke-opacity="0.5" stroke-width="2px" fill="none" d="{rounded}" />
+  `
+
+  // Plus/Expand button
+  OrgChart.templates.vuetify.plus = `
+    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
+    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
+    <line x1="15" y1="8" x2="15" y2="22" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
+  `
+
+  // Minus/Collapse button
+  OrgChart.templates.vuetify.minus = `
+    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
+    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
+  `
+
+  // Ripple effect color
+  OrgChart.templates.vuetify.ripple = {
+    radius: 0,
+    color: vuetifyColors.primary,
+    rect: null,
+  }
+
+  // Edit form header color
+  OrgChart.templates.vuetify.editFormHeaderColor = vuetifyColors.primary
+
+  // Main node - Vuetify card style with elevation shadow
+  designOrgChartNodes()
+}
+
+function designOrgChartNodes() {
+  const vuetifyColors = vuetifyTheme.current.value.colors
+
+  orgPositions.value.forEach((position) => {
+    OrgChart.templates[`position-id-${position.id}`] = Object.assign(
+      {},
+      OrgChart.templates.vuetify,
     )
 
-    if (error.value) throw error.value
+    OrgChart.templates[`position-id-${position.id}`].node = `
+    <defs>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+      </filter>
+    </defs>
 
-    costCentersOrgPositions.value = data.value.data
+    <!-- Main card background with rounded corners -->
+    <rect x="0" y="0" height="{h}" width="{w}" fill="${
+      vuetifyColors.surface
+    }" rx="8" ry="8" filter="url(#shadow)"></rect>
+    
+    <!-- OrgPosition (top) - rounded top corners only -->
+    <rect x="0" y="0" height="36" width="{w}" fill="${
+      ORG_POSITION_COLORS[position.id]
+    }" rx="8" ry="8"></rect>
+    <rect x="0" y="28" height="8" width="{w}" fill="${
+      ORG_POSITION_COLORS[position.id]
+    }"></rect>
+    
+    <!-- OrgUnit (middle) - no rounded corners -->
+    <rect x="0" y="36" height="36" width="{w}" fill="${
+      vuetifyColors.primary
+    }"></rect>
+  `
+  })
+}
+
+function drawOrgChart(orgChartRef, orgChartNodes) {
+  designOrgChart()
+
+  const tags = {}
+
+  orgPositions.value.forEach((position) => {
+    tags[`position-id-${position.id}`] = {
+      template: `position-id-${position.id}`,
+    }
+  })
+
+  orgChartInstance.value = new OrgChart(orgChartRef, {
+    template: 'vuetify',
+    nodes: orgChartNodes,
+    nodeBinding: {
+      field_0: 'orgPositionName',
+      field_1: 'orgUnitName',
+    },
+    scaleInitial: OrgChart.match.boundary,
+    enableSearch: false,
+    tags,
+  })
+}
+
+fetchOrgChartNodes()
+await fetchOrgPositions()
+
+onMounted(async () => {
+  await nextTick()
+  if (orgChartRef.value && orgChartNodes.value.length > 0) {
+    drawOrgChart(orgChartRef.value, orgChartNodes.value)
   }
-  catch (e) {
-    console.error('Error fetching cost centers organization positions:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌های مرکز هزینه‌ها'
-  }
-}
-
-function onSave() {
-}
-
-function onCancel() {
-}
-
-fetchUsers()
-fetchOrgPositions()
-await fetchCostCentersOrgPositions()
+})
 </script>
 
 <template>
-  <VLayout class="app-layout">
-    <VSnackbar
-      v-model="uiState.hasError"
-      :timeout="2000"
-      location="center"
-      variant="flat"
-      color="error"
-    >
-      {{ uiState.errorMessage }}
-    </VSnackbar>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
 
-    <div>
-      <Positions
-        v-if="selectedCostCenter"
-        :cost-center="selectedCostCenter"
-        :org-positions="orgPositions"
-        :loading="pendingState.updateOrganizationChart"
-        @save="onSave"
-        @cancel="onCancel"
-      />
-    </div>
-
-    <section style="block-size: 100%;">
-      <AgGridVue
-        style="block-size: 100%; inline-size: 100%;"
-        :column-defs="columnDefs"
-        :get-row-id="(params) => String(params.data.id)"
-        enable-rtl
-        row-numbers
-        pagination
-        group-display-type="multipleColumns"
-        :auto-group-column-def="autoGroupColumnDef"
-        cell-selection
-        :row-selection="rowSelection"
-        :theme="theme"
-        @grid-ready="onGridReady"
-        @selection-changed="onSelectionChanged"
-      />
-    </section>
-  </VLayout>
+  <div ref="orgChartRef" class="org-chart-container" />
 </template>
 
 <style lang="scss" scoped>
-@use '@styles/variables/vuetify';
-@use '@core/scss/base/mixins';
-
-.app-layout {
-  @include mixins.elevation(vuetify.$card-elevation);
-
-  display: grid;
-  box-shadow: none;
-  grid-template-columns: auto;
-  grid-template-rows: auto 1fr;
+.org-chart-container {
+  background-color: rgb(var(--v-theme-background));
+  block-size: 100%;
+  inline-size: 100%;
 }
 </style>

@@ -1,0 +1,1 @@
+import{bk as a,cr as r,Y as m,cs as h,ct as o}from"./index-BvJigIpw.js";function i(){const{global:t}=a(),e=r.withParams({fontFamily:"Shabnam"});return{theme:m(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};
