@@ -1,5 +1,4 @@
 <script setup>
-const constants = inject('constants')
 const requestsLoading = ref(false)
 const attendancesLoading = ref(false)
 const remainingLeaveLoading = ref(false)
@@ -23,7 +22,7 @@ async function submit() {
   }
   else {
     const requestData = {
-      request_type_id: constants.HR_REQUEST_TYPE_HOURLY_LEAVE,
+      request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
       user_id: useCookie('userData').value.id,
       start_date: leaveDate.value,
       end_date: leaveDate.value,
@@ -61,7 +60,7 @@ async function getCurrentMonthRequests() {
   requestsLoading.value = true
   try {
     const { data, error } = await useApi(
-      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_HOURLY_LEAVE}`),
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.HOURLY_LEAVE}`),
     )
     requestsLoading.value = false
     if (error.value) {

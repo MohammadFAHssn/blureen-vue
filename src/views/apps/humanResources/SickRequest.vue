@@ -1,6 +1,4 @@
 <script setup>
-const constants = inject('constants')
-
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -36,7 +34,7 @@ async function submit() {
   }
   else {
     const requestData = {
-      request_type_id: constants.HR_REQUEST_TYPE_SICK_LEAVE,
+      request_type_id: HR_REQUEST_TYPES.SICK_LEAVE,
       user_id: useCookie('userData').value.id,
       start_date: startDate.value,
       end_date: endDate.value,
@@ -61,7 +59,7 @@ async function submit() {
       currentMonthRequests.value.push({
         start_date: startDate.value,
         end_date: endDate.value,
-        status_id: constants.HR_REQUEST_PENDING_STATUS,
+        status_id: HR_REQUEST_STATUSES.HR_REQUEST_PENDING_STATUS,
       })
       startDate.value = ''
       endDate.value = ''
@@ -79,7 +77,9 @@ async function getCurrentMonthRequests() {
   isLoading.value = true
   try {
     const { data, error } = await useApi(
-      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_SICK_LEAVE}`),
+      createUrl(
+        `/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.SICK_LEAVE}`,
+      ),
     )
     isLoading.value = false
     if (error.value) {
@@ -125,7 +125,12 @@ onMounted(() => {
     {{ uiState.successMessage }}
   </VSnackbar>
   <div>
-    <VBtn variant="text" prepend-icon="tabler-arrow-right" class="mb-4" @click="$emit('back')">
+    <VBtn
+      variant="text"
+      prepend-icon="tabler-arrow-right"
+      class="mb-4"
+      @click="$emit('back')"
+    >
       صفحه اصلی
     </VBtn>
   </div>
@@ -254,9 +259,7 @@ onMounted(() => {
         <VExpansionPanels variant="accordion">
           <VExpansionPanel>
             <VExpansionPanelTitle>
-              <span class="font-weight-medium">
-                استعلاجی های ماه جاری
-              </span>
+              <span class="font-weight-medium"> استعلاجی های ماه جاری </span>
             </VExpansionPanelTitle>
 
             <VExpansionPanelText>
@@ -267,7 +270,9 @@ onMounted(() => {
                   cols="12"
                 >
                   <VCard outlined class="pa-3 mb-3">
-                    <div><strong>تاریخ شروع:</strong> {{ item.start_date }}</div>
+                    <div>
+                      <strong>تاریخ شروع:</strong> {{ item.start_date }}
+                    </div>
                     <div><strong>تاریخ پایان:</strong> {{ item.end_date }}</div>
 
                     <div class="d-flex align-center mt-1">
@@ -294,7 +299,10 @@ onMounted(() => {
                 </VCol>
               </VRow>
 
-              <div v-if="!currentMonthRequests.length" class="text-center text-medium-emphasis mt-2">
+              <div
+                v-if="!currentMonthRequests.length"
+                class="text-center text-medium-emphasis mt-2"
+              >
                 موردی یافت نشد!
               </div>
             </VExpansionPanelText>

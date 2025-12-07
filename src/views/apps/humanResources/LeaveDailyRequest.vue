@@ -1,8 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 
-const constants = inject('constants')
-
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -41,7 +39,7 @@ async function submit() {
   }
   else {
     const requestData = {
-      request_type_id: constants.HR_REQUEST_TYPE_DAILY_LEAVE,
+      request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
       user_id: useCookie('userData').value.id,
       start_date: startDate.value,
       end_date: endDate.value,
@@ -77,7 +75,7 @@ async function getCurrentMonthRequests() {
   requestsLoading.value = true
   try {
     const { data, error } = await useApi(
-      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_DAILY_LEAVE}`),
+      createUrl(`/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.DAILY_LEAVE}`),
     )
     requestsLoading.value = false
     if (error.value) {
@@ -136,7 +134,7 @@ async function fetchUsers() {
     const { data, error } = await $api('/base/approval-flow/get-sub-users', {
       method: 'POST',
       body: {
-        request_type_id: constants.HR_REQUEST_TYPE_DAILY_LEAVE,
+        request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
       },
       onResponseError({ response }) {
         uiState.hasError = true

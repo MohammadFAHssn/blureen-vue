@@ -1,5 +1,4 @@
 <script setup>
-const constants = inject('constants')
 const isLoading = ref(false)
 const uiState = reactive({
   success: false,
@@ -13,22 +12,25 @@ const startTime = ref('')
 const endTime = ref('')
 const description = ref('')
 const currentMonthRequests = ref([])
-const attendanceLogs = ref([
-  { in: '07:25', out: '09:27' },
-])
+const attendanceLogs = ref([{ in: '07:25', out: '09:27' }])
 
 async function submit() {
-  if (!overtimeDate.value || !startTime.value || !endTime.value || !description.value) {
+  if (
+    !overtimeDate.value
+    || !startTime.value
+    || !endTime.value
+    || !description.value
+  ) {
     uiState.hasError = true
     uiState.errorMessage = 'اطلاعات درخواست ناقص است.'
   }
+  else {
   /*  else if (startTime.value > endTime.value) {
     uiState.hasError = true
     uiState.errorMessage = 'زمان شروع نمی‌تواند بزرگتر از زمان پایان باشد'
   } */
-  else {
     const requestData = {
-      request_type_id: constants.HR_REQUEST_TYPE_OVERTIME,
+      request_type_id: HR_REQUEST_TYPES.OVERTIME,
       user_id: useCookie('userData').value.id,
       start_date: overtimeDate.value,
       end_date: overtimeDate.value,
@@ -56,7 +58,7 @@ async function submit() {
         start_date: overtimeDate.value,
         start_time: startTime.value,
         end_time: endTime.value,
-        status_id: constants.HR_REQUEST_PENDING_STATUS,
+        status_id: HR_REQUEST_STATUSES.HR_REQUEST_PENDING_STATUS,
       })
       overtimeDate.value = ''
       startTime.value = ''
@@ -76,7 +78,9 @@ async function getCurrentMonthRequests() {
   isLoading.value = true
   try {
     const { data, error } = await useApi(
-      createUrl(`/hr-request/requests/get-user-requests?request_type=${constants.HR_REQUEST_TYPE_OVERTIME}`),
+      createUrl(
+        `/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.OVERTIME}`,
+      ),
     )
     isLoading.value = false
     if (error.value) {
@@ -122,7 +126,12 @@ onMounted(() => {
     {{ uiState.successMessage }}
   </VSnackbar>
   <div>
-    <VBtn variant="text" prepend-icon="tabler-arrow-right" class="mb-4" @click="$emit('back')">
+    <VBtn
+      variant="text"
+      prepend-icon="tabler-arrow-right"
+      class="mb-4"
+      @click="$emit('back')"
+    >
       صفحه اصلی
     </VBtn>
   </div>
@@ -151,7 +160,12 @@ onMounted(() => {
         <VRow justify="center" dense>
           <template v-if="attendanceLogs.length">
             <template v-for="(log, i) in attendanceLogs" :key="`pair-${i}`">
-              <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
+              <VCol
+                cols="3"
+                sm="3"
+                md="2"
+                class="d-flex flex-column align-center"
+              >
                 <div class="mb-1 font-weight-medium">
                   ورود {{ i + 1 }}
                 </div>
@@ -159,7 +173,12 @@ onMounted(() => {
                   {{ log.in || '-' }}
                 </div>
               </VCol>
-              <VCol cols="3" sm="3" md="2" class="d-flex flex-column align-center">
+              <VCol
+                cols="3"
+                sm="3"
+                md="2"
+                class="d-flex flex-column align-center"
+              >
                 <div class="mb-1 font-weight-medium">
                   خروج {{ i + 1 }}
                 </div>
@@ -251,11 +270,7 @@ onMounted(() => {
                 <td>{{ item.start_time }}</td>
                 <td>{{ item.end_time }}</td>
                 <td>
-                  <VChip
-                    :color="item.status.color"
-                    size="small"
-                    label
-                  >
+                  <VChip :color="item.status.color" size="small" label>
                     {{ item.status.title }}
                   </VChip>
                 </td>
@@ -307,8 +322,12 @@ onMounted(() => {
                   <VExpansionPanelText>
                     <div class="pa-2">
                       <div><strong>تاریخ:</strong> {{ item.start_date }}</div>
-                      <div><strong>ساعت شروع:</strong> {{ item.start_time }}</div>
-                      <div><strong>ساعت پایان:</strong> {{ item.end_time }}</div>
+                      <div>
+                        <strong>ساعت شروع:</strong> {{ item.start_time }}
+                      </div>
+                      <div>
+                        <strong>ساعت پایان:</strong> {{ item.end_time }}
+                      </div>
                       <div class="mt-2 text-center">
                         <VBtn color="orange" variant="text" size="small">
                           <VIcon icon="tabler-edit" size="20" />

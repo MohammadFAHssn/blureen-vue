@@ -10,6 +10,8 @@
     "ExtractDefaultPropTypes": true,
     "ExtractPropTypes": true,
     "ExtractPublicPropTypes": true,
+    "HR_REQUEST_STATUSES": true,
+    "HR_REQUEST_TYPES": true,
     "InjectionKey": true,
     "MAX_FILE_SIZE": true,
     "MaybeRef": true,
