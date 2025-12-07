@@ -33,7 +33,9 @@ const shallRenderIcon = configStore.isVerticalNavMini()
             ...layoutConfig.icons.sectionTitlePlaceholder,
             ...getDynamicI18nProps(item.heading, 'span'),
           }"
-          style="color: rgb(var(--v-theme-on-background), 0.6);"
+          style="
+          color: rgb(var(--v-theme-on-background), 0.6);
+          font-size: 14px;"
         >
           {{ !shallRenderIcon ? item.heading : null }}
         </Component>
