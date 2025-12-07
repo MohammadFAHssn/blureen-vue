@@ -295,9 +295,15 @@ function dialogModelValueUpdate(val) {
 
             <td>{{ food.name }}</td>
 
-            <td>
+            <td v-if="food.id !== 1">
               <VChip :color="food.status ? 'success' : 'error'" size="small">
                 {{ food.status ? 'فعال' : 'غیرفعال' }}
+              </VChip>
+            </td>
+
+            <td v-if="food.id === 1">
+              <VChip color="success" size="small">
+                فعال
               </VChip>
             </td>
 
@@ -320,8 +326,8 @@ function dialogModelValueUpdate(val) {
             </td>
 
             <td>
-              <VIcon icon="tabler-power" :color="food.status ? 'red' : 'green'" size="24" @click="onChangeStatus(food)" />
-              <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(food)" />
+              <VIcon :disabled="food.id === 1" icon="tabler-power" :color="food.status ? 'red' : 'green'" size="24" @click="onChangeStatus(food)" />
+              <VIcon :disabled="food.id === 1" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(food)" />
               <!-- <VIcon icon="tabler-trash" color="red" size="24" @click="onClickDelete(food)" /> -->
             </td>
           </tr>
