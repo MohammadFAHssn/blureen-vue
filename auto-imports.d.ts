@@ -18,6 +18,8 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const avatarText: typeof import('./src/@core/utils/formatters.js')['avatarText']
+  const axios: typeof import('./src/utils/axios.js')['default']
+  const axiosInstance: typeof import('./src/utils/axios.js')['axiosInstance']
   const betweenValidator: typeof import('./src/@core/utils/validators.js')['betweenValidator']
   const computed: typeof import('vue')['computed']
   const computedAsync: typeof import('@vueuse/core')['computedAsync']
@@ -394,6 +396,8 @@ declare module 'vue' {
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly avatarText: UnwrapRef<typeof import('./src/@core/utils/formatters.js')['avatarText']>
+    readonly axios: UnwrapRef<typeof import('./src/utils/axios.js')['default']>
+    readonly axiosInstance: UnwrapRef<typeof import('./src/utils/axios.js')['axiosInstance']>
     readonly betweenValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['betweenValidator']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly computedAsync: UnwrapRef<typeof import('@vueuse/core')['computedAsync']>

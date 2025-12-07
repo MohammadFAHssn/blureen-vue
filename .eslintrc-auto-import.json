@@ -28,6 +28,8 @@
     "asyncComputed": true,
     "autoResetRef": true,
     "avatarText": true,
+    "axios": true,
+    "axiosInstance": true,
     "betweenValidator": true,
     "computed": true,
     "computedAsync": true,

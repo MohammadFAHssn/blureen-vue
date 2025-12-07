@@ -35,27 +35,25 @@ watch(
 )
 
 async function fetchOrgChartNodes() {
-  try {
-    const { data, error } = await useApi(createUrl('/base/org-chart-node'))
-
-    if (error.value) throw error.value
-
-    orgChartNodes.value = data.value.data.map((orgChartNode) => {
-      return {
-        id: orgChartNode.id,
-        pid: orgChartNode.parent_id,
-        orgPositionName: orgChartNode.org_position.name,
-        orgUnitName: orgChartNode.org_unit.name,
-        users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
-        tags: [`position-id-${orgChartNode.org_position.id}`],
-      }
+  await axiosInstance
+    .get('/base/org-chart-node')
+    .then(({ data: { data } }) => {
+      orgChartNodes.value = data.map((orgChartNode) => {
+        return {
+          id: orgChartNode.id,
+          pid: orgChartNode.parent_id,
+          orgPositionName: orgChartNode.org_position.name,
+          orgUnitName: orgChartNode.org_unit.name,
+          users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
+          tags: [`position-id-${orgChartNode.org_position.id}`],
+        }
+      })
     })
-  }
-  catch (e) {
-    console.error('Error fetching org chart nodes:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت چارت سازمانی'
-  }
+    .catch((error) => {
+      console.error('Error fetching org chart nodes:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت چارت سازمانی'
+    })
 }
 
 async function fetchOrgPositions() {
@@ -128,7 +126,10 @@ function designOrgChartNodes() {
   const vuetifyColors = vuetifyTheme.current.value.colors
 
   orgPositions.value.forEach((position) => {
-    OrgChart.templates[`position-id-${position.id}`] = Object.assign({}, OrgChart.templates.vuetify)
+    OrgChart.templates[`position-id-${position.id}`] = Object.assign(
+      {},
+      OrgChart.templates.vuetify,
+    )
 
     OrgChart.templates[`position-id-${position.id}`].node = `
     <defs>
@@ -138,14 +139,22 @@ function designOrgChartNodes() {
     </defs>
 
     <!-- Main card background with rounded corners -->
-    <rect x="0" y="0" height="{h}" width="{w}" fill="${vuetifyColors.surface}" rx="8" ry="8" filter="url(#shadow)"></rect>
+    <rect x="0" y="0" height="{h}" width="{w}" fill="${
+      vuetifyColors.surface
+    }" rx="8" ry="8" filter="url(#shadow)"></rect>
     
     <!-- OrgPosition (top) - rounded top corners only -->
-    <rect x="0" y="0" height="36" width="{w}" fill="${ORG_POSITION_COLORS[position.id]}" rx="8" ry="8"></rect>
-    <rect x="0" y="28" height="8" width="{w}" fill="${ORG_POSITION_COLORS[position.id]}"></rect>
+    <rect x="0" y="0" height="36" width="{w}" fill="${
+      ORG_POSITION_COLORS[position.id]
+    }" rx="8" ry="8"></rect>
+    <rect x="0" y="28" height="8" width="{w}" fill="${
+      ORG_POSITION_COLORS[position.id]
+    }"></rect>
     
     <!-- OrgUnit (middle) - no rounded corners -->
-    <rect x="0" y="36" height="36" width="{w}" fill="${vuetifyColors.primary}"></rect>
+    <rect x="0" y="36" height="36" width="{w}" fill="${
+      vuetifyColors.primary
+    }"></rect>
   `
   })
 }
