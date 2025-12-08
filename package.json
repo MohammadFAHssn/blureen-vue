@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@ag-grid-community/locale": "^34.1.1",
-    "@balkangraph/orgchart.js": "^8.21.30",
     "@casl/ability": "6.7.3",
     "@casl/vue": "2.2.2",
     "@floating-ui/dom": "^1.7.3",
@@ -38,6 +37,9 @@
     "axios": "^1.13.2",
     "chart.js": "^4.4.9",
     "cookie-es": "2.0.0",
+    "d3": "^7.9.0",
+    "d3-flextree": "^2.1.2",
+    "d3-org-chart": "^3.1.1",
     "destr": "2.0.5",
     "eslint-plugin-regexp": "2.10.0",
     "jwt-decode": "4.0.0",

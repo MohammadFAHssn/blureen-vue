@@ -1,5 +1,6 @@
 <script setup>
-import OrgChart from '@balkangraph/orgchart.js'
+import * as d3 from 'd3'
+import { OrgChart } from 'd3-org-chart'
 import { useTheme } from 'vuetify'
 
 definePage({
@@ -27,8 +28,7 @@ watch(
   () => vuetifyTheme.current.value.colors,
   async () => {
     if (orgChartInstance.value && orgChartNodes.value.length > 0) {
-      designOrgChart()
-      orgChartInstance.value.draw()
+      orgChartInstance.value.render()
     }
   },
   { deep: true },
@@ -41,11 +41,11 @@ async function fetchOrgChartNodes() {
       orgChartNodes.value = data.map((orgChartNode) => {
         return {
           id: orgChartNode.id,
-          pid: orgChartNode.parent_id,
+          parentId: orgChartNode.parent_id,
+          orgPositionId: orgChartNode.org_position.id,
           orgPositionName: orgChartNode.org_position.name,
           orgUnitName: orgChartNode.org_unit.name,
           users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
-          tags: [`position-id-${orgChartNode.org_position.id}`],
         }
       })
     })
@@ -57,130 +57,121 @@ async function fetchOrgChartNodes() {
 }
 
 async function fetchOrgPositions() {
-  try {
-    const { data, error } = await useApi(createUrl('/base/org-position'))
-
-    if (error.value) throw error.value
-
-    orgPositions.value = data.value.data
-  }
-  catch (e) {
-    console.error('Error fetching org positions:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌های سازمانی'
-  }
+  await axiosInstance
+    .get('/base/org-position')
+    .then(({ data: { data } }) => {
+      orgPositions.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching org positions:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت سمت‌های سازمانی'
+    })
 }
 
-function designOrgChart() {
-  const vuetifyColors = vuetifyTheme.current.value.colors
+function getNodeContent(d) {
+  const orgPositionColor
+    = ORG_POSITION_COLORS[d.data.orgPositionId] || 'rgb(var(--v-theme-on-primary))'
 
-  // Create custom Vuetify-style template
-  OrgChart.templates.vuetify = Object.assign({}, OrgChart.templates.ana)
-
-  // Node size - card-like dimensions
-  OrgChart.templates.vuetify.size = [220, 136]
-
-  // Field 0 - orgPosition (top rectangle)
-  OrgChart.templates.vuetify.field_0 = `
-    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="24" text-anchor="middle">{val}</text>
+  return `
+    <div style="
+      font-family: Shabnam, Tahoma, sans-serif;
+      width: ${d.width}px;
+      height: ${d.height}px;
+      background-color: rgb(var(--v-theme-surface));
+      border-radius: 6px;
+      box-shadow: 0 4px 14px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-sm-opacity));
+      overflow: hidden;
+      direction: rtl;
+      border: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+    ">
+      <!-- OrgPosition (top) -->
+      <div style="
+        background-color: ${orgPositionColor};
+        color: #fff;
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-align: center;
+        line-height: 1.375rem;
+      ">
+        ${d.data.orgPositionName}
+      </div>
+      
+      <!-- OrgUnit (middle) -->
+      <div style="
+        background-color: rgb(var(--v-theme-primary));
+        color: rgb(var(--v-theme-on-primary));
+        padding: 8px 12px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-align: center;
+        line-height: 1.375rem;
+      ">
+        ${d.data.orgUnitName}
+      </div>
+      
+      <!-- Users section (bottom) -->
+      <div></div>
   `
-
-  // Field 1 - orgUnit (middle rectangle)
-  OrgChart.templates.vuetify.field_1 = `
-    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="60" text-anchor="middle">{val}</text>
-  `
-
-  // Link style
-  OrgChart.templates.vuetify.link = `
-    <path stroke-linejoin="round" stroke="${vuetifyColors.primary}" stroke-opacity="0.5" stroke-width="2px" fill="none" d="{rounded}" />
-  `
-
-  // Plus/Expand button
-  OrgChart.templates.vuetify.plus = `
-    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
-    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-    <line x1="15" y1="8" x2="15" y2="22" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-  `
-
-  // Minus/Collapse button
-  OrgChart.templates.vuetify.minus = `
-    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
-    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-  `
-
-  // Ripple effect color
-  OrgChart.templates.vuetify.ripple = {
-    radius: 0,
-    color: vuetifyColors.primary,
-    rect: null,
-  }
-
-  // Edit form header color
-  OrgChart.templates.vuetify.editFormHeaderColor = vuetifyColors.primary
-
-  // Main node - Vuetify card style with elevation shadow
-  designOrgChartNodes()
 }
 
-function designOrgChartNodes() {
-  const vuetifyColors = vuetifyTheme.current.value.colors
+function drawOrgChart() {
+  if (!orgChartRef.value || orgChartNodes.value.length === 0) return
 
-  orgPositions.value.forEach((position) => {
-    OrgChart.templates[`position-id-${position.id}`] = Object.assign(
-      {},
-      OrgChart.templates.vuetify,
-    )
+  orgChartInstance.value = new OrgChart()
+    .container(orgChartRef.value)
+    .data(orgChartNodes.value)
+    .nodeWidth(() => 220)
+    // TODO
+    .nodeHeight((d) => {
+      // Calculate height based on number of users
+      const baseHeight = 72 + 40 // position + unit sections + padding
+      const usersCount = d.data.users ? d.data.users.length : 0
+      const usersHeight = usersCount > 0 ? usersCount * 20 : 20
 
-    OrgChart.templates[`position-id-${position.id}`].node = `
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
-      </filter>
-    </defs>
-
-    <!-- Main card background with rounded corners -->
-    <rect x="0" y="0" height="{h}" width="{w}" fill="${
-      vuetifyColors.surface
-    }" rx="8" ry="8" filter="url(#shadow)"></rect>
-    
-    <!-- OrgPosition (top) - rounded top corners only -->
-    <rect x="0" y="0" height="36" width="{w}" fill="${
-      ORG_POSITION_COLORS[position.id]
-    }" rx="8" ry="8"></rect>
-    <rect x="0" y="28" height="8" width="{w}" fill="${
-      ORG_POSITION_COLORS[position.id]
-    }"></rect>
-    
-    <!-- OrgUnit (middle) - no rounded corners -->
-    <rect x="0" y="36" height="36" width="{w}" fill="${
-      vuetifyColors.primary
-    }"></rect>
-  `
-  })
-}
-
-function drawOrgChart(orgChartRef, orgChartNodes) {
-  designOrgChart()
-
-  const tags = {}
-
-  orgPositions.value.forEach((position) => {
-    tags[`position-id-${position.id}`] = {
-      template: `position-id-${position.id}`,
-    }
-  })
-
-  orgChartInstance.value = new OrgChart(orgChartRef, {
-    template: 'vuetify',
-    nodes: orgChartNodes,
-    nodeBinding: {
-      field_0: 'orgPositionName',
-      field_1: 'orgUnitName',
-    },
-    scaleInitial: OrgChart.match.boundary,
-    enableSearch: false,
-    tags,
-  })
+      return baseHeight + usersHeight
+    })
+    .childrenMargin(() => 50)
+    .compactMarginBetween(() => 35)
+    .compactMarginPair(() => 30)
+    .neighbourMargin(() => 20)
+    .siblingsMargin(() => 30)
+    .nodeContent(d => getNodeContent(d))
+    .linkUpdate(function () {
+      d3.select(this)
+        .attr('stroke', 'rgb(var(--v-theme-primary))')
+        .attr('stroke-opacity', 0.38)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linecap', 'round')
+    })
+    .buttonContent(({ node }) => {
+      return `
+        <div style="
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          border: thin solid rgb(var(--v-theme-primary));
+          border-radius: 6px;
+          padding: 4px 8px;
+          font-size: 0.75rem;
+          background-color: rgb(var(--v-theme-surface));
+          color: rgb(var(--v-theme-primary));
+          font-weight: 500;
+          font-family: Shabnam, Tahoma, sans-serif;
+          cursor: pointer;
+          transition: background-color 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 2px 4px rgba(var(--v-shadow-key-umbra-color), var(--v-shadow-xs-opacity));
+          white-space: nowrap;
+          width: fit-content;
+          height: fit-content;
+        ">
+          ${node.children ? '▲' : '▼'} ${node.data._directSubordinates || ''}
+        </div>
+      `
+    })
+    .render()
 }
 
 fetchOrgChartNodes()
@@ -188,9 +179,7 @@ await fetchOrgPositions()
 
 onMounted(async () => {
   await nextTick()
-  if (orgChartRef.value && orgChartNodes.value.length > 0) {
-    drawOrgChart(orgChartRef.value, orgChartNodes.value)
-  }
+  drawOrgChart()
 })
 </script>
 
@@ -210,8 +199,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .org-chart-container {
-  background-color: rgb(var(--v-theme-background));
-  block-size: 100%;
-  inline-size: 100%;
+  overflow: hidden !important;
 }
 </style>
