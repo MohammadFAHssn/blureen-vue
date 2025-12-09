@@ -94,6 +94,7 @@ function getNodeContent(d) {
         font-weight: 500;
         text-align: center;
         line-height: 1.375rem;
+        height: 35px;
       ">
         ${d.data.orgPositionName}
       </div>
@@ -107,12 +108,10 @@ function getNodeContent(d) {
         font-weight: 500;
         text-align: center;
         line-height: 1.375rem;
+        height: 55px;
       ">
         ${d.data.orgUnitName}
       </div>
-      
-      <!-- Users section (bottom) -->
-      <div></div>
   `
 }
 
@@ -124,14 +123,7 @@ function drawOrgChart() {
     .data(orgChartNodes.value)
     .nodeWidth(() => 220)
     // TODO
-    .nodeHeight((d) => {
-      // Calculate height based on number of users
-      const baseHeight = 72 + 40 // position + unit sections + padding
-      const usersCount = d.data.users ? d.data.users.length : 0
-      const usersHeight = usersCount > 0 ? usersCount * 20 : 20
-
-      return baseHeight + usersHeight
-    })
+    .nodeHeight(() => 90)
     .childrenMargin(() => 50)
     .compactMarginBetween(() => 35)
     .compactMarginPair(() => 30)
