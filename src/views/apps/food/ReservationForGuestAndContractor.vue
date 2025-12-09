@@ -1,48 +1,37 @@
 <script setup>
 import jalaali from 'jalaali-js'
-import { ref } from 'vue'
 
-const ReservedMealsLoading = ref(false)
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
 })
+const pendingState = reactive({
+  fetchingReservedMeals: false,
+  fetchingMeals: false,
+  fetchingContractors: false,
+  reserveMeal: false,
+  editReservedMeal: false,
+  deleteReservedMeal: false,
+})
 
-const reserveDate = ref('')
-const jdate = ref({ jy: null, jm: null, jd: null })
+const reserveDates = ref([])
+const maxDate = ref('')
+const todayKey = ref(null)
 
-const users = ref([])
-const altUsers = ref([])
-
-const meals = ref([
-  { label: 'ناهار', value: 1 },
-  { label: 'شام', value: 2 },
-])
-
-const fakeReservedMealsForGuest = ref([
-  { id: 1, mealName: 'ناهار', deliveryCode: '1000001', status: { label: 'در انتظار تایید', color: 'orange', value: 1 }, count: 3, reservedBy: { id: 1, fullName: 'امیر کریمی', personnelCode: 9876 }, reservedFor: [{ id: 1, fullName: 'محمد امامی', personnelCode: 8766 }, { id: 2, fullName: 'محمد حسنی', personnelCode: 7687 }] },
-  { id: 2, mealName: 'شام', deliveryCode: '1000002', status: { label: 'تایید شده', color: 'green', value: 2 }, count: 1, reservedBy: { id: 2, fullName: 'سارا احمدی', personnelCode: 5543 }, reservedFor: [{ id: 3, fullName: 'نیما رضایی', personnelCode: 6654 }] },
-  { id: 3, mealName: 'صبحانه', deliveryCode: '1000003', status: { label: 'تایید نشده', color: 'red', value: 3 }, count: 2, reservedBy: { id: 3, fullName: 'رضا مرادی', personnelCode: 1122 }, reservedFor: [{ id: 4, fullName: 'حسین شریفی', personnelCode: 3344 }, { id: 5, fullName: 'الهام نظری', personnelCode: 5566 }] },
-  { id: 4, mealName: 'ناهار', deliveryCode: '1000004', status: { label: 'تحویل گرفته شده', color: 'primary', value: 4 }, count: 1, reservedBy: { id: 4, fullName: 'مریم سادات', personnelCode: 7788 }, reservedFor: [{ id: 6, fullName: 'حمید عباسی', personnelCode: 9090 }] },
-  { id: 5, mealName: 'شام', deliveryCode: '1000005', status: { label: 'در انتظار تایید', color: 'orange', value: 1 }, count: 2, reservedBy: { id: 5, fullName: 'ابوالفضل رنجبر', personnelCode: 1920 }, reservedFor: [{ id: 7, fullName: 'یونس قربانی', personnelCode: 2080 }] },
-  { id: 6, mealName: 'صبحانه', deliveryCode: '1000006', status: { label: 'تحویل گرفته شده', color: 'primary', value: 4 }, count: 3, reservedBy: { id: 6, fullName: 'حامد عسگری', personnelCode: 3001 }, reservedFor: [{ id: 8, fullName: 'هادی نوری', personnelCode: 3221 }, { id: 9, fullName: 'مهدی طاهری', personnelCode: 3443 }] },
-  { id: 7, mealName: 'ناهار', deliveryCode: '1000007', status: { label: 'تایید نشده', color: 'red', value: 3 }, count: 1, reservedBy: { id: 7, fullName: 'فاطمه ابراهیمی', personnelCode: 4554 }, reservedFor: [{ id: 10, fullName: 'سجاد واعظی', personnelCode: 4776 }] },
-])
-const fakeReservedMealsForContractor = ref([
-  { id: 1, mealName: 'ناهار', deliveryCode: '1000001', status: { label: 'در انتظار تایید', color: 'orange', value: 1 }, count: 3, reservedBy: { id: 1, fullName: 'امیر کریمی', personnelCode: 9876 }, reservedFor: [{ id: 1, fullName: 'محمد امامی', personnelCode: 8766 }] },
-  { id: 2, mealName: 'شام', deliveryCode: '1000002', status: { label: 'تایید شده', color: 'green', value: 2 }, count: 1, reservedBy: { id: 2, fullName: 'سارا احمدی', personnelCode: 5543 }, reservedFor: [{ id: 3, fullName: 'نیما رضایی', personnelCode: 6654 }] },
-  { id: 3, mealName: 'صبحانه', deliveryCode: '1000003', status: { label: 'تایید نشده', color: 'red', value: 3 }, count: 2, reservedBy: { id: 3, fullName: 'رضا مرادی', personnelCode: 1122 }, reservedFor: [{ id: 4, fullName: 'حسین شریفی', personnelCode: 3344 }] },
-])
-const altFakeReservedMealsForGuest = ref([])
-const altFakeReservedMealsForContractor = ref([])
+const meals = ref([])
+const contractors = ref([])
+const reservedMealsForContractor = ref([])
+const reservedMealsForGuest = ref([])
 
 const selectedContractor = ref([])
-const selectedMeal = ref([])
+const selectedMeal = ref(null)
+const quantity = ref(null)
+const description = ref(null)
+const serveType = ref(null)
 
 const reservationType = ref(null)
-const reserveCount = ref(null)
 
 // rules
 const countInputRules = [
@@ -61,143 +50,231 @@ const countInputRules = [
   },
 ]
 
-// methods
-async function submit() {
-  ReservedMealsLoading.value = true
+// helper methods
+// computed string just for showing in text field
+const reserveDatesDisplay = computed(() => {
+  if (!reserveDates.value || reserveDates.value.length === 0) return ''
+  if (Array.isArray(reserveDates.value))
+    return reserveDates.value.join(' - ')
+  return reserveDates.value
+})
+// always get an array of date strings
+function getSelectedDatesArray() {
+  if (Array.isArray(reserveDates.value))
+    return reserveDates.value.filter(Boolean)
 
-  try {
-    const [year, month, day] = reserveDate.value.split('/').map(Number)
-    const date = { year, month, day }
-
-    const selectedKey = year * 10000 + month * 100 + day
-    const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
-
-    if (selectedKey < todayKey) {
-      uiState.hasError = true
-      uiState.errorMessage = 'لطفا تاریخ درست انتخاب کنید.'
-      return
-    }
-
-    const basePayload = {
-      meal: selectedMeal.value,
-      date,
-      user_id: useCookie('userData').value.id,
-    }
-
-    const payload
-      = reservationType.value === 'guest'
-        ? {
-            ...basePayload,
-            reservationType: 'guest',
-            count: reserveCount.value,
-          }
-        : {
-            ...basePayload,
-            reservationType: 'contractor',
-            contractor: selectedContractor.value,
-            count: reserveCount.value,
-          }
-
-    const res = await $api('/food/reserve/testPost', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-
-    altFakeReservedMealsForGuest.value = fakeReservedMealsForGuest.value
-    altFakeReservedMealsForContractor.value = fakeReservedMealsForContractor.value
-
-    return res
-  }
-  catch (err) {
-    console.error('Error fetching reserved meals:', err)
-    throw err
-  }
-  finally {
-    ReservedMealsLoading.value = false
-    selectedContractor.value = null
-    selectedMeal.value = null
-    reserveDate.value = null
-    reserveCount.value = null
-  }
+  return reserveDates.value ? [reserveDates.value] : []
+}
+// error showcase
+function setError(message) {
+  uiState.hasError = true
+  uiState.errorMessage = message
 }
 
-async function fetchReservedMealsForDate(data) {
-  altFakeReservedMealsForGuest.value = []
-  altFakeReservedMealsForContractor.value = []
-  ReservedMealsLoading.value = true
+// methods
+async function submit() {
+  const selectedDates = getSelectedDatesArray()
+
+  if (!selectedDates.length) {
+    setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
+    return
+  }
+
+  for (const dateStr of selectedDates) {
+    const [year, month, day] = dateStr.split('/').map(Number)
+    const selectedKey = year * 10000 + month * 100 + day
+    if (selectedKey < todayKey.value) {
+      setError('امکان رزرو غذا فقط برای زمان حال و آینده وجود دارد.')
+      return
+    }
+  }
+
+  pendingState.reserveMeal = true
 
   let payload
 
-  if (reserveDate.value) {
-    const [year, month, day] = reserveDate.value.split('/').map(Number)
-    payload = { year, month, day }
+  if (reservationType.value === 'contractor') {
+    payload = {
+      date: reserveDates.value,
+      meal_id: selectedMeal.value,
+      reserve_type: 'contractor',
+      supervisor_id: useCookie('userData').value.id,
+      contractor: selectedContractor.value,
+      quantity: quantity.value,
+    }
   }
   else {
-    const [year, month, day] = data
-    payload = { year, month, day }
+    payload = {
+      date: reserveDates.value,
+      meal_id: selectedMeal.value,
+      reserve_type: 'guest',
+      supervisor_id: useCookie('userData').value.id,
+      quantity: quantity.value,
+      description: description.value,
+      serve_place: serveType.value,
+    }
   }
 
-  const query = new URLSearchParams(payload).toString()
-
   try {
-    const _res = await $api(`/food/reserve/testFetch?${query}`, {
-      method: 'GET',
+    const _res = await $api('/food/meal-reservation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage = response._data?.message || 'خطا در ایجاد'
+        }
+      },
     })
 
-    // replace with real data later
-    altFakeReservedMealsForGuest.value = fakeReservedMealsForGuest.value
-    altFakeReservedMealsForContractor.value = fakeReservedMealsForContractor.value
+    uiState.success = true
+    uiState.successMessage = 'رزرو با موفقیت انجام شد.'
+
+    if (reservationType.value === 'contractor') {
+      fetchReservedMealsForContractorOnDate()
+    }
+    else {
+      fetchReservedMealsForGuestOnDate()
+    }
+    selectedContractor.value = null
+    selectedMeal.value = null
+    quantity.value = null
+    description.value = null
+  }
+  catch (err) {
+    console.error('Error submitting reservation:', err)
+  }
+  finally {
+    pendingState.reserveMeal = false
+  }
+}
+
+async function fetchReservedMealsForContractorOnDate() {
+  reservedMealsForContractor.value = []
+  pendingState.fetchingReservedMeals = true
+
+  try {
+    const res = await $api('/food/meal-reservation/get-reservations-for-personnel-by-user-on-date', {
+      method: 'GET',
+      params: {
+        'date[]': reserveDates.value,
+      },
+    })
+
+    // res.data is [ [reservation], [reservation], ... ]
+    reservedMealsForContractor.value = (res.data || []).flat()
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
+    setError('خطا در دریافت رزروها')
   }
   finally {
-    ReservedMealsLoading.value = false
+    pendingState.fetchingReservedMeals = false
   }
 }
 
-async function fetchUsers() {
-  try {
-    const { data, error } = await useApi(createUrl('/base/user'))
-    if (error.value) {
-      uiState.hasError = true
-      uiState.errorMessage = 'خطا در دریافت کاربران'
-      throw error.value
-    }
+async function fetchReservedMealsForGuestOnDate() {
+  reservedMealsForGuest.value = []
+  pendingState.fetchingReservedMeals = true
 
-    if (data.value.data) {
-      users.value = data.value.data.map(u => ({
-        ...u,
-        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
-      }))
-      altUsers.value = data.value.data.map(u => ({
-        ...u,
-        fullName: `${u.first_name} ${u.last_name}`,
-      }))
-    }
+  try {
+    const res = await $api('/food/meal-reservation/get-reservations-for-user-by-others-on-date', {
+      method: 'GET',
+      params: {
+        'date[]': reserveDates.value,
+      },
+    })
+
+    reservedMealsForGuest.value = res.data || []
+  }
+  catch (err) {
+    console.error('Error fetching reserved meals:', err)
+    setError('خطا در دریافت رزروها')
+  }
+  finally {
+    pendingState.fetchingReservedMeals = false
+  }
+}
+
+async function fetchContractors() {
+  pendingState.fetchingContractors = true
+  try {
+    const res = await $api('/contractor/get-actives', { method: 'GET' })
+    contractors.value = res?.data.contractors || []
   }
   catch (e) {
-    console.error('Unexpected error fetching users:', e)
-    uiState.hasError = true
-    uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران'
+    console.error('Error fetching contractors:', e)
+    setError(e.message || 'خطا در دریافت پیمانکاران')
+  }
+  finally {
+    pendingState.fetchingContractors = false
   }
 }
+
+async function fetchMeals() {
+  pendingState.fetchingMeals = true
+  try {
+    const res = await $api('/food/meal/get-actives', { method: 'GET' })
+    meals.value = res?.data.meals || []
+  }
+  catch (e) {
+    console.error('Error fetching meals:', e)
+    setError(e.message || 'خطا در دریافت وعده‌ها')
+  }
+  finally {
+    pendingState.fetchingMeals = false
+  }
+}
+
+function onChange() {
+  if (reservationType.value === 'contractor') {
+    fetchReservedMealsForContractorOnDate()
+  }
+  else {
+    fetchReservedMealsForGuestOnDate()
+  }
+}
+
+const sortedReservedMealsByUser = computed(() =>
+  [...reservedMealsForContractor.value].sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)),
+  ),
+)
+
+const sortedReservedMealsForUser = computed(() =>
+  [...reservedMealsForGuest.value].sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)),
+  ),
+)
 
 onMounted(async () => {
   reservationType.value = 'contractor'
-  await fetchUsers()
-  const d = new Date()
-  const temp = jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate())
+  serveType.value = 'deliver'
 
-  jdate.value = temp
+  await Promise.all([fetchMeals(), fetchContractors()])
 
-  const date = [temp.jy, temp.jm, temp.jd]
-  await fetchReservedMealsForDate(date)
-})
+  const today = new Date()
 
-watch(reservationType, () => {
-  reserveCount.value = null
+  const maxDateG = new Date(today)
+  maxDateG.setDate(maxDateG.getDate() + 30)
+
+  const [jToday, jMax] = [today, maxDateG].map(d =>
+    jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate()),
+  )
+
+  todayKey.value = jToday.jy * 10000 + jToday.jm * 100 + jToday.jd
+
+  const fmt = j => `${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`
+
+  reserveDates.value = [fmt(jToday)]
+  maxDate.value = fmt(jMax)
+
+  await fetchReservedMealsForContractorOnDate()
 })
 </script>
 
@@ -226,11 +303,13 @@ watch(reservationType, () => {
       <VCol cols="12" md="4" class="d-flex justify-center mb-4 mb-md-0">
         <input id="custom-input" style="display: none" />
         <PersianDatetimePicker
-          v-model="reserveDate"
+          v-model="reserveDates"
           format="jYYYY/jMM/jDD"
           inline
+          multiple
+          :max="maxDate"
           custom-input="#custom-input"
-          @change="fetchReservedMealsForDate"
+          @change="onChange"
         />
       </VCol>
 
@@ -242,7 +321,7 @@ watch(reservationType, () => {
           <VRow class="mb-4 px-4">
             <VCol cols="12" sm="12" md="12">
               <VTextField
-                v-model="reserveDate"
+                :model-value="reserveDatesDisplay"
                 label="تاریخ رزرو"
                 variant="outlined"
                 readonly
@@ -253,8 +332,8 @@ watch(reservationType, () => {
               <VSelect
                 v-model="selectedMeal"
                 :items="meals"
-                item-title="label"
-                item-value="value"
+                item-title="name"
+                item-value="id"
                 label="وعده"
                 variant="outlined"
                 clearable
@@ -266,6 +345,7 @@ watch(reservationType, () => {
               :rules="[requiredValidator]"
               class="mt-2"
               inline
+              @change="onChange"
             >
               <VRadio
                 label="پیمانکار"
@@ -276,21 +356,41 @@ watch(reservationType, () => {
                 value="guest"
               />
             </VRadioGroup>
-
             <VCol v-if="reservationType === 'guest'" cols="12" class="mb-3">
               <VTextField
-                v-model="reserveCount"
+                v-model="quantity"
                 label="تعداد"
                 variant="outlined"
                 :rules="[requiredValidator, ...countInputRules]"
               />
+              <VTextField
+                v-model="description"
+                label="توضیحات"
+                variant="outlined"
+                :rules="[requiredValidator]"
+              />
+              <VRadioGroup
+                v-model="serveType"
+                :rules="[requiredValidator]"
+                class="mt-2"
+                inline
+              >
+                <VRadio
+                  label="سرو در آشپزخانه"
+                  value="serve_in_kitchen"
+                />
+                <VRadio
+                  label="تحویل"
+                  value="deliver"
+                />
+              </VRadioGroup>
             </VCol>
             <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
-              <v-autocomplete
+              <VAutocomplete
                 v-model="selectedContractor"
-                :items="users"
+                :items="contractors"
                 item-title="fullName"
-                item-value="personnel_code"
+                item-value="id"
                 label="پیمانکار"
                 chips
                 clearable
@@ -298,7 +398,7 @@ watch(reservationType, () => {
                 :rules="[requiredValidator]"
               />
               <VTextField
-                v-model="reserveCount"
+                v-model="quantity"
                 label="تعداد"
                 variant="outlined"
                 :rules="[requiredValidator, ...countInputRules]"
@@ -307,7 +407,12 @@ watch(reservationType, () => {
           </VRow>
           <VRow justify="center" class="mb-4">
             <VCol cols="auto">
-              <VBtn color="primary" @click="submit">
+              <VBtn
+                color="primary"
+                :loading="pendingState.reserveMeal"
+                :disabled="pendingState.reserveMeal"
+                @click="submit"
+              >
                 ثبت
               </VBtn>
             </VCol>
@@ -318,31 +423,62 @@ watch(reservationType, () => {
         <div class="ma-3 overflow-auto d-none d-md-block">
           <VCard class="pa-4">
             <label class="font-weight-medium mb-4 d-block text-center">
-              رزروهای تاریخ انتخاب شده
+              رزروهای تاریخ‌های انتخاب شده
             </label>
 
-            <VTable v-if="!ReservedMealsLoading && reservationType === 'guest'" density="comfortable">
+            <VTable v-if="!pendingState.fetchingReservedMeals && reservationType === 'contractor'">
               <thead>
                 <tr>
                   <th>ردیف</th>
                   <th>وعده</th>
                   <th>کد تحویل</th>
                   <th>وضعیت</th>
+                  <th>تاریخ</th>
+                  <th>پیمانکار</th>
                   <th>تعداد</th>
                   <th>عملیات</th>
                 </tr>
               </thead>
+
               <tbody>
-                <tr v-for="(item, index) in altFakeReservedMealsForGuest" :key="index">
+                <tr v-for="(item, index) in sortedReservedMealsByUser" :key="item.id">
                   <td>{{ index + 1 }}</td>
-                  <td>{{ item.mealName }}</td>
-                  <td>{{ item.deliveryCode }}</td>
+
+                  <td>{{ item.meal?.name }}</td>
+
                   <td>
-                    <VChip :color="item.status.color" dark>
-                      {{ item.status.label }}
+                    <VChip color="success">
+                      {{ item.delivery_code }}
                     </VChip>
                   </td>
-                  <td>{{ item.count }}</td>
+
+                  <td>
+                    <VChip :color="item.status ? 'success' : 'error'" size="small">
+                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip>
+                      {{ item.date }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip>
+                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    {{
+                      item.details?.reduce(
+                        (sum, detail) => sum + (detail.quantity || 0),
+                        0,
+                      )
+                    }}
+                  </td>
+
                   <td>
                     <VBtn color="orange" variant="text" size="small">
                       <VIcon icon="tabler-edit" size="20" />
@@ -357,37 +493,46 @@ watch(reservationType, () => {
                 </tr>
               </tbody>
             </VTable>
-            <VTable v-else-if="!ReservedMealsLoading && reservationType === 'contractor'" density="comfortable">
+            <VTable v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'guest'">
               <thead>
                 <tr>
                   <th>ردیف</th>
                   <th>وعده</th>
-                  <th>پیمانکار</th>
-                  <th>کد تحویل</th>
+                  <th>تاریخ</th>
+                  <th>رزرو شده توسط</th>
+                  <th>کد پرسنلی</th>
+                  <th>توضیحات</th>
                   <th>وضعیت</th>
-                  <th>تعداد</th>
-                  <th>عملیات</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in altFakeReservedMealsForContractor" :key="index">
+                <tr v-for="(item, index) in sortedReservedMealsForUser" :key="index">
                   <td>{{ index + 1 }}</td>
-                  <td>{{ item.mealName }}</td>
-                  <td>{{ item.reservedFor[0]?.fullName }}</td>
-                  <td>{{ item.deliveryCode }}</td>
+                  <td>{{ item.reservation.mealName }}</td>
                   <td>
-                    <VChip :color="item.status.color" dark>
-                      {{ item.status.label }}
+                    <VChip>
+                      {{ item.reservation.date }}
                     </VChip>
                   </td>
-                  <td>{{ item.count }}</td>
                   <td>
-                    <VBtn color="orange" variant="text" size="small">
-                      <VIcon icon="tabler-edit" size="20" />
-                    </VBtn>
-                    <VBtn color="red" variant="text" size="small">
-                      <VIcon icon="tabler-trash" size="20" />
-                    </VBtn>
+                    <VChip color="primary">
+                      {{ item.createdBy }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip>
+                      {{ item.personnelCode }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
+                      توضیحات در دست ساخت
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
+                      {{ item.deliveryStatus ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
                   </td>
                 </tr>
               </tbody>
@@ -401,33 +546,61 @@ watch(reservationType, () => {
           <VExpansionPanels variant="accordion">
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
-                رزروهای تاریخ انتخاب شده
+                رزروهای تاریخ‌های انتخاب شده
               </VExpansionPanelTitle>
 
-              <VExpansionPanelText v-if="!ReservedMealsLoading && reservationType === 'guest'">
+              <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'contractor'">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in altFakeReservedMealsForGuest"
+                    v-for="(item, index) in sortedReservedMealsByUser"
                     :key="index"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
                       <div class="d-flex justify-space-between w-100 align-center">
-                        <span>{{ item.mealName }}</span>
+                        <span>{{ item.meal?.name }}</span>
+                        <span>
+                          <VChip>
+                            {{ item.date }}
+                          </VChip>
+                        </span>
                         <VChip
-                          :color="item.status.color"
+                          :color="item.status ? 'success' : 'error'"
                           size="small"
                           label
                         >
-                          {{ item.status.label }}
+                          {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
                         </VChip>
                       </div>
                     </VExpansionPanelTitle>
 
                     <VExpansionPanelText>
                       <div class="pa-2">
-                        <div><strong>کد تحویل:</strong> {{ item.deliveryCode }}</div>
-                        <div><strong>تعداد:</strong> {{ item.count }}</div>
+                        <div>
+                          <strong>کد تحویل:</strong> <VChip color="success">
+                            {{ item.delivery_code }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>تاریخ:</strong> <VChip>
+                            {{ item.date }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>پیمانکار:</strong> <VChip>
+                            <VChip>
+                              {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                            </VChip>
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>تعداد:</strong> {{
+                            item.details?.reduce(
+                              (sum, detail) => sum + (detail.quantity || 0),
+                              0,
+                            )
+                          }}
+                        </div>
                         <div class="mt-2 text-center">
                           <VBtn color="orange" variant="text" size="small">
                             <VIcon icon="tabler-edit" size="20" />
@@ -444,38 +617,55 @@ watch(reservationType, () => {
                   </VExpansionPanel>
                 </VExpansionPanels>
               </VExpansionPanelText>
-              <VExpansionPanelText v-else-if="!ReservedMealsLoading && reservationType === 'contractor'">
+              <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'guest'">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in altFakeReservedMealsForContractor"
+                    v-for="(item, index) in sortedReservedMealsForUser"
                     :key="index"
-                    clawss="mb-2"
+                    class="mb-2"
                   >
                     <VExpansionPanelTitle>
                       <div class="d-flex justify-space-between w-100 align-center">
-                        <span>{{ item.mealName }}</span>
-                        <VChip
-                          :color="item.status.color"
-                          size="small"
-                          label
-                        >
-                          {{ item.status.label }}
+                        <span>{{ item.reservation.mealName }}</span>
+                        <span>
+                          <VChip>
+                            {{ item.date }}
+                          </VChip>
+                        </span>
+                        <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
+                          {{ item.deliveryStatus ? 'تحویل شده' : 'تحویل نشده' }}
                         </VChip>
                       </div>
                     </VExpansionPanelTitle>
 
                     <VExpansionPanelText>
                       <div class="pa-2">
-                        <div><strong>پیمانکار:</strong> {{ item.reservedFor[0]?.fullName }}</div>
-                        <div><strong>کد تحویل:</strong> {{ item.deliveryCode }}</div>
-                        <div><strong>تعداد:</strong> {{ item.count }}</div>
-                        <div class="mt-2 text-center">
-                          <VBtn color="orange" variant="text" size="small">
-                            <VIcon icon="tabler-edit" size="20" />
-                          </VBtn>
-                          <VBtn color="red" variant="text" size="small">
-                            <VIcon icon="tabler-trash" size="20" />
-                          </VBtn>
+                        <div>
+                          <strong>تاریخ:</strong> <VChip>
+                            {{ item.date }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>رزرو شده توسط:</strong> <VChip color="primary">
+                            {{ item.createdBy }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>رزرو شده توسط:</strong> <VChip>
+                            <VChip>
+                              {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                            </VChip>
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>کد پرسنلی:</strong> <VChip color="primary">
+                            {{ item.personnelCode }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>توضیحات:</strong> <VChip color="primary">
+                            توضیحات در دست ساخت
+                          </VChip>
                         </div>
                       </div>
                     </VExpansionPanelText>
