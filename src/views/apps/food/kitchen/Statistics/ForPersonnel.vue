@@ -277,6 +277,14 @@ onMounted(async () => {
                       <span class="font-weight-medium">
                         {{ item.meal?.name }}
                       </span>
+                      <VChip size="small">
+                        {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                      </VChip>
+                    </div>
+                    <div class="d-flex justify-space-between align-center">
+                      <VChip color="success">
+                        {{ item.delivery_code }}
+                      </VChip>
                       <VChip
                         :color="item.status ? 'success' : 'error'"
                         size="small"
@@ -285,22 +293,11 @@ onMounted(async () => {
                         {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
                       </VChip>
                     </div>
-                    <div class="d-flex justify-space-between align-center">
-                      <VChip color="success">
-                        {{ item.delivery_code }}
-                      </VChip>
-                    </div>
                   </div>
                 </VExpansionPanelTitle>
 
                 <VExpansionPanelText>
                   <div class="pa-2">
-                    <div class="mb-2 d-flex justify-space-between">
-                      <VChip size="small">
-                        {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                      </VChip>
-                    </div>
-
                     <div class="mb-2 d-flex justify-space-between">
                       <span><strong>کد پرسنلی:</strong></span>
                       <VChip size="small">
