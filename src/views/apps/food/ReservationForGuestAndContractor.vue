@@ -25,7 +25,7 @@ const contractors = ref([])
 const reservedMealsForContractor = ref([])
 const reservedMealsForGuest = ref([])
 
-const selectedContractor = ref([])
+const selectedContractor = ref(null)
 const selectedMeal = ref(null)
 const quantity = ref(null)
 const description = ref(null)
@@ -639,7 +639,7 @@ onMounted(async () => {
               <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'guest'">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsForContractor"
+                    v-for="(item, index) in sortedReservedMealsForGuest"
                     :key="index"
                     class="mb-2"
                   >
