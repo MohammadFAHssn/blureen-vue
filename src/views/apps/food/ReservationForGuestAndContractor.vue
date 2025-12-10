@@ -159,7 +159,7 @@ async function fetchReservedMealsForContractorOnDate() {
   pendingState.fetchingReservedMeals = true
 
   try {
-    const res = await $api('/food/meal-reservation/get-reservations-for-personnel-by-user-on-date', {
+    const res = await $api('/food/meal-reservation/get-for-contractor-on-date', {
       method: 'GET',
       params: {
         'date[]': reserveDates.value,
@@ -183,14 +183,15 @@ async function fetchReservedMealsForGuestOnDate() {
   pendingState.fetchingReservedMeals = true
 
   try {
-    const res = await $api('/food/meal-reservation/get-reservations-for-user-by-others-on-date', {
+    const res = await $api('/food/meal-reservation/get-for-guest-on-date', {
       method: 'GET',
       params: {
         'date[]': reserveDates.value,
       },
     })
 
-    reservedMealsForGuest.value = res.data || []
+    // res.data is [ [reservation], [reservation], ... ]
+    reservedMealsForGuest.value = (res.data || []).flat()
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
@@ -240,13 +241,13 @@ function onChange() {
   }
 }
 
-const sortedReservedMealsByUser = computed(() =>
+const sortedReservedMealsForContractor = computed(() =>
   [...reservedMealsForContractor.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
   ),
 )
 
-const sortedReservedMealsForUser = computed(() =>
+const sortedReservedMealsForGuest = computed(() =>
   [...reservedMealsForGuest.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
   ),
@@ -441,7 +442,7 @@ onMounted(async () => {
               </thead>
 
               <tbody>
-                <tr v-for="(item, index) in sortedReservedMealsByUser" :key="item.id">
+                <tr v-for="(item, index) in sortedReservedMealsForContractor" :key="item.id">
                   <td>{{ index + 1 }}</td>
 
                   <td>{{ item.meal?.name }}</td>
@@ -466,7 +467,11 @@ onMounted(async () => {
 
                   <td>
                     <VChip>
-                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                      {{
+                        item.details?.[0]?.contractor
+                          ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
+                          : '—'
+                      }}
                     </VChip>
                   </td>
 
@@ -498,40 +503,56 @@ onMounted(async () => {
                 <tr>
                   <th>ردیف</th>
                   <th>وعده</th>
+                  <th>کد تحویل</th>
+                  <th>وضعیت</th>
                   <th>تاریخ</th>
                   <th>رزرو شده توسط</th>
-                  <th>کد پرسنلی</th>
+                  <th>سرو غذا</th>
+                  <th>تعداد</th>
                   <th>توضیحات</th>
-                  <th>وضعیت</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in sortedReservedMealsForUser" :key="index">
+                <tr v-for="(item, index) in sortedReservedMealsForGuest" :key="index">
                   <td>{{ index + 1 }}</td>
-                  <td>{{ item.reservation.mealName }}</td>
+                  <td>{{ item.meal?.name }}</td>
+                  <td>
+                    <VChip color="success">
+                      {{ item.delivery_code }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip :color="item.status ? 'success' : 'error'" size="small">
+                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
+                  </td>
                   <td>
                     <VChip>
-                      {{ item.reservation.date }}
-                    </VChip>
-                  </td>
-                  <td>
-                    <VChip color="primary">
-                      {{ item.createdBy }}
+                      {{ item.date }}
                     </VChip>
                   </td>
                   <td>
                     <VChip>
-                      {{ item.personnelCode }}
+                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
                     </VChip>
                   </td>
                   <td>
-                    <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
-                      توضیحات در دست ساخت
+                    <VChip size="small">
+                      {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
                     </VChip>
                   </td>
+
                   <td>
-                    <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
-                      {{ item.deliveryStatus ? 'تحویل شده' : 'تحویل نشده' }}
+                    {{
+                      item.details?.reduce(
+                        (sum, detail) => sum + (detail.quantity || 0),
+                        0,
+                      )
+                    }}
+                  </td>
+                  <td>
+                    <VChip>
+                      {{ item.description }}
                     </VChip>
                   </td>
                 </tr>
@@ -552,7 +573,7 @@ onMounted(async () => {
               <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'contractor'">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsByUser"
+                    v-for="(item, index) in sortedReservedMealsForContractor"
                     :key="index"
                     class="mb-2"
                   >
@@ -582,15 +603,13 @@ onMounted(async () => {
                           </VChip>
                         </div>
                         <div>
-                          <strong>تاریخ:</strong> <VChip>
-                            {{ item.date }}
-                          </VChip>
-                        </div>
-                        <div>
-                          <strong>پیمانکار:</strong> <VChip>
-                            <VChip>
-                              {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                            </VChip>
+                          <strong>پیمانکار:</strong>
+                          <VChip>
+                            {{
+                              item.details?.[0]?.contractor
+                                ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
+                                : '—'
+                            }}
                           </VChip>
                         </div>
                         <div>
@@ -620,20 +639,24 @@ onMounted(async () => {
               <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'guest'">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsForUser"
+                    v-for="(item, index) in sortedReservedMealsForContractor"
                     :key="index"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
                       <div class="d-flex justify-space-between w-100 align-center">
-                        <span>{{ item.reservation.mealName }}</span>
+                        <span>{{ item.meal?.name }}</span>
                         <span>
                           <VChip>
                             {{ item.date }}
                           </VChip>
                         </span>
-                        <VChip :color="item.deliveryStatus ? 'success' : 'error'" size="small">
-                          {{ item.deliveryStatus ? 'تحویل شده' : 'تحویل نشده' }}
+                        <VChip
+                          :color="item.status ? 'success' : 'error'"
+                          size="small"
+                          label
+                        >
+                          {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
                         </VChip>
                       </div>
                     </VExpansionPanelTitle>
@@ -641,31 +664,44 @@ onMounted(async () => {
                     <VExpansionPanelText>
                       <div class="pa-2">
                         <div>
-                          <strong>تاریخ:</strong> <VChip>
-                            {{ item.date }}
+                          <strong>کد تحویل:</strong> <VChip color="success">
+                            {{ item.delivery_code }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>رزرو شده توسط:</strong> <VChip color="primary">
-                            {{ item.createdBy }}
+                          <strong>رزرو شده توسط:</strong>
+                          <VChip>
+                            {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>رزرو شده توسط:</strong> <VChip>
-                            <VChip>
-                              {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                            </VChip>
+                          <strong>سرو غذا:</strong> <VChip size="small">
+                            {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>کد پرسنلی:</strong> <VChip color="primary">
-                            {{ item.personnelCode }}
-                          </VChip>
+                          <strong>تعداد:</strong> {{
+                            item.details?.reduce(
+                              (sum, detail) => sum + (detail.quantity || 0),
+                              0,
+                            )
+                          }}
                         </div>
                         <div>
-                          <strong>توضیحات:</strong> <VChip color="primary">
-                            توضیحات در دست ساخت
+                          <strong>توضیحات:</strong> <VChip>
+                            {{ item.description }}
                           </VChip>
+                        </div>
+                        <div class="mt-2 text-center">
+                          <VBtn color="orange" variant="text" size="small">
+                            <VIcon icon="tabler-edit" size="20" />
+                          </VBtn>
+                          <VBtn color="red" variant="text" size="small">
+                            <VIcon icon="tabler-trash" size="20" />
+                          </VBtn>
+                          <VBtn color="primary" variant="text" size="small">
+                            <VIcon icon="tabler-file-description" size="20" />
+                          </VBtn>
                         </div>
                       </div>
                     </VExpansionPanelText>
