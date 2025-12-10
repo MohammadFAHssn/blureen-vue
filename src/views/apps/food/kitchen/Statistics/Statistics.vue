@@ -1,5 +1,6 @@
 <script setup>
-import ForContactor from '@/views/apps/food/kitchen/Statistics/ForContactor.vue'
+import ContractorInvoice from '@/views/apps/food/kitchen/Statistics/ContractorInvoice.vue'
+import ForContractor from '@/views/apps/food/kitchen/Statistics/ForContractor.vue'
 import ForGuest from '@/views/apps/food/kitchen/Statistics/ForGuest.vue'
 import ForPersonnel from '@/views/apps/food/kitchen/Statistics/ForPersonnel.vue'
 
@@ -10,14 +11,16 @@ const current = ref('root')
 
 const componentsIcons = [
   { key: 'forPersonnel', label: 'پرسنل', icon: 'tabler-users' },
-  { key: 'forContactor', label: 'پیمانکار', icon: 'tabler-calendar-user' },
   { key: 'forGuest', label: 'مهمان', icon: 'tabler-user-question' },
+  { key: 'forContractor', label: 'پیمانکار', icon: 'tabler-calendar-user' },
+  { key: 'contractorInvoice', label: 'حساب پیمانکار', icon: 'tabler-cash-register' },
 ]
 
 const pages = {
-  forContactor: ForContactor,
-  forGuest: ForGuest,
   forPersonnel: ForPersonnel,
+  forGuest: ForGuest,
+  forContractor: ForContractor,
+  contractorInvoice: ContractorInvoice,
 }
 
 function goBack() {
@@ -71,6 +74,6 @@ function open(key) {
       </VRow>
     </div>
 
-    <component :is="pages[current]" @back="goBack" />
+    <component :is="pages[current]" />
   </VContainer>
 </template>
