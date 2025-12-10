@@ -230,7 +230,7 @@ function dialogModelValueUpdate(val) {
       class="mb-4"
       @click="goBack"
     >
-      {{ current === 'root' ? 'صفحه اصلی' : 'آشپزخانه' }}
+      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
     </VBtn>
   </div>
 

@@ -1,30 +1,32 @@
 <script setup>
-import Delivery from '@/views/apps/food/kitchen/Delivery.vue'
-import Foods from '@/views/apps/food/kitchen/Foods.vue'
-import MealPlan from '@/views/apps/food/kitchen/MealPlan.vue'
-import Meals from '@/views/apps/food/kitchen/Meals.vue'
-import Statistics from '@/views/apps/food/kitchen/Statistics/Statistics.vue'
+import ForContactor from '@/views/apps/food/kitchen/Statistics/ForContactor.vue'
+import ForGuest from '@/views/apps/food/kitchen/Statistics/ForGuest.vue'
+import ForPersonnel from '@/views/apps/food/kitchen/Statistics/ForPersonnel.vue'
+
+// تعریف emit
+const emit = defineEmits(['back'])
 
 const current = ref('root')
 
 const componentsIcons = [
-  { key: 'foods', label: 'غذاها', icon: 'tabler-meat' },
-  { key: 'meals', label: 'وعده‌های غذایی', icon: 'tabler-bowl-chopsticks' },
-  { key: 'mealPlan', label: 'برنامه غذایی', icon: 'tabler-calendar-time' },
-  { key: 'statistics', label: 'آمار', icon: 'tabler-report-analytics' },
-  { key: 'delivery', label: 'تحویل غذا', icon: 'tabler-checklist' },
+  { key: 'forPersonnel', label: 'پرسنل', icon: 'tabler-calendar-time' },
+  { key: 'forContactor', label: 'پیمانکار', icon: 'tabler-meat' },
+  { key: 'forGuest', label: 'مهمان', icon: 'tabler-bowl-chopsticks' },
 ]
 
 const pages = {
-  foods: Foods,
-  mealPlan: MealPlan,
-  meals: Meals,
-  statistics: Statistics,
-  delivery: Delivery,
+  forContactor: ForContactor,
+  forGuest: ForGuest,
+  forPersonnel: ForPersonnel,
 }
 
 function goBack() {
-  current.value = 'root'
+  if (current.value !== 'root') {
+    current.value = 'root'
+  }
+  else {
+    emit('back')
+  }
 }
 
 function open(key) {
@@ -33,6 +35,16 @@ function open(key) {
 </script>
 
 <template>
+  <div>
+    <VBtn
+      variant="text"
+      prepend-icon="tabler-arrow-right"
+      class="mb-4"
+      @click="goBack"
+    >
+      {{ current === 'root' ? 'آشپزخانه' : 'آمار' }}
+    </VBtn>
+  </div>
   <VContainer>
     <div v-if="current === 'root'">
       <VRow>
