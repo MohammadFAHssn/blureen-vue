@@ -43,7 +43,7 @@ onMounted(() => {
                   reservationForGuestAndContractor = true;
                 "
               >
-                رزرو غذای میهمان/ پیمانکار
+                رزرو غذای مهمان/ پیمانکار
               </VBtn>
             </template>
           </VRow>

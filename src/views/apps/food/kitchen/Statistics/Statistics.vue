@@ -9,9 +9,9 @@ const emit = defineEmits(['back'])
 const current = ref('root')
 
 const componentsIcons = [
-  { key: 'forPersonnel', label: 'پرسنل', icon: 'tabler-calendar-time' },
-  { key: 'forContactor', label: 'پیمانکار', icon: 'tabler-meat' },
-  { key: 'forGuest', label: 'مهمان', icon: 'tabler-bowl-chopsticks' },
+  { key: 'forPersonnel', label: 'پرسنل', icon: 'tabler-users' },
+  { key: 'forContactor', label: 'پیمانکار', icon: 'tabler-calendar-user' },
+  { key: 'forGuest', label: 'مهمان', icon: 'tabler-user-question' },
 ]
 
 const pages = {
