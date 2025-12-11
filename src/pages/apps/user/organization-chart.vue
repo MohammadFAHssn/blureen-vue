@@ -87,7 +87,7 @@ function drawOrgChart() {
     .nodeContent(d => getNodeContent(d))
     .linkUpdate(function () {
       d3.select(this)
-        .attr('stroke', 'rgb(var(--v-theme-primary))')
+        .attr('stroke', 'rgb(var(--v-theme-secondary))')
         .attr('stroke-opacity', 0.38)
         .attr('stroke-width', 1.5)
         .attr('stroke-linecap', 'round')

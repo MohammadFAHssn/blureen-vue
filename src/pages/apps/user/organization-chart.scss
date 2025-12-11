@@ -12,8 +12,8 @@
     position: absolute;
     z-index: 10;
     display: flex;
-    border: thin solid rgb(var(--v-theme-primary));
-    color: rgb(var(--v-theme-primary));
+    border: thin solid rgb(var(--v-theme-secondary));
+    color: rgb(var(--v-theme-secondary));
     border-radius: 20px;
     background-color: rgb(var(--v-theme-surface));
     inset-block-start: -14px;
@@ -58,11 +58,11 @@
   }
 
   :deep(.org-unit) {
-    background-color: rgb(var(--v-theme-primary));
+    background-color: rgb(var(--v-theme-secondary));
     block-size: 55px;
     border-end-end-radius: 6px;
     border-end-start-radius: 6px;
-    color: rgb(var(--v-theme-on-primary));
+    color: rgb(var(--v-theme-on-secondary));
     font-size: 0.875rem;
     font-weight: 500;
     padding-block: 8px;
@@ -70,11 +70,11 @@
   }
 
   :deep(.org-expand-btn) {
-    border: thin solid rgb(var(--v-theme-primary));
+    border: thin solid rgb(var(--v-theme-secondary));
     border-radius: 6px;
     background-color: rgb(var(--v-theme-surface));
     block-size: fit-content;
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-secondary));
     font-weight: 500;
     padding-block: 4px;
     padding-inline: 8px;

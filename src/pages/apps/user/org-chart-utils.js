@@ -3,7 +3,7 @@ import { ORG_POSITION_COLORS } from '@/utils/constants'
 export function getNodeContent(d) {
   const orgPositionColor
     = ORG_POSITION_COLORS[d.data.orgPositionId]
-      || 'rgb(var(--v-theme-on-primary))'
+      || 'rgb(var(--v-theme-on-secondary))'
 
   return `
     <div class="org-chart-node" style="width: ${d.width}px; height: ${d.height}px;">
