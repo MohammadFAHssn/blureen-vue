@@ -2,6 +2,8 @@
 import * as d3 from 'd3'
 import { OrgChart } from 'd3-org-chart'
 import { useTheme } from 'vuetify'
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+
 import { getNodeContent } from './org-chart-utils'
 
 definePage({
@@ -16,12 +18,15 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
+  isNodeDeleteDialogVisible: false,
 })
 
 const orgChartNodes = ref([])
 const orgChartRef = ref(null)
 const orgChartInstance = ref(null)
 const orgPositions = ref([])
+
+const selectedNodeId = ref(null)
 
 const vuetifyTheme = useTheme()
 
@@ -125,7 +130,7 @@ function setupNodeActionButtons() {
         handleAddNode(nodeId)
         break
       case 'delete':
-        handleDeleteNode(nodeId)
+        onDeleteNode(nodeId)
         break
     }
   })
@@ -139,8 +144,14 @@ function handleAddNode(nodeId) {
   console.log('Add child to node:', nodeId)
 }
 
-function handleDeleteNode(nodeId) {
-  console.log('Delete node:', nodeId)
+function onDeleteNode(nodeId) {
+  selectedNodeId.value = nodeId
+  uiState.isNodeDeleteDialogVisible = true
+}
+
+function handleDeleteNode() {
+  orgChartInstance.value.removeNode(selectedNodeId.value)
+  uiState.isNodeDeleteDialogVisible = false
 }
 
 fetchOrgChartNodes()
@@ -164,6 +175,14 @@ onMounted(async () => {
   </VSnackbar>
 
   <div ref="orgChartRef" class="org-chart-container" />
+
+  <AreYouSureDialog
+    v-if="uiState.isNodeDeleteDialogVisible"
+    v-model:is-dialog-visible="uiState.isNodeDeleteDialogVisible"
+    title="آیا از حذف این مورد اطمینان دارید؟"
+    :loading="false"
+    @confirm="handleDeleteNode"
+  />
 </template>
 
 <style lang="scss" scoped src="./organization-chart.scss"></style>
