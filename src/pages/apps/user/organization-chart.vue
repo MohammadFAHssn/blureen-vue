@@ -4,6 +4,8 @@ import { OrgChart } from 'd3-org-chart'
 import { useTheme } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
+import AddNodeDialog from '@/views/apps/user/AddNodeDialog.vue'
+
 import { getNodeContent } from './org-chart-utils'
 
 definePage({
@@ -18,7 +20,8 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  isNodeDeleteDialogVisible: false,
+  isDeleteNodeDialogOpen: false,
+  isAddNodeDialogOpen: false,
 })
 
 const orgChartNodes = ref([])
@@ -127,7 +130,7 @@ function setupNodeActionButtons() {
         handleEditNode(nodeId)
         break
       case 'add':
-        handleAddNode(nodeId)
+        onAddNode(nodeId)
         break
       case 'delete':
         onDeleteNode(nodeId)
@@ -140,18 +143,22 @@ function handleEditNode(nodeId) {
   console.log('Edit node:', nodeId)
 }
 
-function handleAddNode(nodeId) {
-  console.log('Add child to node:', nodeId)
+function onAddNode(nodeId) {
+  selectedNodeId.value = nodeId
+  uiState.isAddNodeDialogOpen = true
+}
+
+function handleAddNode() {
 }
 
 function onDeleteNode(nodeId) {
   selectedNodeId.value = nodeId
-  uiState.isNodeDeleteDialogVisible = true
+  uiState.isDeleteNodeDialogOpen = true
 }
 
 function handleDeleteNode() {
   orgChartInstance.value.removeNode(selectedNodeId.value)
-  uiState.isNodeDeleteDialogVisible = false
+  uiState.isDeleteNodeDialogOpen = false
 }
 
 fetchOrgChartNodes()
@@ -177,12 +184,13 @@ onMounted(async () => {
   <div ref="orgChartRef" class="org-chart-container" />
 
   <AreYouSureDialog
-    v-if="uiState.isNodeDeleteDialogVisible"
-    v-model:is-dialog-visible="uiState.isNodeDeleteDialogVisible"
+    v-model:is-dialog-visible="uiState.isDeleteNodeDialogOpen"
     title="آیا از حذف این مورد اطمینان دارید؟"
     :loading="false"
     @confirm="handleDeleteNode"
   />
+
+  <AddNodeDialog v-model:is-dialog-visible="uiState.isAddNodeDialogOpen" @add="handleAddNode" />
 </template>
 
 <style lang="scss" scoped src="./organization-chart.scss"></style>
