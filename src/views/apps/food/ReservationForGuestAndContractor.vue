@@ -437,7 +437,7 @@ onMounted(async () => {
                   <th>تاریخ</th>
                   <th>پیمانکار</th>
                   <th>تعداد</th>
-                  <th>عملیات</th>
+                  <!-- <th>عملیات</th> -->
                 </tr>
               </thead>
 
@@ -484,7 +484,7 @@ onMounted(async () => {
                     }}
                   </td>
 
-                  <td>
+                  <!-- <td>
                     <VBtn color="orange" variant="text" size="small">
                       <VIcon icon="tabler-edit" size="20" />
                     </VBtn>
@@ -494,7 +494,7 @@ onMounted(async () => {
                     <VBtn color="primary" variant="text" size="small">
                       <VIcon icon="tabler-file-description" size="20" />
                     </VBtn>
-                  </td>
+                  </td> -->
                 </tr>
               </tbody>
             </VTable>
@@ -578,32 +578,28 @@ onMounted(async () => {
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
-                      <div class="d-flex justify-space-between w-100 align-center">
-                        <span>{{ item.meal?.name }}</span>
-                        <span>
-                          <VChip>
+                      <div class="d-flex flex-column w-100">
+                        <div class="d-flex justify-space-between align-center mb-1">
+                          <span class="font-weight-medium">
+                            {{ item.meal?.name }}
+                          </span>
+                          <VChip size="small">
                             {{ item.date }}
                           </VChip>
-                        </span>
-                        <VChip
-                          :color="item.status ? 'success' : 'error'"
-                          size="small"
-                          label
-                        >
-                          {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
-                        </VChip>
-                      </div>
-                    </VExpansionPanelTitle>
-
-                    <VExpansionPanelText>
-                      <div class="pa-2">
-                        <div>
-                          <strong>کد تحویل:</strong> <VChip color="success">
+                        </div>
+                        <div class="d-flex justify-space-between align-center">
+                          <VChip color="success">
                             {{ item.delivery_code }}
                           </VChip>
+                          <VChip
+                            :color="item.status ? 'success' : 'error'"
+                            size="small"
+                            label
+                          >
+                            {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                          </VChip>
                         </div>
-                        <div>
-                          <strong>پیمانکار:</strong>
+                        <div class="d-flex justify-space-between align-center">
                           <VChip>
                             {{
                               item.details?.[0]?.contractor
@@ -612,6 +608,11 @@ onMounted(async () => {
                             }}
                           </VChip>
                         </div>
+                      </div>
+                    </VExpansionPanelTitle>
+
+                    <VExpansionPanelText>
+                      <div class="pa-2">
                         <div>
                           <strong>تعداد:</strong> {{
                             item.details?.reduce(
@@ -620,7 +621,7 @@ onMounted(async () => {
                             )
                           }}
                         </div>
-                        <div class="mt-2 text-center">
+                        <!-- <div class="mt-2 text-center">
                           <VBtn color="orange" variant="text" size="small">
                             <VIcon icon="tabler-edit" size="20" />
                           </VBtn>
@@ -630,7 +631,7 @@ onMounted(async () => {
                           <VBtn color="primary" variant="text" size="small">
                             <VIcon icon="tabler-file-description" size="20" />
                           </VBtn>
-                        </div>
+                        </div> -->
                       </div>
                     </VExpansionPanelText>
                   </VExpansionPanel>
@@ -644,36 +645,32 @@ onMounted(async () => {
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
-                      <div class="d-flex justify-space-between w-100 align-center">
-                        <span>{{ item.meal?.name }}</span>
-                        <span>
-                          <VChip>
+                      <div class="d-flex flex-column w-100">
+                        <div class="d-flex justify-space-between align-center mb-1">
+                          <span class="font-weight-medium">
+                            {{ item.meal?.name }}
+                          </span>
+                          <VChip size="small">
                             {{ item.date }}
                           </VChip>
-                        </span>
-                        <VChip
-                          :color="item.status ? 'success' : 'error'"
-                          size="small"
-                          label
-                        >
-                          {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
-                        </VChip>
+                        </div>
+                        <div class="d-flex justify-space-between align-center">
+                          <VChip color="success">
+                            {{ item.delivery_code }}
+                          </VChip>
+                          <VChip
+                            :color="item.status ? 'success' : 'error'"
+                            size="small"
+                            label
+                          >
+                            {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                          </VChip>
+                        </div>
                       </div>
                     </VExpansionPanelTitle>
 
                     <VExpansionPanelText>
                       <div class="pa-2">
-                        <div>
-                          <strong>کد تحویل:</strong> <VChip color="success">
-                            {{ item.delivery_code }}
-                          </VChip>
-                        </div>
-                        <div>
-                          <strong>رزرو شده توسط:</strong>
-                          <VChip>
-                            {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                          </VChip>
-                        </div>
                         <div>
                           <strong>سرو غذا:</strong> <VChip size="small">
                             {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
@@ -692,7 +689,7 @@ onMounted(async () => {
                             {{ item.description }}
                           </VChip>
                         </div>
-                        <div class="mt-2 text-center">
+                        <!-- <div class="mt-2 text-center">
                           <VBtn color="orange" variant="text" size="small">
                             <VIcon icon="tabler-edit" size="20" />
                           </VBtn>
@@ -702,7 +699,7 @@ onMounted(async () => {
                           <VBtn color="primary" variant="text" size="small">
                             <VIcon icon="tabler-file-description" size="20" />
                           </VBtn>
-                        </div>
+                        </div> -->
                       </div>
                     </VExpansionPanelText>
                   </VExpansionPanel>

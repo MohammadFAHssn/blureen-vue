@@ -1,7 +1,6 @@
 <script setup>
 import jalaali from 'jalaali-js'
 
-// تعریف emit
 const emit = defineEmits(['back'])
 
 const current = ref('root')
@@ -28,7 +27,6 @@ const pendingState = reactive({
 })
 
 const undeliveredReservedMeals = ref([])
-const searchedUndeliveredReservedMeal = ref(null)
 const undeliveredReservedMeal = ref(null)
 const todayDate = ref(null)
 const deliveryCode = ref(null)
@@ -69,15 +67,24 @@ async function search() {
         date: todayDate.value,
         delivery_code: deliveryCode.value,
       },
+      onResponseError({ response }) {
+        if (response._data?.errors) {
+          setError('رزروی با این کد تحویل یافت نشد.')
+        }
+        else {
+          uiState.errorMessage = 'خطا در جستجو'
+        }
+      },
     })
 
-    searchedUndeliveredReservedMeal.value = res.data || []
-    undeliveredReservedMeal.value = searchedUndeliveredReservedMeal.value || []
+    // API might return object or array; normalize to single item
+    const data = res?.data ?? null
+    undeliveredReservedMeal.value = Array.isArray(data) ? (data[0] ?? null) : data
+
     uiState.isDeliveryDialogVisible = true
   }
   catch (err) {
     console.error('Error fetching reserved meal:', err)
-    setError('خطا در دریافت رزرو')
   }
   finally {
     pendingState.searchUndeliveredReservedMeal = false
@@ -96,7 +103,7 @@ async function fetchUndeliveredReservedMealsOnDate() {
       },
     })
 
-    undeliveredReservedMeals.value = (res.data || []).flat()
+    undeliveredReservedMeals.value = (res?.data || []).flat()
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
@@ -107,28 +114,26 @@ async function fetchUndeliveredReservedMealsOnDate() {
   }
 }
 
-function dialogModelValueUpdate() {
-  uiState.isDeliveryDialogVisible = false
-  onResetForm()
+function dialogModelValueUpdate(val) {
+  uiState.isDeliveryDialogVisible = val
+  if (!val)
+    onResetForm()
 }
 
 function onResetForm() {
   undeliveredReservedMeal.value = null
+  deliveryCode.value = null
 }
 
 const sortedReservedMealsForContractor = computed(() =>
   [...undeliveredReservedMeals.value].sort((a, b) =>
-    String(a.meal.name).localeCompare(String(b.meal.name)),
+    String(a?.meal?.name || '').localeCompare(String(b?.meal?.name || '')),
   ),
 )
 
 onMounted(async () => {
   const today = new Date()
-
-  const [jToday] = [today].map(d =>
-    jalaali.toJalaali(d.getFullYear(), d.getMonth() + 1, d.getDate()),
-  )
-
+  const jToday = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate())
   const fmt = j => `${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`
 
   todayDate.value = fmt(jToday)
@@ -184,6 +189,7 @@ onMounted(async () => {
                 label="کد تحویل"
                 variant="outlined"
                 :rules="[requiredValidator, ...countInputRules]"
+                @keydown.enter="search"
               />
             </VCol>
           </VRow>
@@ -274,11 +280,10 @@ onMounted(async () => {
                   <td>
                     <VChip v-if="item.details?.[0]?.contractor">
                       {{
-                        item.details?.[0]?.contractor
-                          ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
-                          : ''
+                        `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
                       }}
                     </VChip>
+                    <span v-else>—</span>
                   </td>
 
                   <td>
@@ -291,7 +296,7 @@ onMounted(async () => {
                   </td>
 
                   <td class="py-2">
-                    <VTooltip location="top" :disabled="!(item.description?.length > 60)">
+                    <VTooltip location="top" :disabled="!(item.description?.length > 6)">
                       <template #activator="{ props }">
                         <div
                           v-bind="props"
@@ -337,8 +342,8 @@ onMounted(async () => {
               <VExpansionPanelText v-if="!pendingState.fetchingUndeliveredReservedMeals">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsForContractor"
-                    :key="index"
+                    v-for="item in sortedReservedMealsForContractor"
+                    :key="item.id"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
@@ -381,26 +386,9 @@ onMounted(async () => {
                             {{
                               item.details?.[0]?.contractor
                                 ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
-                                : ''
+                                : '—'
                             }}
                           </VChip>
-                        </div>
-
-                        <div class="mb-2 d-flex justify-space-between align-start">
-                          <strong class="me-2">توضیحات:</strong>
-
-                          <div
-                            style="
-                              max-width: 100%;
-                              white-space: normal;
-                              overflow-wrap: anywhere;
-                              word-break: break-word;
-                              text-align: right;
-                              flex: 1;
-                            "
-                          >
-                            {{ item.description || '' }}
-                          </div>
                         </div>
 
                         <div class="mb-2 d-flex justify-space-between">
@@ -413,6 +401,22 @@ onMounted(async () => {
                               0,
                             )
                           }} عدد
+                        </div>
+
+                        <div class="mb-2 d-flex justify-space-between align-start">
+                          <strong class="me-2">توضیحات:</strong>
+                          <div
+                            style="
+                              max-width: 100%;
+                              white-space: normal;
+                              overflow-wrap: anywhere;
+                              word-break: break-word;
+                              text-align: right;
+                              flex: 1;
+                            "
+                          >
+                            {{ item.description || '—' }}
+                          </div>
                         </div>
 
                         <div class="mt-2 text-center">
@@ -446,9 +450,9 @@ onMounted(async () => {
     :model-value="uiState.isDeliveryDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
+    <DialogCloseBtn @click="uiState.isDeliveryDialogVisible = false" />
 
-    <VCard>
+    <VCard v-if="undeliveredReservedMeal">
       <VCardTitle class="text-h6">
         جزئیات
       </VCardTitle>
@@ -484,6 +488,14 @@ onMounted(async () => {
               }}
             </p>
           </VCol>
+
+          <VCol v-if="undeliveredReservedMeal.details?.[0]?.contractor" cols="12" sm="6">
+            <p>
+              <strong>پیمانکار:</strong> {{
+                `${undeliveredReservedMeal.details[0].contractor.first_name} ${undeliveredReservedMeal.details[0].contractor.last_name}`
+              }}
+            </p>
+          </VCol>
         </VRow>
 
         <VRow>
@@ -507,17 +519,17 @@ onMounted(async () => {
           <VCol v-if="undeliveredReservedMeal.details?.[0]?.contractor" cols="12" sm="6">
             <p>
               <strong>پیمانکار:</strong> {{
-                undeliveredReservedMeal.details?.[0]?.contractor
-                  ? `${undeliveredReservedMeal.details[0].contractor.first_name} ${undeliveredReservedMeal.details[0].contractor.last_name}`
-                  : ''
+                `${undeliveredReservedMeal.details[0].contractor.first_name} ${undeliveredReservedMeal.details[0].contractor.last_name}`
               }}
             </p>
           </VCol>
         </VRow>
 
         <VRow>
-          <VCol v-if="undeliveredReservedMeal.description" cols="12" sm="6">
-            <p><strong>توضیحات:</strong> {{ undeliveredReservedMeal.description }}</p>
+          <VCol v-if="undeliveredReservedMeal.description" cols="12" sm="12">
+            <p style="white-space: normal; overflow-wrap: anywhere;">
+              <strong>توضیحات:</strong> {{ undeliveredReservedMeal.description }}
+            </p>
           </VCol>
         </VRow>
 
