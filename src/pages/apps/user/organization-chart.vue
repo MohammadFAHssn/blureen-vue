@@ -28,6 +28,8 @@ const orgChartNodes = ref([])
 const orgChartRef = ref(null)
 const orgChartInstance = ref(null)
 const orgPositions = ref([])
+const orgUnits = ref([])
+const users = ref([])
 
 const selectedNodeId = ref(null)
 
@@ -75,6 +77,41 @@ async function fetchOrgPositions() {
       console.error('Error fetching org positions:', error)
       uiState.hasError = true
       uiState.errorMessage = error.message || 'خطا در دریافت سمت‌های سازمانی'
+    })
+}
+
+async function fetchOrgUnits() {
+  await axiosInstance
+    .get('/base/org-unit')
+    .then(({ data: { data } }) => {
+      orgUnits.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching org units:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت واحدهای سازمانی'
+    })
+}
+
+async function fetchUsers() {
+  await axiosInstance
+    .get(
+      createUrl('/base/user', {
+        query: {
+          'fields[users]': 'id,first_name,last_name,personnel_code',
+          'fields[profiles]': 'id,user_id,work_area_id,cost_center_id',
+          'filter[active]': '1',
+          'include': 'profile.workArea,profile.costCenter',
+        },
+      }).value,
+    )
+    .then(({ data: { data } }) => {
+      users.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching users:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت کاربران'
     })
 }
 
@@ -148,8 +185,7 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode() {
-}
+function handleAddNode() {}
 
 function onDeleteNode(nodeId) {
   selectedNodeId.value = nodeId
@@ -162,8 +198,9 @@ function handleDeleteNode() {
 }
 
 fetchOrgChartNodes()
-await fetchOrgPositions()
-
+fetchOrgPositions()
+fetchOrgUnits()
+await fetchUsers()
 onMounted(async () => {
   await nextTick()
   drawOrgChart()
@@ -190,7 +227,13 @@ onMounted(async () => {
     @confirm="handleDeleteNode"
   />
 
-  <AddNodeDialog v-model:is-dialog-visible="uiState.isAddNodeDialogOpen" @add="handleAddNode" />
+  <AddNodeDialog
+    v-model:is-dialog-visible="uiState.isAddNodeDialogOpen"
+    :org-positions="orgPositions"
+    :org-units="orgUnits"
+    :users="users"
+    @add="handleAddNode"
+  />
 </template>
 
 <style lang="scss" scoped src="./organization-chart.scss"></style>

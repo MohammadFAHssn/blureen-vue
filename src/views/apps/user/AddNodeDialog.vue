@@ -4,11 +4,60 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+
+  orgPositions: {
+    type: Array,
+    required: true,
+  },
+
+  orgUnits: {
+    type: Array,
+    required: true,
+  },
+
+  users: {
+    type: Array,
+    required: true,
+  },
 })
 
 const emit = defineEmits(['add', 'update:isDialogVisible'])
 
+const orgUnits = ref(props.orgUnits)
+
+const selectedOrgPosition = ref(null)
+const selectedOrgUnit = ref(null)
+
+function onOrgUnitComboboxUpdate(selectedItem) {
+  if (typeof selectedItem !== 'string') return
+
+  if (!selectedItem.trim()) {
+    selectedOrgUnit.value = null
+    return
+  }
+
+  const existing = orgUnits.value.find(
+    unit =>
+      unit.name.replace(/[\s\u200C]+/g, '')
+      === selectedItem.replace(/[\s\u200C]+/g, ''),
+  )
+  if (existing) {
+    selectedOrgUnit.value = existing
+  }
+}
+
 function onFormSubmit() {
+  if (typeof selectedOrgUnit.value === 'string') {
+    const name = selectedOrgUnit.value.trim()
+
+    selectedOrgUnit.value = {
+      id: crypto.randomUUID(),
+      name,
+    }
+
+    orgUnits.value.push(selectedOrgUnit.value)
+  }
+
   emit('add')
   emit('update:isDialogVisible', false)
 }
@@ -43,17 +92,23 @@ function dialogModelValueUpdate(val) {
           <VRow>
             <!-- 👉 Org Position -->
             <VCol cols="12" md="6">
-              <v-combobox
+              <VAutocomplete
+                v-model="selectedOrgPosition"
                 label="سمت"
-                :items="['مدیر', 'سرپرست', 'سرشیفت']"
+                :items="props.orgPositions"
+                item-title="name"
               />
             </VCol>
 
             <!-- 👉 Org unit -->
             <VCol cols="12" md="6">
-              <v-combobox
+              <VCombobox
+                v-model="selectedOrgUnit"
                 label="واحد"
-                :items="['کارگزینی', 'بلوک', 'فلوت']"
+                :items="orgUnits"
+                item-title="name"
+                item-value="id"
+                @update:model-value="onOrgUnitComboboxUpdate"
               />
             </VCol>
 
