@@ -1,173 +1,96 @@
 <script setup>
-import { ref } from 'vue'
+import CreateDailyRequest from '@/views/apps/humanResources/CreateDailyRequest.vue'
+import EditDailyLeaveRequestDialog from '@/views/apps/humanResources/EditDailyLeaveRequestDialog.vue'
+import RemainingLeave from '@/views/apps/humanResources/RemainingLeave.vue'
 
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  isEditRequestDialogVisible: false,
 })
 const requestsLoading = ref(false)
-const remainingLeaveLoading = ref(false)
-const startDate = ref('')
-const endDate = ref('')
-const showStartPicker = ref(false)
-const showEndPicker = ref(false)
-const remainingLeave = ref(null)
-const selectedUser = ref([])
 const users = ref([])
+const selectedRequest = ref(null)
+const selectedUser = ref(useCookie('userData').value)
 
 const currentMonthRequests = ref([])
-
-function selectStart(val) {
-  startDate.value = val.format ? val.format('jYYYY/jMM/jDD') : val
-  showStartPicker.value = false
-}
-function selectEnd(val) {
-  endDate.value = val.format ? val.format('jYYYY/jMM/jDD') : val
-  showEndPicker.value = false
-}
-
-async function submit() {
-  if (!startDate.value || !endDate.value) {
-    uiState.hasError = true
-    uiState.errorMessage = 'لطفا بازه تاریخ را انتخاب کنید'
-  }
-  else if (startDate.value > endDate.value) {
-    uiState.hasError = true
-    uiState.errorMessage = 'تاریخ شروع نمی‌تواند بزرگتر از تاریخ پایان باشد'
-  }
-  else {
-    const requestData = {
-      request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
-      user_id: useCookie('userData').value.id,
-      start_date: startDate.value,
-      end_date: endDate.value,
-    }
-
-    try {
-      await $api('/hr-request/requests/create', {
-        method: 'POST',
-        body: requestData,
-        onResponseError({ response }) {
-          uiState.hasError = true
-          uiState.errorMessage = response._data.message || 'خطا در ثبت مرخصی'
-        },
-      })
-
-      uiState.success = true
-      uiState.successMessage = `درخواست مرخصی از ${startDate.value} تا ${endDate.value} ثبت شد`
-
-      await getCurrentMonthRequests()
-      startDate.value = ''
-      endDate.value = ''
-    }
-    catch (err) {
-      console.log(err)
-    }
-    finally {
-      requestsLoading.value = false
-    }
-  }
-}
-
 async function getCurrentMonthRequests() {
   requestsLoading.value = true
-  try {
-    const { data, error } = await useApi(
-      createUrl(`/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.DAILY_LEAVE}`),
+  await axiosInstance
+    .get(
+      `/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.DAILY_LEAVE}`,
     )
-    requestsLoading.value = false
-    if (error.value) {
-      uiState.hasError = true
-      uiState.errorMessage = 'خطا در دریافت درخواست ها'
-      throw error.value
-    }
-
-    if (data.value.data) {
-      currentMonthRequests.value = data.value.data
-    }
-  }
-  catch (e) {
-    requestsLoading.value = false
-    console.error('Unexpected error fetching users:', e)
-    uiState.hasError = true
-    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
-  }
-}
-
-async function getRemainingLeave() {
-  remainingLeaveLoading.value = true
-  const formData = {
-    user_id: useCookie('userData').value?.id ?? 0,
-  }
-  try {
-    const { data, error } = await $api('/kasra/reports/get-remaining-leave', {
-      method: 'POST',
-      body: formData,
-      onResponseError({ response }) {
-        uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در دریافت مانده مرخصی'
-      },
+    .then(({ data }) => {
+      requestsLoading.value = false
+      currentMonthRequests.value = data.data
     })
-    remainingLeaveLoading.value = false
-
-    if (error) {
+    .catch((error) => {
       uiState.hasError = true
-      uiState.errorMessage = error.value || 'خطا در دریافت مانده مرخصی'
-      throw error.value
-    }
-
-    if (data.remaining_leave) {
-      remainingLeave.value = data.remaining_leave
-    }
-  }
-  catch (e) {
-    remainingLeaveLoading.value = false
-    console.error('Unexpected error fetching attendances:', e)
-  }
+      uiState.errorMessage = error.message ?? 'خطا در دریافت درخواست ها'
+    })
 }
 
 async function fetchUsers() {
   try {
-    // todo:rename url
-    const { data, error } = await $api('/base/approval-flow/get-sub-users', {
-      method: 'POST',
-      body: {
-        request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
+    const loggedInUserId = useCookie('userData').value?.id
+    const { data } = await axiosInstance.get(
+      '/base/org-chart-node/user-and-child',
+      {
+        params: { user_id: loggedInUserId },
       },
-      onResponseError({ response }) {
-        uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در دریافت کاربران زیرمجموعه'
-      },
-    })
-    if (error) {
-      uiState.hasError = true
-      uiState.errorMessage = 'خطا در دریافت کاربران'
-      throw error.value
-    }
+    )
 
-    if (data) {
-      users.value = data.map(u => ({
-        ...u,
-        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
-      }))
+    users.value = data.data.map(u => ({
+      ...u,
+      fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+    }))
+
+    const found = users.value.find(u => u.id === loggedInUserId)
+    if (found) {
+      selectedUser.value = found
     }
   }
-  catch (e) {
-    console.error('Unexpected error fetching users:', e)
+  catch (error) {
+    let error_message
+    if (!('errors' in error.response.data)) {
+      error_message = error.response.data.message
+    }
+    else {
+      error_message = error.response.data.message
+    }
+
     uiState.hasError = true
-    uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران زیرمجموعه'
+    uiState.errorMessage = error_message
   }
 }
 
-async function onUserSelected() {
-  alert('ok')
+async function updateRequest(item) {
+  uiState.isEditRequestDialogVisible = false
+  await axiosInstance
+    .patch('/hr-request/requests/update', {
+      request: item,
+    })
+    .then(({ data }) => {
+      console.log(data.data)
+    })
+    .catch((error) => {
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در بروزرسانی درخواست'
+    })
+}
+async function onUserSelected(user) {
+  selectedUser.value = user
+}
+
+async function onEditClick(request) {
+  selectedRequest.value = request
+  uiState.isEditRequestDialogVisible = true
 }
 
 onMounted(() => {
   getCurrentMonthRequests()
-  getRemainingLeave()
   fetchUsers()
 })
 </script>
@@ -192,6 +115,12 @@ onMounted(() => {
     {{ uiState.successMessage }}
   </VSnackbar>
 
+  <EditDailyLeaveRequestDialog
+    v-if="uiState.isEditRequestDialogVisible"
+    v-model:is-dialog-visible="uiState.isEditRequestDialogVisible"
+    :request="selectedRequest"
+    @submit="updateRequest"
+  />
   <div class="mb-6 text-center">
     <h2 class="text-h5 font-weight-bold text-primary">
       درخواست مرخصی روزانه
@@ -203,12 +132,11 @@ onMounted(() => {
         <div class="d-flex align-center justify-space-between">
           <v-autocomplete
             v-model="selectedUser"
-            :disable="users.length < 2"
             clearable
             label="جستجوی پرسنل"
             :items="users"
             item-title="fullName"
-            item-value="personnel_code"
+            return-object
             variant="solo-filled"
             @update:model-value="onUserSelected"
           />
@@ -218,88 +146,8 @@ onMounted(() => {
   </VRow>
   <VRow class="pa-2" dense>
     <VCol cols="12" md="6" class="mx-auto">
-      <VCard
-        color="primary"
-        variant="tonal"
-        class="mb-4 pa-4 text-center"
-      >
-        <VRow align="center" justify="center">
-          <VCol cols="auto">
-            <VAvatar color="primary" size="56" variant="flat">
-              <VIcon icon="tabler-calendar-stats" size="32" />
-            </VAvatar>
-          </VCol>
-          <VCol cols="auto">
-            <div class="text-h6 font-weight-bold text-primary-darken-3">
-              مانده مرخصی
-            </div>
-            <VSkeletonLoader v-if="remainingLeaveLoading" type="list-item" />
-            <div v-else class="text-h5 font-weight-bold text-success">
-              {{ remainingLeave }}
-            </div>
-          </VCol>
-        </VRow>
-      </VCard>
-
-      <VCard class="mb-4 pa-4">
-        <label class="font-weight-medium mb-2 d-block text-center">
-          تاریخ مرخصی
-        </label>
-
-        <VRow>
-          <VCol cols="12" sm="6">
-            <VTextField
-              v-model="startDate"
-              label="تاریخ شروع"
-              readonly
-              variant="outlined"
-              @click="showStartPicker = true"
-            />
-            <VDialog v-model="showStartPicker" max-width="300px">
-              <VCard>
-                <input id="startDate-input" style="display: none" />
-                <PersianDatetimePicker
-                  v-model="startDate"
-                  format="jYYYY/jMM/jDD"
-                  inline
-                  custom-input="#startDate-input"
-                  @change="selectStart"
-                />
-              </VCard>
-            </VDialog>
-          </VCol>
-
-          <VCol cols="12" sm="6">
-            <VTextField
-              v-model="endDate"
-              label="تاریخ پایان"
-              readonly
-              variant="outlined"
-              @click="showEndPicker = true"
-            />
-            <VDialog v-model="showEndPicker" max-width="300px">
-              <VCard>
-                <input id="endDate-input" style="display: none" />
-                <PersianDatetimePicker
-                  v-model="endDate"
-                  format="jYYYY/jMM/jDD"
-                  inline
-                  custom-input="#endDate-input"
-                  @change="selectEnd"
-                />
-              </VCard>
-            </VDialog>
-          </VCol>
-        </VRow>
-
-        <VRow justify="center" class="mt-4">
-          <VCol cols="auto">
-            <VBtn color="primary" @click="submit">
-              ثبت درخواست
-            </VBtn>
-          </VCol>
-        </VRow>
-      </VCard>
+      <RemainingLeave :user-id="selectedUser.id" />
+      <CreateDailyRequest :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="getCurrentMonthRequests" />
 
       <div class="ma-3 overflow-auto d-none d-md-block">
         <VCard class="pa-4">
@@ -331,7 +179,12 @@ onMounted(() => {
                   </VChip>
                 </td>
                 <td>
-                  <VBtn color="orange" variant="text" size="small">
+                  <VBtn
+                    color="orange"
+                    variant="text"
+                    size="small"
+                    @click="onEditClick(item)"
+                  >
                     <VIcon icon="tabler-edit" size="20" />
                   </VBtn>
                   <VBtn color="red" variant="text" size="small">
@@ -361,7 +214,9 @@ onMounted(() => {
                   cols="12"
                 >
                   <VCard outlined class="pa-3 mb-3">
-                    <div><strong>تاریخ شروع:</strong> {{ item.start_date }}</div>
+                    <div>
+                      <strong>تاریخ شروع:</strong> {{ item.start_date }}
+                    </div>
                     <div><strong>تاریخ پایان:</strong> {{ item.end_date }}</div>
 
                     <div class="d-flex align-center mt-1">
@@ -377,7 +232,12 @@ onMounted(() => {
                     </div>
 
                     <div class="mt-3 text-center">
-                      <VBtn color="orange" variant="text" size="small">
+                      <VBtn
+                        color="orange"
+                        variant="text"
+                        size="small"
+                        @click="onEditClick(item)"
+                      >
                         <VIcon icon="tabler-edit" size="20" />
                       </VBtn>
                       <VBtn color="red" variant="text" size="small">
@@ -388,7 +248,10 @@ onMounted(() => {
                 </VCol>
               </VRow>
 
-              <div v-if="!currentMonthRequests.length" class="text-center text-medium-emphasis mt-2">
+              <div
+                v-if="!currentMonthRequests.length"
+                class="text-center text-medium-emphasis mt-2"
+              >
                 موردی یافت نشد!
               </div>
             </VExpansionPanelText>

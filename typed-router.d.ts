@@ -23,8 +23,6 @@ declare module 'vue-router/auto-routes' {
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
-    'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
-    'apps-evaluation-participate-evaluation': RouteRecordInfo<'apps-evaluation-participate-evaluation', '/apps/evaluation/participate-evaluation', Record<never, never>, Record<never, never>>,
     'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
     'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
