@@ -27,6 +27,34 @@ const orgUnits = ref(props.orgUnits)
 
 const selectedOrgPosition = ref(null)
 const selectedOrgUnit = ref(null)
+const selectedUsers = ref([])
+
+const userSearchQuery = ref('')
+
+function guardBackspace(e) {
+  if (e.key === 'Backspace' && !userSearchQuery.value) {
+    e.stopPropagation()
+  }
+}
+
+function userFilter(_, query, item) {
+  const i = item.raw
+  const q = toComparisonKey(query)
+
+  const haystack = [
+    i.first_name,
+    i.last_name,
+    i.personnel_code,
+    i.profile?.work_area?.name,
+    i.profile?.cost_center?.name,
+  ].map(toComparisonKey).filter(Boolean).join(' ')
+
+  return haystack.includes(q)
+}
+
+function toComparisonKey(str) {
+  return (str || '').toString().replace(/[\s\u200C]+/g, '')
+}
 
 function onOrgUnitComboboxUpdate(selectedItem) {
   if (typeof selectedItem !== 'string') return
@@ -38,8 +66,8 @@ function onOrgUnitComboboxUpdate(selectedItem) {
 
   const existing = orgUnits.value.find(
     unit =>
-      unit.name.replace(/[\s\u200C]+/g, '')
-      === selectedItem.replace(/[\s\u200C]+/g, ''),
+      toComparisonKey(unit.name)
+      === toComparisonKey(selectedItem),
   )
   if (existing) {
     selectedOrgUnit.value = existing
@@ -97,6 +125,7 @@ function dialogModelValueUpdate(val) {
                 label="سمت"
                 :items="props.orgPositions"
                 item-title="name"
+                item-value="id"
               />
             </VCol>
 
@@ -110,6 +139,39 @@ function dialogModelValueUpdate(val) {
                 item-value="id"
                 @update:model-value="onOrgUnitComboboxUpdate"
               />
+            </VCol>
+
+            <VCol cols="12">
+              <VAutocomplete
+                v-model="selectedUsers"
+                v-model:search="userSearchQuery"
+                multiple
+                :items="users"
+                :item-title="item => `${item.first_name} ${item.last_name} (${item.personnel_code})`"
+                clearable
+                item-value="id"
+                label="کاربران"
+                clear-on-select
+                :custom-filter="userFilter"
+                @keydown.capture="guardBackspace"
+              >
+                <template #selection="{ index }">
+                  <span v-if="index === 0">
+                    {{ selectedUsers.length }} کاربر انتخاب شده
+                  </span>
+                </template>
+
+                <template #item="{ props, item }">
+                  <VListItem
+                    v-bind="props"
+                    :prepend-avatar="item?.raw?.avatar"
+                    :title="`${item?.raw?.first_name} ${item?.raw?.last_name} (${item?.raw?.personnel_code})`"
+                    :subtitle="`${item?.raw?.profile?.work_area?.name || ''} ${
+                      item?.raw?.profile?.work_area?.name ? '&larr;' : ''
+                    } ${item?.raw?.profile?.cost_center?.name || ''}`"
+                  />
+                </template>
+              </VAutocomplete>
             </VCol>
 
             <!-- 👉 Submit and Cancel -->
