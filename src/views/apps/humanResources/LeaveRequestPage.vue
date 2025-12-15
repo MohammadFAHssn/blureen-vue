@@ -1,8 +1,8 @@
 <script setup>
-import LeaveDailyRequest from '@/views/apps/humanResources/LeaveDailyRequest.vue'
-import LeaveFuneralRequest from '@/views/apps/humanResources/LeaveFuneralRequest.vue'
-import LeaveHourlyRequest from '@/views/apps/humanResources/LeaveHourlyRequest.vue'
-import LeaveMarriageRequest from '@/views/apps/humanResources/LeaveMarriageRequest.vue'
+import BereavementLeaveRequest from '@/views/apps/humanResources/BereavementLeaveRequest/BereavementLeaveRequest.vue'
+import DailyLeaveRequestPage from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeaveRequestPage.vue'
+import HourlyLeaveRequest from '@/views/apps/humanResources/HourlyLeaveRequest/HourlyLeaveRequest.vue'
+import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
 
 // تعریف emit
 const emit = defineEmits(['back'])
@@ -17,10 +17,10 @@ const leaveTypes = [
 ]
 
 const pages = {
-  daily: LeaveDailyRequest,
-  hourly: LeaveHourlyRequest,
-  marriage: LeaveMarriageRequest,
-  funeral: LeaveFuneralRequest,
+  daily: DailyLeaveRequestPage,
+  hourly: HourlyLeaveRequest,
+  marriage: MarriageLeaveRequest,
+  funeral: BereavementLeaveRequest,
 }
 
 const currentComponent = computed(() => pages[current.value] || null)

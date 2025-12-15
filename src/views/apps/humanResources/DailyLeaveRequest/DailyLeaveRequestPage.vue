@@ -1,6 +1,6 @@
 <script setup>
-import CreateDailyRequest from '@/views/apps/humanResources/CreateDailyRequest.vue'
-import EditDailyLeaveRequestDialog from '@/views/apps/humanResources/EditDailyLeaveRequestDialog.vue'
+import DailyLeaveRequestForm from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeaveRequestForm.vue'
+import EditDailyLeaveRequestDialog from '@/views/apps/humanResources/DailyLeaveRequest/EditDailyLeaveRequestDialog.vue'
 import RemainingLeave from '@/views/apps/humanResources/RemainingLeave.vue'
 
 const uiState = reactive({
@@ -147,7 +147,7 @@ onMounted(() => {
   <VRow class="pa-2" dense>
     <VCol cols="12" md="6" class="mx-auto">
       <RemainingLeave :user-id="selectedUser.id" />
-      <CreateDailyRequest :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="getCurrentMonthRequests" />
+      <DailyLeaveRequestForm :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="getCurrentMonthRequests" />
 
       <div class="ma-3 overflow-auto d-none d-md-block">
         <VCard class="pa-4">
@@ -196,7 +196,6 @@ onMounted(() => {
           </table>
         </VCard>
       </div>
-
       <div class="d-md-none pa-3">
         <VExpansionPanels variant="accordion">
           <VExpansionPanel>

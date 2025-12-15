@@ -1,6 +1,6 @@
 <script setup>
-import AttendanceRequest from '@/views/apps/humanResources/AttendanceRequest.vue'
-import LeaveRequest from '@/views/apps/humanResources/LeaveRequest.vue'
+import AttendanceRequest from '@/views/apps/humanResources/AttendanceRequest/AttendanceRequest.vue'
+import LeaveRequestPage from '@/views/apps/humanResources/LeaveRequestPage.vue'
 import MissionRequest from '@/views/apps/humanResources/MissionRequest.vue'
 import OvertimeRequest from '@/views/apps/humanResources/OvertimeRequest.vue'
 import SickRequest from '@/views/apps/humanResources/SickRequest.vue'
@@ -16,7 +16,7 @@ const requests = [
 ]
 
 const pages = {
-  leave: LeaveRequest,
+  leave: LeaveRequestPage,
   mission: MissionRequest,
   overtime: OvertimeRequest,
   sick: SickRequest,
