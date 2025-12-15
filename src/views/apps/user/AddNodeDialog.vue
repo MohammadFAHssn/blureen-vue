@@ -1,4 +1,6 @@
 <script setup>
+import Fuse from 'fuse.js'
+
 const props = defineProps({
   isDialogVisible: {
     type: Boolean,
@@ -31,29 +33,57 @@ const selectedUsers = ref([])
 
 const userSearchQuery = ref('')
 
+const fuse = computed(() => {
+  const usersWithSearchFields = props.users.map(user => ({
+    ...user,
+    full_name: normalizeForFuse([user.first_name, user.last_name]),
+    work_area_cost_center: normalizeForFuse([
+      user.profile?.work_area?.name,
+      user.profile?.cost_center?.name,
+    ]),
+    last_name_work_area_cost_center: normalizeForFuse([
+      user.last_name,
+      user.profile?.work_area?.name,
+      user.profile?.cost_center?.name,
+    ]),
+  }))
+
+  return new Fuse(usersWithSearchFields, {
+    keys: [
+      { name: 'personnel_code', weight: 2.0 },
+      { name: 'full_name', weight: 1.5 },
+      { name: 'work_area_cost_center', weight: 1.5 },
+      { name: 'last_name_work_area_cost_center', weight: 1.5 },
+    ],
+    threshold: 0.4,
+    ignoreLocation: true,
+    useExtendedSearch: true,
+    includeScore: true,
+    findAllMatches: true,
+    minMatchCharLength: 1,
+  })
+})
+
+const filteredUsers = computed(() => {
+  const query = userSearchQuery.value?.trim()
+  if (!query) return props.users
+
+  const results = fuse.value.search(query)
+
+  return results.map(r => r.item)
+})
+
+function normalizeForFuse(parts) {
+  return parts
+    .filter(Boolean)
+    .join(' ')
+    .replace(/[\s\u200C]+/g, '')
+}
+
 function guardBackspace(e) {
   if (e.key === 'Backspace' && !userSearchQuery.value) {
     e.stopPropagation()
   }
-}
-
-function userFilter(_, query, item) {
-  const i = item.raw
-  const q = toComparisonKey(query)
-
-  const haystack = [
-    i.first_name,
-    i.last_name,
-    i.personnel_code,
-    i.profile?.work_area?.name,
-    i.profile?.cost_center?.name,
-  ].map(toComparisonKey).filter(Boolean).join(' ')
-
-  return haystack.includes(q)
-}
-
-function toComparisonKey(str) {
-  return (str || '').toString().replace(/[\s\u200C]+/g, '')
 }
 
 function onOrgUnitComboboxUpdate(selectedItem) {
@@ -65,9 +95,7 @@ function onOrgUnitComboboxUpdate(selectedItem) {
   }
 
   const existing = orgUnits.value.find(
-    unit =>
-      toComparisonKey(unit.name)
-      === toComparisonKey(selectedItem),
+    unit => toComparisonKey(unit.name) === toComparisonKey(selectedItem),
   )
   if (existing) {
     selectedOrgUnit.value = existing
@@ -146,13 +174,16 @@ function dialogModelValueUpdate(val) {
                 v-model="selectedUsers"
                 v-model:search="userSearchQuery"
                 multiple
-                :items="users"
-                :item-title="item => `${item.first_name} ${item.last_name} (${item.personnel_code})`"
+                :items="filteredUsers"
+                :item-title="
+                  (item) =>
+                    `${item.first_name} ${item.last_name} (${item.personnel_code})`
+                "
                 clearable
                 item-value="id"
                 label="کاربران"
                 clear-on-select
-                :custom-filter="userFilter"
+                :no-filter="true"
                 @keydown.capture="guardBackspace"
               >
                 <template #selection="{ index }">

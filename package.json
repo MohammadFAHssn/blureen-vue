@@ -42,6 +42,7 @@
     "d3-org-chart": "^3.1.1",
     "destr": "2.0.5",
     "eslint-plugin-regexp": "2.10.0",
+    "fuse.js": "^7.1.0",
     "jwt-decode": "4.0.0",
     "mapbox-gl": "^3.13.0",
     "moment-jalaali": "^0.10.4",
