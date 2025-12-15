@@ -21,15 +21,75 @@ const uiState = reactive({
   errorMessage: '',
   isDeliveryDialogVisible: false,
 })
+
 const pendingState = reactive({
-  fetchingUndeliveredReservedMeals: false,
-  searchUndeliveredReservedMeal: false,
+  fetchingReservedMeals: false,
+  searchReservedMeal: false,
+  deliverReservedMeal: false,
+  fetchingFoods: false,
 })
 
-const undeliveredReservedMeals = ref([])
-const undeliveredReservedMeal = ref(null)
+const reservedMeals = ref([])
+const reservedMeal = ref(null)
 const todayDate = ref(null)
 const deliveryCode = ref(null)
+
+// details dialog data
+// personnel reservation
+const selectedUsers = ref([])
+
+// contractor reservation
+const maxCount = computed(() =>
+  reservedMeal.value?.details?.reduce(
+    (sum, detail) => sum + (detail.quantity || 0),
+    0,
+  ) || 0,
+)
+
+const receivedCount = ref(0)
+watch(maxCount, (v) => {
+  receivedCount.value = v
+}, { immediate: true })
+
+const todayFoodCount = ref(0)
+watch(receivedCount, (v) => {
+  todayFoodCount.value = v
+}, { immediate: true })
+
+const foods = ref([])
+const secondFood = ref(null)
+const secondFoodReceivedCount = ref(0)
+const thirdFood = ref(null)
+const thirdFoodReceivedCount = ref(0)
+
+const remainingAfterToday = computed(() =>
+  Math.max(receivedCount.value - todayFoodCount.value, 0),
+)
+
+const remainingAfterSecond = computed(() =>
+  Math.max(receivedCount.value - todayFoodCount.value - secondFoodReceivedCount.value, 0),
+)
+
+watch([receivedCount, todayFoodCount, secondFoodReceivedCount, thirdFoodReceivedCount], () => {
+  if (todayFoodCount.value > receivedCount.value)
+    todayFoodCount.value = receivedCount.value
+
+  if (secondFoodReceivedCount.value > remainingAfterToday.value)
+    secondFoodReceivedCount.value = remainingAfterToday.value
+
+  if (remainingAfterToday.value === 0) {
+    secondFood.value = null
+    secondFoodReceivedCount.value = 0
+  }
+
+  if (thirdFoodReceivedCount.value > remainingAfterSecond.value)
+    thirdFoodReceivedCount.value = remainingAfterSecond.value
+
+  if (remainingAfterSecond.value === 0) {
+    thirdFood.value = null
+    thirdFoodReceivedCount.value = 0
+  }
+})
 
 // rules
 const countInputRules = [
@@ -58,7 +118,7 @@ async function search() {
     return
   }
 
-  pendingState.searchUndeliveredReservedMeal = true
+  pendingState.searchReservedMeal = true
 
   try {
     const res = await $api('/food/delivery/find', {
@@ -77,9 +137,13 @@ async function search() {
       },
     })
 
-    // API might return object or array; normalize to single item
     const data = res?.data ?? null
-    undeliveredReservedMeal.value = Array.isArray(data) ? (data[0] ?? null) : data
+    reservedMeal.value = Array.isArray(data) ? (data[0] ?? null) : data
+
+    if (!reservedMeal.value) {
+      setError('این رزرو، تحویل داده شده است یا زمان تحویل آن گذشته است.')
+      return
+    }
 
     uiState.isDeliveryDialogVisible = true
   }
@@ -87,13 +151,13 @@ async function search() {
     console.error('Error fetching reserved meal:', err)
   }
   finally {
-    pendingState.searchUndeliveredReservedMeal = false
+    pendingState.searchReservedMeal = false
   }
 }
 
-async function fetchUndeliveredReservedMealsOnDate() {
-  undeliveredReservedMeals.value = []
-  pendingState.fetchingUndeliveredReservedMeals = true
+async function fetchReservedMealsOnDate() {
+  reservedMeals.value = []
+  pendingState.fetchingReservedMeals = true
 
   try {
     const res = await $api('/food/delivery', {
@@ -103,17 +167,34 @@ async function fetchUndeliveredReservedMealsOnDate() {
       },
     })
 
-    undeliveredReservedMeals.value = (res?.data || []).flat()
+    reservedMeals.value = (res?.data || []).flat()
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
     setError('خطا در دریافت رزروها')
   }
   finally {
-    pendingState.fetchingUndeliveredReservedMeals = false
+    pendingState.fetchingReservedMeals = false
   }
 }
 
+async function fetchFoods() {
+  pendingState.fetchingFoods = true
+  try {
+    const res = await $api('/food/food/get-actives', { method: 'GET' })
+
+    foods.value = res?.data.foods || []
+  }
+  catch (e) {
+    console.error('Error fetching foods:', e)
+    setError('خطا در دریافت غذاها')
+  }
+  finally {
+    pendingState.fetchingFoods = false
+  }
+}
+
+// dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDeliveryDialogVisible = val
   if (!val)
@@ -121,12 +202,121 @@ function dialogModelValueUpdate(val) {
 }
 
 function onResetForm() {
-  undeliveredReservedMeal.value = null
+  reservedMeal.value = null
   deliveryCode.value = null
+  selectedUsers.value = []
+  secondFood.value = null
+  secondFoodReceivedCount.value = 0
+  thirdFood.value = null
+  thirdFoodReceivedCount.value = 0
 }
 
-const sortedReservedMealsForContractor = computed(() =>
-  [...undeliveredReservedMeals.value].sort((a, b) =>
+async function deliver() {
+  // validation only (no side effects)
+  if (!reservedMeal.value) {
+    setError('رزروی انتخاب نشده است.')
+    return
+  }
+
+  // personnel validation: can't mark all as "didn't receive"
+  if (reservedMeal.value.reserve_type === 'personnel') {
+    const personnelDetails = (reservedMeal.value.details || []).filter(d => d.personnel)
+    const allIds = personnelDetails.map(d => d.id)
+
+    if (allIds.length > 0 && selectedUsers.value.length === allIds.length) {
+      setError('نمیتوان گزینه تحویل نگرفت را برای تمام کاربران درخواست، انتخاب کرد')
+      return
+    }
+  }
+
+  // contractor validation: totals must match received
+  if (reservedMeal.value.reserve_type === 'contractor') {
+    const received = Number(receivedCount.value) || 0
+    const today = Number(todayFoodCount.value) || 0
+    const second = Number(secondFoodReceivedCount.value) || 0
+    const third = Number(thirdFoodReceivedCount.value) || 0
+
+    if (secondFood.value && second <= 0) {
+      setError('برای غذای دوم، تعداد دریافتی را وارد کنید')
+      return
+    }
+
+    if (thirdFood.value && third <= 0) {
+      setError('برای غذای سوم، تعداد دریافتی را وارد کنید')
+      return
+    }
+
+    if (today + second + third !== received) {
+      setError('مجموع دریافتی‌ها باید دقیقاً برابر تعداد دریافتی کل باشد')
+      return
+    }
+  }
+
+  // continue (send api) only if valid
+  pendingState.deliverReservedMeal = true
+
+  try {
+    let payload
+
+    if (reservedMeal.value.reserve_type === 'personnel') {
+      payload = {
+        type: 'personnel',
+        reserved_meal_id: reservedMeal.value.id,
+        ...(selectedUsers.value.length > 0 ? { noDeliveryFor: selectedUsers.value } : {}),
+      }
+    }
+    else if (reservedMeal.value.reserve_type === 'contractor') {
+      payload = {
+        type: 'contractor',
+        reserved_meal_id: reservedMeal.value.id,
+        received_count: receivedCount.value,
+        today_food_count: todayFoodCount.value,
+        ...(secondFood.value ? { second_food: secondFood.value } : {}),
+        ...(secondFood.value ? { second_food_received_count: secondFoodReceivedCount.value } : {}),
+        ...(thirdFood.value ? { third_food: thirdFood.value } : {}),
+        ...(thirdFood.value ? { third_food_received_count: thirdFoodReceivedCount.value } : {}),
+      }
+    }
+    else if (reservedMeal.value.reserve_type === 'guest') {
+      payload = {
+        type: 'guest',
+        reserved_meal_id: reservedMeal.value.id,
+      }
+    }
+
+    const res = await $api('/food/delivery', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage = response._data?.message || 'خطا در ایجاد'
+        }
+      },
+    })
+
+    await fetchReservedMealsOnDate()
+
+    return res
+  }
+  catch (err) {
+    console.error('Error deliver:', err)
+    setError('خطا در ارسال اطلاعات')
+  }
+  finally {
+    pendingState.deliverReservedMeal = false
+    uiState.isDeliveryDialogVisible = false
+    onResetForm()
+  }
+}
+
+const sortedReservedMeals = computed(() =>
+  [...reservedMeals.value].sort((a, b) =>
     String(a?.meal?.name || '').localeCompare(String(b?.meal?.name || '')),
   ),
 )
@@ -138,7 +328,8 @@ onMounted(async () => {
 
   todayDate.value = fmt(jToday)
 
-  await fetchUndeliveredReservedMealsOnDate()
+  await fetchReservedMealsOnDate()
+  await fetchFoods()
 })
 </script>
 
@@ -198,8 +389,8 @@ onMounted(async () => {
             <VCol cols="auto">
               <VBtn
                 color="primary"
-                :loading="pendingState.searchUndeliveredReservedMeal"
-                :disabled="pendingState.searchUndeliveredReservedMeal"
+                :loading="pendingState.searchReservedMeal"
+                :disabled="pendingState.searchReservedMeal"
                 @click="search"
               >
                 جستجو
@@ -212,10 +403,10 @@ onMounted(async () => {
         <div class="ma-3 overflow-auto d-none d-md-block">
           <VCard class="pa-4">
             <label class="font-weight-medium mb-4 d-block text-center">
-              رزروهای تحویل نشده امروز
+              رزروهای امروز
             </label>
 
-            <VTable v-if="!pendingState.fetchingUndeliveredReservedMeals">
+            <VTable v-if="!pendingState.fetchingReservedMeals">
               <thead>
                 <tr>
                   <th>ردیف</th>
@@ -234,7 +425,7 @@ onMounted(async () => {
 
               <tbody>
                 <tr
-                  v-for="(item, index) in sortedReservedMealsForContractor"
+                  v-for="(item, index) in sortedReservedMeals"
                   :key="item.id"
                 >
                   <td>{{ index + 1 }}</td>
@@ -317,7 +508,7 @@ onMounted(async () => {
                     <VBtn
                       color="orange-darken-2"
                       variant="plain"
-                      @click="undeliveredReservedMeal = item; uiState.isDeliveryDialogVisible = true"
+                      @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
                     >
                       <VIcon icon="tabler-circle-dashed-check" size="20" start />
                       تحویل
@@ -336,13 +527,13 @@ onMounted(async () => {
           <VExpansionPanels variant="accordion">
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
-                رزروهای تحویل نشده امروز
+                رزروهای امروز
               </VExpansionPanelTitle>
 
-              <VExpansionPanelText v-if="!pendingState.fetchingUndeliveredReservedMeals">
+              <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="item in sortedReservedMealsForContractor"
+                    v-for="item in sortedReservedMeals"
                     :key="item.id"
                     class="mb-2"
                   >
@@ -423,7 +614,7 @@ onMounted(async () => {
                           <VBtn
                             color="orange-darken-2"
                             variant="plain"
-                            @click="undeliveredReservedMeal = item; uiState.isDeliveryDialogVisible = true"
+                            @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
                           >
                             <VIcon icon="tabler-circle-dashed-check" size="20" start />
                             تحویل
@@ -445,37 +636,53 @@ onMounted(async () => {
 
   <!-- Reserved Meal Delivery Dialog -->
   <VDialog
-    v-if="undeliveredReservedMeal"
+    v-if="reservedMeal"
     :width="$vuetify.display.smAndDown ? 'auto' : 900"
     :model-value="uiState.isDeliveryDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
     <DialogCloseBtn @click="uiState.isDeliveryDialogVisible = false" />
 
-    <VCard v-if="undeliveredReservedMeal">
+    <VCard>
       <VCardTitle class="text-h6">
-        جزئیات
+        تحویل
       </VCardTitle>
+
+      <VCardActions class="justify-end">
+        <VBtn
+          color="primary"
+          variant="tonal"
+          :loading="pendingState.deliverReservedMeal"
+          :disabled="pendingState.deliverReservedMeal || reservedMeal.status"
+          @click="deliver"
+        >
+          ارسال
+        </VBtn>
+      </VCardActions>
 
       <VCardText>
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>رزرو کننده:</strong> {{ undeliveredReservedMeal.created_by ? `${undeliveredReservedMeal.created_by.first_name} ${undeliveredReservedMeal.created_by.last_name}` : '—' }}</p>
+            <p><strong>رزرو کننده:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}</p>
           </VCol>
 
           <VCol cols="12" sm="6">
-            <p><strong>کد پرسنلی:</strong> {{ undeliveredReservedMeal.created_by ? `${undeliveredReservedMeal.created_by.personnel_code}` : '—' }}</p>
+            <p><strong>کد پرسنلی:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}</p>
           </VCol>
         </VRow>
 
+        <VDivider class="my-3" />
+
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>کد تحویل:</strong> {{ undeliveredReservedMeal.delivery_code }}</p>
+            <p><strong>کد تحویل:</strong> {{ reservedMeal.delivery_code }}</p>
           </VCol>
 
           <VCol cols="12" sm="6">
-            <p><strong>وعده:</strong> {{ undeliveredReservedMeal.meal?.name }}</p>
+            <p><strong>وعده:</strong> {{ reservedMeal.meal?.name }}</p>
           </VCol>
+
+          <VDivider class="my-3" />
 
           <VCol cols="12" sm="6">
             <p>
@@ -484,29 +691,42 @@ onMounted(async () => {
                   personnel: 'پرسنل',
                   contractor: 'پیمانکار',
                   guest: 'مهمان',
-                }[undeliveredReservedMeal.reserve_type] || ''
+                }[reservedMeal.reserve_type] || ''
               }}
             </p>
           </VCol>
 
-          <VCol v-if="undeliveredReservedMeal.details?.[0]?.contractor" cols="12" sm="6">
+          <VCol v-if="reservedMeal.details?.[0]?.contractor" cols="12" sm="6">
             <p>
               <strong>پیمانکار:</strong> {{
-                `${undeliveredReservedMeal.details[0].contractor.first_name} ${undeliveredReservedMeal.details[0].contractor.last_name}`
+                `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
+              }}
+            </p>
+          </VCol>
+
+          <VCol v-if="reservedMeal.reserve_type === 'guest'" cols="12" sm="6">
+            <p>
+              <strong>نوع سرو:</strong> {{
+                {
+                  serve_in_kitchen: 'سرو در آشپزخانه',
+                  deliver: 'تحویل',
+                }[reservedMeal.serve_place] || ''
               }}
             </p>
           </VCol>
         </VRow>
 
+        <VDivider class="my-3" />
+
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>وضعیت:</strong> {{ undeliveredReservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}</p>
+            <p><strong>وضعیت:</strong> {{ reservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}</p>
           </VCol>
 
           <VCol cols="12" sm="6">
             <p>
               <strong>تعداد:</strong> {{
-                undeliveredReservedMeal.details?.reduce(
+                reservedMeal.details?.reduce(
                   (sum, detail) => sum + (detail.quantity || 0),
                   0,
                 )
@@ -515,25 +735,130 @@ onMounted(async () => {
           </VCol>
         </VRow>
 
-        <VRow>
-          <VCol v-if="undeliveredReservedMeal.details?.[0]?.contractor" cols="12" sm="6">
-            <p>
-              <strong>پیمانکار:</strong> {{
-                `${undeliveredReservedMeal.details[0].contractor.first_name} ${undeliveredReservedMeal.details[0].contractor.last_name}`
-              }}
-            </p>
-          </VCol>
-        </VRow>
+        <VDivider class="my-3" />
 
         <VRow>
-          <VCol v-if="undeliveredReservedMeal.description" cols="12" sm="12">
+          <VCol v-if="reservedMeal.description" cols="12" sm="12">
             <p style="white-space: normal; overflow-wrap: anywhere;">
-              <strong>توضیحات:</strong> {{ undeliveredReservedMeal.description }}
+              <strong>توضیحات:</strong> {{ reservedMeal.description }}
             </p>
           </VCol>
         </VRow>
 
         <VDivider class="my-3" />
+
+        <!-- Show personnel list for personnel reservation -->
+        <div v-if="reservedMeal.reserve_type === 'personnel'">
+          <VTable density="comfortable">
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>نام</th>
+                <th>کد پرسنلی</th>
+                <th>تحویل نگرفت</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="(d, index) in (reservedMeal.details || []).filter(x => x.personnel)"
+                :key="d.id"
+              >
+                <td>{{ index + 1 }}</td>
+                <td>{{ `${d.personnel.first_name} ${d.personnel.last_name}` }}</td>
+                <td>{{ d.personnel.personnel_code }}</td>
+                <td>
+                  <VCheckbox
+                    v-if="!reservedMeal.status"
+                    v-model="selectedUsers"
+                    :value="d.id"
+                    hide-details
+                    color="red"
+                  />
+                  <VIcon v-if="reservedMeal.status && !d.delivery_status" icon="tabler-square-check" />
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </div>
+
+        <!-- Show select and quantity options for contractor reservation -->
+        <div v-if="reservedMeal.reserve_type === 'contractor'">
+          <VContainer>
+            <VRow>
+              <VCol>
+                <h5>تعداد دریافتی کل</h5>
+
+                <VNumberInput
+                  v-model="receivedCount"
+                  :min="1"
+                  :max="maxCount"
+                />
+              </VCol>
+              <VCol>
+                <h5>غذای روز</h5>
+
+                <VNumberInput
+                  v-model="todayFoodCount"
+                  :min="1"
+                  :max="receivedCount"
+                />
+              </VCol>
+            </VRow>
+
+            <VRow v-if="remainingAfterToday > 0">
+              <VCol cols="12" md="12">
+                <VSelect
+                  v-model="secondFood"
+                  :items="foods"
+                  item-title="name"
+                  item-value="id"
+                  label="غذای دوم"
+                  variant="outlined"
+                  clearable
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol v-if="secondFood">
+                <h5>تعداد دریافتی</h5>
+
+                <VNumberInput
+                  v-model="secondFoodReceivedCount"
+                  :min="1"
+                  :max="remainingAfterToday"
+                />
+              </VCol>
+            </VRow>
+
+            <VRow v-if="secondFood && remainingAfterSecond > 0">
+              <VCol cols="12" md="12">
+                <VSelect
+                  v-model="thirdFood"
+                  :items="foods.filter(f => f.id !== secondFood)"
+                  item-title="name"
+                  item-value="id"
+                  label="غذای سوم"
+                  variant="outlined"
+                  clearable
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol v-if="thirdFood">
+                <h5>تعداد دریافتی</h5>
+
+                <VNumberInput
+                  v-model="thirdFoodReceivedCount"
+                  :min="1"
+                  :max="remainingAfterSecond"
+                />
+              </VCol>
+            </VRow>
+          </VContainer>
+        </div>
+
+        <VDivider v-if="reservedMeal.reserve_type !== 'guest'" class="my-3" />
       </VCardText>
     </VCard>
   </VDialog>
