@@ -186,11 +186,7 @@ function dialogModelValueUpdate(val) {
                 :no-filter="true"
                 @keydown.capture="guardBackspace"
               >
-                <template #selection="{ index }">
-                  <span v-if="index === 0">
-                    {{ selectedUsers.length }} کاربر انتخاب شده
-                  </span>
-                </template>
+                <template #selection />
 
                 <template #item="{ props, item }">
                   <VListItem
