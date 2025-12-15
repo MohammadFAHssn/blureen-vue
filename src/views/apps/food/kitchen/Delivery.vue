@@ -268,6 +268,7 @@ async function deliver() {
     else if (reservedMeal.value.reserve_type === 'contractor') {
       payload = {
         type: 'contractor',
+        contractor: reservedMeal.value.details[0].contractor.id,
         reserved_meal_id: reservedMeal.value.id,
         received_count: receivedCount.value,
         today_food_count: todayFoodCount.value,
@@ -784,7 +785,7 @@ onMounted(async () => {
 
         <!-- Show select and quantity options for contractor reservation -->
         <div v-if="reservedMeal.reserve_type === 'contractor'">
-          <VContainer>
+          <VContainer v-if="!reservedMeal.status">
             <VRow>
               <VCol>
                 <h5>تعداد دریافتی کل</h5>
@@ -858,7 +859,7 @@ onMounted(async () => {
           </VContainer>
         </div>
 
-        <VDivider v-if="reservedMeal.reserve_type !== 'guest'" class="my-3" />
+        <VDivider v-if="reservedMeal.reserve_type !== 'guest' && (reservedMeal.reserve_type === 'contractor' && !reservedMeal.status)" class="my-3" />
       </VCardText>
     </VCard>
   </VDialog>
