@@ -1,17 +1,19 @@
 <script setup>
 import jalaali from 'jalaali-js'
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  isDeleteDialogVisible: false,
+  isDetailsDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingReservedMeals: false,
   fetchingMeals: false,
   reserveMeal: false,
-  editReservedMeal: false,
   deleteReservedMeal: false,
 })
 
@@ -26,6 +28,7 @@ const reservedMealsForYou = ref([])
 
 const selectedPersonnel = ref([])
 const selectedMeal = ref(null)
+const selectedReservedMeal = ref(null)
 
 const reservationType = ref(null)
 
@@ -113,6 +116,50 @@ async function submit() {
   finally {
     pendingState.reserveMeal = false
   }
+}
+
+function onClickDelete(reserv) {
+  selectedReservedMeal.value = reserv
+  uiState.isDeleteDialogVisible = true
+}
+async function onConfirmDelete() {
+  pendingState.deleteReservedMeal = true
+
+  try {
+    const res = await $api(`/food/meal-reservation/${selectedReservedMeal.value.id}`, {
+      method: 'DELETE',
+      onResponseError({ response }) {
+        setError(response._data?.message || 'خطا در حذف رزرو')
+      },
+    })
+
+    if (uiState.hasError)
+      return
+
+    uiState.isDeleteDialogVisible = false
+
+    if (res?.data) {
+      reservedMealsByYou.value = reservedMealsByYou.value.filter(
+        reserv => reserv.id !== selectedReservedMeal.value.id,
+      )
+    }
+
+    if (!res?.data) {
+      setError('نمیتوان رزرو تحویل شده را حذف کرد')
+      fetchReservedMealsForDateByUser()
+    }
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.deleteReservedMeal = false
+  }
+}
+
+function onClickDetail(reserv) {
+  selectedReservedMeal.value = reserv
+  uiState.isDetailsDialogVisible = true
 }
 
 async function fetchReservedMealsForDateByUser() {
@@ -204,6 +251,37 @@ function onChange() {
   }
   else {
     fetchReservedMealsForDateForUser()
+  }
+}
+
+// dialog related methods
+function dialogModelValueUpdate(val) {
+  uiState.isDetailsDialogVisible = val
+}
+
+async function deletePersonnel(id) {
+  try {
+    const res = await $api(`/food/meal-reservation-detail/${id}`, {
+      method: 'DELETE',
+      onResponseError({ response }) {
+        setError(response._data.message || 'خطا در حذف')
+      },
+    })
+
+    if (res?.data) {
+      selectedReservedMeal.value.details = selectedReservedMeal.value.details.filter(
+        detail => detail.id !== id,
+      )
+    }
+
+    if (!res?.data) {
+      setError('نمیتوان پرسنل رزرو تحویل شده را حذف کرد')
+      uiState.isDetailsDialogVisible = false
+      fetchReservedMealsForDateByUser()
+    }
+  }
+  catch (err) {
+    console.error(err)
   }
 }
 
@@ -406,13 +484,10 @@ onMounted(async () => {
                   </td>
 
                   <td>
-                    <VBtn color="orange" variant="text" size="small">
-                      <VIcon icon="tabler-edit" size="20" />
-                    </VBtn>
-                    <VBtn color="red" variant="text" size="small">
+                    <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
                       <VIcon icon="tabler-trash" size="20" />
                     </VBtn>
-                    <VBtn color="primary" variant="text" size="small">
+                    <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
                       <VIcon icon="tabler-file-description" size="20" />
                     </VBtn>
                   </td>
@@ -526,13 +601,10 @@ onMounted(async () => {
                           }}
                         </div>
                         <div class="mt-2 text-center">
-                          <VBtn color="orange" variant="text" size="small">
-                            <VIcon icon="tabler-edit" size="20" />
-                          </VBtn>
-                          <VBtn color="red" variant="text" size="small">
+                          <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
                             <VIcon icon="tabler-trash" size="20" />
                           </VBtn>
-                          <VBtn color="primary" variant="text" size="small">
+                          <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
                             <VIcon icon="tabler-file-description" size="20" />
                           </VBtn>
                         </div>
@@ -602,4 +674,161 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </VContainer>
+
+  <!-- Delete Meal Reservation Dialog -->
+  <AreYouSureDialog
+    v-if="uiState.isDeleteDialogVisible"
+    v-model:is-dialog-visible="uiState.isDeleteDialogVisible"
+    title="آیا از حذف این رزرو اطمینان دارید؟"
+    :loading="pendingState.deleteReservedMeal"
+    @confirm="onConfirmDelete"
+  />
+
+  <!-- Reserved Meal Detail Dialog -->
+  <VDialog
+    v-if="selectedReservedMeal"
+    :width="$vuetify.display.smAndDown ? 'auto' : 900"
+    :model-value="uiState.isDetailsDialogVisible"
+    @update:model-value="dialogModelValueUpdate"
+  >
+    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+
+    <VCard>
+      <VCardTitle class="text-h6">
+        جزئیات
+      </VCardTitle>
+
+      <VCardText>
+        <VRow>
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>رزرو کننده:</strong>
+              <VChip color="orange" size="small">
+                {{ selectedReservedMeal.created_by ? `${selectedReservedMeal.created_by.first_name} ${selectedReservedMeal.created_by.last_name}` : '—' }}
+              </VChip>
+            </p>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>کد پرسنلی:</strong>
+              <VChip color="orange" size="small">
+                {{ selectedReservedMeal.created_by ? `${selectedReservedMeal.created_by.personnel_code}` : '—' }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VRow>
+          <VCol cols="12" sm="6">
+            <strong>کد تحویل:</strong>
+            <VChip color="primary" size="small">
+              {{ selectedReservedMeal.delivery_code }}
+            </VChip>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>وعده:</strong>
+              <VChip color="primary" size="small">
+                {{ selectedReservedMeal.meal?.name }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VRow>
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>وضعیت:</strong>
+              <VChip :color="selectedReservedMeal.status ? 'success' : 'error'" size="small">
+                {{ selectedReservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}
+              </VChip>
+            </p>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>تعداد:</strong>
+              <VChip color="primary" size="small">
+                {{
+                  selectedReservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  )
+                }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VDivider class="my-3" />
+
+        <div>
+          <VTable density="comfortable">
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>نام</th>
+                <th>کد پرسنلی</th>
+                <th
+                  v-if="!selectedReservedMeal.status && selectedReservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  ) > 1"
+                >
+                  عملیات
+                </th>
+                <th v-if="selectedReservedMeal.status">
+                  وضعیت
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="(d, index) in (selectedReservedMeal.details || []).filter(x => x.personnel)"
+                :key="d.id"
+              >
+                <td>{{ index + 1 }}</td>
+                <td>
+                  <VChip>
+                    {{ `${d.personnel.first_name} ${d.personnel.last_name}` }}
+                  </VChip>
+                </td>
+                <td>
+                  <VChip>
+                    {{ d.personnel.personnel_code }}
+                  </VChip>
+                </td>
+                <td
+                  v-if="!selectedReservedMeal.status && selectedReservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  ) > 1"
+                >
+                  <VBtn color="red" variant="text" size="small" @click="deletePersonnel(d.id)">
+                    <VIcon icon="tabler-trash" size="20" />
+                  </VBtn>
+                </td>
+                <td v-if="selectedReservedMeal.status">
+                  <VChip :color="d.delivery_status ? 'success' : 'error'" size="small">
+                    {{ d.delivery_status ? 'تحویل شده' : 'تحویل نشده' }}
+                  </VChip>
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </div>
+
+        <VDivider class="my-3" />
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>
