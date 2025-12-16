@@ -754,7 +754,7 @@ onMounted(async () => {
           <VCol cols="12" sm="6">
             <p>
               <strong>تعداد:</strong>
-              <VChip color="primary" size="small">
+              <VChip size="small">
                 {{
                   selectedReservedMeal.details?.reduce(
                     (sum, detail) => sum + (detail.quantity || 0),
