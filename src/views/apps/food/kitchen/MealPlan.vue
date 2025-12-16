@@ -1,6 +1,7 @@
 <script setup>
 import jalaali from 'jalaali-js'
 import { ref } from 'vue'
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 // تعریف emit
 const emit = defineEmits(['back'])
@@ -11,13 +12,13 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  isDeleteDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingPlans: false,
   fetchingMeals: false,
   fetchingFoods: false,
   createPlan: false,
-  editPlan: false,
   deletePlan: false,
 })
 
@@ -31,6 +32,14 @@ const jdate = ref({ jy: null, jm: null, jd: null })
 // choose
 const selectedMeal = ref(null)
 const selectedFood = ref(null)
+const selectedMealPlan = ref(null)
+
+// helper methods
+// error showcase
+function setError(message) {
+  uiState.hasError = true
+  uiState.errorMessage = message
+}
 
 // methods
 function goBack() {
@@ -89,6 +98,49 @@ async function submit() {
     pendingState.createPlan = false
     selectedFood.value = null
     selectedMeal.value = null
+  }
+}
+
+function onClickDelete(mealPlan) {
+  selectedMealPlan.value = mealPlan
+  uiState.isDeleteDialogVisible = true
+}
+async function onConfirmDelete() {
+  const [year, month, day] = planDate.value.split('/').map(Number)
+  const selectedKey = year * 10000 + month * 100 + day
+  const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
+
+  if (selectedKey < todayKey) {
+    setError('نمیتوان برنامه غذایی گذشته را حذف کرد')
+    uiState.isDeleteDialogVisible = false
+    return
+  }
+  pendingState.deletePlan = true
+
+  try {
+    const res = await $api(`/food/meal-plan/${selectedMealPlan.value.id}`, {
+      method: 'DELETE',
+      onResponseError({ response }) {
+        setError(response._data?.message || 'خطا در حذف')
+      },
+    })
+
+    if (uiState.hasError)
+      return
+
+    uiState.isDeleteDialogVisible = false
+
+    if (res?.data) {
+      plans.value = plans.value.filter(
+        plan => plan.id !== selectedMealPlan.value.id,
+      )
+    }
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.deletePlan = false
   }
 }
 
@@ -255,60 +307,6 @@ onMounted(async () => {
           </VRow>
         </VCard>
 
-        <!-- برای دسکتاپ -->
-        <!-- <div class="ma-3 overflow-auto d-none d-md-block">
-          <VCard class="pa-4">
-            <label class="font-weight-medium mb-4 d-block text-center">
-              برنامه غذایی تاریخ انتخاب شده
-            </label>
-
-            <VTable v-if="!pendingState.fetchingPlans">
-              <thead>
-                <tr>
-                  <th>ردیف</th>
-                  <th>وعده</th>
-                  <th>غذا</th>
-                  <th>ایجاد شده توسط</th>
-                  <th>آخرین ویرایش توسط</th>
-                  <th>عملیات</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in plans" :key="index">
-                  <td>{{ index + 1 }}</td>
-                  <td>
-                    <VChip dark>
-                      {{ item.meal.name }}
-                    </VChip>
-                  </td>
-                  <td>
-                    <VChip dark>
-                      {{ item.food.name }}
-                    </VChip>
-                  </td>
-                  <td>
-                    <VChip>
-                      {{ item.createdBy ? `${item.createdBy.fullName} - ${item.createdBy.username}` : '—' }}
-                    </VChip>
-                  </td>
-                  <td>
-                    <VChip>
-                      {{ item.editedBy ? `${item.editedBy.fullName} - ${item.editedBy.username}` : '—' }}
-                    </VChip>
-                  </td>
-                  <td>
-                    <VBtn color="orange" variant="text" size="small">
-                      <VIcon icon="tabler-edit" size="20" />
-                    </VBtn>
-                  </td>
-                </tr>
-              </tbody>
-            </VTable>
-            <VSkeletonLoader v-else type="card" />
-          </VCard>
-        </div> -->
-
-        <!-- برای موبایل -->
         <div class="pa-3">
           <VExpansionPanels variant="accordion">
             <VExpansionPanel>
@@ -337,8 +335,8 @@ onMounted(async () => {
                         <div><strong>ایجاد شده توسط:</strong> {{ item.createdBy ? `${item.createdBy.fullName} - ${item.createdBy.username}` : '—' }}</div>
                         <div><strong>آخرین ویرایش توسط:</strong> {{ item.editedBy ? `${item.editedBy.fullName} - ${item.editedBy.username}` : '—' }}</div>
                         <div class="mt-2 text-center">
-                          <VBtn color="orange" variant="text" size="small">
-                            <VIcon icon="tabler-edit" size="20" />
+                          <VBtn color="orange" variant="text" size="small" @click="onClickDelete(item)">
+                            <VIcon icon="tabler-trash" size="20" />
                           </VBtn>
                         </div>
                       </div>
@@ -353,4 +351,13 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </VContainer>
+
+  <!-- Delete Meal Plan Dialog -->
+  <AreYouSureDialog
+    v-if="uiState.isDeleteDialogVisible"
+    v-model:is-dialog-visible="uiState.isDeleteDialogVisible"
+    title="آیا از حذف این برنامه غذایی اطمینان دارید؟"
+    :loading="pendingState.deletePlan"
+    @confirm="onConfirmDelete"
+  />
 </template>
