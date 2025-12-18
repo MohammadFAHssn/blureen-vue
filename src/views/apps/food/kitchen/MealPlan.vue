@@ -1,7 +1,6 @@
 <script setup>
 import jalaali from 'jalaali-js'
 import { ref } from 'vue'
-import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 // تعریف emit
 const emit = defineEmits(['back'])
@@ -12,14 +11,14 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isDeleteDialogVisible: false,
+  isEditDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingPlans: false,
   fetchingMeals: false,
   fetchingFoods: false,
   createPlan: false,
-  deletePlan: false,
+  editPlan: false,
 })
 
 // data
@@ -32,7 +31,11 @@ const jdate = ref({ jy: null, jm: null, jd: null })
 // choose
 const selectedMeal = ref(null)
 const selectedFood = ref(null)
+const selectedFoodEdit = ref(null)
 const selectedMealPlan = ref(null)
+
+// form
+const refVForm = ref()
 
 // helper methods
 // error showcase
@@ -51,6 +54,17 @@ function goBack() {
   }
 }
 
+function dialogModelValueUpdate(val) {
+  uiState.isEditDialogVisible = val
+  onResetForm()
+}
+
+function onResetForm() {
+  selectedMealPlan.value = null
+  selectedFood.value = null
+  selectedFoodEdit.value = null
+}
+
 async function submit() {
   pendingState.createPlan = true
   try {
@@ -60,8 +74,7 @@ async function submit() {
     const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
 
     if (selectedKey < todayKey) {
-      uiState.hasError = true
-      uiState.errorMessage = 'لطفا تاریخ درست انتخاب کنید.'
+      setError('نمیتوان برای گذشته برنامه غذایی ثبت کرد.')
       return
     }
 
@@ -76,13 +89,12 @@ async function submit() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
       onResponseError({ response }) {
-        uiState.hasError = true
         if (response._data?.errors) {
           const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
+          setError(errors || 'خطا در ایجاد.')
         }
         else {
-          uiState.errorMessage = response._data?.message || 'خطا در ایجاد'
+          setError(response._data?.message || 'خطا در ایجاد')
         }
       },
     })
@@ -101,46 +113,67 @@ async function submit() {
   }
 }
 
-function onClickDelete(mealPlan) {
-  selectedMealPlan.value = mealPlan
-  uiState.isDeleteDialogVisible = true
-}
-async function onConfirmDelete() {
+function onClickEdit(mealPlan) {
   const [year, month, day] = planDate.value.split('/').map(Number)
   const selectedKey = year * 10000 + month * 100 + day
   const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
 
   if (selectedKey < todayKey) {
-    setError('نمیتوان برنامه غذایی گذشته را حذف کرد')
-    uiState.isDeleteDialogVisible = false
+    setError('نمیتوان برنامه غذایی گذشته را ویرایش کرد.')
+    uiState.isEditDialogVisible = false
     return
   }
-  pendingState.deletePlan = true
+  selectedMealPlan.value = mealPlan
+  selectedFoodEdit.value = mealPlan.food.id
+  uiState.isEditDialogVisible = true
+}
+async function onConfirmEditMeal() {
+  const [year, month, day] = planDate.value.split('/').map(Number)
+  const selectedKey = year * 10000 + month * 100 + day
+  const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
+
+  if (selectedKey < todayKey) {
+    setError('نمیتوان برنامه غذایی گذشته را ویرایش کرد.')
+    uiState.isEditDialogVisible = false
+    return
+  }
+  const result = await refVForm.value?.validate()
+  const isValid = result?.valid
+  if (!isValid)
+    return
+
+  pendingState.editPlan = true
+
+  const formData = new FormData()
+  formData.append('food_id', selectedFoodEdit.value)
+  formData.append('date', planDate.value)
 
   try {
     const res = await $api(`/food/meal-plan/${selectedMealPlan.value.id}`, {
-      method: 'DELETE',
+      method: 'POST',
+      body: formData,
       onResponseError({ response }) {
-        setError(response._data?.message || 'خطا در حذف')
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          setError(errors || 'خطا در ویرایش')
+        }
+        else {
+          setError(response._data?.message || 'خطا در ویرایش')
+        }
       },
     })
-
-    if (uiState.hasError)
-      return
-
-    uiState.isDeleteDialogVisible = false
-
-    if (res?.data) {
-      plans.value = plans.value.filter(
-        plan => plan.id !== selectedMealPlan.value.id,
-      )
+    const updatedMealPlan = res.data
+    if (!uiState.hasError && updatedMealPlan) {
+      uiState.isEditDialogVisible = false
+      onResetForm()
+      fetchPlansForDate()
     }
   }
   catch (err) {
     console.error(err)
   }
   finally {
-    pendingState.deletePlan = false
+    pendingState.editPlan = false
   }
 }
 
@@ -177,8 +210,7 @@ async function fetchMeals() {
   }
   catch (e) {
     console.error('Error fetching meals:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت وعده‌ها'
+    setError(e.message || 'خطا در دریافت وعده‌ها')
   }
   finally {
     pendingState.fetchingMeals = false
@@ -194,8 +226,7 @@ async function fetchFoods() {
   }
   catch (e) {
     console.error('Error fetching foods:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت غذاها'
+    setError(e.message || 'خطا در دریافت غذاها')
   }
   finally {
     pendingState.fetchingFoods = false
@@ -335,8 +366,8 @@ onMounted(async () => {
                         <div><strong>ایجاد شده توسط:</strong> {{ item.createdBy ? `${item.createdBy.fullName} - ${item.createdBy.username}` : '—' }}</div>
                         <div><strong>آخرین ویرایش توسط:</strong> {{ item.editedBy ? `${item.editedBy.fullName} - ${item.editedBy.username}` : '—' }}</div>
                         <div class="mt-2 text-center">
-                          <VBtn color="orange" variant="text" size="small" @click="onClickDelete(item)">
-                            <VIcon icon="tabler-trash" size="20" />
+                          <VBtn color="orange" variant="text" size="small" @click="onClickEdit(item)">
+                            <VIcon icon="tabler-edit" size="20" />
                           </VBtn>
                         </div>
                       </div>
@@ -352,12 +383,51 @@ onMounted(async () => {
     </VRow>
   </VContainer>
 
-  <!-- Delete Meal Plan Dialog -->
-  <AreYouSureDialog
-    v-if="uiState.isDeleteDialogVisible"
-    v-model:is-dialog-visible="uiState.isDeleteDialogVisible"
-    title="آیا از حذف این برنامه غذایی اطمینان دارید؟"
-    :loading="pendingState.deletePlan"
-    @confirm="onConfirmDelete"
-  />
+  <!-- Edit Meal Plan Dialog -->
+  <VDialog
+    :width="$vuetify.display.smAndDown ? 'auto' : 450"
+    :model-value="uiState.isEditDialogVisible"
+    @update:model-value="dialogModelValueUpdate"
+  >
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
+
+    <VCard>
+      <VCardText>
+        <h4 class="text-h5 text-center mb-2">
+          ویرایش برنامه غذایی:
+        </h4>
+
+        <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onConfirmEditMeal">
+          <VRow>
+            <!-- Food -->
+            <VCol cols="12" md="12">
+              <VInput :disabled="pendingState.editPlan">
+                <VSelect
+                  v-model="selectedFoodEdit"
+                  :items="foods"
+                  item-title="name"
+                  item-value="id"
+                  label="غذا"
+                  variant="outlined"
+                  clearable
+                  :rules="[requiredValidator]"
+                />
+              </VInput>
+            </VCol>
+
+            <!-- Submit / Cancel -->
+            <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
+              <VBtn type="submit" :disabled="pendingState.editPlan" :loading="pendingState.editPlan">
+                ذخیره
+              </VBtn>
+
+              <VBtn color="secondary" variant="tonal" @click="dialogModelValueUpdate(false)">
+                انصراف
+              </VBtn>
+            </VCol>
+          </VRow>
+        </VForm>
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>
