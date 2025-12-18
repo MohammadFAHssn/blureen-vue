@@ -265,5 +265,5 @@ function dialogModelValueUpdate(val) {
     </VCard>
   </VDialog>
 
-  <SelectUserDialog v-model:is-dialog-visible="uiState.isSelectUserDialogOpen" />
+  <SelectUserDialog v-model:is-dialog-visible="uiState.isSelectUserDialogOpen" :users="props.users" />
 </template>

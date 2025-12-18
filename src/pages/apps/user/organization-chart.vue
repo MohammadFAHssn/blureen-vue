@@ -99,9 +99,9 @@ async function fetchUsers() {
       createUrl('/base/user', {
         query: {
           'fields[users]': 'id,first_name,last_name,personnel_code',
-          'fields[profiles]': 'id,user_id,work_area_id,cost_center_id',
+          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
           'filter[active]': '1',
-          'include': 'profile.workArea,profile.costCenter,avatar',
+          'include': 'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition,avatar',
         },
       }).value,
     )
