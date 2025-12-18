@@ -1,5 +1,6 @@
 <script setup>
 import Fuse from 'fuse.js'
+import SelectUserDialog from './SelectUserDialog.vue'
 
 const props = defineProps({
   isDialogVisible: {
@@ -27,6 +28,11 @@ const emit = defineEmits(['add', 'update:isDialogVisible'])
 
 const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 
+// ----- states -----
+const uiState = reactive({
+  isSelectUserDialogOpen: false,
+})
+
 const orgUnits = ref(props.orgUnits)
 
 const selectedOrgPosition = ref(null)
@@ -34,6 +40,8 @@ const selectedOrgUnit = ref(null)
 const selectedUsers = ref([])
 
 const userSearchQuery = ref('')
+
+// ----- -----
 
 const fuse = computed(() => {
   const usersWithSearchFields = props.users.map(user => ({
@@ -201,6 +209,17 @@ function dialogModelValueUpdate(val) {
                     } ${item?.raw?.profile?.cost_center?.name || ''}`"
                   />
                 </template>
+
+                <template #append>
+                  <VBtn
+                    variant="outlined"
+                    color="secondary"
+                    class="border"
+                    @click="uiState.isSelectUserDialogOpen = true"
+                  >
+                    <VIcon icon="tabler-users" size="25" />
+                  </VBtn>
+                </template>
               </VAutocomplete>
             </VCol>
           </VRow>
@@ -245,4 +264,6 @@ function dialogModelValueUpdate(val) {
       </VCardText>
     </VCard>
   </VDialog>
+
+  <SelectUserDialog v-model:is-dialog-visible="uiState.isSelectUserDialogOpen" />
 </template>
