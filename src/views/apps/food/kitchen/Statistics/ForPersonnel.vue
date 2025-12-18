@@ -6,6 +6,7 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  isDetailsDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingReservedMeals: true,
@@ -14,7 +15,7 @@ const pendingState = reactive({
 })
 
 const reserveDates = ref([])
-
+const selectedReservedMeal = ref(null)
 const reservedMeals = ref([])
 
 // helper methods
@@ -25,6 +26,16 @@ function setError(message) {
 }
 
 // methods
+// dialog related methods
+function dialogModelValueUpdate(val) {
+  uiState.isDetailsDialogVisible = val
+}
+
+function onClickDetail(reserv) {
+  selectedReservedMeal.value = reserv
+  uiState.isDetailsDialogVisible = true
+}
+
 async function fetchAllReservedMealsForDate() {
   reservedMeals.value = []
   pendingState.fetchingReservedMeals = true
@@ -167,6 +178,7 @@ onMounted(async () => {
                   <th>کد تحویل</th>
                   <th>وضعیت</th>
                   <th>تعداد</th>
+                  <th>عملیات</th>
                 </tr>
               </thead>
 
@@ -207,6 +219,12 @@ onMounted(async () => {
                         0,
                       )
                     }}
+                  </td>
+
+                  <td>
+                    <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
+                      <VIcon icon="tabler-file-description" size="20" />
+                    </VBtn>
                   </td>
                 </tr>
               </tbody>
@@ -316,6 +334,12 @@ onMounted(async () => {
                         }}
                       </span>
                     </div>
+
+                    <div class="mt-2 text-center">
+                      <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
+                        <VIcon icon="tabler-file-description" size="20" />
+                      </VBtn>
+                    </div>
                   </div>
                 </VExpansionPanelText>
               </VExpansionPanel>
@@ -325,4 +349,134 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </VContainer>
+
+  <!-- Reserved Meal Detail Dialog -->
+  <VDialog
+    v-if="selectedReservedMeal"
+    :width="$vuetify.display.smAndDown ? 'auto' : 900"
+    :model-value="uiState.isDetailsDialogVisible"
+    @update:model-value="dialogModelValueUpdate"
+  >
+    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+
+    <VCard>
+      <VCardTitle class="text-h6">
+        جزئیات
+      </VCardTitle>
+
+      <VCardText>
+        <VRow>
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>رزرو کننده:</strong>
+              <VChip color="orange" size="small">
+                {{ selectedReservedMeal.created_by ? `${selectedReservedMeal.created_by.first_name} ${selectedReservedMeal.created_by.last_name}` : '—' }}
+              </VChip>
+            </p>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>کد پرسنلی:</strong>
+              <VChip color="orange" size="small">
+                {{ selectedReservedMeal.created_by ? `${selectedReservedMeal.created_by.personnel_code}` : '—' }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VRow>
+          <VCol cols="12" sm="6">
+            <strong>کد تحویل:</strong>
+            <VChip color="primary" size="small">
+              {{ selectedReservedMeal.delivery_code }}
+            </VChip>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>وعده:</strong>
+              <VChip color="primary" size="small">
+                {{ selectedReservedMeal.meal?.name }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VRow>
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>وضعیت:</strong>
+              <VChip :color="selectedReservedMeal.status ? 'success' : 'error'" size="small">
+                {{ selectedReservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}
+              </VChip>
+            </p>
+          </VCol>
+
+          <VCol cols="12" sm="6">
+            <p>
+              <strong>تعداد:</strong>
+              <VChip size="small">
+                {{
+                  selectedReservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  )
+                }}
+              </VChip>
+            </p>
+          </VCol>
+        </VRow>
+
+        <VDivider class="my-3" />
+
+        <VDivider class="my-3" />
+
+        <div>
+          <VTable density="comfortable">
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>نام</th>
+                <th>کد پرسنلی</th>
+                <th>
+                  وضعیت
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="(d, index) in (selectedReservedMeal.details || []).filter(x => x.personnel)"
+                :key="d.id"
+              >
+                <td>{{ index + 1 }}</td>
+                <td>
+                  <VChip>
+                    {{ `${d.personnel.first_name} ${d.personnel.last_name}` }}
+                  </VChip>
+                </td>
+                <td>
+                  <VChip>
+                    {{ d.personnel.personnel_code }}
+                  </VChip>
+                </td>
+                <td>
+                  <VChip :color="d.delivery_status ? 'success' : 'error'" size="small">
+                    {{ d.delivery_status ? 'تحویل شده' : 'تحویل نشده' }}
+                  </VChip>
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </div>
+
+        <VDivider class="my-3" />
+      </VCardText>
+    </VCard>
+  </VDialog>
 </template>
