@@ -25,6 +25,8 @@ const props = defineProps({
 
 const emit = defineEmits(['add', 'update:isDialogVisible'])
 
+const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
+
 const orgUnits = ref(props.orgUnits)
 
 const selectedOrgPosition = ref(null)
@@ -102,6 +104,10 @@ function onOrgUnitComboboxUpdate(selectedItem) {
   }
 }
 
+function removeUser(userId) {
+  selectedUsers.value = selectedUsers.value.filter(user => user.id !== userId)
+}
+
 function onFormSubmit() {
   if (typeof selectedOrgUnit.value === 'string') {
     const name = selectedOrgUnit.value.trim()
@@ -142,7 +148,6 @@ function dialogModelValueUpdate(val) {
         <h6 class="text-h6 text-center mb-6">
           افزودن گره جدید
         </h6>
-
         <!-- 👉 Form -->
         <VForm @submit.prevent="onFormSubmit">
           <VRow>
@@ -156,7 +161,6 @@ function dialogModelValueUpdate(val) {
                 item-value="id"
               />
             </VCol>
-
             <!-- 👉 Org unit -->
             <VCol cols="12" md="6">
               <VCombobox
@@ -168,7 +172,6 @@ function dialogModelValueUpdate(val) {
                 @update:model-value="onOrgUnitComboboxUpdate"
               />
             </VCol>
-
             <VCol cols="12">
               <VAutocomplete
                 v-model="selectedUsers"
@@ -182,8 +185,8 @@ function dialogModelValueUpdate(val) {
                 clearable
                 item-value="id"
                 label="کاربران"
-                clear-on-select
                 :no-filter="true"
+                return-object
                 @keydown.capture="guardBackspace"
               >
                 <template #selection />
@@ -191,7 +194,7 @@ function dialogModelValueUpdate(val) {
                 <template #item="{ props, item }">
                   <VListItem
                     v-bind="props"
-                    :prepend-avatar="item?.raw?.avatar"
+                    :prepend-avatar="`${storageBaseUrl}/${item?.raw?.avatar?.path}`"
                     :title="`${item?.raw?.first_name} ${item?.raw?.last_name} (${item?.raw?.personnel_code})`"
                     :subtitle="`${item?.raw?.profile?.work_area?.name || ''} ${
                       item?.raw?.profile?.work_area?.name ? '&larr;' : ''
@@ -200,8 +203,34 @@ function dialogModelValueUpdate(val) {
                 </template>
               </VAutocomplete>
             </VCol>
+          </VRow>
 
-            <!-- 👉 Submit and Cancel -->
+          <VRow>
+            <VCol cols="12">
+              <v-chip
+                v-for="selectedUser in selectedUsers"
+                v-bind="props"
+                :key="selectedUser.id"
+                link
+                pill
+                closable
+                variant="outlined"
+                size="x-large"
+                class="ml-3 mb-3"
+                @click:close="removeUser(selectedUser.id)"
+              >
+                <VAvatar
+                  start
+                  size="40"
+                  :image="`${storageBaseUrl}/${selectedUser.avatar?.path}`"
+                />
+                {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+              </v-chip>
+            </VCol>
+          </VRow>
+
+          <!-- 👉 Submit and Cancel -->
+          <VRow>
             <VCol cols="12" class="d-flex justify-center gap-4">
               <VBtn type="submit">
                 افزودن

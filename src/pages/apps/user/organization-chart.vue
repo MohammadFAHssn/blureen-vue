@@ -101,7 +101,7 @@ async function fetchUsers() {
           'fields[users]': 'id,first_name,last_name,personnel_code',
           'fields[profiles]': 'id,user_id,work_area_id,cost_center_id',
           'filter[active]': '1',
-          'include': 'profile.workArea,profile.costCenter',
+          'include': 'profile.workArea,profile.costCenter,avatar',
         },
       }).value,
     )
