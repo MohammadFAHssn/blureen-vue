@@ -82,7 +82,7 @@ async function submit() {
   }
 
   try {
-    const _res = await $api('/food/meal-reservation', {
+    const res = await $api('/food/meal-reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -98,8 +98,39 @@ async function submit() {
       },
     })
 
-    uiState.success = true
-    uiState.successMessage = 'رزرو با موفقیت انجام شد.'
+    const skipped = (res?.data || []).flatMap(item => item?.skippedPersonnel || [])
+    const createdCounts = (res?.data || []).reduce((sum, item) => sum + ((item?.createdPersonnel || []).length), 0)
+
+    // group: full_name -> Set(dates)
+    const skippedMap = new Map()
+    for (const s of skipped) {
+      const name = s?.full_name
+      const date = s?.date
+      if (!name || !date) continue
+
+      const normalizedDate = String(date).replaceAll('\\/', '/')
+      if (!skippedMap.has(name)) skippedMap.set(name, new Set())
+      skippedMap.get(name).add(normalizedDate)
+    }
+
+    const skippedLines = Array.from(skippedMap.entries()).map(([name, dateSet]) => {
+      const dates = Array.from(dateSet).sort((a, b) => a.localeCompare(b))
+      return `برای ${name}: در: ${dates.join(' و ')}`
+    })
+
+    if (skippedLines.length) {
+      // if nothing created at all, make it clear
+      if (createdCounts === 0) {
+        setError(`هیچ رزروی ایجاد نشد. ${skippedLines.join(' | ')}  - رزرو وجود دارد`)
+      }
+      else {
+        setError(`برای بعضی از پرسنل رزرو انجام نشد: ${skippedLines.join(' | ')} - رزرو وجود دارد`)
+      }
+    }
+    else {
+      uiState.success = true
+      uiState.successMessage = res?.message || 'رزرو با موفقیت انجام شد.'
+    }
 
     if (reservationType.value === 'byYou') {
       fetchReservedMealsForDateByUser()
