@@ -141,7 +141,7 @@ async function search() {
     reservedMeal.value = Array.isArray(data) ? (data[0] ?? null) : data
 
     if (!reservedMeal.value) {
-      setError('این رزرو، تحویل داده شده است یا زمان تحویل آن گذشته است.')
+      setError('این رزرو، تحویل داده شده است یا در بازه تحویل قرار ندارد.')
       return
     }
 
