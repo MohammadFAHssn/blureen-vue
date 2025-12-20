@@ -1,7 +1,7 @@
 <script setup>
 import ContractorInvoice from '@/views/apps/food/kitchen/Statistics/ContractorInvoice.vue'
 import ForContractor from '@/views/apps/food/kitchen/Statistics/ForContractor.vue'
-import ForGuest from '@/views/apps/food/kitchen/Statistics/ForGuest.vue'
+// import ForGuest from '@/views/apps/food/kitchen/Statistics/ForGuest.vue'
 import ForPersonnel from '@/views/apps/food/kitchen/Statistics/ForPersonnel.vue'
 
 // تعریف emit
@@ -11,14 +11,14 @@ const current = ref('root')
 
 const componentsIcons = [
   { key: 'forPersonnel', label: 'پرسنل', icon: 'tabler-users' },
-  { key: 'forGuest', label: 'مهمان', icon: 'tabler-user-question' },
+  // { key: 'forGuest', label: 'مهمان', icon: 'tabler-user-question' },
   { key: 'forContractor', label: 'پیمانکار', icon: 'tabler-calendar-user' },
   { key: 'contractorInvoice', label: 'حساب پیمانکار', icon: 'tabler-cash-register' },
 ]
 
 const pages = {
   forPersonnel: ForPersonnel,
-  forGuest: ForGuest,
+  // forGuest: ForGuest,
   forContractor: ForContractor,
   contractorInvoice: ContractorInvoice,
 }

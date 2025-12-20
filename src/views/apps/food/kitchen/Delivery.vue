@@ -322,6 +322,27 @@ const sortedReservedMeals = computed(() =>
   ),
 )
 
+const mealTotals = computed(() => {
+  const totalsByMeal = {}
+
+  for (const item of reservedMeals.value) {
+    const mealName = item.meal?.name || 'نامشخص'
+
+    const itemTotal
+      = item.details?.reduce(
+        (sum, detail) => sum + (detail.quantity || 0),
+        0,
+      ) || 0
+
+    if (!totalsByMeal[mealName])
+      totalsByMeal[mealName] = 0
+
+    totalsByMeal[mealName] += itemTotal
+  }
+
+  return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
+})
+
 onMounted(async () => {
   const today = new Date()
   const jToday = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate())
@@ -406,6 +427,21 @@ onMounted(async () => {
             <label class="font-weight-medium mb-4 d-block text-center">
               رزروهای امروز
             </label>
+            <div
+              v-if="sortedReservedMeals.length"
+              class="text-center mb-4"
+            >
+              <VChip
+                v-for="meal in mealTotals"
+                :key="meal.name"
+                class="ma-1"
+                color="primary"
+                size="small"
+                variant="outlined"
+              >
+                {{ meal.name }}: {{ meal.total }}
+              </VChip>
+            </div>
 
             <VTable v-if="!pendingState.fetchingReservedMeals">
               <thead>
