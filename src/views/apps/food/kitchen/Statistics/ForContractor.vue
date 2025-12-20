@@ -58,40 +58,6 @@ function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
 }
 
-// ----- start ag-grid -----
-const gridApi = ref(null)
-const { theme } = useAGGridTheme()
-
-function onGridReady(params) {
-  gridApi.value = params.api
-  gridApi.value.setGridOption('loading', true)
-}
-
-const columnDefs = ref([
-  { headerName: 'نام', field: 'name' },
-  { headerName: 'کد پرسنلی', field: 'personnel_code' },
-  {
-    headerName: 'شناسنامه',
-    field: 'health_certificate',
-    sort: 'desc', // or 'asc'
-  },
-])
-
-const rowData = computed(() =>
-  healthCertificateUsers.value?.map((user) => {
-    const hasThisCertificate = user.health_certificate?.some(
-      c => c.health_certificate_id === props.file.id,
-    )
-
-    return {
-      name: `${user.first_name} ${user.last_name}`,
-      personnel_code: user.personnel_code,
-      health_certificate: hasThisCertificate ? 'دارد' : 'آپلود نشده',
-    }
-  }),
-)
-// ----- end ag-grid -----
-
 const sortedReservedMeals = computed(() =>
   [...reservedMeals.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
@@ -443,19 +409,6 @@ onMounted(async () => {
       <VCardTitle class="text-h6 text-center">
         جزئیات:
       </VCardTitle>
-
-      <section style="height: 400px">
-        <AgGridVue
-          style="block-size: 100%; inline-size: 100%"
-          :column-defs="columnDefs"
-          :row-data="rowData"
-          enable-rtl
-          row-numbers
-          pagination
-          :theme="theme"
-          @grid-ready="onGridReady"
-        />
-      </section>
 
       <VCardActions class="justify-end">
         <VBtn
