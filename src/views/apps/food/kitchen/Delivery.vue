@@ -343,6 +343,28 @@ const mealTotals = computed(() => {
   return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
 })
 
+const undeliveredMealTotals = computed(() => {
+  const totalsByMeal = {}
+
+  for (const item of reservedMeals.value) {
+    const mealName = `${item.meal?.name} تحویل نشده` || 'نامشخص'
+
+    const itemTotal
+      = item.details?.reduce(
+        (sum, detail) =>
+          sum + (!detail.delivery_status ? (detail.quantity || 0) : 0),
+        0,
+      ) ?? 0
+
+    if (!totalsByMeal[mealName])
+      totalsByMeal[mealName] = 0
+
+    totalsByMeal[mealName] += itemTotal
+  }
+
+  return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
+})
+
 onMounted(async () => {
   const today = new Date()
   const jToday = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate())
@@ -433,6 +455,16 @@ onMounted(async () => {
             >
               <VChip
                 v-for="meal in mealTotals"
+                :key="meal.name"
+                class="ma-1"
+                color="primary"
+                size="small"
+                variant="outlined"
+              >
+                {{ meal.name }}: {{ meal.total }}
+              </VChip>
+              <VChip
+                v-for="meal in undeliveredMealTotals"
                 :key="meal.name"
                 class="ma-1"
                 color="primary"
@@ -565,6 +597,31 @@ onMounted(async () => {
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
                 رزروهای امروز
+                <div
+                  v-if="sortedReservedMeals.length"
+                  class="text-center mb-4"
+                >
+                  <VChip
+                    v-for="meal in mealTotals"
+                    :key="meal.name"
+                    class="ma-1"
+                    color="primary"
+                    size="small"
+                    variant="outlined"
+                  >
+                    {{ meal.name }}: {{ meal.total }}
+                  </VChip>
+                  <VChip
+                    v-for="meal in undeliveredMealTotals"
+                    :key="meal.name"
+                    class="ma-1"
+                    color="primary"
+                    size="small"
+                    variant="outlined"
+                  >
+                    {{ meal.name }}: {{ meal.total }}
+                  </VChip>
+                </div>
               </VExpansionPanelTitle>
 
               <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals">
