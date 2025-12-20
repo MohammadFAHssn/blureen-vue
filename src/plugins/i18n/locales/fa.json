@@ -239,5 +239,7 @@
   "HSE Management Health Certificate": "شناسنامه‌ سلامت",
   "FOOD": "تغذیه",
   "FOOD Food Reservation": "رزرو غذا",
-  "FOOD Kitchen": "آشپزخانه"
+  "FOOD Kitchen": "آشپزخانه",
+  "CONTRACTOR": "پیمانکار",
+  "CONTRACTOR Management": "مدیریت پیمانکار"
 }
