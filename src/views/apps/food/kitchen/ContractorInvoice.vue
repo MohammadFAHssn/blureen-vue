@@ -1,6 +1,19 @@
 <script setup>
 import jalaali from 'jalaali-js'
+// emit
+const emit = defineEmits(['back'])
 
+const current = ref('root')
+
+// methods
+function goBack() {
+  if (current.value !== 'root') {
+    current.value = 'root'
+  }
+  else {
+    emit('back')
+  }
+}
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -116,6 +129,16 @@ onMounted(async () => {
 </script>
 
 <template>
+  <div>
+    <VBtn
+      variant="text"
+      prepend-icon="tabler-arrow-right"
+      class="mb-4"
+      @click="goBack"
+    >
+      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
+    </VBtn>
+  </div>
   <VContainer>
     <VSnackbar
       v-model="uiState.hasError"

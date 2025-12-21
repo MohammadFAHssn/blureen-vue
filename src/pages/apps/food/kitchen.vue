@@ -1,9 +1,10 @@
 <script setup>
+import ContractorInvoice from '@/views/apps/food/kitchen/ContractorInvoice.vue'
 import Delivery from '@/views/apps/food/kitchen/Delivery.vue'
 import Foods from '@/views/apps/food/kitchen/Foods.vue'
 import MealPlan from '@/views/apps/food/kitchen/MealPlan.vue'
 import Meals from '@/views/apps/food/kitchen/Meals.vue'
-import Statistics from '@/views/apps/food/kitchen/Statistics/Statistics.vue'
+import Statistics from '@/views/apps/food/kitchen/Statistics.vue'
 
 const current = ref('root')
 
@@ -12,6 +13,7 @@ const componentsIcons = [
   { key: 'meals', label: 'وعده‌های غذایی', icon: 'tabler-bowl-chopsticks' },
   { key: 'mealPlan', label: 'برنامه غذایی', icon: 'tabler-calendar-time' },
   { key: 'statistics', label: 'آمار', icon: 'tabler-report-analytics' },
+  { key: 'contractorInvoice', label: 'حساب پیمانکار', icon: 'tabler-cash-register' },
   { key: 'delivery', label: 'تحویل غذا', icon: 'tabler-checklist' },
 ]
 
@@ -20,6 +22,7 @@ const pages = {
   mealPlan: MealPlan,
   meals: Meals,
   statistics: Statistics,
+  contractorInvoice: ContractorInvoice,
   delivery: Delivery,
 }
 
