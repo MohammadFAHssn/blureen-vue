@@ -84,7 +84,7 @@ function dialogModelValueUpdate(val) {
             </VCol>
 
             <!-- description -->
-            <VCol cols="12" md="6">
+            <VCol cols="12" md="12">
               <VTextField
                 v-model="description"
                 :disabled="loading"

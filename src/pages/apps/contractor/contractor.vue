@@ -1,5 +1,4 @@
 <script setup>
-import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import ContractorCreateDialog from '@/views/apps/contractor/ContractorCreateDialog.vue'
 
 definePage({
@@ -38,9 +37,10 @@ function onGridReady(params) {
 
 const columnDefs = ref([
   { headerName: 'نام', field: 'fullName' },
+  { headerName: 'توضیحات', field: 'description' },
   {
     headerName: 'وضعیت',
-    field: 'active',
+    field: 'status',
     cellRenderer: 'Active',
     cellStyle: { 'display': 'flex', 'align-items': 'center' },
     filterParams: {
@@ -65,7 +65,21 @@ const columnDefs = ref([
         'jYYYY/jMM/jD HH:mm:ss',
       ),
   },
-  { headerName: 'عملیات', field: 'actions', icon: 'tabler-power', @click="onChangeStatusClick" },
+  {
+    headerName: 'عملیات',
+    field: 'actions',
+    cellRendererSelector: (_params) => {
+      return {
+        component: 'Actions',
+        params: {
+          onStatusClick: (selectedNode) => {
+            selectedNodes.value = [selectedNode]
+            onChangeStatusClick()
+          },
+        },
+      }
+    },
+  },
 ])
 
 const rowData = computed(() =>
@@ -73,11 +87,15 @@ const rowData = computed(() =>
     return {
       id: contractor.id,
       fullName: contractor.fullName,
+      description: contractor.description,
       status: contractor.status,
       createdBy: contractor.createdBy?.fullName || '--',
       editedBy: contractor.editedBy?.fullName || '--',
       createdAt: moment(contractor.createdAt).format('jYYYY-jMM-jDD HH:mm:ss'),
       updatedAt: moment(contractor.updatedAt).format('jYYYY-jMM-jDD HH:mm:ss'),
+      actions: {
+        status: true,
+      },
     }
   }),
 )
@@ -109,7 +127,7 @@ async function onCreateContractor(payload) {
 
   formData.append('first_name', payload.contractorFirstName)
   formData.append('last_name', payload.contractorLastName)
-  if(payload.description) {
+  if (payload.description) {
     formData.append('description', payload.description)
   }
 
@@ -146,8 +164,8 @@ async function onChangeStatusClick() {
   const id = selectedNodes.value[0].data.id
   pendingState.changeStatus = true
   try {
-    await $api(`/status/${id}`, {
-      method: 'DELETE',
+    await $api(`/contractor/status/${id}`, {
+      method: 'POST',
       onResponseError({ response }) {
         pendingState.changeStatus = false
         uiState.hasError = true
