@@ -13,8 +13,6 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
-const constants = inject('constants')
-
 // states
 const payrollBatchDate = ref(null)
 const refVForm = ref()
@@ -29,7 +27,7 @@ const fileInputRules = [
       return 'لطفا یک فایل اکسل معتبر انتخاب کنید!'
     }
 
-    if (file.size > constants.MAX_FILE_SIZE) {
+    if (file.size > MAX_FILE_SIZE) {
       return 'حجم فایل باید کمتر از 5 مگابایت باشد!'
     }
 

@@ -1,13 +1,14 @@
 <script setup>
-import { can } from '@layouts/plugins/casl'
-import PayrollChart from './PayrollChart.vue'
+// import { can } from '@layouts/plugins/casl'
+// import PayrollChart from './PayrollChart.vue'
 
-const overlay = ref(true)
+// const overlay = ref(true)
 </script>
 
 <template>
   <VRow>
     <!-- 👉 Payroll  -->
+    <!--
     <VCol
       v-if="can('use', 'app')"
       cols="12"
@@ -40,11 +41,12 @@ const overlay = ref(true)
         </VCardText>
       </VCard>
     </VCol>
+      -->
   </VRow>
 </template>
 
 <style>
-.v-overlay__scrim {
+/* .v-overlay__scrim {
   backdrop-filter: blur(5px);
-}
+} */
 </style>

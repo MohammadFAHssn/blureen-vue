@@ -1,1 +1,0 @@
-import{s as y}from"./useLogout-DitEJ7bF.js";import{Y as q,cz as e}from"./index-DT_llzjg.js";function O(u,r){return q(()=>{if(!(r!=null&&r.query))return e(u);const t=e(u),a=e(r==null?void 0:r.query),c=Object.fromEntries(Object.entries(a).map(([m,f])=>[m,e(f)]));return`${t}${c?`?${y(c)}`:""}`})}export{O as c};

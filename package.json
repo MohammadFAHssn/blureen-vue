@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ag-grid-community/locale": "^34.1.1",
+    "@balkangraph/orgchart.js": "^8.21.30",
     "@casl/ability": "6.7.3",
     "@casl/vue": "2.2.2",
     "@floating-ui/dom": "^1.7.3",
@@ -34,6 +35,7 @@
     "ag-grid-enterprise": "^34.1.1",
     "ag-grid-vue3": "^34.1.1",
     "apexcharts": "5.3.2",
+    "axios": "^1.13.2",
     "chart.js": "^4.4.9",
     "cookie-es": "2.0.0",
     "destr": "2.0.5",
