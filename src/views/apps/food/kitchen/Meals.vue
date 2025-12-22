@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-
 // emit
 const emit = defineEmits(['back'])
 
@@ -23,7 +21,7 @@ const pendingState = reactive({
 const meals = ref([])
 
 // choose
-const selectedMeal = ref([])
+const selectedMeal = ref(null)
 
 // form
 const refVForm = ref()
@@ -38,7 +36,7 @@ function goBack() {
     emit('back')
   }
 }
-async function oncreateMeal() {
+async function onCreateMeal() {
   const result = await refVForm.value?.validate()
   const isValid = result?.valid
   if (!isValid)
@@ -176,9 +174,11 @@ function onResetForm() {
   mealName.value = null
 }
 function dialogModelValueUpdate(val) {
-  uiState.isCreateMealDialogVisible = val
-  uiState.isEditMealDialogVisible = val
-  onResetForm()
+  if (!val) {
+    uiState.isCreateMealDialogVisible = false
+    uiState.isEditMealDialogVisible = false
+    onResetForm()
+  }
 }
 </script>
 
@@ -281,7 +281,7 @@ function dialogModelValueUpdate(val) {
           افزودن وعده
         </h4>
 
-        <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="oncreateMeal">
+        <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onCreateMeal">
           <VRow>
             <!-- Name -->
             <VCol cols="12" md="12">
@@ -323,7 +323,7 @@ function dialogModelValueUpdate(val) {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          ویرایش وعده: {{ selectedMeal.name }}
+          ویرایش وعده: {{ selectedMeal?.name }}
         </h4>
 
         <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onConfirmEditMeal">

@@ -1,6 +1,5 @@
 <script setup>
 import jalaali from 'jalaali-js'
-import { ref } from 'vue'
 
 // تعریف emit
 const emit = defineEmits(['back'])
@@ -68,7 +67,7 @@ function onResetForm() {
 async function submit() {
   pendingState.createPlan = true
   try {
-    const [year, month, day] = planDate.value.split('/').map(Number)
+    const [year, month, day] = String(planDate.value).split('/').map(Number)
 
     const selectedKey = year * 10000 + month * 100 + day
     const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
@@ -99,7 +98,7 @@ async function submit() {
       },
     })
 
-    await fetchPlansForDate(planDate.value)
+    await fetchPlansForDate()
 
     return res
   }
@@ -114,7 +113,7 @@ async function submit() {
 }
 
 function onClickEdit(mealPlan) {
-  const [year, month, day] = planDate.value.split('/').map(Number)
+  const [year, month, day] = String(planDate.value).split('/').map(Number)
   const selectedKey = year * 10000 + month * 100 + day
   const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
 
@@ -128,15 +127,6 @@ function onClickEdit(mealPlan) {
   uiState.isEditDialogVisible = true
 }
 async function onConfirmEditMeal() {
-  const [year, month, day] = planDate.value.split('/').map(Number)
-  const selectedKey = year * 10000 + month * 100 + day
-  const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
-
-  if (selectedKey < todayKey) {
-    setError('نمیتوان برنامه غذایی گذشته را ویرایش کرد.')
-    uiState.isEditDialogVisible = false
-    return
-  }
   const result = await refVForm.value?.validate()
   const isValid = result?.valid
   if (!isValid)

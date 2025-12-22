@@ -268,7 +268,7 @@ async function deliver() {
     else if (reservedMeal.value.reserve_type === 'contractor') {
       payload = {
         type: 'contractor',
-        contractor: reservedMeal.value.details[0].contractor.id,
+        contractor: reservedMeal.value.details?.[0]?.contractor?.id,
         reserved_meal_id: reservedMeal.value.id,
         received_count: receivedCount.value,
         today_food_count: todayFoodCount.value,
@@ -347,7 +347,7 @@ const undeliveredMealTotals = computed(() => {
   const totalsByMeal = {}
 
   for (const item of reservedMeals.value) {
-    const mealName = `${item.meal?.name} تحویل نشده` || 'نامشخص'
+    const mealName = `${item.meal?.name || 'نامشخص'} تحویل نشده`
 
     const itemTotal
       = item.details?.reduce(
@@ -743,7 +743,7 @@ onMounted(async () => {
     :model-value="uiState.isDeliveryDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="uiState.isDeliveryDialogVisible = false" />
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardTitle class="text-h6">
@@ -877,7 +877,7 @@ onMounted(async () => {
                     hide-details
                     color="red"
                   />
-                  <VIcon v-if="reservedMeal.status && !d.delivery_status" icon="tabler-square-check" />
+                  <VIcon v-else-if="!d.delivery_status" icon="tabler-square-check" />
                 </td>
               </tr>
             </tbody>

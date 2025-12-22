@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-
 // emit
 const emit = defineEmits(['back'])
 
@@ -23,7 +21,7 @@ const pendingState = reactive({
 const foods = ref([])
 
 // choose
-const selectedFood = ref([])
+const selectedFood = ref(null)
 
 // form
 const refVForm = ref()
@@ -194,9 +192,11 @@ function onResetForm() {
   foodPrice.value = null
 }
 function dialogModelValueUpdate(val) {
-  uiState.isCreateFoodDialogVisible = val
-  uiState.isEditFoodDialogVisible = val
-  onResetForm()
+  if (!val) {
+    uiState.isCreateFoodDialogVisible = false
+    uiState.isEditFoodDialogVisible = false
+    onResetForm()
+  }
 }
 </script>
 
@@ -365,7 +365,7 @@ function dialogModelValueUpdate(val) {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          ویرایش قیمت: {{ selectedFood.name }}
+          ویرایش قیمت: {{ selectedFood?.name }}
         </h4>
 
         <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onConfirmEditFood">

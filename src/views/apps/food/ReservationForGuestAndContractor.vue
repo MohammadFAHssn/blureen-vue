@@ -40,15 +40,12 @@ const reservationType = ref(null)
 // rules
 const countInputRules = [
   (value) => {
-    if (value === null || value === undefined || value === '') {
+    if (value === null || value === undefined || value === '')
       return true
-    }
 
     const isInteger = /^\d+$/.test(String(value))
-
-    if (!isInteger) {
+    if (!isInteger)
       return 'فقط باید عدد باشد!'
-    }
 
     return true
   },
@@ -57,7 +54,8 @@ const countInputRules = [
 // helper methods
 // computed string just for showing in text field
 const reserveDatesDisplay = computed(() => {
-  if (!reserveDates.value || reserveDates.value.length === 0) return ''
+  if (!reserveDates.value || reserveDates.value.length === 0)
+    return ''
   if (Array.isArray(reserveDates.value))
     return reserveDates.value.join(' - ')
   return reserveDates.value
@@ -85,7 +83,7 @@ async function submit() {
   }
 
   for (const dateStr of selectedDates) {
-    const [year, month, day] = dateStr.split('/').map(Number)
+    const [year, month, day] = String(dateStr).split('/').map(Number)
     const selectedKey = year * 10000 + month * 100 + day
     if (selectedKey < todayKey.value) {
       setError('امکان رزرو غذا فقط برای زمان حال و آینده وجود دارد.')
@@ -95,32 +93,29 @@ async function submit() {
 
   pendingState.reserveMeal = true
 
-  let payload
+  const userId = useCookie('userData')?.value?.id
 
-  if (reservationType.value === 'contractor') {
-    payload = {
-      date: reserveDates.value,
-      meal_id: selectedMeal.value,
-      reserve_type: 'contractor',
-      supervisor_id: useCookie('userData').value.id,
-      contractor: selectedContractor.value,
-      quantity: quantity.value,
-    }
-  }
-  else {
-    payload = {
-      date: reserveDates.value,
-      meal_id: selectedMeal.value,
-      reserve_type: 'guest',
-      supervisor_id: useCookie('userData').value.id,
-      quantity: quantity.value,
-      description: description.value,
-      serve_place: serveType.value,
-    }
-  }
+  const payload = reservationType.value === 'contractor'
+    ? {
+        date: reserveDates.value,
+        meal_id: selectedMeal.value,
+        reserve_type: 'contractor',
+        supervisor_id: userId,
+        contractor: selectedContractor.value,
+        quantity: quantity.value,
+      }
+    : {
+        date: reserveDates.value,
+        meal_id: selectedMeal.value,
+        reserve_type: 'guest',
+        supervisor_id: userId,
+        quantity: quantity.value,
+        description: description.value,
+        serve_place: serveType.value,
+      }
 
   try {
-    const _res = await $api('/food/meal-reservation', {
+    await $api('/food/meal-reservation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -136,15 +131,17 @@ async function submit() {
       },
     })
 
+    if (uiState.hasError)
+      return
+
     uiState.success = true
     uiState.successMessage = 'رزرو با موفقیت انجام شد.'
 
-    if (reservationType.value === 'contractor') {
+    if (reservationType.value === 'contractor')
       fetchReservedMealsForContractorOnDate()
-    }
-    else {
+    else
       fetchReservedMealsForGuestOnDate()
-    }
+
     selectedContractor.value = null
     selectedMeal.value = null
     quantity.value = null
@@ -163,6 +160,9 @@ function onClickDelete(reserv) {
   uiState.isDeleteDialogVisible = true
 }
 async function onConfirmDelete() {
+  if (!selectedReservedMeal.value)
+    return
+
   pendingState.deleteReservedMeal = true
 
   try {
@@ -184,21 +184,18 @@ async function onConfirmDelete() {
           reserv => reserv.id !== selectedReservedMeal.value.id,
         )
       }
-      if (reservationType.value === 'guest') {
+      else if (reservationType.value === 'guest') {
         reservedMealsForGuest.value = reservedMealsForGuest.value.filter(
           reserv => reserv.id !== selectedReservedMeal.value.id,
         )
       }
     }
-
-    if (!res?.data) {
+    else {
       setError('نمیتوان رزرو تحویل شده را حذف کرد')
-      if (reservationType.value === 'contractor') {
+      if (reservationType.value === 'contractor')
         fetchReservedMealsForContractorOnDate()
-      }
-      if (reservationType.value === 'guest') {
+      else if (reservationType.value === 'guest')
         fetchReservedMealsForGuestOnDate()
-      }
     }
   }
   catch (err) {
@@ -250,7 +247,6 @@ async function fetchReservedMealsForGuestOnDate() {
       },
     })
 
-    // res.data is [ [reservation], [reservation], ... ]
     reservedMealsForGuest.value = (res.data || []).flat()
   }
   catch (err) {
@@ -293,17 +289,17 @@ async function fetchMeals() {
 }
 
 function onChange() {
-  if (reservationType.value === 'contractor') {
+  if (reservationType.value === 'contractor')
     fetchReservedMealsForContractorOnDate()
-  }
-  else {
+  else
     fetchReservedMealsForGuestOnDate()
-  }
 }
 
 // dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
+  if (!val)
+    selectedReservedMeal.value = null
 }
 
 const sortedReservedMealsForContractor = computed(() =>
@@ -413,14 +409,8 @@ onMounted(async () => {
               inline
               @change="onChange"
             >
-              <VRadio
-                label="پیمانکار"
-                value="contractor"
-              />
-              <VRadio
-                label="میهمان"
-                value="guest"
-              />
+              <VRadio label="پیمانکار" value="contractor" />
+              <VRadio label="میهمان" value="guest" />
             </VRadioGroup>
             <VCol v-if="reservationType === 'guest'" cols="12" class="mb-3">
               <VTextField
@@ -441,14 +431,8 @@ onMounted(async () => {
                 class="mt-2"
                 inline
               >
-                <VRadio
-                  label="سرو در آشپزخانه"
-                  value="serve_in_kitchen"
-                />
-                <VRadio
-                  label="تحویل"
-                  value="deliver"
-                />
+                <VRadio label="سرو در آشپزخانه" value="serve_in_kitchen" />
+                <VRadio label="تحویل" value="deliver" />
               </VRadioGroup>
             </VCol>
             <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
@@ -509,27 +493,22 @@ onMounted(async () => {
               <tbody>
                 <tr v-for="(item, index) in sortedReservedMealsForContractor" :key="item.id">
                   <td>{{ index + 1 }}</td>
-
                   <td>{{ item.meal?.name }}</td>
-
                   <td>
                     <VChip color="success">
                       {{ item.delivery_code }}
                     </VChip>
                   </td>
-
                   <td>
                     <VChip :color="item.status ? 'success' : 'error'" size="small">
                       {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
                     </VChip>
                   </td>
-
                   <td>
                     <VChip>
                       {{ item.date }}
                     </VChip>
                   </td>
-
                   <td>
                     <VChip>
                       {{
@@ -539,7 +518,6 @@ onMounted(async () => {
                       }}
                     </VChip>
                   </td>
-
                   <td>
                     {{
                       item.details?.reduce(
@@ -548,7 +526,6 @@ onMounted(async () => {
                       )
                     }}
                   </td>
-
                   <td>
                     <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
                       <VIcon icon="tabler-trash" size="20" />
@@ -576,7 +553,7 @@ onMounted(async () => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in sortedReservedMealsForGuest" :key="index">
+                <tr v-for="(item, index) in sortedReservedMealsForGuest" :key="item.id">
                   <td>{{ index + 1 }}</td>
                   <td>{{ item.meal?.name }}</td>
                   <td>
@@ -661,8 +638,8 @@ onMounted(async () => {
               <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'contractor' && sortedReservedMealsForContractor.length > 0">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsForContractor"
-                    :key="index"
+                    v-for="(item) in sortedReservedMealsForContractor"
+                    :key="item.id"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
@@ -725,8 +702,8 @@ onMounted(async () => {
               <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'guest' && sortedReservedMealsForGuest.length > 0">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsForGuest"
-                    :key="index"
+                    v-for="(item) in sortedReservedMealsForGuest"
+                    :key="item.id"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
@@ -757,7 +734,8 @@ onMounted(async () => {
                     <VExpansionPanelText>
                       <div class="pa-2">
                         <div>
-                          <strong>سرو غذا:</strong> <VChip size="small">
+                          <strong>سرو غذا:</strong>
+                          <VChip size="small">
                             {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
                           </VChip>
                         </div>
@@ -826,7 +804,7 @@ onMounted(async () => {
     :model-value="uiState.isDetailsDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardTitle class="text-h6">

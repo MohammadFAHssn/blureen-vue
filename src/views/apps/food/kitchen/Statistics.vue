@@ -39,6 +39,8 @@ function setError(message) {
 // dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
+  if (!val)
+    selectedReservedMeal.value = null
 }
 
 function onClickDetail(reserv) {
@@ -108,7 +110,7 @@ const undeliveredMealTotals = computed(() => {
   const totalsByMeal = {}
 
   for (const item of reservedMeals.value) {
-    const mealName = `${item.meal?.name} تحویل نشده` || 'نامشخص'
+    const mealName = `${item.meal?.name || 'نامشخص'} تحویل نشده`
 
     const itemTotal
       = item.details?.reduce(
@@ -296,12 +298,6 @@ const undeliveredMealTotals = computed(() => {
                   }}
                 </td>
 
-                <td>
-                  <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
-                    <VIcon icon="tabler-file-description" size="20" />
-                  </VBtn>
-                </td>
-
                 <td class="py-2">
                   <VTooltip location="top" :disabled="!(item.description?.length > 6)">
                     <template #activator="{ props }">
@@ -319,10 +315,16 @@ const undeliveredMealTotals = computed(() => {
                     </div>
                   </VTooltip>
                 </td>
+
+                <td>
+                  <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
+                    <VIcon icon="tabler-file-description" size="20" />
+                  </VBtn>
+                </td>
               </tr>
             </tbody>
           </VTable>
-        </vcol>
+        </VCol>
         <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
         <div v-else class="text-center">
           <VChip color="error">
@@ -340,7 +342,7 @@ const undeliveredMealTotals = computed(() => {
     :model-value="uiState.isDetailsDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardTitle class="text-h6">
@@ -499,7 +501,7 @@ const undeliveredMealTotals = computed(() => {
           </VTable>
         </div>
 
-        <!-- Show select and quantity options for contractor reservation -->
+        <!-- Show contractor details for contractor reservation -->
         <div v-if="selectedReservedMeal.reserve_type === 'contractor'">
           <VTable density="comfortable">
             <thead>
@@ -514,18 +516,18 @@ const undeliveredMealTotals = computed(() => {
 
             <tbody>
               <tr
-                v-for="(d, index) in (selectedReservedMeal.details)"
+                v-for="(d, index) in selectedReservedMeal.details"
                 :key="d.id"
               >
                 <td>{{ index + 1 }}</td>
                 <td>
                   <VChip>
-                    {{ d.food.name }}
+                    {{ d.food?.name }}
                   </VChip>
                 </td>
                 <td>
                   <VChip>
-                    {{ Number(d.food_price).toLocaleString('fa-IR') }} ریال
+                    {{ Number(d.food_price || 0).toLocaleString('fa-IR') }} ریال
                   </VChip>
                 </td>
                 <td>
@@ -535,7 +537,7 @@ const undeliveredMealTotals = computed(() => {
                 </td>
                 <td>
                   <VChip>
-                    {{ Number(d.quantity * d.food_price).toLocaleString('fa-IR') }} ریال
+                    {{ Number((d.quantity || 0) * (d.food_price || 0)).toLocaleString('fa-IR') }} ریال
                   </VChip>
                 </td>
               </tr>

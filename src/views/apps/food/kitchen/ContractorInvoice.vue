@@ -52,6 +52,8 @@ function setError(message) {
 // dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
+  if (!val)
+    selectedReservedMeal.value = null
 }
 
 function onClickDetail(reserv) {
@@ -310,8 +312,8 @@ onMounted(async () => {
               <VExpansionPanelText>
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMeals"
-                    :key="index"
+                    v-for="(item) in sortedReservedMeals"
+                    :key="item.id"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
@@ -375,7 +377,7 @@ onMounted(async () => {
     :model-value="uiState.isDetailsDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardTitle class="text-h6">
@@ -492,18 +494,18 @@ onMounted(async () => {
 
             <tbody>
               <tr
-                v-for="(d, index) in (selectedReservedMeal.details)"
+                v-for="(d, index) in selectedReservedMeal.details"
                 :key="d.id"
               >
                 <td>{{ index + 1 }}</td>
                 <td>
                   <VChip>
-                    {{ d.food.name }}
+                    {{ d.food?.name }}
                   </VChip>
                 </td>
                 <td>
                   <VChip>
-                    {{ Number(d.food_price).toLocaleString('fa-IR') }} ریال
+                    {{ Number(d.food_price || 0).toLocaleString('fa-IR') }} ریال
                   </VChip>
                 </td>
                 <td>
@@ -513,7 +515,7 @@ onMounted(async () => {
                 </td>
                 <td>
                   <VChip>
-                    {{ Number(d.quantity * d.food_price).toLocaleString('fa-IR') }} ریال
+                    {{ Number((d.quantity || 0) * (d.food_price || 0)).toLocaleString('fa-IR') }} ریال
                   </VChip>
                 </td>
               </tr>

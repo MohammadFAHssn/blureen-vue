@@ -35,7 +35,8 @@ const reservationType = ref(null)
 // helper methods
 // computed string just for showing in text field
 const reserveDatesDisplay = computed(() => {
-  if (!reserveDates.value || reserveDates.value.length === 0) return ''
+  if (!reserveDates.value || reserveDates.value.length === 0)
+    return ''
   if (Array.isArray(reserveDates.value))
     return reserveDates.value.join(' - ')
   return reserveDates.value
@@ -47,7 +48,6 @@ function getSelectedDatesArray() {
 
   return reserveDates.value ? [reserveDates.value] : []
 }
-// error showcase
 function setError(message) {
   uiState.hasError = true
   uiState.errorMessage = message
@@ -63,7 +63,7 @@ async function submit() {
   }
 
   for (const dateStr of selectedDates) {
-    const [year, month, day] = dateStr.split('/').map(Number)
+    const [year, month, day] = String(dateStr).split('/').map(Number)
     const selectedKey = year * 10000 + month * 100 + day
     if (selectedKey < todayKey.value) {
       setError('امکان رزرو غذا فقط برای زمان حال و آینده وجود دارد.')
@@ -77,7 +77,7 @@ async function submit() {
     date: reserveDates.value,
     meal_id: selectedMeal.value,
     reserve_type: 'personnel',
-    supervisor_id: useCookie('userData').value.id,
+    supervisor_id: useCookie('userData')?.value?.id,
     personnel: selectedPersonnel.value,
   }
 
@@ -101,15 +101,16 @@ async function submit() {
     const skipped = (res?.data || []).flatMap(item => item?.skippedPersonnel || [])
     const createdCounts = (res?.data || []).reduce((sum, item) => sum + ((item?.createdPersonnel || []).length), 0)
 
-    // group: full_name -> Set(dates)
     const skippedMap = new Map()
     for (const s of skipped) {
       const name = s?.full_name
       const date = s?.date
-      if (!name || !date) continue
+      if (!name || !date)
+        continue
 
       const normalizedDate = String(date).replaceAll('\\/', '/')
-      if (!skippedMap.has(name)) skippedMap.set(name, new Set())
+      if (!skippedMap.has(name))
+        skippedMap.set(name, new Set())
       skippedMap.get(name).add(normalizedDate)
     }
 
@@ -120,24 +121,20 @@ async function submit() {
 
     if (skippedLines.length) {
       // if nothing created at all, make it clear
-      if (createdCounts === 0) {
+      if (createdCounts === 0)
         setError(`هیچ رزروی ایجاد نشد. ${skippedLines.join(' | ')}  - رزرو وجود دارد`)
-      }
-      else {
+      else
         setError(`برای بعضی از پرسنل رزرو انجام نشد: ${skippedLines.join(' | ')} - رزرو وجود دارد`)
-      }
     }
     else {
       uiState.success = true
       uiState.successMessage = res?.message || 'رزرو با موفقیت انجام شد.'
     }
 
-    if (reservationType.value === 'byYou') {
+    if (reservationType.value === 'byYou')
       fetchReservedMealsForDateByUser()
-    }
-    else {
+    else
       fetchReservedMealsForDateForUser()
-    }
     selectedPersonnel.value = null
     selectedMeal.value = null
   }
@@ -154,6 +151,9 @@ function onClickDelete(reserv) {
   uiState.isDeleteDialogVisible = true
 }
 async function onConfirmDelete() {
+  if (!selectedReservedMeal.value)
+    return
+
   pendingState.deleteReservedMeal = true
 
   try {
@@ -174,8 +174,7 @@ async function onConfirmDelete() {
         reserv => reserv.id !== selectedReservedMeal.value.id,
       )
     }
-
-    if (!res?.data) {
+    else {
       setError('نمیتوان رزرو تحویل شده را حذف کرد')
       fetchReservedMealsForDateByUser()
     }
@@ -193,6 +192,7 @@ function onClickDetail(reserv) {
   uiState.isDetailsDialogVisible = true
 }
 
+// IMPORTANT: api returns nested arrays -> flatten
 async function fetchReservedMealsForDateByUser() {
   reservedMealsByYou.value = []
   pendingState.fetchingReservedMeals = true
@@ -229,7 +229,7 @@ async function fetchReservedMealsForDateForUser() {
       },
     })
 
-    reservedMealsForYou.value = res.data || []
+    reservedMealsForYou.value = (res.data || []).flat()
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
@@ -248,7 +248,7 @@ async function fetchUsers() {
       throw error.value
     }
 
-    if (data.value.data) {
+    if (data.value?.data) {
       users.value = data.value.data.map(u => ({
         ...u,
         fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
@@ -277,17 +277,17 @@ async function fetchMeals() {
 }
 
 function onChange() {
-  if (reservationType.value === 'byYou') {
+  if (reservationType.value === 'byYou')
     fetchReservedMealsForDateByUser()
-  }
-  else {
+  else
     fetchReservedMealsForDateForUser()
-  }
 }
 
 // dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
+  if (!val)
+    selectedReservedMeal.value = null
 }
 
 async function deletePersonnel(id) {
@@ -295,7 +295,7 @@ async function deletePersonnel(id) {
     const res = await $api(`/food/meal-reservation-detail/${id}`, {
       method: 'DELETE',
       onResponseError({ response }) {
-        setError(response._data.message || 'خطا در حذف')
+        setError(response._data?.message || 'خطا در حذف')
       },
     })
 
@@ -304,8 +304,7 @@ async function deletePersonnel(id) {
         detail => detail.id !== id,
       )
     }
-
-    if (!res?.data) {
+    else {
       setError('نمیتوان پرسنل رزرو تحویل شده را حذف کرد')
       uiState.isDetailsDialogVisible = false
       fetchReservedMealsForDateByUser()
@@ -324,7 +323,7 @@ const sortedReservedMealsByUser = computed(() =>
 
 const sortedReservedMealsForUser = computed(() =>
   [...reservedMealsForYou.value].sort((a, b) =>
-    String(a.reservation.date).localeCompare(String(b.reservation.date)),
+    String(a.reservation?.date || '').localeCompare(String(b.reservation?.date || '')),
   ),
 )
 
@@ -458,14 +457,8 @@ onMounted(async () => {
               inline
               @change="onChange"
             >
-              <VRadio
-                label="توسط شما"
-                value="byYou"
-              />
-              <VRadio
-                label="برای شما"
-                value="forYou"
-              />
+              <VRadio label="توسط شما" value="byYou" />
+              <VRadio label="برای شما" value="forYou" />
             </VRadioGroup>
 
             <VTable v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou' && sortedReservedMealsByUser.length > 0">
@@ -586,21 +579,15 @@ onMounted(async () => {
                 inline
                 @change="onChange"
               >
-                <VRadio
-                  label="توسط شما"
-                  value="byYou"
-                />
-                <VRadio
-                  label="برای شما"
-                  value="forYou"
-                />
+                <VRadio label="توسط شما" value="byYou" />
+                <VRadio label="برای شما" value="forYou" />
               </VRadioGroup>
 
               <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou' && sortedReservedMealsByUser.length > 0">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="(item, index) in sortedReservedMealsByUser"
-                    :key="index"
+                    v-for="(item) in sortedReservedMealsByUser"
+                    :key="item.id"
                     class="mb-2"
                   >
                     <VExpansionPanelTitle>
@@ -619,12 +606,14 @@ onMounted(async () => {
                     <VExpansionPanelText>
                       <div class="pa-2">
                         <div>
-                          <strong>کد تحویل:</strong> <VChip color="success">
+                          <strong>کد تحویل:</strong>
+                          <VChip color="success">
                             {{ item.delivery_code }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>تاریخ:</strong> <VChip>
+                          <strong>تاریخ:</strong>
+                          <VChip>
                             {{ item.date }}
                           </VChip>
                         </div>
@@ -668,17 +657,20 @@ onMounted(async () => {
                     <VExpansionPanelText>
                       <div class="pa-2">
                         <div>
-                          <strong>تاریخ:</strong> <VChip>
+                          <strong>تاریخ:</strong>
+                          <VChip>
                             {{ item.reservation.date }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>رزرو شده توسط:</strong> <VChip color="primary">
+                          <strong>رزرو شده توسط:</strong>
+                          <VChip color="primary">
                             {{ item.createdBy }}
                           </VChip>
                         </div>
                         <div>
-                          <strong>کد پرسنلی:</strong> <VChip color="primary">
+                          <strong>کد پرسنلی:</strong>
+                          <VChip color="primary">
                             {{ item.personnelCode }}
                           </VChip>
                         </div>
@@ -716,7 +708,7 @@ onMounted(async () => {
     :model-value="uiState.isDetailsDialogVisible"
     @update:model-value="dialogModelValueUpdate"
   >
-    <DialogCloseBtn @click="uiState.isDetailsDialogVisible = false" />
+    <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
     <VCard>
       <VCardTitle class="text-h6">
@@ -793,8 +785,6 @@ onMounted(async () => {
 
         <VDivider class="my-3" />
 
-        <VDivider class="my-3" />
-
         <div>
           <VTable density="comfortable">
             <thead>
@@ -803,10 +793,10 @@ onMounted(async () => {
                 <th>نام</th>
                 <th>کد پرسنلی</th>
                 <th
-                  v-if="!selectedReservedMeal.status && selectedReservedMeal.details?.reduce(
+                  v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
                     (sum, detail) => sum + (detail.quantity || 0),
                     0,
-                  ) > 1"
+                  ) || 0) > 1"
                 >
                   عملیات
                 </th>
@@ -833,10 +823,10 @@ onMounted(async () => {
                   </VChip>
                 </td>
                 <td
-                  v-if="!selectedReservedMeal.status && selectedReservedMeal.details?.reduce(
+                  v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
                     (sum, detail) => sum + (detail.quantity || 0),
                     0,
-                  ) > 1"
+                  ) || 0) > 1"
                 >
                   <VBtn color="red" variant="text" size="small" @click="deletePersonnel(d.id)">
                     <VIcon icon="tabler-trash" size="20" />
