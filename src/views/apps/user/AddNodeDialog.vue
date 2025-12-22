@@ -116,6 +116,12 @@ function removeUser(userId) {
   selectedUsers.value = selectedUsers.value.filter(user => user.id !== userId)
 }
 
+function onSelectUserFromDialog(userIds) {
+  selectedUsers.value = props.users.filter(user =>
+    userIds.includes(user.id),
+  )
+}
+
 function onFormSubmit() {
   if (typeof selectedOrgUnit.value === 'string') {
     const name = selectedOrgUnit.value.trim()
@@ -265,5 +271,10 @@ function dialogModelValueUpdate(val) {
     </VCard>
   </VDialog>
 
-  <SelectUserDialog v-model:is-dialog-visible="uiState.isSelectUserDialogOpen" :users="props.users" />
+  <SelectUserDialog
+    v-model:is-dialog-visible="uiState.isSelectUserDialogOpen"
+    :users="props.users"
+    :selected-users="selectedUsers"
+    @select-user="onSelectUserFromDialog"
+  />
 </template>

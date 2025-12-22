@@ -9,12 +9,18 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+
+  selectedUsers: {
+    type: Array,
+    required: true,
+  },
 })
 
-const emit = defineEmits(['update:isDialogVisible'])
+const emit = defineEmits(['update:isDialogVisible', 'selectUser'])
 
 // ----- states -----
 const gridApi = shallowRef(null)
+const initialState = ref(null)
 
 // ----- start ag-grid -----
 
@@ -62,11 +68,29 @@ const autoGroupColumnDef = ref({
   filter: 'agGroupColumnFilter',
 })
 
+function addUsers() {
+  emit(
+    'selectUser',
+    gridApi.value.getSelectedRows().map(user => Number.parseInt(user.id)),
+  )
+  emit('update:isDialogVisible', false)
+}
 // ----- end ag-grid -----
 
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
+
+watch(
+  () => props.isDialogVisible,
+  (newVal) => {
+    if (newVal) {
+      initialState.value = {
+        rowSelection: props.selectedUsers.map(user => String(user.id)),
+      }
+    }
+  },
+)
 </script>
 
 <template>
@@ -81,8 +105,11 @@ function dialogModelValueUpdate(val) {
 
     <VRow>
       <VCol>
-        <VCard style="block-size: 100%;">
-          <VCardText style="block-size: 100%;">
+        <VCard style="block-size: 100%;" class="d-flex flex-column">
+          <VCardTitle class="ma-3">
+            انتخاب کاربران
+          </VCardTitle>
+          <VCardText>
             <section style="block-size: 100%;">
               <AgGridVue
                 style="block-size: 100%; inline-size: 100%;"
@@ -95,10 +122,17 @@ function dialogModelValueUpdate(val) {
                 cell-selection
                 :row-selection="rowSelection"
                 :theme="theme"
+                :initial-state="initialState"
                 @grid-ready="onGridReady"
               />
             </section>
           </VCardText>
+
+          <VCardActions>
+            <VBtn color="primary" @click="addUsers">
+              افزودن
+            </VBtn>
+          </VCardActions>
         </VCard>
       </VCol>
     </VRow>
