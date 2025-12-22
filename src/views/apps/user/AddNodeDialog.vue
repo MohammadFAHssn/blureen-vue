@@ -1,5 +1,6 @@
 <script setup>
 import Fuse from 'fuse.js'
+import { watch } from 'vue'
 import SelectUserDialog from './SelectUserDialog.vue'
 
 const props = defineProps({
@@ -145,6 +146,19 @@ function onFormReset() {
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
+
+watch(
+  () => props.isDialogVisible,
+  (newVal) => {
+    if (!newVal) {
+      // Reset form states
+      selectedOrgPosition.value = null
+      selectedOrgUnit.value = null
+      selectedUsers.value = []
+      userSearchQuery.value = ''
+    }
+  },
+)
 </script>
 
 <template>
