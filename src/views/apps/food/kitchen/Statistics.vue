@@ -179,7 +179,7 @@ const undeliveredMealTotals = computed(() => {
       </VCol>
 
       <div class="overflow-auto d-md-block">
-        <VCol cols="12" md="12">
+        <VCol v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" cols="12" md="12">
           <label class="font-weight-medium mb-4 d-block text-center">
             رزروهای بازه
           </label>
@@ -209,7 +209,7 @@ const undeliveredMealTotals = computed(() => {
             </VChip>
           </div>
 
-          <VTable v-if="!pendingState.fetchingReservedMeals">
+          <VTable>
             <thead>
               <tr>
                 <th>ردیف</th>
@@ -322,9 +322,13 @@ const undeliveredMealTotals = computed(() => {
               </tr>
             </tbody>
           </VTable>
-
-          <VSkeletonLoader v-else type="card" />
         </vcol>
+        <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+        <div v-else class="text-center">
+          <VChip color="error">
+            رزروی برای نمایش وجود ندارد
+          </VChip>
+        </div>
       </div>
     </VCol>
   </VRow>

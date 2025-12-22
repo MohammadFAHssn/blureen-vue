@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-// import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 // emit
 const emit = defineEmits(['back'])
@@ -13,20 +12,17 @@ const uiState = reactive({
   errorMessage: '',
   isCreateMealDialogVisible: false,
   isEditMealDialogVisible: false,
-  isDeleteMealDialogVisible: false,
 })
 const pendingState = reactive({
-  fetchingMeals: false,
+  fetchingMeals: true,
   createMeal: false,
   editMeal: false,
-  deleteMeal: false,
 })
 
 // data
 const meals = ref([])
 
 // choose
-const selectedMeals = ref([])
 const selectedMeal = ref([])
 
 // form
@@ -119,7 +115,7 @@ async function onConfirmEditMeal() {
   if (!isValid)
     return
 
-  pendingState.createMeal = true
+  pendingState.editMeal = true
 
   const formData = new FormData()
   formData.append('name', mealName.value)
@@ -155,35 +151,9 @@ async function onConfirmEditMeal() {
     console.error(err)
   }
   finally {
-    pendingState.createMeal = false
+    pendingState.editMeal = false
   }
 }
-// function onClickDelete(meal) {
-//   selectedMeal.value = meal
-//   uiState.isDeleteMealDialogVisible = true
-// }
-// async function onConfirmDelete() {
-//   pendingState.deleteMeal = true
-//   try {
-//     await $api(`/food/meal/${selectedMeal.value.id}`, {
-//       method: 'DELETE',
-//       onResponseError({ response }) {
-//         pendingState.deleteMeal = false
-//         uiState.hasError = true
-//         uiState.errorMessage = response._data.message || 'خطا در حذف'
-//       },
-//     })
-
-//     pendingState.deleteMeal = false
-//     uiState.isDeleteMealDialogVisible = false
-//     meals.value = meals.value.filter(
-//       meal => meal.id !== selectedMeal.value.id,
-//     )
-//   }
-//   catch (err) {
-//     console.error(err)
-//   }
-// }
 async function fetchMeals() {
   pendingState.fetchingMeals = true
   try {
@@ -205,7 +175,6 @@ await fetchMeals()
 function onResetForm() {
   mealName.value = null
 }
-
 function dialogModelValueUpdate(val) {
   uiState.isCreateMealDialogVisible = val
   uiState.isEditMealDialogVisible = val
@@ -253,7 +222,6 @@ function dialogModelValueUpdate(val) {
       <VTable v-if="meals.length > 0">
         <thead>
           <tr>
-            <th />
             <th>ردیف</th>
             <th>نام</th>
             <th>وضعیت</th>
@@ -264,10 +232,6 @@ function dialogModelValueUpdate(val) {
         </thead>
         <tbody>
           <tr v-for="(meal, index) in meals" :key="meal.id">
-            <td>
-              <VCheckbox v-model="selectedMeals" :value="meal.id" hide-details />
-            </td>
-
             <td>{{ index + 1 }}</td>
 
             <td>{{ meal.name }}</td>
@@ -293,7 +257,6 @@ function dialogModelValueUpdate(val) {
             <td>
               <VIcon icon="tabler-power" :color="meal.status ? 'red' : 'green'" size="24" @click="onChangeStatus(meal)" />
               <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(meal)" />
-              <!-- <VIcon icon="tabler-trash" color="red" size="24" @click="onClickDelete(meal)" /> -->
             </td>
           </tr>
         </tbody>
@@ -367,11 +330,11 @@ function dialogModelValueUpdate(val) {
           <VRow>
             <!-- Name -->
             <VCol cols="12" md="12">
-              <VInput :disabled="pendingState.createMeal">
+              <VInput :disabled="pendingState.editMeal">
                 <VTextField
                   v-model="mealName"
                   :rules="[requiredValidator]"
-                  :disabled="pendingState.createMeal"
+                  :disabled="pendingState.editMeal"
                   simple
                   label="نام"
                 />
@@ -380,7 +343,7 @@ function dialogModelValueUpdate(val) {
 
             <!-- Submit / Cancel -->
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit" :disabled="pendingState.createMeal" :loading="pendingState.createMeal">
+              <VBtn type="submit" :disabled="pendingState.editMeal" :loading="pendingState.editMeal">
                 ذخیره
               </VBtn>
 
@@ -393,13 +356,4 @@ function dialogModelValueUpdate(val) {
       </VCardText>
     </VCard>
   </VDialog>
-
-  <!-- Delete Meal Dialog -->
-  <!-- <AreYouSureDialog
-    v-if="uiState.isDeleteMealDialogVisible"
-    v-model:is-dialog-visible="uiState.isDeleteMealDialogVisible"
-    title="آیا از حذف این وعده اطمینان دارید؟"
-    :loading="pendingState.deleteMeal"
-    @confirm="onConfirmDelete"
-  /> -->
 </template>

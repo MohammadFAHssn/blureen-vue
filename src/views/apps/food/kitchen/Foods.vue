@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 // emit
 const emit = defineEmits(['back'])
@@ -13,24 +12,17 @@ const uiState = reactive({
   errorMessage: '',
   isCreateFoodDialogVisible: false,
   isEditFoodDialogVisible: false,
-  isDeleteFoodDialogVisible: false,
 })
 const pendingState = reactive({
-  fetchingFoods: false,
+  fetchingFoods: true,
   createFood: false,
   editFood: false,
-  deleteFood: false,
 })
 
 // data
-const _allStatus = ref([
-  { label: 'فعال', value: 1 },
-  { label: 'غیرفعال', value: 0 },
-])
 const foods = ref([])
 
 // choose
-const selectedFoods = ref([])
 const selectedFood = ref([])
 
 // form
@@ -139,7 +131,7 @@ async function onConfirmEditFood() {
   if (!isValid)
     return
 
-  pendingState.createFood = true
+  pendingState.editFood = true
 
   const formData = new FormData()
   formData.append('name', foodName.value)
@@ -176,33 +168,7 @@ async function onConfirmEditFood() {
     console.error(err)
   }
   finally {
-    pendingState.createFood = false
-  }
-}
-// function onClickDelete(food) {
-//   selectedFood.value = food
-//   uiState.isDeleteFoodDialogVisible = true
-// }
-async function onConfirmDelete() {
-  pendingState.deleteFood = true
-  try {
-    await $api(`/food/food/${selectedFood.value.id}`, {
-      method: 'DELETE',
-      onResponseError({ response }) {
-        pendingState.deleteFood = false
-        uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در حذف غذا'
-      },
-    })
-
-    pendingState.deleteFood = false
-    uiState.isDeleteFoodDialogVisible = false
-    foods.value = foods.value.filter(
-      food => food.id !== selectedFood.value.id,
-    )
-  }
-  catch (err) {
-    console.error(err)
+    pendingState.editFood = false
   }
 }
 async function fetchFoods() {
@@ -227,7 +193,6 @@ function onResetForm() {
   foodName.value = null
   foodPrice.value = null
 }
-
 function dialogModelValueUpdate(val) {
   uiState.isCreateFoodDialogVisible = val
   uiState.isEditFoodDialogVisible = val
@@ -266,16 +231,10 @@ function dialogModelValueUpdate(val) {
         />
       </VBtn>
     </div>
-    <VCard v-if="pendingState.fetchingFoods" class="text-center">
-      <VCardText>
-        <VProgressCircular indeterminate color="primary" />
-      </VCardText>
-    </VCard>
-    <div v-else>
-      <VTable v-if="foods.length > 0">
+    <div>
+      <VTable v-if="!pendingState.fetchingFoods && foods.length > 0">
         <thead>
           <tr>
-            <th />
             <th>ردیف</th>
             <th>نام</th>
             <th>وضعیت</th>
@@ -287,10 +246,6 @@ function dialogModelValueUpdate(val) {
         </thead>
         <tbody>
           <tr v-for="(food, index) in foods" :key="food.id">
-            <td>
-              <VCheckbox v-model="selectedFoods" :value="food.id" hide-details />
-            </td>
-
             <td>{{ index + 1 }}</td>
 
             <td>{{ food.name }}</td>
@@ -328,13 +283,15 @@ function dialogModelValueUpdate(val) {
             <td>
               <VIcon :disabled="food.id === 1" icon="tabler-power" :color="food.status ? 'red' : 'green'" size="24" @click="onChangeStatus(food)" />
               <VIcon :disabled="food.id === 1" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(food)" />
-              <!-- <VIcon icon="tabler-trash" color="red" size="24" @click="onClickDelete(food)" /> -->
             </td>
           </tr>
         </tbody>
       </VTable>
+      <VSkeletonLoader v-else-if="pendingState.fetchingFoods" type="card" />
       <div v-else class="text-center">
-        غذایی برای نمایش وجود ندارد
+        <VChip color="error">
+          غذایی برای نمایش وجود ندارد
+        </VChip>
       </div>
     </div>
   </div>
@@ -413,26 +370,13 @@ function dialogModelValueUpdate(val) {
 
         <VForm ref="refVForm" class="mt-6" validate-on="submit lazy" @submit.prevent="onConfirmEditFood">
           <VRow>
-            <!-- Name -->
-            <!-- <VCol cols="12" md="6">
-              <VInput :disabled="pendingState.createFood">
-                <VTextField
-                  v-model="foodName"
-                  :rules="[requiredValidator]"
-                  :disabled="pendingState.createFood"
-                  simple
-                  label="نام"
-                />
-              </VInput>
-            </VCol> -->
-
             <!-- Price -->
             <VCol cols="12" md="12">
               <VInput>
                 <VTextField
                   v-model="foodPrice"
                   :rules="[requiredValidator, ...countInputRules]"
-                  :disabled="pendingState.createFood"
+                  :disabled="pendingState.editFood"
                   simple
                   label="قیمت"
                 />
@@ -441,7 +385,7 @@ function dialogModelValueUpdate(val) {
 
             <!-- Submit / Cancel -->
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit" :disabled="pendingState.createFood" :loading="pendingState.createFood">
+              <VBtn type="submit" :disabled="pendingState.editFood" :loading="pendingState.editFood">
                 ذخیره
               </VBtn>
 
@@ -454,13 +398,4 @@ function dialogModelValueUpdate(val) {
       </VCardText>
     </VCard>
   </VDialog>
-
-  <!-- Delete Food Dialog -->
-  <AreYouSureDialog
-    v-if="uiState.isDeleteFoodDialogVisible"
-    v-model:is-dialog-visible="uiState.isDeleteFoodDialogVisible"
-    title="آیا از حذف این غذا اطمینان دارید؟"
-    :loading="pendingState.deleteFood"
-    @confirm="onConfirmDelete"
-  />
 </template>

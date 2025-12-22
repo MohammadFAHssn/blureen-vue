@@ -14,7 +14,7 @@ const uiState = reactive({
   isEditDialogVisible: false,
 })
 const pendingState = reactive({
-  fetchingPlans: false,
+  fetchingPlans: true,
   fetchingMeals: false,
   fetchingFoods: false,
   createPlan: false,
@@ -339,13 +339,13 @@ onMounted(async () => {
         </VCard>
 
         <div class="pa-3">
-          <VExpansionPanels variant="accordion">
+          <VExpansionPanels v-if="!pendingState.fetchingPlans && plans.length > 0" variant="accordion">
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
                 برنامه غذایی تاریخ انتخاب شده
               </VExpansionPanelTitle>
 
-              <VExpansionPanelText v-if="!pendingState.fetchingPlans">
+              <VExpansionPanelText>
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
                     v-for="(item, index) in plans"
@@ -375,9 +375,14 @@ onMounted(async () => {
                   </VExpansionPanel>
                 </VExpansionPanels>
               </VExpansionPanelText>
-              <VSkeletonLoader v-else type="card" />
             </VExpansionPanel>
           </VExpansionPanels>
+          <VSkeletonLoader v-else-if="pendingState.fetchingPlans" type="card" />
+          <div v-else class="text-center">
+            <VChip color="error">
+              برنامه غذایی برای نمایش وجود ندارد
+            </VChip>
+          </div>
         </div>
       </VCol>
     </VRow>

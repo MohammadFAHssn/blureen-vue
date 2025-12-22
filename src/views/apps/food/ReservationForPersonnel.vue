@@ -11,7 +11,7 @@ const uiState = reactive({
   isDetailsDialogVisible: false,
 })
 const pendingState = reactive({
-  fetchingReservedMeals: false,
+  fetchingReservedMeals: true,
   fetchingMeals: false,
   reserveMeal: false,
   deleteReservedMeal: false,
@@ -468,7 +468,7 @@ onMounted(async () => {
               />
             </VRadioGroup>
 
-            <VTable v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou'">
+            <VTable v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou' && sortedReservedMealsByUser.length > 0">
               <thead>
                 <tr>
                   <th>ردیف</th>
@@ -525,7 +525,7 @@ onMounted(async () => {
                 </tr>
               </tbody>
             </VTable>
-            <VTable v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'forYou'">
+            <VTable v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'forYou' && sortedReservedMealsForUser.length > 0">
               <thead>
                 <tr>
                   <th>ردیف</th>
@@ -563,7 +563,12 @@ onMounted(async () => {
                 </tr>
               </tbody>
             </VTable>
-            <VSkeletonLoader v-else type="card" />
+            <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+            <div v-else class="text-center">
+              <VChip color="error">
+                رزروی برای نمایش وجود ندارد
+              </VChip>
+            </div>
           </VCard>
         </div>
 
@@ -574,24 +579,24 @@ onMounted(async () => {
               <VExpansionPanelTitle class="font-weight-bold">
                 رزروهای تاریخ‌های انتخاب شده
               </VExpansionPanelTitle>
+              <VRadioGroup
+                v-model="reservationType"
+                :rules="[requiredValidator]"
+                class="mt-2"
+                inline
+                @change="onChange"
+              >
+                <VRadio
+                  label="توسط شما"
+                  value="byYou"
+                />
+                <VRadio
+                  label="برای شما"
+                  value="forYou"
+                />
+              </VRadioGroup>
 
-              <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou'">
-                <VRadioGroup
-                  v-model="reservationType"
-                  :rules="[requiredValidator]"
-                  class="mt-2"
-                  inline
-                  @change="onChange"
-                >
-                  <VRadio
-                    label="توسط شما"
-                    value="byYou"
-                  />
-                  <VRadio
-                    label="برای شما"
-                    value="forYou"
-                  />
-                </VRadioGroup>
+              <VExpansionPanelText v-if="!pendingState.fetchingReservedMeals && reservationType === 'byYou' && sortedReservedMealsByUser.length > 0">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
                     v-for="(item, index) in sortedReservedMealsByUser"
@@ -644,23 +649,7 @@ onMounted(async () => {
                   </VExpansionPanel>
                 </VExpansionPanels>
               </VExpansionPanelText>
-              <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'forYou'">
-                <VRadioGroup
-                  v-model="reservationType"
-                  :rules="[requiredValidator]"
-                  class="mt-2"
-                  inline
-                  @change="onChange"
-                >
-                  <VRadio
-                    label="توسط شما"
-                    value="byYou"
-                  />
-                  <VRadio
-                    label="برای شما"
-                    value="forYou"
-                  />
-                </VRadioGroup>
+              <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'forYou' && sortedReservedMealsForUser.length > 0">
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
                     v-for="(item, index) in sortedReservedMealsForUser"
@@ -698,7 +687,12 @@ onMounted(async () => {
                   </VExpansionPanel>
                 </VExpansionPanels>
               </VExpansionPanelText>
-              <VSkeletonLoader v-else type="card" />
+              <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+              <div v-else class="text-center">
+                <VChip color="error">
+                  رزروی برای نمایش وجود ندارد
+                </VChip>
+              </div>
             </VExpansionPanel>
           </VExpansionPanels>
         </div>
