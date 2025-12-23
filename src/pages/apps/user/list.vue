@@ -19,7 +19,39 @@ const users = ref([])
 
 const { theme } = useAGGridTheme()
 
-const columnDefs = ref([
+const rowData = computed(() =>
+  users.value?.map((user) => {
+    return {
+      personnelCode: Number.parseInt(user.personnel_code),
+      firstName: user.first_name,
+      lastName: user.last_name,
+      roles: user.roles?.map(role => role.name),
+      active: user.active,
+      nationalCode: user.profile?.national_code,
+      gender: user.profile?.gender,
+      fatherName: user.profile?.father_name,
+      birthPlace: user.profile?.birth_place,
+      birthDate: user.profile?.birth_date
+        ? moment(user.profile?.birth_date).format('jYYYY-jMM-jDD')
+        : null,
+      mobileNumber: user.profile?.mobile_number,
+      maritalStatus: user.profile?.marital_status,
+      employmentDate: user.profile?.employment_date
+        ? moment(user.profile?.employment_date).format('jYYYY-jMM-jDD')
+        : null,
+      startDate: user.profile?.start_date
+        ? moment(user.profile?.start_date).format('jYYYY-jMM-jDD')
+        : null,
+      educationLevel: user.profile?.education_level?.name,
+      workplace: user.profile?.workplace?.name,
+      workArea: user.profile?.work_area?.name,
+      costCenter: user.profile?.cost_center?.name,
+      jobPosition: user.profile?.job_position?.name,
+    }
+  }),
+)
+
+const allColumnDefs = [
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
@@ -47,20 +79,26 @@ const columnDefs = ref([
     headerName: 'تاریخ تولد',
     field: 'birthDate',
     valueFormatter: params =>
-      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+      params.value
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        : null,
   },
   { headerName: 'وضعیت تاهل', field: 'maritalStatus' },
   {
     headerName: 'تاریخ استخدام',
     field: 'employmentDate',
     valueFormatter: params =>
-      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+      params.value
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        : null,
   },
   {
     headerName: 'تاریخ شروع به کار',
     field: 'startDate',
     valueFormatter: params =>
-      params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
+      params.value
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        : null,
   },
   { headerName: 'سطح تحصیلات', field: 'educationLevel' },
   { headerName: 'محل کار', field: 'workplace' },
@@ -68,54 +106,29 @@ const columnDefs = ref([
   { headerName: 'مرکز هزینه', field: 'costCenter' },
   { headerName: 'سمت شغلی', field: 'jobPosition' },
   { headerName: 'شماره تلفن همراه', field: 'mobileNumber' },
-])
+]
 
-const rowData = computed(() =>
-  users.value?.map((user) => {
-    return {
-      personnelCode: Number.parseInt(user.personnel_code),
-      firstName: user.first_name,
-      lastName: user.last_name,
-      roles: user.roles?.map(role => role.name),
-      active: user.active,
-      nationalCode: user.profile?.national_code,
-      gender: user.profile?.gender,
-      fatherName: user.profile?.father_name,
-      birthPlace: user.profile?.birth_place,
-      birthDate: user.profile?.birth_date ? moment(user.profile?.birth_date).format('jYYYY-jMM-jDD') : null,
-      mobileNumber: user.profile?.mobile_number,
-      maritalStatus: user.profile?.marital_status,
-      employmentDate: user.profile?.employment_date
-        ? moment(user.profile?.employment_date).format(
-            'jYYYY-jMM-jDD',
-          )
-        : null,
-      startDate: user.profile?.start_date ? moment(user.profile?.start_date).format('jYYYY-jMM-jDD') : null,
-      educationLevel: user.profile?.education_level?.name,
-      workplace: user.profile?.workplace?.name,
-      workArea: user.profile?.work_area?.name,
-      costCenter: user.profile?.cost_center?.name,
-      jobPosition: user.profile?.job_position?.name,
-    }
-  }),
-)
+function columnHasData(field, data) {
+  return data.some((row) => {
+    const value = row[field]
+
+    if (Array.isArray(value)) return value.length > 0
+
+    return value !== null && value !== undefined && value !== ''
+  })
+}
+
+const columnDefs = computed(() => {
+  if (!rowData.value || rowData.value.length === 0) return allColumnDefs
+
+  return allColumnDefs.filter(col => columnHasData(col.field, rowData.value))
+})
 
 // ----- end ag-grid -----
 
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(
-      createUrl(
-        '/base/user',
-        {
-          query: {
-            'fields[users]': 'id,first_name,last_name,personnel_code,active',
-            'fields[roles]': 'name',
-            'include': 'roles,profile.educationLevel,profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition',
-          },
-        },
-      ),
-    )
+    const { data, error } = await useApi(createUrl('/base/user/details'))
 
     if (error.value) throw error.value
 
