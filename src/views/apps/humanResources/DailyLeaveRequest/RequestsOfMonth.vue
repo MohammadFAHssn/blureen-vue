@@ -16,23 +16,32 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ شروع',
     field: 'startDate',
+    maxWidth: 150,
     valueFormatter: params =>
       params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
   },
   {
     headerName: 'تاریخ پایان',
     field: 'endDate',
+    maxWidth: 150,
     valueFormatter: params =>
       params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
   },
 
-  { headerName: 'وضعیت', field: 'status' },
+  { headerName: 'وضعیت', field: 'status', maxWidth: 150 },
   {
     headerName: 'عملیات',
     field: 'actions',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
-    cellRendererSelector: () => ({ component: 'Actions', params: { onApproveClick: 5 } }),
+    cellRendererSelector: () => ({
+      component: 'Actions',
+      params: {
+        onEditClick,
+      },
+    }),
+    sortable: false,
+    maxWidth: 150,
   },
 ])
 
@@ -43,7 +52,14 @@ const rowData = computed(() =>
       startDate: item.start_date,
       endDate: item.end_date,
       status: item.status.title,
-      actions: { editable: true },
+      actions: {
+        editable: {
+          status: true,
+          mode: 'view',
+        },
+        deletable: true,
+      },
+
     }
   }),
 )
