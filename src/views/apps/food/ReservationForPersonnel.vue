@@ -242,18 +242,11 @@ async function fetchReservedMealsForDateForUser() {
 
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(createUrl('/base/user'))
-    if (error.value) {
-      setError('خطا در دریافت کاربران')
-      throw error.value
-    }
-
-    if (data.value?.data) {
-      users.value = data.value.data.map(u => ({
-        ...u,
-        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
-      }))
-    }
+    const { data } = await $api('/base/org-chart-node/user-subordinates', {
+      method: 'GET',
+      params: { user_id: useCookie('userData')?.value?.id },
+    })
+    users.value = (data || []).flat()
   }
   catch (e) {
     console.error('Unexpected error fetching users:', e)
@@ -418,7 +411,7 @@ onMounted(async () => {
               <VAutocomplete
                 v-model="selectedPersonnel"
                 :items="users"
-                item-title="fullName"
+                :item-title="item => `${item.first_name} ${item.last_name} - ${item.personnel_code}`"
                 item-value="id"
                 label="افراد"
                 multiple

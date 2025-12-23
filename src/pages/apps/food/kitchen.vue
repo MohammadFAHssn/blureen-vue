@@ -6,6 +6,14 @@ import MealPlan from '@/views/apps/food/kitchen/MealPlan.vue'
 import Meals from '@/views/apps/food/kitchen/Meals.vue'
 import Statistics from '@/views/apps/food/kitchen/Statistics.vue'
 
+definePage({
+  meta: {
+    layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Kitchen',
+  },
+})
+
 const current = ref('root')
 
 const componentsIcons = [

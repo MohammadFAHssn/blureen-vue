@@ -4,6 +4,14 @@ import { onMounted, ref } from 'vue'
 import ReservationForGuestAndContractor from '@/views/apps/food/ReservationForGuestAndContractor.vue'
 import ReservationForPersonnel from '@/views/apps/food/ReservationForPersonnel.vue'
 
+definePage({
+  meta: {
+    layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'read',
+    subject: 'Reserve-Food',
+  },
+})
+
 const reservationForPersonnel = ref(true)
 const reservationForGuestAndContractor = ref(false)
 
@@ -19,33 +27,25 @@ onMounted(() => {
       <VCol cols="12">
         <VCard class="mb-4 pa-8 text-center">
           <VRow align="center" justify="center" class="gap-4">
-            <VCol v-if="!can('use', 'reserve-for-others')" cols="auto">
-              <div class="text-h6 font-weight-bold text-primary-darken-3">
-                رزرو غذا
-              </div>
-            </VCol>
+            <VBtn
+              density="default"
+              @click="
+                reservationForPersonnel = true;
+                reservationForGuestAndContractor = false;
+              "
+            >
+              رزرو غذا
+            </VBtn>
 
-            <template v-if="can('use', 'reserve-for-others')">
-              <VBtn
-                density="default"
-                @click="
-                  reservationForPersonnel = true;
-                  reservationForGuestAndContractor = false;
-                "
-              >
-                رزرو غذا
-              </VBtn>
-
-              <VBtn
-                density="default"
-                @click="
-                  reservationForPersonnel = false;
-                  reservationForGuestAndContractor = true;
-                "
-              >
-                رزرو غذای مهمان/ پیمانکار
-              </VBtn>
-            </template>
+            <VBtn
+              density="default"
+              @click="
+                reservationForPersonnel = false;
+                reservationForGuestAndContractor = true;
+              "
+            >
+              رزرو غذای مهمان/ پیمانکار
+            </VBtn>
           </VRow>
         </VCard>
       </VCol>
