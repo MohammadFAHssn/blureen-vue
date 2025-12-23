@@ -12,6 +12,13 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
 // states
+const uiState = reactive({
+  success: false,
+  successMessage: '',
+  hasError: false,
+  errorMessage: '',
+  isEditRequestDialogVisible: false,
+})
 const refVForm = ref()
 const startDate = ref(props.request.start_date)
 const endDate = ref(props.request.end_date)
@@ -31,17 +38,31 @@ const startDateRules = [
 ]
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
-  () => !(endDate.value < startDate.value) || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+  () =>
+    !(endDate.value < startDate.value)
+    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
 
 function onFormSubmit() {
-  refVForm.value?.validate().then(({ valid: isValid }) => {
+  refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
-      emit('submit', {
-        requestId: props.request.id,
-        startDate: startDate.value,
-        endDate: endDate.value,
-      })
+      try {
+        await axiosInstance.patch(
+          '/hr-request/requests/update',
+          {
+            formData: {
+              requestId: props.request.id,
+              startDate,
+              endDate,
+            },
+          },
+        )
+        dialogModelValueUpdate(false)
+      }
+      catch (error) {
+        uiState.hasError = true
+        uiState.errorMessage = error.message ?? 'خطا هنگام بروزرسانی درخواست'
+      }
     }
   })
 }
@@ -51,6 +72,24 @@ function dialogModelValueUpdate(val) {
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
+  <VSnackbar
+    v-model="uiState.success"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="success"
+  >
+    {{ uiState.successMessage }}
+  </VSnackbar>
   <VDialog
     :width="$vuetify.display.smAndDown ? 'auto' : 900"
     :model-value="props.isDialogVisible"
@@ -117,14 +156,15 @@ function dialogModelValueUpdate(val) {
             </VCol>
 
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn
-                type="submit"
-                @click="refVForm?.validate()"
-              >
+              <VBtn type="submit" @click="refVForm?.validate()">
                 ذخیره
               </VBtn>
 
-              <VBtn color="secondary" variant="tonal" @click="emit('update:isDialogVisible', false)">
+              <VBtn
+                color="secondary"
+                variant="tonal"
+                @click="emit('update:isDialogVisible', false)"
+              >
                 انصراف
               </VBtn>
             </VCol>
