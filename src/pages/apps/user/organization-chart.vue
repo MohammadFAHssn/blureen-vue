@@ -5,6 +5,7 @@ import { useTheme } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
 import AddNodeDialog from '@/views/apps/user/AddNodeDialog.vue'
+import EditNodeDialog from '@/views/apps/user/EditNodeDialog.vue'
 
 import { getNodeContent } from './org-chart-utils'
 
@@ -22,6 +23,7 @@ const uiState = reactive({
   errorMessage: '',
   isDeleteNodeDialogOpen: false,
   isAddNodeDialogOpen: false,
+  isEditNodeDialogOpen: false,
 })
 
 const orgChartNodes = ref([])
@@ -165,7 +167,7 @@ function setupNodeActionButtons() {
 
     switch (action) {
       case 'edit':
-        handleEditNode(nodeId)
+        onEditNode(nodeId)
         break
       case 'add':
         onAddNode(nodeId)
@@ -177,8 +179,13 @@ function setupNodeActionButtons() {
   })
 }
 
-function handleEditNode(nodeId) {
-  console.log('Edit node:', nodeId)
+function onEditNode(nodeId) {
+  selectedNodeId.value = nodeId
+  uiState.isEditNodeDialogOpen = true
+}
+
+function handleEditNode() {
+  console.log('Edit node:')
 }
 
 function onAddNode(nodeId) {
@@ -245,6 +252,14 @@ onMounted(async () => {
     :org-units="orgUnits"
     :users="users"
     @add="handleAddNode"
+  />
+
+  <EditNodeDialog
+    v-model:is-dialog-visible="uiState.isEditNodeDialogOpen"
+    :org-positions="orgPositions"
+    :org-units="orgUnits"
+    :users="users"
+    @edit="handleEditNode"
   />
 </template>
 

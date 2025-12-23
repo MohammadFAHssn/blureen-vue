@@ -25,7 +25,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['add', 'update:isDialogVisible'])
+const emit = defineEmits(['edit', 'update:isDialogVisible'])
 
 const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 
@@ -139,7 +139,7 @@ function onFormSubmit() {
     orgUnits.value.push(selectedOrgUnit.value)
   }
 
-  emit('add', {
+  emit('edit', {
     orgPosition: selectedOrgPosition.value,
     orgUnit: selectedOrgUnit.value,
     users: selectedUsers.value,
