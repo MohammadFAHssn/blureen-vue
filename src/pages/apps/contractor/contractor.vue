@@ -4,8 +4,8 @@ import ContractorCreateDialog from '@/views/apps/contractor/ContractorCreateDial
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
-    action: 'use',
-    subject: 'app',
+    action: 'read',
+    subject: 'Contractor',
   },
 })
 
