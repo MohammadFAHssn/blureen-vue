@@ -38,6 +38,7 @@ const columnDefs = ref([
       component: 'Actions',
       params: {
         onEditClick,
+        onDeleteClick,
       },
     }),
     sortable: false,
@@ -79,8 +80,12 @@ async function getCurrentMonthRequests() {
     })
 }
 async function onEditClick(request) {
-  selectedRequest.value = request
+  selectedRequest.value = request.data.currentItem
   uiState.isEditRequestDialogVisible = true
+}
+async function onDeleteClick(request) {
+  // eslint-disable-next-line no-alert
+  alert(`delete${request.data.currentItem.id}`)
 }
 
 onMounted(() => {
