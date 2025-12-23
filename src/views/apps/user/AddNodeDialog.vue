@@ -91,6 +91,10 @@ function normalizeForFuse(parts) {
     .replace(/[\s\u200C]+/g, '')
 }
 
+function toComparisonKey(str) {
+  return (str || '').toString().replace(/[\s\u200C]+/g, '')
+}
+
 function guardBackspace(e) {
   if (e.key === 'Backspace' && !userSearchQuery.value) {
     e.stopPropagation()
@@ -135,7 +139,11 @@ function onFormSubmit() {
     orgUnits.value.push(selectedOrgUnit.value)
   }
 
-  emit('add')
+  emit('add', {
+    orgPosition: selectedOrgPosition.value,
+    orgUnit: selectedOrgUnit.value,
+    users: selectedUsers.value,
+  })
   emit('update:isDialogVisible', false)
 }
 
@@ -187,6 +195,7 @@ watch(
                 :items="props.orgPositions"
                 item-title="name"
                 item-value="id"
+                return-object
               />
             </VCol>
             <!-- 👉 Org unit -->

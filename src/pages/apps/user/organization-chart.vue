@@ -55,6 +55,7 @@ async function fetchOrgChartNodes() {
           parentId: orgChartNode.parent_id,
           orgPositionId: orgChartNode.org_position.id,
           orgPositionName: orgChartNode.org_position.name,
+          orgUnitId: orgChartNode.org_unit.id,
           orgUnitName: orgChartNode.org_unit.name,
           users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
         }
@@ -185,7 +186,18 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode() {}
+function handleAddNode({ orgPosition, orgUnit, users }) {
+  orgChartInstance.value.addNode({
+    // TODO: Use a better ID generation strategy
+    id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+    parentId: selectedNodeId.value,
+    orgPositionId: orgPosition.id,
+    orgPositionName: orgPosition.name,
+    orgUnitId: orgUnit.id,
+    orgUnitName: orgUnit.name,
+    users,
+  })
+}
 
 function onDeleteNode(nodeId) {
   selectedNodeId.value = nodeId
