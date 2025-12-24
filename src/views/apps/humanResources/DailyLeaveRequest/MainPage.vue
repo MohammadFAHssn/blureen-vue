@@ -53,7 +53,7 @@ async function onUserSelected(selected) {
   <VRow class="pa-2" dense>
     <VCol cols="12" md="6" class="mx-auto">
       <RemainingLeave :key="selectedUser.id" :user-id="selectedUser.id" />
-      <RequestForm :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="uiState.requestsKey++" />
+      <RequestForm :user-id="selectedUser.id" @created="uiState.requestsKey++" />
       <RequestsOfMonth :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>

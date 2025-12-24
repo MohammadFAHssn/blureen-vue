@@ -1,8 +1,5 @@
 <script setup>
 const props = defineProps({
-  requestTypeId: {
-    required: true,
-  },
   userId: {
     required: true,
   },
@@ -44,7 +41,7 @@ function onFormSubmit() {
     if (isValid) {
       try {
         const requestData = {
-          request_type_id: props.requestTypeId,
+          request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
           user_id: props.userId,
           start_date: startDate.value,
           end_date: endDate.value,
