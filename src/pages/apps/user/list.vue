@@ -80,7 +80,7 @@ const allColumnDefs = [
     field: 'birthDate',
     valueFormatter: params =>
       params.value
-        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jDD')
         : null,
   },
   { headerName: 'وضعیت تاهل', field: 'maritalStatus' },
@@ -89,7 +89,7 @@ const allColumnDefs = [
     field: 'employmentDate',
     valueFormatter: params =>
       params.value
-        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jDD')
         : null,
   },
   {
@@ -97,7 +97,7 @@ const allColumnDefs = [
     field: 'startDate',
     valueFormatter: params =>
       params.value
-        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
+        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jDD')
         : null,
   },
   { headerName: 'سطح تحصیلات', field: 'educationLevel' },
