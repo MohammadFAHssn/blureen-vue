@@ -34,6 +34,7 @@ const orgUnits = ref([])
 const users = ref([])
 
 const selectedNodeId = ref(null)
+const selectedNode = ref(null)
 
 const vuetifyTheme = useTheme()
 
@@ -55,10 +56,8 @@ async function fetchOrgChartNodes() {
         return {
           id: orgChartNode.id,
           parentId: orgChartNode.parent_id,
-          orgPositionId: orgChartNode.org_position.id,
-          orgPositionName: orgChartNode.org_position.name,
-          orgUnitId: orgChartNode.org_unit.id,
-          orgUnitName: orgChartNode.org_unit.name,
+          orgPosition: orgChartNode.org_position,
+          orgUnit: orgChartNode.org_unit,
           users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
         }
       })
@@ -180,12 +179,13 @@ function setupNodeActionButtons() {
 }
 
 function onEditNode(nodeId) {
-  selectedNodeId.value = nodeId
+  const chartState = orgChartInstance.value.getChartState()
+  const node = chartState.allNodes.find(node => String(node.data.id) === String(nodeId))
+  selectedNode.value = node.data
   uiState.isEditNodeDialogOpen = true
 }
 
 function handleEditNode() {
-  console.log('Edit node:')
 }
 
 function onAddNode(nodeId) {
@@ -198,10 +198,8 @@ function handleAddNode({ orgPosition, orgUnit, users }) {
     // TODO: Use a better ID generation strategy
     id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
     parentId: selectedNodeId.value,
-    orgPositionId: orgPosition.id,
-    orgPositionName: orgPosition.name,
-    orgUnitId: orgUnit.id,
-    orgUnitName: orgUnit.name,
+    orgPosition,
+    orgUnit,
     users,
   })
 }
@@ -259,6 +257,7 @@ onMounted(async () => {
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
+    :node="selectedNode"
     @edit="handleEditNode"
   />
 </template>

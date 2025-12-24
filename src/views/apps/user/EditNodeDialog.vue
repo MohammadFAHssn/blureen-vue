@@ -23,6 +23,11 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+
+  node: {
+    type: Object,
+    required: false,
+  },
 })
 
 const emit = defineEmits(['edit', 'update:isDialogVisible'])
@@ -158,11 +163,11 @@ function dialogModelValueUpdate(val) {
 watch(
   () => props.isDialogVisible,
   (newVal) => {
-    if (!newVal) {
+    if (newVal) {
       // Reset form states
-      selectedOrgPosition.value = null
-      selectedOrgUnit.value = null
-      selectedUsers.value = []
+      selectedOrgPosition.value = props.node.orgPosition
+      selectedOrgUnit.value = props.node.orgUnit
+      selectedUsers.value = props.node.users
       userSearchQuery.value = ''
     }
   },

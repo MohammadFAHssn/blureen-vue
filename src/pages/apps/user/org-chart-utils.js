@@ -2,7 +2,7 @@ import { ORG_POSITION_COLORS } from '@/utils/constants'
 
 export function getNodeContent(d) {
   const orgPositionColor
-    = ORG_POSITION_COLORS[d.data.orgPositionId]
+    = ORG_POSITION_COLORS[d.data.orgPosition.id]
       || 'rgb(var(--v-theme-on-secondary))'
 
   return `
@@ -45,11 +45,11 @@ export function getNodeContent(d) {
         </div>
         <!-- OrgPosition (top) -->
         <div class="org-position" style="background-color: ${orgPositionColor};">
-          ${d.data.orgPositionName}
+          ${d.data.orgPosition.name}
         </div>
         <!-- OrgUnit (middle) -->
         <div class="org-unit">
-          ${d.data.orgUnitName}
+          ${d.data.orgUnit.name}
         </div>
       </div>
     </div>
