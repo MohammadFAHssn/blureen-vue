@@ -1,6 +1,6 @@
 <script setup>
 import BereavementLeaveRequest from '@/views/apps/humanResources/BereavementLeaveRequest/BereavementLeaveRequest.vue'
-import DailyLeaveRequestPage from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeaveRequestPage.vue'
+import MainPage from '@/views/apps/humanResources/DailyLeaveRequest/MainPage.vue'
 import HourlyLeaveRequest from '@/views/apps/humanResources/HourlyLeaveRequest/HourlyLeaveRequest.vue'
 import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
 
@@ -17,7 +17,7 @@ const leaveTypes = [
 ]
 
 const pages = {
-  daily: DailyLeaveRequestPage,
+  daily: MainPage,
   hourly: HourlyLeaveRequest,
   marriage: MarriageLeaveRequest,
   funeral: BereavementLeaveRequest,

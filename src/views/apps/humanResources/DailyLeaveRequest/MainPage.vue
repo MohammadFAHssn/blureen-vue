@@ -1,5 +1,5 @@
 <script setup>
-import DailyLeaveRequestForm from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeaveRequestForm.vue'
+import RequestForm from '@/views/apps/humanResources/DailyLeaveRequest/RequestForm.vue'
 import RequestsOfMonth from '@/views/apps/humanResources/DailyLeaveRequest/RequestsOfMonth.vue'
 import RemainingLeave from '@/views/apps/humanResources/RemainingLeave.vue'
 import SelectUserSubOrdinate from '@/views/apps/humanResources/SelectUserSubOrdinate.vue'
@@ -53,7 +53,7 @@ async function onUserSelected(selected) {
   <VRow class="pa-2" dense>
     <VCol cols="12" md="6" class="mx-auto">
       <RemainingLeave :key="selectedUser.id" :user-id="selectedUser.id" />
-      <DailyLeaveRequestForm :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="uiState.requestsKey++" />
+      <RequestForm :user-id="selectedUser.id" :request-type-id="HR_REQUEST_TYPES.DAILY_LEAVE" @created="uiState.requestsKey++" />
       <RequestsOfMonth :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>

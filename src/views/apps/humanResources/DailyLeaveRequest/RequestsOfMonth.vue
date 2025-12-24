@@ -1,5 +1,5 @@
 <script setup>
-import EditDailyLeaveRequestDialog from '@/views/apps/humanResources/DailyLeaveRequest/EditDailyLeaveRequestDialog.vue'
+import EditRequestDialog from '@/views/apps/humanResources/DailyLeaveRequest/EditRequestDialog.vue'
 
 const props = defineProps({
   userId: {
@@ -120,7 +120,7 @@ onMounted(() => {
   >
     {{ uiState.successMessage }}
   </VSnackbar>
-  <EditDailyLeaveRequestDialog
+  <EditRequestDialog
     v-if="uiState.isEditRequestDialogVisible"
     v-model:is-dialog-visible="uiState.isEditRequestDialogVisible"
     :request="selectedRequest"
