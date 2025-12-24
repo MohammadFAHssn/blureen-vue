@@ -1,6 +1,11 @@
 <script setup>
 import EditDailyLeaveRequestDialog from '@/views/apps/humanResources/DailyLeaveRequest/EditDailyLeaveRequestDialog.vue'
 
+const props = defineProps({
+  userId: {
+    required: true,
+  },
+})
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -67,9 +72,12 @@ const rowData = computed(() =>
 async function getCurrentMonthRequests() {
   loading.value = true
   await axiosInstance
-    .get(
-      `/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.DAILY_LEAVE}`,
-    )
+    .get('/hr-request/requests/get-user-requests', {
+      params: {
+        user_id: props.userId,
+        request_type: HR_REQUEST_TYPES.DAILY_LEAVE,
+      },
+    })
     .then(({ data }) => {
       loading.value = false
       currentMonthRequests.value = data.data
@@ -127,7 +135,7 @@ onMounted(() => {
         <VSkeletonLoader v-if="loading" type="card" />
         <AgGridVue
           v-else
-          style="block-size: 100%; inline-size: 100%;"
+          style="block-size: 100%; inline-size: 100%"
           :column-defs="columnDefs"
           :row-data="rowData"
           enable-rtl
@@ -142,9 +150,7 @@ onMounted(() => {
     <VExpansionPanels variant="accordion">
       <VExpansionPanel>
         <VExpansionPanelTitle>
-          <span class="font-weight-medium">
-            مرخصی‌های روزانه ماه جاری
-          </span>
+          <span class="font-weight-medium"> مرخصی‌های روزانه ماه جاری </span>
         </VExpansionPanelTitle>
 
         <VExpansionPanelText>
@@ -155,9 +161,7 @@ onMounted(() => {
               cols="12"
             >
               <VCard outlined class="pa-3 mb-3">
-                <div>
-                  <strong>تاریخ شروع:</strong> {{ item.start_date }}
-                </div>
+                <div><strong>تاریخ شروع:</strong> {{ item.start_date }}</div>
                 <div><strong>تاریخ پایان:</strong> {{ item.end_date }}</div>
 
                 <div class="d-flex align-center mt-1">

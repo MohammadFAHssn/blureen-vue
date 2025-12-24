@@ -19,7 +19,7 @@ async function getRemainingLeave() {
   try {
     const { data } = await axiosInstance.get('/kasra/reports/get-remaining-leave', {
       params: {
-        user_id: 5869 ?? props.userId,
+        user_id: props.userId,
       },
     })
     Loading.value = false
