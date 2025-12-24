@@ -1,6 +1,6 @@
 <script setup>
+import EligibilityRules from '@/views/apps/food/rep/EligibilityRules.vue'
 import Exceptions from '@/views/apps/food/rep/Exceptions.vue'
-import Limitations from '@/views/apps/food/rep/Limitations.vue'
 import Report from '@/views/apps/food/rep/Report.vue'
 
 definePage({
@@ -14,14 +14,14 @@ definePage({
 const current = ref('root')
 
 const componentsIcons = [
+  { key: 'eligibilityRules', label: 'محدودیت‌های زمانی', icon: 'tabler-clock-hour-4' },
   { key: 'exceptions', label: 'استثنائات', icon: 'tabler-user-check' },
-  { key: 'limitations', label: 'محدودیت‌های زمانی', icon: 'tabler-clock-hour-4' },
   { key: 'report', label: 'گزارش', icon: 'tabler-report-analytics' },
 ]
 
 const pages = {
+  eligibilityRules: EligibilityRules,
   exceptions: Exceptions,
-  limitations: Limitations,
   report: Report,
 }
 
