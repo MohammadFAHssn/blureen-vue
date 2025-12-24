@@ -106,7 +106,7 @@ async function onCreateRule() {
     pendingState.createEligibilityRule = false
   }
 }
-function onClickDelete(eligibilityRule) {
+function _onClickDelete(eligibilityRule) {
   selectedEligibilityRule.value = eligibilityRule
   uiState.isDeleteDialogVisible = true
 }
@@ -296,7 +296,7 @@ onMounted(async () => {
             </td>
 
             <td>
-              <VIcon icon="tabler-trash" color="red" size="24" @click="onClickDelete(eligibilityRule)" />
+              <!-- <VIcon icon="tabler-trash" color="red" size="24" @click="_onClickDelete(eligibilityRule)" /> -->
               <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(eligibilityRule)" />
             </td>
           </tr>
