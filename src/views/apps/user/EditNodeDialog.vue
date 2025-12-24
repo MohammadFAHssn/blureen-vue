@@ -145,6 +145,8 @@ function onFormSubmit() {
   }
 
   emit('edit', {
+    id: props.node.id,
+    parentId: props.node.parentId,
     orgPosition: selectedOrgPosition.value,
     orgUnit: selectedOrgUnit.value,
     users: selectedUsers.value,
@@ -286,7 +288,7 @@ watch(
           <VRow>
             <VCol cols="12" class="d-flex justify-center gap-4">
               <VBtn type="submit">
-                افزودن
+                ویرایش
               </VBtn>
 
               <VBtn color="secondary" variant="tonal" @click="onFormReset">

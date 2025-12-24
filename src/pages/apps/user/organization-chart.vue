@@ -185,7 +185,12 @@ function onEditNode(nodeId) {
   uiState.isEditNodeDialogOpen = true
 }
 
-function handleEditNode() {
+function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
+  orgChartNodes.value = orgChartNodes.value.filter(
+    node => node.id !== id,
+  )
+  orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
+  orgChartInstance.value.data(orgChartNodes.value).render()
 }
 
 function onAddNode(nodeId) {
