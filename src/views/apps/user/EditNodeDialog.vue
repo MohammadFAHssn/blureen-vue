@@ -26,7 +26,7 @@ const props = defineProps({
 
   node: {
     type: Object,
-    required: false,
+    required: true,
   },
 })
 
@@ -35,6 +35,8 @@ const emit = defineEmits(['edit', 'update:isDialogVisible'])
 const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 
 // ----- states -----
+const refVForm = ref()
+
 const uiState = reactive({
   isSelectUserDialogOpen: false,
 })
@@ -133,25 +135,30 @@ function onSelectUserFromDialog(userIds) {
 }
 
 function onFormSubmit() {
-  if (typeof selectedOrgUnit.value === 'string') {
-    const name = selectedOrgUnit.value.trim()
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      if (typeof selectedOrgUnit.value === 'string') {
+        const name = selectedOrgUnit.value.trim()
 
-    selectedOrgUnit.value = {
-      id: crypto.randomUUID(),
-      name,
+        selectedOrgUnit.value = {
+          // TODO: Replace with real ID from backend
+          id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+          name,
+        }
+
+        orgUnits.value.push(selectedOrgUnit.value)
+      }
+
+      emit('edit', {
+        id: props.node.id,
+        parentId: props.node.parentId,
+        orgPosition: selectedOrgPosition.value,
+        orgUnit: selectedOrgUnit.value,
+        users: selectedUsers.value,
+      })
+      emit('update:isDialogVisible', false)
     }
-
-    orgUnits.value.push(selectedOrgUnit.value)
-  }
-
-  emit('edit', {
-    id: props.node.id,
-    parentId: props.node.parentId,
-    orgPosition: selectedOrgPosition.value,
-    orgUnit: selectedOrgUnit.value,
-    users: selectedUsers.value,
   })
-  emit('update:isDialogVisible', false)
 }
 
 function onFormReset() {
@@ -192,7 +199,7 @@ watch(
           افزودن گره جدید
         </h6>
         <!-- 👉 Form -->
-        <VForm @submit.prevent="onFormSubmit">
+        <VForm ref="refVForm" validate-on="submit lazy" @submit.prevent="onFormSubmit">
           <VRow>
             <!-- 👉 Org Position -->
             <VCol cols="12" md="6">
@@ -203,6 +210,7 @@ watch(
                 item-title="name"
                 item-value="id"
                 return-object
+                :rules="[requiredValidator]"
               />
             </VCol>
             <!-- 👉 Org unit -->
@@ -213,6 +221,7 @@ watch(
                 :items="orgUnits"
                 item-title="name"
                 item-value="id"
+                :rules="[requiredValidator]"
                 @update:model-value="onOrgUnitComboboxUpdate"
               />
             </VCol>
@@ -231,6 +240,7 @@ watch(
                 label="کاربران"
                 :no-filter="true"
                 return-object
+                :rules="[requiredValidator]"
                 @keydown.capture="guardBackspace"
               >
                 <template #selection />

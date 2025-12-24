@@ -58,7 +58,7 @@ async function fetchOrgChartNodes() {
           parentId: orgChartNode.parent_id,
           orgPosition: orgChartNode.org_position,
           orgUnit: orgChartNode.org_unit,
-          users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
+          users: orgChartNode.users,
         }
       })
     })
