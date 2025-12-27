@@ -101,9 +101,11 @@ async function fetchUsers() {
       createUrl('/base/user', {
         query: {
           'fields[users]': 'id,first_name,last_name,personnel_code',
-          'fields[profiles]': 'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
+          'fields[profiles]':
+            'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
           'filter[active]': '1',
-          'include': 'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition,avatar',
+          'include':
+            'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition,avatar',
         },
       }).value,
     )
@@ -114,6 +116,22 @@ async function fetchUsers() {
       console.error('Error fetching users:', error)
       uiState.hasError = true
       uiState.errorMessage = error.message || 'خطا در دریافت کاربران'
+    })
+}
+
+async function updateOrganizationChart() {
+  const chartState = orgChartInstance.value.getChartState()
+  orgChartNodes.value = chartState.allNodes.map(node => node.data)
+
+  await axiosInstance
+    .put('/base/org-chart-node/update', {
+      orgChartNodes: orgChartNodes.value,
+    })
+    .then(() => {})
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در بروزرسانی چارت سازمانی'
     })
 }
 
@@ -180,15 +198,15 @@ function setupNodeActionButtons() {
 
 function onEditNode(nodeId) {
   const chartState = orgChartInstance.value.getChartState()
-  const node = chartState.allNodes.find(node => String(node.data.id) === String(nodeId))
+  const node = chartState.allNodes.find(
+    node => String(node.data.id) === String(nodeId),
+  )
   selectedNode.value = node.data
   uiState.isEditNodeDialogOpen = true
 }
 
 function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
-  orgChartNodes.value = orgChartNodes.value.filter(
-    node => node.id !== id,
-  )
+  orgChartNodes.value = orgChartNodes.value.filter(node => node.id !== id)
   orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
   orgChartInstance.value.data(orgChartNodes.value).render()
 }
@@ -265,6 +283,15 @@ onMounted(async () => {
     :node="selectedNode"
     @edit="handleEditNode"
   />
+
+  <IconBtn
+    size="x-large"
+    variant="elevated"
+    color="primary"
+    @click="updateOrganizationChart"
+  >
+    <VIcon icon="tabler-device-floppy" size="35" />
+  </IconBtn>
 </template>
 
 <style lang="scss" scoped src="./organization-chart.scss"></style>

@@ -1,5 +1,6 @@
 .org-chart-container {
   overflow: hidden !important;
+  block-size: 97%;
 
   :deep(.org-chart-card) {
     display: flex;
