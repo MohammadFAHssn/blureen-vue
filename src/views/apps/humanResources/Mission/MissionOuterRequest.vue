@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-import MissionOuterBandarRequest from '@/views/apps/humanResources/MissionOuterBandarRequest.vue'
-import MissionOuterOtherRequest from '@/views/apps/humanResources/MissionOuterOtherRequest.vue'
-import MissionOuterTehranRequest from '@/views/apps/humanResources/MissionOuterTehranRequest.vue'
+import MissionOuterBandarRequest from '@/views/apps/humanResources/Mission/MissionOuterBandarRequest.vue'
+import MissionOuterOtherRequest from '@/views/apps/humanResources/Mission/MissionOuterOtherRequest.vue'
+import MissionOuterTehranRequest from '@/views/apps/humanResources/Mission/MissionOuterTehranRequest.vue'
 
 const emit = defineEmits(['back'])
 const current = ref('root')

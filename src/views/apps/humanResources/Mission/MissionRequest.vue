@@ -1,6 +1,6 @@
 <script setup>
-import MissionInnerRequest from '@/views/apps/humanResources/MissionInnerRequest.vue'
-import MissionOuterRequest from '@/views/apps/humanResources/MissionOuterRequest.vue'
+import MissionInnerRequest from '@/views/apps/humanResources/Mission/MissionInnerRequest.vue'
+import MissionOuterRequest from '@/views/apps/humanResources/Mission/MissionOuterRequest.vue'
 
 const emit = defineEmits(['back'])
 const current = ref('root')

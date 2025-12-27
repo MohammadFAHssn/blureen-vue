@@ -1,7 +1,7 @@
 <script setup>
-import BereavementLeaveRequest from '@/views/apps/humanResources/BereavementLeaveRequest/BereavementLeaveRequest.vue'
-import DailyLeave from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeave.vue'
-import HourlyLeave from '@/views/apps/humanResources/HourlyLeaveRequest/HourlyLeave.vue'
+import BereavementLeaveRequest from '@/views/apps/humanResources/LeaveRequest/BereavementLeave/BereavementLeaveRequest.vue'
+import DailyLeave from '@/views/apps/humanResources/LeaveRequest/DailyLeave/DailyLeave.vue'
+import HourlyLeave from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/HourlyLeave.vue'
 import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
 
 // تعریف emit

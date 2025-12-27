@@ -1,8 +1,8 @@
 <script setup>
 import AttendanceRequest from '@/views/apps/humanResources/AttendanceRequest/AttendanceRequest.vue'
-import LeaveRequestPage from '@/views/apps/humanResources/LeaveRequestPage.vue'
-import MissionRequest from '@/views/apps/humanResources/MissionRequest.vue'
-import OvertimeRequest from '@/views/apps/humanResources/OvertimeRequest.vue'
+import LeaveRequestPage from '@/views/apps/humanResources/LeaveRequest/LeaveRequestPage.vue'
+import MissionRequest from '@/views/apps/humanResources/Mission/MissionRequest.vue'
+import OvertimeRequest from '@/views/apps/humanResources/OvertimeRequest/OvertimeRequest.vue'
 import SickRequest from '@/views/apps/humanResources/SickRequest.vue'
 
 const current = ref('root')
