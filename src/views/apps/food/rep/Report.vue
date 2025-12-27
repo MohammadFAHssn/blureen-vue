@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted } from 'vue'
 import ReportGetDialog from '@/views/apps/food/rep/ReportGetDialog.vue'
 // emit
 const emit = defineEmits(['back'])
@@ -17,20 +16,22 @@ function goBack() {
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  isExceptionCreateDialogVisible: false,
+  isReportGetDialogVisible: false,
 })
 
 const pendingState = reactive({
-  fetchingsExceptions: false,
-  getReport: false,
-  changeStatus: false,
+  fetchingReports: false,
+  fetchingMeals: false,
 })
 
-const exceptions = ref([])
-const users = ref([])
+function setError(message) {
+  uiState.hasError = true
+  uiState.errorMessage = message
+}
+
+const reports = ref([])
 const meals = ref([])
 
-const selectedNodes = ref([])
 const gridApi = ref(null)
 
 // ----- start ag-grid -----
@@ -38,172 +39,45 @@ const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
   gridApi.value = params.api
-  gridApi.value.setGridOption('loading', true)
+  gridApi.value.setGridOption('loading', false)
 }
 
 const columnDefs = ref([
   { headerName: 'نام', field: 'fullName' },
   { headerName: 'کد پرسنلی', field: 'userName' },
   { headerName: 'وعده', field: 'mealName' },
-  {
-    headerName: 'وضعیت',
-    field: 'status',
-    cellRenderer: 'Active',
-    cellStyle: { 'display': 'flex', 'align-items': 'center' },
-    filterParams: {
-      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
-    },
-  },
-  // { headerName: 'ایجاد شده توسط', field: 'createdBy' },
-  // { headerName: 'آخرین ویرایش توسط', field: 'editedBy' },
-  // {
-  //   headerName: 'تاریخ ایجاد',
-  //   field: 'createdAt',
-  //   valueFormatter: params =>
-  //     moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
-  //       'jYYYY/jMM/jD HH:mm:ss',
-  //     ),
-  // },
-  // {
-  //   headerName: 'تاریخ آخرین ویرایش',
-  //   field: 'updatedAt',
-  //   valueFormatter: params =>
-  //     moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
-  //       'jYYYY/jMM/jD HH:mm:ss',
-  //     ),
-  // },
-  {
-    headerName: 'عملیات',
-    field: 'actions',
-    cellRendererSelector: (_params) => {
-      return {
-        component: 'Actions',
-        params: {
-          onStatusClick: (selectedNode) => {
-            selectedNodes.value = [selectedNode]
-            onChangeStatusClick()
-          },
-        },
-      }
-    },
-  },
+  { headerName: 'تاریخ', field: 'date' },
 ])
 
 const rowData = computed(() =>
-  exceptions.value?.map((exception) => {
+  reports.value?.map((report) => {
     return {
-      id: exception.id,
-      fullName: exception.user.fullName,
-      userName: exception.user.username,
-      mealName: exception.meal.name,
-      status: exception.status,
-      // createdBy: exception.createdBy?.fullName || '--',
-      // editedBy: exception.editedBy?.fullName || '--',
-      // createdAt: moment(exception.createdAt).format('jYYYY-jMM-jDD HH:mm:ss'),
-      // updatedAt: moment(exception.updatedAt).format('jYYYY-jMM-jDD HH:mm:ss'),
-      actions: {
-        status: true,
-      },
+      id: report.id,
+      fullName: report.user.fullName,
+      userName: report.user.username,
+      mealName: report.meal.name,
+      date: report.date,
     }
   }),
 )
 // ----- end ag-grid -----
 
-async function fetchExceptions() {
-  pendingState.fetchingsExceptions = true
-  gridApi.value?.setGridOption('loading', true)
+async function onFetchReport(payload) {
+  pendingState.fetchingReports = true
   try {
-    const res = await $api('/food/exception', { method: 'GET' })
+    const res = await $api('/food/report', { params: {
+      'date[]': payload.date,
+      'meal_id': payload.meal,
+    }, method: 'GET' })
 
-    exceptions.value = res?.data?.mealReservationExceptions || []
+    reports.value = res?.data.reports || []
   }
   catch (e) {
-    console.error('Error fetching exceptions:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت پیمانکاران'
+    console.error('Error fetching reports:', e)
+    setError(e.message || 'خطا در دریافت گزارش')
   }
   finally {
-    pendingState.fetchingsExceptions = false
-    gridApi.value?.setGridOption('loading', false)
-  }
-}
-
-fetchExceptions()
-
-async function onCreateException(payload) {
-  pendingState.getReport = true
-
-  try {
-    await $api('/food/exception', {
-      method: 'POST',
-      body: {
-        meal_id: payload.selectedMeal,
-        users: payload.selectedPersonnels,
-      },
-      onResponseError({ response }) {
-        uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage = response._data?.message || 'خطا در ایجاد استثناء'
-        }
-      },
-    })
-
-    uiState.isExceptionCreateDialogVisible = false
-  }
-  catch (err) {
-    console.error(err)
-  }
-  finally {
-    pendingState.getReport = false
-    fetchExceptions()
-  }
-}
-
-async function onChangeStatusClick() {
-  const id = selectedNodes.value[0].data.id
-  pendingState.changeStatus = true
-  try {
-    await $api(`/food/exception/status/${id}`, {
-      method: 'POST',
-      onResponseError({ response }) {
-        pendingState.changeStatus = false
-        uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در تغییر وضعیت'
-      },
-    })
-
-    const index = exceptions.value.findIndex(item => item.id === id)
-    if (index !== -1) {
-      exceptions.value[index].status = exceptions.value[index].status === 1 ? 0 : 1
-    }
-  }
-  catch (err) {
-    console.error(err)
-  }
-}
-
-async function fetchUsers() {
-  try {
-    const { data, error } = await useApi(createUrl('/base/user'))
-    if (error.value) {
-      setError('خطا در دریافت کاربران')
-      throw error.value
-    }
-
-    if (data.value?.data) {
-      users.value = data.value.data.map(u => ({
-        ...u,
-        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
-      }))
-    }
-  }
-  catch (e) {
-    console.error('Unexpected error fetching users:', e)
-    setError('خطای غیرمنتظره در دریافت کاربران')
+    pendingState.fetchingReports = false
   }
 }
 async function fetchMeals() {
@@ -222,7 +96,7 @@ async function fetchMeals() {
   }
 }
 onMounted(async () => {
-  await Promise.all([fetchMeals(), fetchUsers()])
+  await Promise.all([fetchMeals()])
 })
 </script>
 
@@ -263,12 +137,11 @@ onMounted(async () => {
     </section>
 
     <ReportGetDialog
-      v-if="uiState.isExceptionCreateDialogVisible"
-      v-model:is-dialog-visible="uiState.isExceptionCreateDialogVisible"
-      :loading="pendingState.getReport"
+      v-if="uiState.isReportGetDialogVisible"
+      v-model:is-dialog-visible="uiState.isReportGetDialogVisible"
+      :loading="pendingState.fetchingReports"
       :meals="meals"
-      :users="users"
-      @submit="onCreateException"
+      @submit="onFetchReport"
     />
 
     <VApp>
@@ -276,7 +149,7 @@ onMounted(async () => {
         app
         icon="tabler-search"
         size="x-large"
-        @click="uiState.isExceptionCreateDialogVisible = true"
+        @click="uiState.isReportGetDialogVisible = true"
       />
     </VApp>
   </VLayout>
