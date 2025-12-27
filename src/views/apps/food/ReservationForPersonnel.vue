@@ -198,7 +198,7 @@ async function fetchReservedMealsForDateByUser() {
   pendingState.fetchingReservedMeals = true
 
   try {
-    const res = await $api('/food/meal-reservation/get-reservations-for-personnel-by-user-on-date', {
+    const res = await $api('/food/meal-reservation/get-for-personnel-by-user-on-date', {
       method: 'GET',
       params: {
         'date[]': reserveDates.value,
@@ -222,7 +222,7 @@ async function fetchReservedMealsForDateForUser() {
   pendingState.fetchingReservedMeals = true
 
   try {
-    const res = await $api('/food/meal-reservation/get-reservations-for-user-by-others-on-date', {
+    const res = await $api('/food/meal-reservation/get-for-user-by-others-on-date', {
       method: 'GET',
       params: {
         'date[]': reserveDates.value,

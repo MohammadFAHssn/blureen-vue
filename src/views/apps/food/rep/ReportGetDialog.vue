@@ -12,10 +12,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  users: {
-    type: Array,
-    required: true,
-  },
 })
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
@@ -64,7 +60,7 @@ function dialogModelValueUpdate(val) {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          تهیه گزارش
+          دریافت گزارش
         </h4>
         <VForm
           ref="refVForm"

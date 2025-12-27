@@ -26,6 +26,11 @@ const pendingState = reactive({
   changeStatus: false,
 })
 
+function setError(message) {
+  uiState.hasError = true
+  uiState.errorMessage = message
+}
+
 const exceptions = ref([])
 const users = ref([])
 const meals = ref([])
