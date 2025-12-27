@@ -2,7 +2,7 @@
 import AttendanceRequest from '@/views/apps/humanResources/AttendanceRequest/AttendanceRequest.vue'
 import LeaveRequestPage from '@/views/apps/humanResources/LeaveRequest/LeaveRequestPage.vue'
 import MissionRequest from '@/views/apps/humanResources/Mission/MissionRequest.vue'
-import OvertimeRequest from '@/views/apps/humanResources/OvertimeRequest/OvertimeRequest.vue'
+import OvertimeRequestPage from '@/views/apps/humanResources/OvertimeRequest/OvertimeRequestPage.vue'
 import SickRequest from '@/views/apps/humanResources/SickRequest.vue'
 
 const current = ref('root')
@@ -18,7 +18,7 @@ const requests = [
 const pages = {
   leave: LeaveRequestPage,
   mission: MissionRequest,
-  overtime: OvertimeRequest,
+  overtime: OvertimeRequestPage,
   sick: SickRequest,
   attendance: AttendanceRequest,
 }
