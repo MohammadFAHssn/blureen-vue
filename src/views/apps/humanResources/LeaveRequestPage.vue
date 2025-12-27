@@ -1,7 +1,7 @@
 <script setup>
 import BereavementLeaveRequest from '@/views/apps/humanResources/BereavementLeaveRequest/BereavementLeaveRequest.vue'
-import MainPage from '@/views/apps/humanResources/DailyLeaveRequest/MainPage.vue'
-import HourlyLeaveRequest from '@/views/apps/humanResources/HourlyLeaveRequest/HourlyLeaveRequest.vue'
+import DailyLeave from '@/views/apps/humanResources/DailyLeaveRequest/DailyLeave.vue'
+import HourlyLeave from '@/views/apps/humanResources/HourlyLeaveRequest/HourlyLeave.vue'
 import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
 
 // تعریف emit
@@ -17,8 +17,8 @@ const leaveTypes = [
 ]
 
 const pages = {
-  daily: MainPage,
-  hourly: HourlyLeaveRequest,
+  daily: DailyLeave,
+  hourly: HourlyLeave,
   marriage: MarriageLeaveRequest,
   funeral: BereavementLeaveRequest,
 }
