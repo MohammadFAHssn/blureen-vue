@@ -13,6 +13,10 @@ const uiState = reactive({
   requestsKey: 0,
 })
 const selectedUser = ref(useCookie('userData').value)
+async function onUserSelected(selected) {
+  selectedUser.value = selected
+  uiState.requestsKey++
+}
 </script>
 
 <template>
@@ -42,12 +46,7 @@ const selectedUser = ref(useCookie('userData').value)
   <VRow justify="center" align="center">
     <VCol cols="12" sm="12" md="8" lg="8" xl="8">
       <VCard>
-        <SelectUserSubOrdinate
-          @select="(selected) => {
-            selectedUser.value = selected
-            uiState.requestsKey++
-          }"
-        />
+        <SelectUserSubOrdinate @select="onUserSelected" />
       </VCard>
     </VCol>
   </VRow>

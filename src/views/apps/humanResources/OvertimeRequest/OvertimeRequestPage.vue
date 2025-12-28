@@ -13,6 +13,11 @@ const uiState = reactive({
   dateKey: 0,
 })
 const selectedUser = ref(useCookie('userData').value)
+async function onUserSelected(selected) {
+  selectedUser.value = selected
+  uiState.requestsKey++
+}
+
 const overtimeDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
 </script>
 
@@ -47,12 +52,7 @@ const overtimeDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
   <VRow dense>
     <VCol md="4" />
     <VCol cols="12" md="8" sm="12">
-      <SelectUserSubOrdinate
-        @select="(selected) => {
-          selectedUser.value = selected
-          uiState.requestsKey++
-        }"
-      />
+      <SelectUserSubOrdinate @select="onUserSelected" />
     </VCol>
   </VRow>
   <VRow dense>
