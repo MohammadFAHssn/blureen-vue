@@ -21,19 +21,17 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ شروع',
     field: 'startDate',
-    maxWidth: 150,
     valueFormatter: params =>
       params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
   },
   {
     headerName: 'تاریخ پایان',
     field: 'endDate',
-    maxWidth: 150,
     valueFormatter: params =>
       params.value ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD') : null,
   },
 
-  { headerName: 'وضعیت', field: 'status', maxWidth: 150 },
+  { headerName: 'وضعیت', field: 'status' },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -47,7 +45,6 @@ const columnDefs = ref([
       },
     }),
     sortable: false,
-    maxWidth: 150,
   },
 ])
 
