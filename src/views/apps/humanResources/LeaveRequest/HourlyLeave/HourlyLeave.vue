@@ -17,10 +17,6 @@ const uiState = reactive({
 const selectedUser = ref(useCookie('userData').value)
 const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
 
-async function onUserSelected(selected) {
-  selectedUser.value = selected
-  uiState.requestsKey++
-}
 </script>
 
 <template>
@@ -51,7 +47,12 @@ async function onUserSelected(selected) {
 
   <VRow dense>
     <VCol cols="12" md="12" sm="12">
-      <SelectUserSubOrdinate @select="onUserSelected" />
+      <SelectUserSubOrdinate
+        @select="(selected) => {
+          selectedUser.value = selected
+          uiState.requestsKey++
+        }"
+      />
     </VCol>
   </VRow>
   <VRow dense>

@@ -1,5 +1,5 @@
 <script setup>
-import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
+import EditForm from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/EditForm.vue'
 
 const props = defineProps({
   userId: {

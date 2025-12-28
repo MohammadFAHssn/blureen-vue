@@ -1,5 +1,5 @@
 <script setup>
-import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
+import EditForm from '@/views/apps/humanResources/OvertimeRequest/EditForm.vue'
 
 const props = defineProps({
   userId: {
@@ -124,7 +124,7 @@ onMounted(() => {
   <div class="ma-3 overflow-auto d-none d-md-block">
     <VCard class="desktop-view">
       <label class="font-weight-medium mb-4 d-block text-center pt-3">
-        مرخصی‌های ساعتی ماه جاری
+        لیست اضافه کار ماه جاری
       </label>
       <section>
         <VSkeletonLoader v-if="loading" type="card" />
@@ -143,14 +143,14 @@ onMounted(() => {
   </div>
   <div class="d-md-none pa-3">
     <VExpansionPanels variant="accordion">
-      <!-- کشوی اصلی مربوط به "مرخصی‌های ماه جاری" -->
+      <!-- کشوی اصلی مربوط به "اضافه کارهای ماه جاری" -->
       <VExpansionPanel>
         <VExpansionPanelTitle class="font-weight-bold">
-          مرخصی‌های ساعتی ماه جاری
+          اضافه کارهای ماه جاری
         </VExpansionPanelTitle>
 
         <VExpansionPanelText>
-          <!-- کشوهای داخلی برای هر مرخصی -->
+          <!-- کشوهای داخلی برای هر اضافه کار -->
           <VExpansionPanels variant="accordion">
             <VExpansionPanel
               v-for="(item, index) in currentMonthRequests"

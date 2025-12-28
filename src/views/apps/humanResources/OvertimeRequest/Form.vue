@@ -17,7 +17,7 @@ const uiState = reactive({
 })
 const overtimeDate = ref(props.date)
 const overtimeDateRules = [
-  () => !!overtimeDate.value || 'لطفا تاریخ مرخصی را انتخاب کنید',
+  () => !!overtimeDate.value || 'لطفا تاریخ اضافه کار را انتخاب کنید',
 ]
 const startTime = ref('')
 const startTimeRules = [
@@ -49,7 +49,7 @@ function onFormSubmit() {
         await axiosInstance.post('/hr-request/requests/create', requestData)
 
         uiState.success = true
-        uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
+        uiState.successMessage = `درخواست اضافه کار با موفقیت ثبت شد`
         startTime.value = ''
         endTime.value = ''
         emit('created')
@@ -106,7 +106,7 @@ function onFormSubmit() {
           <VTextField
             v-model="overtimeDate"
             :rules="overtimeDateRules"
-            label="تاریخ مرخصی"
+            label="تاریخ اضافه کار"
             variant="outlined"
             readonly
           />

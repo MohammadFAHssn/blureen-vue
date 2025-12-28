@@ -4,30 +4,16 @@ import Form from '@/views/apps/humanResources/OvertimeRequest/Form.vue'
 import List from '@/views/apps/humanResources/OvertimeRequest/List.vue'
 import SelectUserSubOrdinate from '@/views/apps/humanResources/SelectUserSubOrdinate.vue'
 
-const emit = defineEmits(['back'])
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
   requestsKey: 0,
+  dateKey: 0,
 })
-const current = ref('root')
 const selectedUser = ref(useCookie('userData').value)
 const overtimeDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
-
-async function onUserSelected(selected) {
-  selectedUser.value = selected
-  uiState.requestsKey++
-}
-function goBack() {
-  if (current.value !== 'root') {
-    current.value = 'root'
-  }
-  else {
-    emit('back')
-  }
-}
 </script>
 
 <template>
@@ -49,13 +35,8 @@ function goBack() {
   >
     {{ uiState.successMessage }}
   </VSnackbar>
-  <VBtn
-    variant="text"
-    prepend-icon="tabler-arrow-right"
-    class="mb-4"
-    @click="goBack"
-  >
-    {{ current === 'root' ? 'صفحه اصلی' : 'انواع مرخصی' }}
+  <VBtn variant="text" prepend-icon="tabler-arrow-right" class="mb-4" @click="$emit('back')">
+    صفحه اصلی
   </VBtn>
   <div class="mb-6 text-center">
     <h2 class="text-h5 font-weight-bold text-primary">
@@ -66,7 +47,12 @@ function goBack() {
   <VRow dense>
     <VCol md="4" />
     <VCol cols="12" md="8" sm="12">
-      <SelectUserSubOrdinate @select="onUserSelected" />
+      <SelectUserSubOrdinate
+        @select="(selected) => {
+          selectedUser.value = selected
+          uiState.requestsKey++
+        }"
+      />
     </VCol>
   </VRow>
   <VRow dense>
@@ -77,11 +63,12 @@ function goBack() {
         format="jYYYY/jMM/jDD"
         inline
         custom-input="#custom-input"
+        @change="uiState.dateKey++"
       />
     </VCol>
     <VCol cols="12" md="8">
       <AttendanceLog :key="overtimeDate" :date="overtimeDate" :user-id="selectedUser.id" />
-      <Form :date="overtimeDate" :user-id="selectedUser.id" @created="uiState.requestsKey++" />
+      <Form :key="uiState.dateKey" :date="overtimeDate" :user-id="selectedUser.id" @created="uiState.requestsKey++" />
       <List :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
