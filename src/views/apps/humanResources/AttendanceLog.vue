@@ -72,7 +72,8 @@ onMounted(() => {
 
   <VCard class="mb-4">
     <label class="font-weight-medium mb-4 mt-2 d-block text-center">
-      ترددهای روز
+      ترددهای
+      {{ props.date }}
     </label>
     <VSkeletonLoader v-if="Loading" type="card" />
     <VRow v-else justify="center" dense>
