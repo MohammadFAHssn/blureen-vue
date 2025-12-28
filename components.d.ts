@@ -71,6 +71,7 @@ declare module 'vue' {
     TwoFactorAuthDialog: typeof import('./src/components/dialogs/TwoFactorAuthDialog.vue')['default']
     UserInfoEditDialog: typeof import('./src/components/dialogs/UserInfoEditDialog.vue')['default']
     UserUpgradePlanDialog: typeof import('./src/components/dialogs/UserUpgradePlanDialog.vue')['default']
+    VueApexCharts: typeof import('vue3-apexcharts')['default']
   }
 }
 
@@ -135,4 +136,5 @@ declare global {
   const TwoFactorAuthDialog: typeof import('./src/components/dialogs/TwoFactorAuthDialog.vue')['default']
   const UserInfoEditDialog: typeof import('./src/components/dialogs/UserInfoEditDialog.vue')['default']
   const UserUpgradePlanDialog: typeof import('./src/components/dialogs/UserUpgradePlanDialog.vue')['default']
+  const VueApexCharts: typeof import('vue3-apexcharts')['default']
 }
