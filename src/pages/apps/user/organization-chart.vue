@@ -217,7 +217,7 @@ function onEditNode(nodeId) {
 }
 
 function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
-  orgChartNodes.value = orgChartNodes.value.filter(node => node.id !== id)
+  orgChartNodes.value = orgChartNodes.value.filter(node => String(node.id) !== String(id))
   orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
   orgChartInstance.value.data(orgChartNodes.value).render()
 }
