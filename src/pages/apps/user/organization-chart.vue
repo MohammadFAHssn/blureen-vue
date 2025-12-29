@@ -133,18 +133,8 @@ async function updateOrganizationChart() {
     .put('/base/org-chart-node/update', {
       orgChartNodes: orgChartNodes.value,
     })
-    .then(({ data: { data } }) => {
-      orgChartNodes.value = data.map((orgChartNode) => {
-        return {
-          id: orgChartNode.id,
-          parentId: orgChartNode.parent_id,
-          orgPosition: orgChartNode.org_position,
-          orgUnit: orgChartNode.org_unit,
-          users: orgChartNode.users,
-        }
-      })
-
-      drawOrgChart()
+    .then(() => {
+      reload()
     })
     .catch((error) => {
       console.error('Error updating organization chart:', error)
@@ -258,10 +248,19 @@ function handleDeleteNode() {
   uiState.isDeleteNodeDialogOpen = false
 }
 
+async function reload() {
+  fetchOrgChartNodes()
+  await fetchOrgUnits()
+
+  await nextTick()
+  drawOrgChart()
+}
+
 fetchOrgChartNodes()
 fetchOrgPositions()
 fetchOrgUnits()
 await fetchUsers()
+
 onMounted(async () => {
   await nextTick()
   drawOrgChart()
