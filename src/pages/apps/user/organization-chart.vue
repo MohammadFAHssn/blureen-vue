@@ -219,7 +219,7 @@ function onAddNode(nodeId) {
 function handleAddNode({ orgPosition, orgUnit, users }) {
   orgChartInstance.value.addNode({
     // TODO: Use a better ID generation strategy
-    id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+    id: Math.floor(Math.random() * (1000000 - 100 + 1)) + 100,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,

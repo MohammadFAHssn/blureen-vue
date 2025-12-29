@@ -137,7 +137,7 @@ function onFormSubmit() {
 
         selectedOrgUnit.value = {
           // TODO: Replace with real ID from backend
-          id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+          id: Math.floor(Math.random() * (1000000 - 100 + 1)) + 100,
           name,
         }
 
