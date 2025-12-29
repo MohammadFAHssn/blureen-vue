@@ -26,6 +26,10 @@ const uiState = reactive({
   isEditNodeDialogOpen: false,
 })
 
+const pendingState = reactive({
+  updateOrganizationChart: false,
+})
+
 const orgChartNodes = ref([])
 const orgChartRef = ref(null)
 const orgChartInstance = ref(null)
@@ -120,6 +124,8 @@ async function fetchUsers() {
 }
 
 async function updateOrganizationChart() {
+  pendingState.updateOrganizationChart = true
+
   const chartState = orgChartInstance.value.getChartState()
   orgChartNodes.value = chartState.allNodes.map(node => node.data)
 
@@ -127,11 +133,26 @@ async function updateOrganizationChart() {
     .put('/base/org-chart-node/update', {
       orgChartNodes: orgChartNodes.value,
     })
-    .then(() => {})
+    .then(({ data: { data } }) => {
+      orgChartNodes.value = data.map((orgChartNode) => {
+        return {
+          id: orgChartNode.id,
+          parentId: orgChartNode.parent_id,
+          orgPosition: orgChartNode.org_position,
+          orgUnit: orgChartNode.org_unit,
+          users: orgChartNode.users,
+        }
+      })
+
+      drawOrgChart()
+    })
     .catch((error) => {
       console.error('Error updating organization chart:', error)
       uiState.hasError = true
       uiState.errorMessage = error.message || 'خطا در بروزرسانی چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.updateOrganizationChart = false
     })
 }
 
@@ -288,6 +309,7 @@ onMounted(async () => {
     size="x-large"
     variant="elevated"
     color="primary"
+    :loading="pendingState.updateOrganizationChart"
     @click="updateOrganizationChart"
   >
     <VIcon icon="tabler-device-floppy" size="35" />
