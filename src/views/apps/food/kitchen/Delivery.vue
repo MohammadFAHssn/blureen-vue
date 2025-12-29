@@ -291,28 +291,43 @@ async function deliver() {
       body: JSON.stringify(payload),
       onResponseError({ response }) {
         uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
+
+        const data = response?._data || {}
+        const personnelErrors = data?.errors?.personnel
+
+        if (data?.code === 'VALIDATION_ERROR' && Array.isArray(personnelErrors) && personnelErrors.length) {
+          const codes = personnelErrors
+            .map(s => String(s).match(/(\d+)/g)?.join(' - '))
+            .filter(Boolean)
+
+          uiState.errorMessage
+            = `برای پرسنل با کد/های پرسنلی زیر، ترددی ثبت نشده است. لطفا گزینه 'تحویل نگرفت' آن‌ها را علامت زده سپس، اقدام به ارسال نمایید:\n${
+              codes}`
+
+          return
         }
-        else {
-          uiState.errorMessage = response._data?.message || 'خطا در ایجاد'
+
+        if (data?.errors) {
+          uiState.errorMessage = Object.values(data.errors).flat().join(' | ')
+          return
         }
+
+        uiState.errorMessage = data?.message || 'خطا در ارسال'
       },
     })
 
     await fetchReservedMealsOnDate()
-
+    uiState.isDeliveryDialogVisible = false
+    onResetForm()
     return res
   }
   catch (err) {
     console.error('Error deliver:', err)
+    if (uiState.hasError && uiState.errorMessage) return
     setError('خطا در ارسال اطلاعات')
   }
   finally {
     pendingState.deliverReservedMeal = false
-    uiState.isDeliveryDialogVisible = false
-    onResetForm()
   }
 }
 
