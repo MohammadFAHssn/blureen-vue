@@ -1,6 +1,13 @@
 <script setup>
-import OrgChart from '@balkangraph/orgchart.js'
+import * as d3 from 'd3'
+import { OrgChart } from 'd3-org-chart'
 import { useTheme } from 'vuetify'
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+
+import AddNodeDialog from '@/views/apps/user/AddNodeDialog.vue'
+import EditNodeDialog from '@/views/apps/user/EditNodeDialog.vue'
+
+import { getNodeContent } from './org-chart-utils'
 
 definePage({
   meta: {
@@ -14,12 +21,24 @@ definePage({
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
+  isDeleteNodeDialogOpen: false,
+  isAddNodeDialogOpen: false,
+  isEditNodeDialogOpen: false,
+})
+
+const pendingState = reactive({
+  updateOrganizationChart: false,
 })
 
 const orgChartNodes = ref([])
 const orgChartRef = ref(null)
 const orgChartInstance = ref(null)
 const orgPositions = ref([])
+const orgUnits = ref([])
+const users = ref([])
+
+const selectedNodeId = ref(null)
+const selectedNode = ref(null)
 
 const vuetifyTheme = useTheme()
 
@@ -27,8 +46,7 @@ watch(
   () => vuetifyTheme.current.value.colors,
   async () => {
     if (orgChartInstance.value && orgChartNodes.value.length > 0) {
-      designOrgChart()
-      orgChartInstance.value.draw()
+      orgChartInstance.value.render()
     }
   },
   { deep: true },
@@ -41,11 +59,10 @@ async function fetchOrgChartNodes() {
       orgChartNodes.value = data.map((orgChartNode) => {
         return {
           id: orgChartNode.id,
-          pid: orgChartNode.parent_id,
-          orgPositionName: orgChartNode.org_position.name,
-          orgUnitName: orgChartNode.org_unit.name,
-          users: orgChartNode.users, // {id, personnel_code, first_name, last_name, avatar_url}
-          tags: [`position-id-${orgChartNode.org_position.id}`],
+          parentId: orgChartNode.parent_id,
+          orgPosition: orgChartNode.org_position,
+          orgUnit: orgChartNode.org_unit,
+          users: orgChartNode.users,
         }
       })
     })
@@ -57,140 +74,196 @@ async function fetchOrgChartNodes() {
 }
 
 async function fetchOrgPositions() {
-  try {
-    const { data, error } = await useApi(createUrl('/base/org-position'))
-
-    if (error.value) throw error.value
-
-    orgPositions.value = data.value.data
-  }
-  catch (e) {
-    console.error('Error fetching org positions:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت سمت‌های سازمانی'
-  }
+  await axiosInstance
+    .get('/base/org-position')
+    .then(({ data: { data } }) => {
+      orgPositions.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching org positions:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت سمت‌های سازمانی'
+    })
 }
 
-function designOrgChart() {
-  const vuetifyColors = vuetifyTheme.current.value.colors
-
-  // Create custom Vuetify-style template
-  OrgChart.templates.vuetify = Object.assign({}, OrgChart.templates.ana)
-
-  // Node size - card-like dimensions
-  OrgChart.templates.vuetify.size = [220, 136]
-
-  // Field 0 - orgPosition (top rectangle)
-  OrgChart.templates.vuetify.field_0 = `
-    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="24" text-anchor="middle">{val}</text>
-  `
-
-  // Field 1 - orgUnit (middle rectangle)
-  OrgChart.templates.vuetify.field_1 = `
-    <text data-width="200" style="font-size: 13px; font-weight: 500; font-family: Shabnam, Tahoma, sans-serif;" fill="${vuetifyColors['on-primary']}" x="110" y="60" text-anchor="middle">{val}</text>
-  `
-
-  // Link style
-  OrgChart.templates.vuetify.link = `
-    <path stroke-linejoin="round" stroke="${vuetifyColors.primary}" stroke-opacity="0.5" stroke-width="2px" fill="none" d="{rounded}" />
-  `
-
-  // Plus/Expand button
-  OrgChart.templates.vuetify.plus = `
-    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
-    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-    <line x1="15" y1="8" x2="15" y2="22" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-  `
-
-  // Minus/Collapse button
-  OrgChart.templates.vuetify.minus = `
-    <circle cx="15" cy="15" r="15" fill="${vuetifyColors.surface}" stroke="${vuetifyColors.primary}" stroke-width="2"></circle>
-    <line x1="8" y1="15" x2="22" y2="15" stroke-width="2" stroke="${vuetifyColors.primary}"></line>
-  `
-
-  // Ripple effect color
-  OrgChart.templates.vuetify.ripple = {
-    radius: 0,
-    color: vuetifyColors.primary,
-    rect: null,
-  }
-
-  // Edit form header color
-  OrgChart.templates.vuetify.editFormHeaderColor = vuetifyColors.primary
-
-  // Main node - Vuetify card style with elevation shadow
-  designOrgChartNodes()
+async function fetchOrgUnits() {
+  await axiosInstance
+    .get('/base/org-unit')
+    .then(({ data: { data } }) => {
+      orgUnits.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching org units:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت واحدهای سازمانی'
+    })
 }
 
-function designOrgChartNodes() {
-  const vuetifyColors = vuetifyTheme.current.value.colors
-
-  orgPositions.value.forEach((position) => {
-    OrgChart.templates[`position-id-${position.id}`] = Object.assign(
-      {},
-      OrgChart.templates.vuetify,
+async function fetchUsers() {
+  await axiosInstance
+    .get(
+      createUrl('/base/user', {
+        query: {
+          'fields[users]': 'id,first_name,last_name,personnel_code',
+          'fields[profiles]':
+            'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
+          'filter[active]': '1',
+          'include':
+            'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition,avatar',
+        },
+      }).value,
     )
-
-    OrgChart.templates[`position-id-${position.id}`].node = `
-    <defs>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
-      </filter>
-    </defs>
-
-    <!-- Main card background with rounded corners -->
-    <rect x="0" y="0" height="{h}" width="{w}" fill="${
-      vuetifyColors.surface
-    }" rx="8" ry="8" filter="url(#shadow)"></rect>
-    
-    <!-- OrgPosition (top) - rounded top corners only -->
-    <rect x="0" y="0" height="36" width="{w}" fill="${
-      ORG_POSITION_COLORS[position.id]
-    }" rx="8" ry="8"></rect>
-    <rect x="0" y="28" height="8" width="{w}" fill="${
-      ORG_POSITION_COLORS[position.id]
-    }"></rect>
-    
-    <!-- OrgUnit (middle) - no rounded corners -->
-    <rect x="0" y="36" height="36" width="{w}" fill="${
-      vuetifyColors.primary
-    }"></rect>
-  `
-  })
+    .then(({ data: { data } }) => {
+      users.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching users:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در دریافت کاربران'
+    })
 }
 
-function drawOrgChart(orgChartRef, orgChartNodes) {
-  designOrgChart()
+async function updateOrganizationChart() {
+  pendingState.updateOrganizationChart = true
 
-  const tags = {}
+  const chartState = orgChartInstance.value.getChartState()
+  orgChartNodes.value = chartState.allNodes.map(node => node.data)
 
-  orgPositions.value.forEach((position) => {
-    tags[`position-id-${position.id}`] = {
-      template: `position-id-${position.id}`,
+  await axiosInstance
+    .put('/base/org-chart-node/update', {
+      orgChartNodes: orgChartNodes.value,
+    })
+    .then(() => {
+      reload()
+    })
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در بروزرسانی چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.updateOrganizationChart = false
+    })
+}
+
+function drawOrgChart() {
+  if (!orgChartRef.value || orgChartNodes.value.length === 0) return
+
+  orgChartInstance.value = new OrgChart()
+    .container(orgChartRef.value)
+    .data(orgChartNodes.value)
+    .nodeWidth(() => 220)
+    // TODO
+    .nodeHeight(() => 90)
+    .childrenMargin(() => 50)
+    .compactMarginBetween(() => 35)
+    .compactMarginPair(() => 30)
+    .neighbourMargin(() => 20)
+    .siblingsMargin(() => 30)
+    .nodeContent(d => getNodeContent(d))
+    .linkUpdate(function () {
+      d3.select(this)
+        .attr('stroke', 'rgb(var(--v-theme-secondary))')
+        .attr('stroke-opacity', 0.38)
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linecap', 'round')
+    })
+    .buttonContent(({ node }) => {
+      return `
+        <div class="org-expand-btn">
+          ${node.children ? '▲' : '▼'} ${node.data._directSubordinates || ''}
+        </div>
+      `
+    })
+    .render()
+
+  // Add event listeners for action buttons
+  setupNodeActionButtons()
+}
+
+function setupNodeActionButtons() {
+  if (!orgChartRef.value) return
+
+  orgChartRef.value.addEventListener('click', (event) => {
+    const button = event.target.closest('.node-action-btn')
+    if (!button) return
+
+    event.stopPropagation()
+
+    const action = button.dataset.action
+    const nodeId = button.dataset.nodeId
+
+    switch (action) {
+      case 'edit':
+        onEditNode(nodeId)
+        break
+      case 'add':
+        onAddNode(nodeId)
+        break
+      case 'delete':
+        onDeleteNode(nodeId)
+        break
     }
   })
+}
 
-  orgChartInstance.value = new OrgChart(orgChartRef, {
-    template: 'vuetify',
-    nodes: orgChartNodes,
-    nodeBinding: {
-      field_0: 'orgPositionName',
-      field_1: 'orgUnitName',
-    },
-    scaleInitial: OrgChart.match.boundary,
-    enableSearch: false,
-    tags,
+function onEditNode(nodeId) {
+  const chartState = orgChartInstance.value.getChartState()
+  const node = chartState.allNodes.find(
+    node => String(node.data.id) === String(nodeId),
+  )
+  selectedNode.value = node.data
+  uiState.isEditNodeDialogOpen = true
+}
+
+function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
+  orgChartNodes.value = orgChartNodes.value.filter(node => String(node.id) !== String(id))
+  orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
+  orgChartInstance.value.data(orgChartNodes.value).render()
+}
+
+function onAddNode(nodeId) {
+  selectedNodeId.value = nodeId
+  uiState.isAddNodeDialogOpen = true
+}
+
+function handleAddNode({ orgPosition, orgUnit, users }) {
+  orgChartInstance.value.addNode({
+    // TODO: Use a better ID generation strategy
+    id: Math.floor(Math.random() * (1000000 - 100 + 1)) + 100,
+    parentId: selectedNodeId.value,
+    orgPosition,
+    orgUnit,
+    users,
   })
+}
+
+function onDeleteNode(nodeId) {
+  selectedNodeId.value = nodeId
+  uiState.isDeleteNodeDialogOpen = true
+}
+
+function handleDeleteNode() {
+  orgChartInstance.value.removeNode(selectedNodeId.value)
+  uiState.isDeleteNodeDialogOpen = false
+}
+
+async function reload() {
+  fetchOrgChartNodes()
+  await fetchOrgUnits()
+
+  await nextTick()
+  drawOrgChart()
 }
 
 fetchOrgChartNodes()
-await fetchOrgPositions()
+fetchOrgPositions()
+fetchOrgUnits()
+await fetchUsers()
 
 onMounted(async () => {
   await nextTick()
-  if (orgChartRef.value && orgChartNodes.value.length > 0) {
-    drawOrgChart(orgChartRef.value, orgChartNodes.value)
-  }
+  drawOrgChart()
 })
 </script>
 
@@ -206,12 +279,40 @@ onMounted(async () => {
   </VSnackbar>
 
   <div ref="orgChartRef" class="org-chart-container" />
+
+  <AreYouSureDialog
+    v-model:is-dialog-visible="uiState.isDeleteNodeDialogOpen"
+    title="آیا از حذف این مورد اطمینان دارید؟"
+    :loading="false"
+    @confirm="handleDeleteNode"
+  />
+
+  <AddNodeDialog
+    v-model:is-dialog-visible="uiState.isAddNodeDialogOpen"
+    :org-positions="orgPositions"
+    :org-units="orgUnits"
+    :users="users"
+    @add="handleAddNode"
+  />
+
+  <EditNodeDialog
+    v-model:is-dialog-visible="uiState.isEditNodeDialogOpen"
+    :org-positions="orgPositions"
+    :org-units="orgUnits"
+    :users="users"
+    :node="selectedNode"
+    @edit="handleEditNode"
+  />
+
+  <IconBtn
+    size="x-large"
+    variant="elevated"
+    color="primary"
+    :loading="pendingState.updateOrganizationChart"
+    @click="updateOrganizationChart"
+  >
+    <VIcon icon="tabler-device-floppy" size="35" />
+  </IconBtn>
 </template>
 
-<style lang="scss" scoped>
-.org-chart-container {
-  background-color: rgb(var(--v-theme-background));
-  block-size: 100%;
-  inline-size: 100%;
-}
-</style>
+<style lang="scss" scoped src="./organization-chart.scss"></style>

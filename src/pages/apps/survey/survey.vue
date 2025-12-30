@@ -14,12 +14,12 @@ const uiState = reactive({
 
 const pendingState = reactive({
   fetchSurveys: false,
-  participateInSurvey: false,
+  participateInSurvey: [],
 })
 
 const surveys = ref([])
 
-const url = ref('')
+const url = ref([])
 
 // ----- -----
 
@@ -46,7 +46,7 @@ async function fetchSurveys() {
 fetchSurveys()
 
 async function generateSurveyLink(porslineId) {
-  pendingState.participateInSurvey = true
+  pendingState.participateInSurvey[porslineId] = true
   try {
     const res = await $api('/survey/survey/participate', {
       method: 'POST',
@@ -54,24 +54,24 @@ async function generateSurveyLink(porslineId) {
         porslineId,
       },
       onResponseError({ response }) {
-        pendingState.participateInSurvey = false
+        pendingState.participateInSurvey[porslineId] = false
         uiState.hasError = true
         uiState.errorMessage
           = response._data.message || 'خطا در شرکت در نظرسنجی'
       },
     })
 
-    pendingState.participateInSurvey = false
+    pendingState.participateInSurvey[porslineId] = false
 
-    url.value = res.data
+    url.value[porslineId] = res.data
   }
   catch (err) {
     console.error(err)
   }
 }
 
-function participateInSurvey() {
-  window.open(url.value, '_blank', 'noopener,noreferrer')
+function participateInSurvey(porslineId) {
+  window.open(url.value[porslineId], '_blank', 'noopener,noreferrer')
 }
 </script>
 
@@ -111,7 +111,7 @@ function participateInSurvey() {
 
         <VCardActions class="justify-center">
           <VBtn
-            v-if="url"
+            v-if="url[survey.porsline_id]"
             variant="elevated"
             color="success"
             @click="participateInSurvey(survey.porsline_id)"
@@ -119,13 +119,13 @@ function participateInSurvey() {
             شروع
           </VBtn>
           <VBtn
-            v-else
+            v-else-if="!url[survey.porsline_id]"
             variant="elevated"
-            :disabled="pendingState.participateInSurvey"
+            :disabled="pendingState.participateInSurvey[survey.porsline_id]"
             @click="generateSurveyLink(survey.porsline_id)"
           >
-            <span v-if="pendingState.participateInSurvey">در حال ساخت لینک</span>
-            <span v-else>دریافت لینک نظرسنجی</span>
+            <span v-if="pendingState.participateInSurvey[survey.porsline_id]">در حال ساخت لینک</span>
+            <span v-else-if="!pendingState.participateInSurvey[survey.porsline_id]">دریافت لینک نظرسنجی</span>
           </VBtn>
         </VCardActions>
       </VCard>

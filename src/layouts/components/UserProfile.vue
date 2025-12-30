@@ -1,6 +1,8 @@
 <script setup>
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 
+const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
+
 const router = useRouter()
 const ability = useAbility()
 
@@ -79,7 +81,6 @@ const userProfileList = [
 ]
 </script>
 
-// TODO: add personnel avatars
 <template>
   <VBadge
     v-if="userData"
@@ -96,7 +97,7 @@ const userProfileList = [
       :color="!(userData && userData.avatar) ? 'primary' : undefined"
       :variant="!(userData && userData.avatar) ? 'tonal' : undefined"
     >
-      <VImg v-if="userData && userData.avatar" :src="userData.avatar" />
+      <VImg v-if="userData && userData.avatar" :src="`${storageBaseUrl}/${userData.avatar?.path}`" />
       <VIcon v-else icon="tabler-user" />
 
       <!-- SECTION Menu -->
@@ -123,7 +124,7 @@ const userProfileList = [
                   >
                     <VImg
                       v-if="userData && userData.avatar"
-                      :src="userData.avatar"
+                      :src="`${storageBaseUrl}/${userData.avatar?.path}`"
                     />
                     <VIcon v-else icon="tabler-user" />
                   </VAvatar>
@@ -131,7 +132,7 @@ const userProfileList = [
               </VListItemAction>
 
               <div>
-                <h6 class="text-h6 font-weight-medium">
+                <h6 class="text-button">
                   {{ userData.fullName || userData.username }}
                 </h6>
                 <VListItemSubtitle
