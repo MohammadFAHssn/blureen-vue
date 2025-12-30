@@ -1,4 +1,5 @@
 <script setup>
+import { useDisplay } from 'vuetify/framework'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/EditForm.vue'
 
 const props = defineProps({
@@ -6,6 +7,9 @@ const props = defineProps({
     required: true,
   },
 })
+const { mdAndUp } = useDisplay()
+const isMobile = computed(() => !mdAndUp.value)
+
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -121,27 +125,7 @@ onMounted(() => {
     :request="selectedRequest"
     @submit="getCurrentMonthRequests"
   />
-  <div class="ma-3 overflow-auto d-none d-md-block">
-    <VCard class="desktop-view">
-      <label class="font-weight-medium mb-4 d-block text-center pt-3">
-        مرخصی‌های ساعتی ماه جاری
-      </label>
-      <section>
-        <VSkeletonLoader v-if="loading" type="card" />
-        <AgGridVue
-          v-else
-          style="block-size: 100%; inline-size: 100%"
-          :column-defs="columnDefs"
-          :row-data="rowData"
-          enable-rtl
-          row-numbers
-          pagination
-          :theme="theme"
-        />
-      </section>
-    </VCard>
-  </div>
-  <div class="d-md-none pa-3">
+  <div v-if="isMobile" class="pa-3">
     <VExpansionPanels variant="accordion">
       <!-- کشوی اصلی مربوط به "مرخصی‌های ماه جاری" -->
       <VExpansionPanel>
@@ -190,6 +174,26 @@ onMounted(() => {
         </VExpansionPanelText>
       </VExpansionPanel>
     </VExpansionPanels>
+  </div>
+  <div v-else class="ma-3 overflow-auto">
+    <VCard class="desktop-view">
+      <label class="font-weight-medium mb-4 d-block text-center pt-3">
+        مرخصی‌های ساعتی ماه جاری
+      </label>
+      <section>
+        <VSkeletonLoader v-if="loading" type="card" />
+        <AgGridVue
+          v-else
+          style="block-size: 100%; inline-size: 100%"
+          :column-defs="columnDefs"
+          :row-data="rowData"
+          enable-rtl
+          row-numbers
+          pagination
+          :theme="theme"
+        />
+      </section>
+    </VCard>
   </div>
 </template>
 
