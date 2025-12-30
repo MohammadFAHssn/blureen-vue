@@ -1,1 +1,0 @@
-import{s as y}from"./useLogout-CaZQHfpA.js";import{Y as b,bZ as e}from"./index-Dm4B9_0-.js";function O(u,r){return b(()=>{if(!(r!=null&&r.query))return e(u);const t=e(u),a=e(r==null?void 0:r.query),c=Object.fromEntries(Object.entries(a).map(([m,f])=>[m,e(f)]));return`${t}${c?`?${y(c)}`:""}`})}export{O as c};
