@@ -1,1 +1,0 @@
-import{bl as a,cA as m,Y as r,cB as h,cC as o}from"./index-Cs98bBAa.js";function i(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};

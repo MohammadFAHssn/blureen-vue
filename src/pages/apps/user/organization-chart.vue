@@ -101,17 +101,7 @@ async function fetchOrgUnits() {
 
 async function fetchUsers() {
   await axiosInstance
-    .get(
-      createUrl('/base/user', {
-        query: {
-          'fields[users]': 'id,first_name,last_name,personnel_code',
-          'fields[profiles]':
-            'id,user_id,workplace_id,work_area_id,cost_center_id,job_position_id',
-          'filter[active]': '1',
-          'include':
-            'profile.workplace,profile.workArea,profile.costCenter,profile.jobPosition,avatar',
-        },
-      }).value,
+    .get('/base/user/details',
     )
     .then(({ data: { data } }) => {
       users.value = data
