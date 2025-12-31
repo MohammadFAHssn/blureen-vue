@@ -43,23 +43,28 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'نام', field: 'fullName' },
   { headerName: 'کد پرسنلی', field: 'userName' },
+  { headerName: 'نام', field: 'fullName' },
   { headerName: 'وعده', field: 'mealName' },
+  { headerName: 'غذا', field: 'foodName' },
+  { headerName: 'قیمت', field: 'foodPrice' },
   { headerName: 'تاریخ', field: 'date' },
+  { headerName: 'خروج', field: 'checkout' },
 ])
 
 const rowData = computed(() =>
-  reports.value?.map((report) => {
-    return {
-      id: report.id,
-      fullName: report.user.fullName,
-      userName: report.user.username,
-      mealName: report.meal.name,
-      date: report.date,
-    }
-  }),
+  (reports.value ?? []).map(report => ({
+    id: report.id,
+    userName: report.personnel?.username ?? '',
+    fullName: `${(report.personnel?.first_name ?? '').trim()} ${(report.personnel?.last_name ?? '').trim()}`.trim(),
+    mealName: report.reservation?.meal?.name ?? '',
+    foodName: report.food?.name ?? '',
+    foodPrice: report.food?.price ?? '',
+    date: report.reservation?.date ?? '',
+    checkout: report?.check_out_time ?? '-',
+  })),
 )
+
 // ----- end ag-grid -----
 
 async function onFetchReport(payload) {
@@ -70,11 +75,20 @@ async function onFetchReport(payload) {
       'meal_id': payload.meal,
     }, method: 'GET' })
 
-    reports.value = res?.data.reports || []
+    reports.value = res?.data || []
+    uiState.isReportGetDialogVisible = false
   }
   catch (e) {
     console.error('Error fetching reports:', e)
-    setError(e.message || 'خطا در دریافت گزارش')
+
+    const data = e?.data || e?.response?._data || e?.response?.data || null
+
+    const validationMsg
+      = data?.errors
+        ? Object.values(data.errors).flat().join('\n')
+        : null
+
+    setError(validationMsg || data?.message || e?.message || 'خطا در دریافت گزارش')
   }
   finally {
     pendingState.fetchingReports = false
