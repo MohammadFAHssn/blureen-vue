@@ -1,15 +1,15 @@
 export default [
   {
     heading: 'FOOD',
-    action: 'see',
-    subject: 'see Food-Navbar',
+    action: 'use',
+    subject: 'app',
   },
   {
-    title: 'FOOD Food Reservation',
+    title: 'FOOD Reservations',
     to: 'apps-food-food-reservation',
     icon: { icon: 'tabler-tools-kitchen-3' },
-    action: 'read',
-    subject: 'Reserve-Food',
+    action: 'use',
+    subject: 'app',
   },
   {
     title: 'FOOD Kitchen',
