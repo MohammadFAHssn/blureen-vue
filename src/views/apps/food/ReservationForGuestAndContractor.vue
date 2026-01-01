@@ -431,8 +431,8 @@ onMounted(async () => {
                 class="mt-2"
                 inline
               >
-                <VRadio label="سرو در آشپزخانه" value="serve_in_kitchen" />
-                <VRadio label="تحویل" value="deliver" />
+                <VRadio label="سرو در رستوران" value="serve_in_kitchen" />
+                <VRadio label="تحویل(بیرون‌بر)" value="deliver" />
               </VRadioGroup>
             </VCol>
             <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
@@ -578,7 +578,7 @@ onMounted(async () => {
                   </td>
                   <td>
                     <VChip size="small">
-                      {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
+                      {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در رستوران' : 'تحویل(بیرون‌بر)' }}
                     </VChip>
                   </td>
 
@@ -736,7 +736,7 @@ onMounted(async () => {
                         <div>
                           <strong>سرو غذا:</strong>
                           <VChip size="small">
-                            {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
+                            {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در رستوران' : 'تحویل(بیرون‌بر)' }}
                           </VChip>
                         </div>
                         <div>
@@ -885,8 +885,8 @@ onMounted(async () => {
               <VChip color="cyan" size="small">
                 {{
                   {
-                    serve_in_kitchen: 'سرو در آشپزخانه',
-                    deliver: 'تحویل',
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
                 }}
               </VChip>
