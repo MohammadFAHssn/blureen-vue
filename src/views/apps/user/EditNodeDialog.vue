@@ -141,8 +141,7 @@ function onFormSubmit() {
         const name = selectedOrgUnit.value.trim()
 
         selectedOrgUnit.value = {
-          // TODO: Replace with real ID from backend
-          id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+          id: `${Date.now()}-${Math.random()}`,
           name,
         }
 

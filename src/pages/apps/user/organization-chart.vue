@@ -151,7 +151,6 @@ function drawOrgChart() {
     .container(orgChartRef.value)
     .data(orgChartNodes.value)
     .nodeWidth(() => 220)
-    // TODO
     .nodeHeight(() => 90)
     .childrenMargin(() => 50)
     .compactMarginBetween(() => 35)
@@ -256,8 +255,7 @@ function onAddNode(nodeId) {
 
 function handleAddNode({ orgPosition, orgUnit, users }) {
   orgChartInstance.value.addNode({
-    // TODO: Use a better ID generation strategy
-    id: Math.floor(Math.random() * (1000000 - 100 + 1)) + 100,
+    id: `${Date.now()}-${Math.random()}`,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,
