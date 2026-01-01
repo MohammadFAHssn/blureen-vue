@@ -85,7 +85,7 @@ async function fetchOrgPositions() {
   await axiosInstance
     .get('/base/org-position')
     .then(({ data: { data } }) => {
-      orgPositions.value = data
+      orgPositions.value = data.sort((a, b) => a.level - b.level)
     })
     .catch((error) => {
       console.error('Error fetching org positions:', error)
