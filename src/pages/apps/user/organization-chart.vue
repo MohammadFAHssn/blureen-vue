@@ -498,7 +498,7 @@ onMounted(async () => {
     <!-- Drag and Drop Controls -->
     <div class="org-chart-controls d-flex justify-space-between">
       <VTextField
-        placeholder="جستجو بر اساس واحد یا کد پرسنلی..."
+        placeholder="جستجو بر اساس واحد یا کد پرسنلی ..."
         prepend-inner-icon="tabler-search"
         clearable
         style="max-inline-size: 300px;"
