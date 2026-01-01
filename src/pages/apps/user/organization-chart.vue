@@ -496,7 +496,7 @@ onMounted(async () => {
 
   <div class="d-flex flex-column justify-space-between">
     <!-- Drag and Drop Controls -->
-    <div class="org-chart-controls d-flex gap-4">
+    <div class="org-chart-controls d-flex justify-space-between">
       <VTextField
         placeholder="جستجو بر اساس واحد یا کد پرسنلی..."
         prepend-inner-icon="tabler-search"
