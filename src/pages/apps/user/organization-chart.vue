@@ -109,8 +109,7 @@ async function fetchOrgUnits() {
 
 async function fetchUsers() {
   await axiosInstance
-    .get('/base/user/details',
-    )
+    .get('/base/user/details')
     .then(({ data: { data } }) => {
       users.value = data
     })
@@ -243,7 +242,9 @@ function onEditNode(nodeId) {
 }
 
 function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
-  orgChartNodes.value = orgChartNodes.value.filter(node => String(node.id) !== String(id))
+  orgChartNodes.value = orgChartNodes.value.filter(
+    node => String(node.id) !== String(id),
+  )
   orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
   orgChartInstance.value.data(orgChartNodes.value).render()
 }
@@ -299,7 +300,9 @@ function onDrag(element, event) {
 
     const descendants = event.subject.descendants()
     const linksToRemove = [...(descendants || []), event.subject]
-    const nodesToRemove = descendants.filter(x => x.data.id !== event.subject.data.id)
+    const nodesToRemove = descendants.filter(
+      x => x.data.id !== event.subject.data.id,
+    )
 
     state.linksWrapper
       .selectAll('path.link')
@@ -410,8 +413,12 @@ function filterChart(searchQuery) {
   }
 
   // Find matching nodes
-  const matchingNodes = data.filter(d =>
-    toComparisonKey(d.orgUnit.name).includes(searchQuery),
+  const matchingNodes = data.filter(
+    d =>
+      toComparisonKey(d.orgUnit.name).includes(searchQuery)
+      || d.users.some(
+        user => toComparisonKey(user.personnel_code) === searchQuery,
+      ),
   )
 
   // Mark matching nodes as highlighted and expand their ancestors
@@ -422,7 +429,9 @@ function filterChart(searchQuery) {
     // Expand all ancestors of this node
     let currentNode = matchingNode
     while (currentNode.parentId) {
-      const parent = data.find(d => String(d.id) === String(currentNode.parentId))
+      const parent = data.find(
+        d => String(d.id) === String(currentNode.parentId),
+      )
       if (parent) {
         parent._expanded = true
         currentNode = parent
@@ -489,7 +498,7 @@ onMounted(async () => {
     <!-- Drag and Drop Controls -->
     <div class="org-chart-controls d-flex gap-4">
       <VTextField
-        placeholder="جستجو بر اساس واحد..."
+        placeholder="جستجو بر اساس واحد یا کد پرسنلی..."
         prepend-inner-icon="tabler-search"
         clearable
         style="max-inline-size: 300px;"
@@ -506,12 +515,7 @@ onMounted(async () => {
         سازماندهی
       </VBtn>
 
-      <VBtn
-        v-else
-        color="success"
-        variant="tonal"
-        @click="disableDrag"
-      >
+      <VBtn v-else color="success" variant="tonal" @click="disableDrag">
         <VIcon start icon="tabler-check" />
         تایید
       </VBtn>
