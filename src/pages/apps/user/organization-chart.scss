@@ -1,6 +1,48 @@
 .org-chart-container {
   overflow: hidden !important;
-  block-size: 95%;
+
+  // Drag and Drop styles
+  &.drag-enabled {
+    // Hide action buttons during drag mode
+    :deep(.org-chart-action-bar) {
+      display: none;
+    }
+
+    // Show grab cursor on draggable nodes
+    :deep(.node.draggable) {
+      cursor: grab;
+    }
+
+    &:not(.dragging-active) {
+      :deep(.node.draggable) {
+        stroke: rgb(var(--v-theme-secondary));
+        stroke-dasharray: 4px;
+        stroke-width: 2px;
+      }
+    }
+
+    &.dragging-active {
+      :deep(.node.droppable:not(.dragging)) {
+        stroke: rgb(var(--v-theme-success));
+        stroke-dasharray: 5px;
+        stroke-width: 2px;
+      }
+
+      :deep(.node.dragging) {
+        cursor: grabbing;
+      }
+    }
+  }
+
+  :deep(.node.dragging) {
+    stroke-dasharray: 0 !important;
+    stroke-width: 0 !important;
+
+    .org-chart-card {
+      box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+      opacity: 0.9;
+    }
+  }
 
   :deep(.org-chart-card) {
     display: flex;
