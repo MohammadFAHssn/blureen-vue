@@ -392,6 +392,55 @@ function onDragEnd(element, event) {
   orgChartInstance.value.render()
 }
 
+function filterChart(searchQuery) {
+  searchQuery = toComparisonKey(searchQuery)
+
+  if (!orgChartInstance.value) return
+
+  // Clear previous highlighting
+  orgChartInstance.value.clearHighlighting()
+
+  // Get chart data
+  const data = orgChartInstance.value.data()
+
+  // If search value is empty, render and fit and return
+  if (searchQuery === '') {
+    orgChartInstance.value.data(data).render().fit()
+    return
+  }
+
+  // Find matching nodes
+  const matchingNodes = data.filter(d =>
+    toComparisonKey(d.orgUnit.name).includes(searchQuery),
+  )
+
+  // Mark matching nodes as highlighted and expand their ancestors
+  matchingNodes.forEach((matchingNode) => {
+    matchingNode._highlighted = true
+    matchingNode._expanded = true
+
+    // Expand all ancestors of this node
+    let currentNode = matchingNode
+    while (currentNode.parentId) {
+      const parent = data.find(d => String(d.id) === String(currentNode.parentId))
+      if (parent) {
+        parent._expanded = true
+        currentNode = parent
+      }
+      else {
+        break
+      }
+    }
+  })
+
+  // Update data and rerender graph
+  orgChartInstance.value.data(data).render()
+
+  if (matchingNodes.length !== 0) {
+    orgChartInstance.value.setCentered(matchingNodes[0].id).render()
+  }
+}
+
 function enableDrag() {
   dragEnabled.value = true
   orgChartRef.value?.classList.add('drag-enabled')
@@ -408,6 +457,10 @@ async function reload() {
 
   await nextTick()
   drawOrgChart()
+}
+
+function toComparisonKey(str) {
+  return (str || '').toString().replace(/[\s\u200C]+/g, '')
 }
 
 fetchOrgChartNodes()
@@ -434,7 +487,15 @@ onMounted(async () => {
 
   <div class="d-flex flex-column justify-space-between">
     <!-- Drag and Drop Controls -->
-    <div class="org-chart-controls">
+    <div class="org-chart-controls d-flex gap-4">
+      <VTextField
+        placeholder="جستجو بر اساس واحد..."
+        prepend-inner-icon="tabler-search"
+        clearable
+        style="max-inline-size: 300px;"
+        @update:model-value="filterChart"
+      />
+
       <VBtn
         v-if="!dragEnabled"
         color="secondary"
