@@ -109,20 +109,23 @@ function getPayrollItemByLabel(label) {
 
 async function print() {
   pendingState.print = true
-  try {
-    const { data, error } = await useApi(
-      createUrl('/payroll/payroll-slip/print'),
-    )
 
-    pendingState.print = false
-
-    if (error.value) throw error.value
-  }
-  catch (e) {
-    console.error('Error printing payrollSlip:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در چاپ فیش حقوقی'
-  }
+  await axiosInstance
+    .get('/payroll/payroll-slip/print', {
+      params: {
+        month: payrollSlipOfCurrentPeriod.value.payroll_batch.month,
+        year: payrollSlipOfCurrentPeriod.value.payroll_batch.year,
+      },
+    })
+    .then(() => {})
+    .catch((error) => {
+      console.error('Error printing payrollSlip:', error)
+      uiState.hasError = true
+      uiState.errorMessage = error.message || 'خطا در چاپ فیش حقوقی'
+    })
+    .finally(() => {
+      pendingState.print = false
+    })
 }
 </script>
 
@@ -346,18 +349,16 @@ async function print() {
     </VRow>
   </div>
 
-  <!--
-    <VBtn
-        class="print-btn"
-        icon
-        size="x-large"
-        :disabled="pendingState.print"
-        :loading="pendingState.print"
-        @click="print"
-      >
-        <VIcon icon="tabler-printer" size="x-large" />
-    </VBtn>
-  -->
+  <VBtn
+    class="print-btn"
+    icon
+    size="x-large"
+    :disabled="pendingState.print"
+    :loading="pendingState.print"
+    @click="print"
+  >
+    <VIcon icon="tabler-printer" size="x-large" />
+  </VBtn>
 </template>
 
 <style lang="scss" scoped>
