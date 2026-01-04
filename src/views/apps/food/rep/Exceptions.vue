@@ -1,5 +1,4 @@
 <script setup>
-import { onMounted } from 'vue'
 import ExceptionCreateDialog from '@/views/apps/food/rep/ExceptionCreateDialog.vue'
 // emit
 const emit = defineEmits(['back'])
@@ -35,11 +34,10 @@ const exceptions = ref([])
 const users = ref([])
 const meals = ref([])
 
-const selectedNodes = ref([])
-const gridApi = ref(null)
-
 // ----- start ag-grid -----
+const gridApi = ref(null)
 const { theme } = useAGGridTheme()
+const selectedNodes = ref([])
 
 function onGridReady(params) {
   gridApi.value = params.api
@@ -59,24 +57,6 @@ const columnDefs = ref([
       valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
     },
   },
-  // { headerName: 'ایجاد شده توسط', field: 'createdBy' },
-  // { headerName: 'آخرین ویرایش توسط', field: 'editedBy' },
-  // {
-  //   headerName: 'تاریخ ایجاد',
-  //   field: 'createdAt',
-  //   valueFormatter: params =>
-  //     moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
-  //       'jYYYY/jMM/jD HH:mm:ss',
-  //     ),
-  // },
-  // {
-  //   headerName: 'تاریخ آخرین ویرایش',
-  //   field: 'updatedAt',
-  //   valueFormatter: params =>
-  //     moment(params.value, 'jYYYY-jMM-jDD HH:mm:ss').format(
-  //       'jYYYY/jMM/jD HH:mm:ss',
-  //     ),
-  // },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -102,10 +82,6 @@ const rowData = computed(() =>
       userName: exception.user.username,
       mealName: exception.meal.name,
       status: exception.status,
-      // createdBy: exception.createdBy?.fullName || '--',
-      // editedBy: exception.editedBy?.fullName || '--',
-      // createdAt: moment(exception.createdAt).format('jYYYY-jMM-jDD HH:mm:ss'),
-      // updatedAt: moment(exception.updatedAt).format('jYYYY-jMM-jDD HH:mm:ss'),
       actions: {
         status: true,
       },
@@ -132,9 +108,6 @@ async function fetchExceptions() {
     gridApi.value?.setGridOption('loading', false)
   }
 }
-
-fetchExceptions()
-
 async function onCreateException(payload) {
   pendingState.createException = true
 
@@ -167,7 +140,6 @@ async function onCreateException(payload) {
     fetchExceptions()
   }
 }
-
 async function onChangeStatusClick() {
   const id = selectedNodes.value[0].data.id
   pendingState.changeStatus = true
@@ -190,10 +162,9 @@ async function onChangeStatusClick() {
     console.error(err)
   }
 }
-
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(createUrl('/base/user'))
+    const { data, error } = await useApi(createUrl('/base/user?filter[active]=true'))
     if (error.value) {
       setError('خطا در دریافت کاربران')
       throw error.value
@@ -214,7 +185,7 @@ async function fetchUsers() {
 async function fetchMeals() {
   pendingState.fetchingMeals = true
   try {
-    const res = await $api('/food/meal', { method: 'GET' })
+    const res = await $api('/food/meal/get-actives', { method: 'GET' })
 
     meals.value = res?.data.meals || []
   }
@@ -227,7 +198,7 @@ async function fetchMeals() {
   }
 }
 onMounted(async () => {
-  await Promise.all([fetchMeals(), fetchUsers()])
+  await Promise.all([fetchMeals(), fetchUsers(), fetchExceptions()])
 })
 </script>
 
