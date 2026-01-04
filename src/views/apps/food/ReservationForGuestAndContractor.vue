@@ -37,20 +37,6 @@ const serveType = ref(null)
 
 const reservationType = ref(null)
 
-// rules
-const countInputRules = [
-  (value) => {
-    if (value === null || value === undefined || value === '')
-      return true
-
-    const isInteger = /^\d+$/.test(String(value))
-    if (!isInteger)
-      return 'فقط باید عدد باشد!'
-
-    return true
-  },
-]
-
 // helper methods
 // computed string just for showing in text field
 const reserveDatesDisplay = computed(() => {
@@ -77,10 +63,11 @@ function setError(message) {
 async function submit() {
   const selectedDates = getSelectedDatesArray()
 
-  if (!selectedDates.length) {
-    setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
-    return
-  }
+  if (!selectedDates.length) return setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
+  if (!selectedMeal.value) return setError('لطفاً وعده را انتخاب کنید.')
+  if (reservationType.value === 'contractor' && !selectedContractor.value) return setError('لطفاً پیمانکار را انتخاب کنید.')
+  if (!quantity.value) return setError('لطفاً تعداد را وارد کنید.')
+  if (reservationType.value === 'guest' && !description.value) return setError('لطفاً توضیحات را وارد کنید.')
 
   for (const dateStr of selectedDates) {
     const [year, month, day] = String(dateStr).split('/').map(Number)
@@ -387,7 +374,6 @@ onMounted(async () => {
                 label="تاریخ رزرو"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -399,12 +385,10 @@ onMounted(async () => {
                 label="وعده"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VRadioGroup
               v-model="reservationType"
-              :rules="[requiredValidator]"
               class="mt-2"
               inline
               @change="onChange"
@@ -416,18 +400,16 @@ onMounted(async () => {
               <VTextField
                 v-model="quantity"
                 label="تعداد"
+                type="number"
                 variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
               />
               <VTextField
                 v-model="description"
                 label="توضیحات"
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
               <VRadioGroup
                 v-model="serveType"
-                :rules="[requiredValidator]"
                 class="mt-2"
                 inline
               >
@@ -445,13 +427,12 @@ onMounted(async () => {
                 chips
                 clearable
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
               <VTextField
                 v-model="quantity"
                 label="تعداد"
+                type="number"
                 variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
               />
             </VCol>
           </VRow>
@@ -545,10 +526,8 @@ onMounted(async () => {
                   <th>کد تحویل</th>
                   <th>وضعیت</th>
                   <th>تاریخ</th>
-                  <th>رزرو شده توسط</th>
                   <th>سرو غذا</th>
                   <th>تعداد</th>
-                  <th>توضیحات</th>
                   <th>عملیات</th>
                 </tr>
               </thead>
@@ -572,11 +551,6 @@ onMounted(async () => {
                     </VChip>
                   </td>
                   <td>
-                    <VChip>
-                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                    </VChip>
-                  </td>
-                  <td>
                     <VChip size="small">
                       {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در رستوران' : 'تحویل(بیرون‌بر)' }}
                     </VChip>
@@ -589,23 +563,6 @@ onMounted(async () => {
                         0,
                       )
                     }}
-                  </td>
-                  <td class="py-2">
-                    <VTooltip location="top" :disabled="!(item.description?.length > 6)">
-                      <template #activator="{ props }">
-                        <div
-                          v-bind="props"
-                          class="text-truncate"
-                          style="max-width: 120px;"
-                        >
-                          {{ item.description || '—' }}
-                        </div>
-                      </template>
-
-                      <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
-                        {{ item.description }}
-                      </div>
-                    </VTooltip>
                   </td>
                   <td>
                     <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
