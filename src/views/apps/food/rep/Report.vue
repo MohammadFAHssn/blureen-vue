@@ -32,9 +32,8 @@ function setError(message) {
 const reports = ref([])
 const meals = ref([])
 
-const gridApi = ref(null)
-
 // ----- start ag-grid -----
+const gridApi = ref(null)
 const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
@@ -97,7 +96,7 @@ async function onFetchReport(payload) {
 async function fetchMeals() {
   pendingState.fetchingMeals = true
   try {
-    const res = await $api('/food/meal', { method: 'GET' })
+    const res = await $api('/food/meal/get-actives', { method: 'GET' })
 
     meals.value = res?.data.meals || []
   }
