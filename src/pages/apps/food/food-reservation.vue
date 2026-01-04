@@ -7,8 +7,8 @@ import ReservationForPersonnel from '@/views/apps/food/ReservationForPersonnel.v
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
-    action: 'read',
-    subject: 'Reserve-Food',
+    action: 'use',
+    subject: 'app',
   },
 })
 
@@ -27,25 +27,32 @@ onMounted(() => {
       <VCol cols="12">
         <VCard class="mb-4 pa-8 text-center">
           <VRow align="center" justify="center" class="gap-4">
-            <VBtn
-              density="default"
-              @click="
-                reservationForPersonnel = true;
-                reservationForGuestAndContractor = false;
-              "
-            >
-              رزرو غذا
-            </VBtn>
+            <template v-if="can('read', 'Reserve-Meal')">
+              <VBtn
+                density="default"
+                @click="
+                  reservationForPersonnel = true;
+                  reservationForGuestAndContractor = false;
+                "
+              >
+                پرسنل
+              </VBtn>
 
-            <VBtn
-              density="default"
-              @click="
-                reservationForPersonnel = false;
-                reservationForGuestAndContractor = true;
-              "
-            >
-              رزرو غذای مهمان/ پیمانکار
-            </VBtn>
+              <VBtn
+                density="default"
+                @click="
+                  reservationForPersonnel = false;
+                  reservationForGuestAndContractor = true;
+                "
+              >
+                پیمانکار - مهمان - تعمیرکار
+              </VBtn>
+            </template>
+            <VCol v-if="!can('read', 'Reserve-Meal')" cols="auto">
+              <div class="text-h6 font-weight-bold text-primary-darken-3">
+                رزرو شده برای شما
+              </div>
+            </VCol>
           </VRow>
         </VCard>
       </VCol>
