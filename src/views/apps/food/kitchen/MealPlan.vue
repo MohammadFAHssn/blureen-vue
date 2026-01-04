@@ -65,6 +65,9 @@ function onResetForm() {
 }
 
 async function submit() {
+  if (!planDate.value) return setError('تاریخ را انتخاب کنید.')
+  if (!selectedMeal.value) return setError('وعده را انتخاب کنید.')
+  if (!selectedFood.value) return setError('غذا را انتخاب کنید.')
   pendingState.createPlan = true
   try {
     const [year, month, day] = String(planDate.value).split('/').map(Number)
@@ -72,10 +75,7 @@ async function submit() {
     const selectedKey = year * 10000 + month * 100 + day
     const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
 
-    if (selectedKey < todayKey) {
-      setError('نمیتوان برای گذشته برنامه غذایی ثبت کرد.')
-      return
-    }
+    if (selectedKey < todayKey) return setError('نمیتوان برای گذشته برنامه غذایی ثبت کرد.')
 
     const payload = {
       date: planDate.value,
@@ -291,7 +291,6 @@ onMounted(async () => {
                 label="تاریخ"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -303,7 +302,6 @@ onMounted(async () => {
                 label="وعده"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -315,13 +313,12 @@ onMounted(async () => {
                 label="غذا"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
           </VRow>
           <VRow justify="center" class="mb-4">
             <VCol cols="auto">
-              <VBtn color="primary" @click="submit">
+              <VBtn color="primary" :disabled="pendingState.createPlan" :loading="pendingState.createPlan" @click="submit">
                 ثبت
               </VBtn>
             </VCol>

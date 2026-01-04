@@ -423,8 +423,8 @@ const undeliveredMealTotals = computed(() => {
               <VChip>
                 {{
                   {
-                    serve_in_kitchen: 'سرو در آشپزخانه',
-                    deliver: 'تحویل',
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
                 }}
               </VChip>
