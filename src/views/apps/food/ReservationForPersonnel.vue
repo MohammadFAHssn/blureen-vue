@@ -1,4 +1,5 @@
 <script setup>
+import { can } from '@layouts/plugins/casl'
 import jalaali from 'jalaali-js'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
@@ -32,6 +33,15 @@ const selectedReservedMeal = ref(null)
 
 const reservationType = ref(null)
 
+const userData = useCookie('userData')
+const canReserveFood = computed(() => !!can('use', 'reserve-food'))
+const datesKey = computed(() => {
+  const v = reserveDates.value
+  const arr = Array.isArray(v) ? v : (v ? [v] : [])
+  return arr.filter(Boolean).join('|')
+})
+const loadedForReserveFood = ref(false)
+
 // helper methods
 // computed string just for showing in text field
 const reserveDatesDisplay = computed(() => {
@@ -61,6 +71,8 @@ async function submit() {
     setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
     return
   }
+  if (!selectedMeal.value) return setError('لطفاً وعده را انتخاب کنید.')
+  if (!selectedPersonnel.value?.length) return setError('لطفاً حداقل یک نفر را انتخاب کنید.')
 
   for (const dateStr of selectedDates) {
     const [year, month, day] = String(dateStr).split('/').map(Number)
@@ -135,7 +147,7 @@ async function submit() {
       fetchReservedMealsForDateByUser()
     else
       fetchReservedMealsForDateForUser()
-    selectedPersonnel.value = null
+    selectedPersonnel.value = []
     selectedMeal.value = null
   }
   catch (err) {
@@ -192,7 +204,6 @@ function onClickDetail(reserv) {
   uiState.isDetailsDialogVisible = true
 }
 
-// IMPORTANT: api returns nested arrays -> flatten
 async function fetchReservedMealsForDateByUser() {
   reservedMealsByYou.value = []
   pendingState.fetchingReservedMeals = true
@@ -308,6 +319,47 @@ async function deletePersonnel(id) {
   }
 }
 
+watch(
+  () => [userData.value?.id, canReserveFood.value],
+  async ([id, allowed]) => {
+    if (!id) return
+
+    if (!allowed) {
+      loadedForReserveFood.value = false
+      users.value = []
+      meals.value = []
+      selectedPersonnel.value = []
+      selectedMeal.value = null
+      return
+    }
+
+    if (loadedForReserveFood.value) return
+    loadedForReserveFood.value = true
+
+    await Promise.all([fetchMeals(), fetchUsers()])
+  },
+  { immediate: true },
+)
+
+let lastReservationKey = ''
+
+watch(
+  () => [userData.value?.id, canReserveFood.value, datesKey.value],
+  async ([id, allowed, dk]) => {
+    if (!id || !dk) return
+
+    const key = `${id}|${allowed}|${dk}`
+    if (key === lastReservationKey) return
+    lastReservationKey = key
+
+    reservationType.value = allowed ? 'byYou' : 'forYou'
+
+    if (allowed) await fetchReservedMealsForDateByUser()
+    else await fetchReservedMealsForDateForUser()
+  },
+  { immediate: true },
+)
+
 const sortedReservedMealsByUser = computed(() =>
   [...reservedMealsByYou.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
@@ -321,10 +373,6 @@ const sortedReservedMealsForUser = computed(() =>
 )
 
 onMounted(async () => {
-  reservationType.value = 'byYou'
-
-  await Promise.all([fetchMeals(), fetchUsers()])
-
   const today = new Date()
 
   const maxDateG = new Date(today)
@@ -340,8 +388,6 @@ onMounted(async () => {
 
   reserveDates.value = [fmt(jToday)]
   maxDate.value = fmt(jMax)
-
-  await fetchReservedMealsForDateByUser()
 })
 </script>
 
@@ -376,12 +422,11 @@ onMounted(async () => {
           multiple
           :max="maxDate"
           custom-input="#custom-input"
-          @change="onChange"
         />
       </VCol>
 
       <VCol cols="12" md="8">
-        <VCard class="mb-4">
+        <VCard v-if="can('read', 'Reserve-Meal')" class="mb-4">
           <label class="font-weight-medium mb-2 mt-2 d-block text-center">
             جزئیات
           </label>
@@ -392,7 +437,6 @@ onMounted(async () => {
                 label="تاریخ رزرو"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -404,7 +448,6 @@ onMounted(async () => {
                 label="وعده"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" class="mb-3">
@@ -418,7 +461,6 @@ onMounted(async () => {
                 chips
                 clearable
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
             </VCol>
           </VRow>
@@ -444,8 +486,8 @@ onMounted(async () => {
             </label>
 
             <VRadioGroup
+              v-if="can('read', 'Reserve-Meal')"
               v-model="reservationType"
-              :rules="[requiredValidator]"
               class="mt-2"
               inline
               @change="onChange"
@@ -566,8 +608,8 @@ onMounted(async () => {
                 رزروهای تاریخ‌های انتخاب شده
               </VExpansionPanelTitle>
               <VRadioGroup
+                v-if="can('read', 'Reserve-Meal')"
                 v-model="reservationType"
-                :rules="[requiredValidator]"
                 class="mt-2"
                 inline
                 @change="onChange"
