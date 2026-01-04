@@ -1,5 +1,4 @@
 <script setup>
-import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 // emit
 const emit = defineEmits(['back'])
 
@@ -106,45 +105,6 @@ async function onCreateRule() {
     pendingState.createEligibilityRule = false
   }
 }
-function _onClickDelete(eligibilityRule) {
-  selectedEligibilityRule.value = eligibilityRule
-  uiState.isDeleteDialogVisible = true
-}
-async function onConfirmDelete() {
-  if (!selectedEligibilityRule.value)
-    return
-
-  pendingState.deleteEligibilityRule = true
-
-  try {
-    const res = await $api(`/food/eligibility/${selectedEligibilityRule.value.id}`, {
-      method: 'DELETE',
-      onResponseError({ response }) {
-        setError(response._data?.message || 'خطا در حذف')
-      },
-    })
-
-    if (uiState.hasError)
-      return
-
-    uiState.isDeleteDialogVisible = false
-
-    if (res?.data) {
-      eligibilityRules.value = eligibilityRules.value.filter(
-        eligibilityRule => eligibilityRule.id !== selectedEligibilityRule.value.id,
-      )
-    }
-    else {
-      setError('خطا در حذف')
-    }
-  }
-  catch (err) {
-    console.error(err)
-  }
-  finally {
-    pendingState.deleteEligibilityRule = false
-  }
-}
 function onClickEdit(eligibilityRule) {
   selectedEligibilityRule.value = eligibilityRule
   time.value = eligibilityRule.time
@@ -198,7 +158,7 @@ async function onConfirmEdit() {
 async function fetchMeals() {
   pendingState.fetchingMeals = true
   try {
-    const res = await $api('/food/meal', { method: 'GET' })
+    const res = await $api('/food/meal/get-actives', { method: 'GET' })
 
     meals.value = res?.data.meals || []
   }
@@ -210,7 +170,6 @@ async function fetchMeals() {
     pendingState.fetchingMeals = false
   }
 }
-
 function onResetForm() {
   selectedMeal.value = null
   time.value = null
@@ -222,7 +181,6 @@ function dialogModelValueUpdate(val) {
     onResetForm()
   }
 }
-
 onMounted(async () => {
   await Promise.all([fetchMeals(), fetchEligibilityRules()])
 })
@@ -263,18 +221,13 @@ onMounted(async () => {
       <VTable v-if="!pendingState.fetchingEligibilityRules && eligibilityRules.length > 0">
         <thead>
           <tr>
-            <th>ردیف</th>
             <th>وعده</th>
             <th>زمان</th>
-            <th>ایجاد شده توسط</th>
-            <th>آخرین ویرایش توسط</th>
             <th>عملیات</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(eligibilityRule, index) in eligibilityRules" :key="eligibilityRule.id">
-            <td>{{ index + 1 }}</td>
-
+          <tr v-for="(eligibilityRule) in eligibilityRules" :key="eligibilityRule.id">
             <td>{{ eligibilityRule.meal.name }}</td>
 
             <td>
@@ -284,19 +237,6 @@ onMounted(async () => {
             </td>
 
             <td>
-              <VChip>
-                {{ eligibilityRule.createdBy ? `${eligibilityRule.createdBy.fullName} - ${eligibilityRule.createdBy.username}` : '—' }}
-              </VChip>
-            </td>
-
-            <td>
-              <VChip>
-                {{ eligibilityRule.editedBy ? `${eligibilityRule.editedBy.fullName} - ${eligibilityRule.editedBy.username}` : '—' }}
-              </VChip>
-            </td>
-
-            <td>
-              <!-- <VIcon icon="tabler-trash" color="red" size="24" @click="_onClickDelete(eligibilityRule)" /> -->
               <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(eligibilityRule)" />
             </td>
           </tr>
@@ -404,13 +344,4 @@ onMounted(async () => {
       </VCardText>
     </VCard>
   </VDialog>
-
-  <!-- Delete Dialog -->
-  <AreYouSureDialog
-    v-if="uiState.isDeleteDialogVisible"
-    v-model:is-dialog-visible="uiState.isDeleteDialogVisible"
-    title="آیا از حذف این محدودیت اطمینان دارید؟"
-    :loading="pendingState.deleteEligibilityRule"
-    @confirm="onConfirmDelete"
-  />
 </template>
