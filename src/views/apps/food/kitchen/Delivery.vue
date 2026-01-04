@@ -91,20 +91,6 @@ watch([receivedCount, todayFoodCount, secondFoodReceivedCount, thirdFoodReceived
   }
 })
 
-// rules
-const countInputRules = [
-  (value) => {
-    if (value === null || value === undefined || value === '')
-      return true
-
-    const isInteger = /^\d+$/.test(String(value))
-    if (!isInteger)
-      return 'فقط باید عدد باشد!'
-
-    return true
-  },
-]
-
 // helper methods
 function setError(message) {
   uiState.hasError = true
@@ -301,7 +287,7 @@ async function deliver() {
             .filter(Boolean)
 
           uiState.errorMessage
-            = `برای پرسنل با کد/های پرسنلی زیر، ترددی ثبت نشده است. لطفا گزینه 'تحویل نگرفت' آن‌ها را علامت زده سپس، اقدام به ارسال نمایید:\n${
+            = `برای پرسنل با کد/های پرسنلی زیر، ترددی ثبت نشده است. لطفا گزینه 'تحویل نگرفت' آن‌ها را علامت زده سپس، اقدام به تحویل نمایید:\n${
               codes}`
 
           return
@@ -312,7 +298,7 @@ async function deliver() {
           return
         }
 
-        uiState.errorMessage = data?.message || 'خطا در ارسال'
+        uiState.errorMessage = data?.message || 'خطا در تحویل'
       },
     })
 
@@ -324,7 +310,7 @@ async function deliver() {
   catch (err) {
     console.error('Error deliver:', err)
     if (uiState.hasError && uiState.errorMessage) return
-    setError('خطا در ارسال اطلاعات')
+    setError('خطا در تحویل اطلاعات')
   }
   finally {
     pendingState.deliverReservedMeal = false
@@ -438,7 +424,7 @@ onMounted(async () => {
                 v-model="deliveryCode"
                 label="کد تحویل"
                 variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
+                type="number"
                 @keydown.enter="search"
               />
             </VCol>
@@ -762,29 +748,40 @@ onMounted(async () => {
 
     <VCard>
       <VCardTitle class="text-h6">
-        تحویل
+        تحویل غذا
       </VCardTitle>
 
       <VCardActions class="justify-end">
         <VBtn
-          color="primary"
+          color="green-darken-4"
           variant="tonal"
           :loading="pendingState.deliverReservedMeal"
           :disabled="pendingState.deliverReservedMeal || reservedMeal.status"
           @click="deliver"
         >
-          ارسال
+          <VIcon icon="tabler-circle-dashed-check" size="20" start />
+          تحویل
         </VBtn>
       </VCardActions>
 
       <VCardText>
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>رزرو کننده:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}</p>
+            <p>
+              <strong>رزرو کننده:</strong>
+              <VChip color="orange" size="small">
+                {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}
+              </vchip>
+            </p>
           </VCol>
 
           <VCol cols="12" sm="6">
-            <p><strong>کد پرسنلی:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}</p>
+            <p>
+              <strong>کد پرسنلی:</strong>
+              <VChip color="orange" size="small">
+                {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}
+              </vchip>
+            </p>
           </VCol>
         </VRow>
 
@@ -792,43 +789,59 @@ onMounted(async () => {
 
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>کد تحویل:</strong> {{ reservedMeal.delivery_code }}</p>
+            <strong>کد تحویل:</strong>
+            <VChip color="primary" size="small">
+              {{ reservedMeal.delivery_code }}
+            </VChip>
           </VCol>
-
           <VCol cols="12" sm="6">
-            <p><strong>وعده:</strong> {{ reservedMeal.meal?.name }}</p>
+            <p>
+              <strong>وعده:</strong>
+              <VChip color="primary" size="small">
+                {{ reservedMeal.meal?.name }}
+              </VChip>
+            </p>
           </VCol>
 
           <VDivider class="my-3" />
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>نوع رزرو:</strong> {{
-                {
-                  personnel: 'پرسنل',
-                  contractor: 'پیمانکار',
-                  guest: 'مهمان',
-                }[reservedMeal.reserve_type] || ''
-              }}
+              <strong>نوع رزرو:</strong>
+              <VChip>
+                {{
+                  {
+                    personnel: 'پرسنل',
+                    contractor: 'پیمانکار',
+                    guest: 'مهمان',
+                  }[reservedMeal.reserve_type] || ''
+                }}
+              </VChip>
             </p>
           </VCol>
 
           <VCol v-if="reservedMeal.details?.[0]?.contractor" cols="12" sm="6">
             <p>
-              <strong>پیمانکار:</strong> {{
-                `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
-              }}
+              <strong>پیمانکار:</strong>
+              <VChip>
+                {{
+                  `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
+                }}
+              </VChip>
             </p>
           </VCol>
 
           <VCol v-if="reservedMeal.reserve_type === 'guest'" cols="12" sm="6">
             <p>
-              <strong>نوع سرو:</strong> {{
-                {
-                  serve_in_kitchen: 'سرو در آشپزخانه',
-                  deliver: 'تحویل',
-                }[reservedMeal.serve_place] || ''
-              }}
+              <strong>نوع سرو:</strong>
+              <VChip>
+                {{
+                  {
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
+                  }[reservedMeal.serve_place] || ''
+                }}
+              </VChip>
             </p>
           </VCol>
         </VRow>
@@ -837,17 +850,25 @@ onMounted(async () => {
 
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>وضعیت:</strong> {{ reservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}</p>
+            <p>
+              <strong>وضعیت:</strong>
+              <VChip :color="reservedMeal.status ? 'success' : 'error'" size="small">
+                {{ reservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}
+              </VChip>
+            </p>
           </VCol>
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>تعداد:</strong> {{
-                reservedMeal.details?.reduce(
-                  (sum, detail) => sum + (detail.quantity || 0),
-                  0,
-                )
-              }}
+              <strong>تعداد:</strong>
+              <VChip size="small">
+                {{
+                  reservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  )
+                }}
+              </VChip>
             </p>
           </VCol>
         </VRow>

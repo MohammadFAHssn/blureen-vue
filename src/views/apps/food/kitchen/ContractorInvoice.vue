@@ -185,7 +185,6 @@ onMounted(async () => {
                 label="بازه زمانی"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" sm="12" md="12">
@@ -198,7 +197,6 @@ onMounted(async () => {
                 chips
                 clearable
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
             </VCol>
           </VRow>
