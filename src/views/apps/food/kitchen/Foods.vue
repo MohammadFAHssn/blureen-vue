@@ -224,7 +224,7 @@ function dialogModelValueUpdate(val) {
 
   <div>
     <div class="d-flex justify-end gap-3 mb-3">
-      <VBtn color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
+      <VBtn v-if="can('read', 'kitchen')" color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
         <VIcon
           icon="tabler-plus"
           size="24"
