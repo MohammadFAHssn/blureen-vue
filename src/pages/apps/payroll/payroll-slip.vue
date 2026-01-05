@@ -110,22 +110,47 @@ function getPayrollItemByLabel(label) {
 async function print() {
   pendingState.print = true
 
-  await axiosInstance
-    .get('/payroll/payroll-slip/print', {
+  try {
+    const response = await axiosInstance.get('/payroll/payroll-slip/print', {
       params: {
         month: payrollSlipOfCurrentPeriod.value.payroll_batch.month,
         year: payrollSlipOfCurrentPeriod.value.payroll_batch.year,
       },
+      responseType: 'blob',
     })
-    .then(() => {})
-    .catch(({ response }) => {
-      console.error('Error printing payrollSlip:', response.data.message)
-      uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در چاپ فیش حقوقی'
-    })
-    .finally(() => {
-      pendingState.print = false
-    })
+
+    const blob = new Blob([response.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+
+    // Extract filename from Content-Disposition header or use default
+    const contentDisposition = response.headers['content-disposition']
+    let filename = `فیش-حقوقی-${getJalaliMonthNameByIndex(payrollSlipOfCurrentPeriod.value.payroll_batch.month)}-${payrollSlipOfCurrentPeriod.value.payroll_batch.year}.pdf`
+
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-8'')?([^;\n"']+)['"]?/i)
+      if (filenameMatch?.[1]) {
+        filename = decodeURIComponent(filenameMatch[1])
+      }
+    }
+
+    // Create download link and trigger download
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
+  catch (error) {
+    // console.error('Error printing payrollSlip:', error)
+    // uiState.hasError = true
+    // uiState.errorMessage = error.response?.data?.message || 'خطا در چاپ فیش حقوقی'
+  }
+  finally {
+    pendingState.print = false
+  }
 }
 </script>
 
