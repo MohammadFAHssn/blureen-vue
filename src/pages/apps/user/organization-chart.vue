@@ -74,10 +74,10 @@ async function fetchOrgChartNodes() {
         }
       })
     })
-    .catch((error) => {
-      console.error('Error fetching org chart nodes:', error)
+    .catch(({ response }) => {
+      console.error('Error fetching org chart nodes:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در دریافت چارت سازمانی'
+      uiState.errorMessage = response.data.message || 'خطا در دریافت چارت سازمانی'
     })
 }
 
@@ -87,10 +87,10 @@ async function fetchOrgPositions() {
     .then(({ data: { data } }) => {
       orgPositions.value = data.sort((a, b) => a.level - b.level)
     })
-    .catch((error) => {
-      console.error('Error fetching org positions:', error)
+    .catch(({ response }) => {
+      console.error('Error fetching org positions:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در دریافت سمت‌های سازمانی'
+      uiState.errorMessage = response.data.message || 'خطا در دریافت سمت‌های سازمانی'
     })
 }
 
@@ -100,10 +100,10 @@ async function fetchOrgUnits() {
     .then(({ data: { data } }) => {
       orgUnits.value = data
     })
-    .catch((error) => {
-      console.error('Error fetching org units:', error)
+    .catch(({ response }) => {
+      console.error('Error fetching org units:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در دریافت واحدهای سازمانی'
+      uiState.errorMessage = response.data.message || 'خطا در دریافت واحدهای سازمانی'
     })
 }
 
@@ -113,10 +113,10 @@ async function fetchUsers() {
     .then(({ data: { data } }) => {
       users.value = data
     })
-    .catch((error) => {
-      console.error('Error fetching users:', error)
+    .catch(({ response }) => {
+      console.error('Error fetching users:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در دریافت کاربران'
+      uiState.errorMessage = response.data.message || 'خطا در دریافت کاربران'
     })
 }
 
@@ -133,10 +133,10 @@ async function updateOrganizationChart() {
     .then(() => {
       reload()
     })
-    .catch((error) => {
-      console.error('Error updating organization chart:', error)
+    .catch(({ response }) => {
+      console.error('Error updating organization chart:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در بروزرسانی چارت سازمانی'
+      uiState.errorMessage = response.data.message || 'خطا در بروزرسانی چارت سازمانی'
     })
     .finally(() => {
       pendingState.updateOrganizationChart = false

@@ -118,10 +118,10 @@ async function print() {
       },
     })
     .then(() => {})
-    .catch((error) => {
-      console.error('Error printing payrollSlip:', error)
+    .catch(({ response }) => {
+      console.error('Error printing payrollSlip:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = error.message || 'خطا در چاپ فیش حقوقی'
+      uiState.errorMessage = response.data.message || 'خطا در چاپ فیش حقوقی'
     })
     .finally(() => {
       pendingState.print = false
