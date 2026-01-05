@@ -27,7 +27,7 @@ onMounted(() => {
       <VCol cols="12">
         <VCard class="mb-4 pa-8 text-center">
           <VRow align="center" justify="center" class="gap-4">
-            <template v-if="can('read', 'Reserve-Meal')">
+            <template v-if="can('read', 'Reserve-Food')">
               <VBtn
                 density="default"
                 @click="
@@ -48,7 +48,7 @@ onMounted(() => {
                 پیمانکار - مهمان - تعمیرکار
               </VBtn>
             </template>
-            <VCol v-if="!can('read', 'Reserve-Meal')" cols="auto">
+            <VCol v-if="!can('read', 'Reserve-Food')" cols="auto">
               <div class="text-h6 font-weight-bold text-primary-darken-3">
                 رزرو شده برای شما
               </div>
