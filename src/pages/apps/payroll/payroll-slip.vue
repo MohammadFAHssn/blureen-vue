@@ -122,7 +122,12 @@ async function print() {
     const blob = new Blob([response.data], { type: 'application/pdf' })
     const url = window.URL.createObjectURL(blob)
 
-    const filename = `فیش حقوقی - ${payrollSlipOfCurrentPeriod.value.payroll_batch.year} - ${payrollSlipOfCurrentPeriod.value.payroll_batch.month}.pdf`
+    const filename
+      = 'فیش حقوقی '
+        + `${getJalaliMonthNameByIndex(
+          payrollSlipOfCurrentPeriod.value.payroll_batch.month,
+        )}`
+        + ` ${payrollSlipOfCurrentPeriod.value.payroll_batch.year}.pdf`
 
     const link = document.createElement('a')
 
