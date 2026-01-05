@@ -15,7 +15,7 @@ export default [
     title: 'FOOD Kitchen',
     to: 'apps-food-kitchen',
     icon: { icon: 'tabler-chef-hat' },
-    action: 'read',
+    action: 'see',
     subject: 'Kitchen',
   },
   {
