@@ -1,4 +1,5 @@
 <script setup>
+import { can } from '@layouts/plugins/casl'
 // emit
 const emit = defineEmits(['back'])
 
@@ -281,8 +282,22 @@ function dialogModelValueUpdate(val) {
             </td>
 
             <td>
-              <VIcon :disabled="food.id === 1" icon="tabler-power" :color="food.status ? 'red' : 'green'" size="24" @click="onChangeStatus(food)" />
-              <VIcon :disabled="food.id === 1" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(food)" />
+              <VIcon
+                v-if="can('edit', 'Food-Status')"
+                :disabled="food.id === 1"
+                icon="tabler-power"
+                :color="food.status ? 'red' : 'green'"
+                size="24"
+                @click="onChangeStatus(food)"
+              />
+              <VIcon
+                v-if="can('edit', 'Food-Price')"
+                :disabled="food.id === 1"
+                icon="tabler-edit"
+                color="primary"
+                size="24"
+                @click="onClickEdit(food)"
+              />
             </td>
           </tr>
         </tbody>
