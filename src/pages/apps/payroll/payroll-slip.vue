@@ -375,6 +375,7 @@ async function print() {
   </div>
 
   <VBtn
+    color="secondary"
     class="print-btn"
     icon
     size="x-large"
