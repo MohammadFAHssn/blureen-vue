@@ -122,18 +122,8 @@ async function print() {
     const blob = new Blob([response.data], { type: 'application/pdf' })
     const url = window.URL.createObjectURL(blob)
 
-    // Extract filename from Content-Disposition header or use default
-    const contentDisposition = response.headers['content-disposition']
-    let filename = `فیش-حقوقی-${getJalaliMonthNameByIndex(payrollSlipOfCurrentPeriod.value.payroll_batch.month)}-${payrollSlipOfCurrentPeriod.value.payroll_batch.year}.pdf`
+    const filename = `فیش حقوقی - ${payrollSlipOfCurrentPeriod.value.payroll_batch.year} - ${payrollSlipOfCurrentPeriod.value.payroll_batch.month}.pdf`
 
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-8'')?([^;\n"']+)['"]?/i)
-      if (filenameMatch?.[1]) {
-        filename = decodeURIComponent(filenameMatch[1])
-      }
-    }
-
-    // Create download link and trigger download
     const link = document.createElement('a')
 
     link.href = url
