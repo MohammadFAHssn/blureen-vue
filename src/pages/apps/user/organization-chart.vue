@@ -48,6 +48,10 @@ const dragStartX = ref(0)
 const dragStartY = ref(0)
 const isDragStarting = ref(false)
 
+// Expand level control
+const expandLevel = ref(1)
+const maxDepth = ref(0)
+
 const vuetifyTheme = useTheme()
 
 watch(
@@ -204,6 +208,16 @@ function drawOrgChart() {
 
   // Add event listeners for action buttons
   setupNodeActionButtons()
+
+  calculateMaxDepth()
+}
+
+function calculateMaxDepth() {
+  if (!orgChartInstance.value) return
+
+  const chartState = orgChartInstance.value.getChartState()
+
+  maxDepth.value = Math.max(...chartState.allNodes.map(node => node.depth))
 }
 
 function setupNodeActionButtons() {
@@ -247,6 +261,8 @@ function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
   )
   orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
   orgChartInstance.value.data(orgChartNodes.value).render()
+
+  orgChartInstance.value.setCentered(id).render()
 }
 
 function onAddNode(nodeId) {
@@ -255,13 +271,17 @@ function onAddNode(nodeId) {
 }
 
 function handleAddNode({ orgPosition, orgUnit, users }) {
+  const newNodeId = `${Date.now()}-${Math.random()}`
+
   orgChartInstance.value.addNode({
-    id: `${Date.now()}-${Math.random()}`,
+    id: newNodeId,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,
     users,
   })
+
+  orgChartInstance.value.setCentered(newNodeId).render()
 }
 
 function onDeleteNode(nodeId) {
@@ -460,6 +480,21 @@ function disableDrag() {
   orgChartRef.value?.classList.remove('drag-enabled')
 }
 
+function updateExpandLevel(level) {
+  if (!orgChartInstance.value) return
+
+  const data = orgChartInstance.value.data()
+  const root = orgChartInstance.value.getChartState().generateRoot(data)
+  const allNodes = root.descendants()
+
+  // Update _expanded property based on depth
+  allNodes.forEach((node) => {
+    node.data._expanded = node.depth <= level
+  })
+
+  orgChartInstance.value.data(data).render().fit()
+}
+
 async function reload() {
   fetchOrgChartNodes()
   await fetchOrgUnits()
@@ -495,8 +530,8 @@ onMounted(async () => {
   </VSnackbar>
 
   <div class="d-flex flex-column justify-space-between">
-    <!-- Drag and Drop Controls -->
-    <div class="org-chart-controls d-flex justify-space-between">
+    <!-- Org Chart Controls -->
+    <div class="org-chart-controls d-flex justify-space-between flex-wrap">
       <VTextField
         placeholder="جستجو بر اساس واحد یا کد پرسنلی ..."
         prepend-inner-icon="tabler-search"
@@ -504,6 +539,52 @@ onMounted(async () => {
         style="max-inline-size: 300px;"
         @update:model-value="filterChart"
       />
+
+      <!-- Expand Level Slider -->
+      <div style="inline-size: 350px;">
+        <VSlider
+          v-model="expandLevel"
+          :min="0"
+          :max="maxDepth"
+          :step="1"
+          :thumb-label="false"
+          color="primary"
+          @update:model-value="updateExpandLevel"
+        >
+          <template #prepend>
+            <VTooltip location="top">
+              <template #activator="{ props }">
+                <VBtn
+                  v-bind="props"
+                  icon="tabler-fold"
+                  size="small"
+                  variant="text"
+                  color="secondary"
+                  :disabled="expandLevel <= 0"
+                  @click="expandLevel = 0; updateExpandLevel(0)"
+                />
+              </template>
+              <span>بستن همه</span>
+            </VTooltip>
+          </template>
+          <template #append>
+            <VTooltip location="top">
+              <template #activator="{ props }">
+                <VBtn
+                  v-bind="props"
+                  icon="tabler-fold-down"
+                  size="small"
+                  variant="text"
+                  color="secondary"
+                  :disabled="expandLevel >= maxDepth"
+                  @click="expandLevel = maxDepth; updateExpandLevel(maxDepth)"
+                />
+              </template>
+              <span>باز کردن همه</span>
+            </VTooltip>
+          </template>
+        </VSlider>
+      </div>
 
       <VBtn
         v-if="!dragEnabled"
