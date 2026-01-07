@@ -269,6 +269,7 @@ const undeliveredMealTotals = computed(() => {
                         personnel: 'پرسنل',
                         contractor: 'پیمانکار',
                         guest: 'مهمان',
+                        repairman: 'تعمیرکار',
                       }[item.reserve_type] || ''
                     }}
                   </VChip>
@@ -394,12 +395,13 @@ const undeliveredMealTotals = computed(() => {
           <VCol cols="12" sm="6">
             <p>
               <strong>نوع رزرو:</strong>
-              <VChip>
+              <VChip size="small">
                 {{
                   {
                     personnel: 'پرسنل',
                     contractor: 'پیمانکار',
                     guest: 'مهمان',
+                    repairman: 'تعمیرکار',
                   }[selectedReservedMeal.reserve_type] || ''
                 }}
               </VChip>
@@ -420,12 +422,18 @@ const undeliveredMealTotals = computed(() => {
           <VCol v-if="selectedReservedMeal.reserve_type === 'guest'" cols="12" sm="6">
             <p>
               <strong>نوع سرو:</strong>
-              <VChip>
+              <VChip color="cyan" size="small">
                 {{
                   {
                     serve_in_kitchen: 'سرو در رستوران',
                     deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="selectedReservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  selectedReservedMeal.attendance_hour
                 }}
               </VChip>
             </p>
