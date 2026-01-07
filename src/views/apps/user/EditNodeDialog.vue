@@ -256,6 +256,14 @@ watch(
                 </template>
 
                 <template #append>
+                  <VChip
+                    variant="outlined"
+                    color="secondary"
+                    class="ml-3"
+                  >
+                    {{ selectedUsers.length }}
+                  </VChip>
+
                   <VBtn
                     variant="outlined"
                     color="secondary"

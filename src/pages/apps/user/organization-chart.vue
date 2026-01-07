@@ -81,7 +81,8 @@ async function fetchOrgChartNodes() {
     .catch(({ response }) => {
       console.error('Error fetching org chart nodes:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در دریافت چارت سازمانی'
+      uiState.errorMessage
+        = response.data.message || 'خطا در دریافت چارت سازمانی'
     })
 }
 
@@ -94,7 +95,8 @@ async function fetchOrgPositions() {
     .catch(({ response }) => {
       console.error('Error fetching org positions:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در دریافت سمت‌های سازمانی'
+      uiState.errorMessage
+        = response.data.message || 'خطا در دریافت سمت‌های سازمانی'
     })
 }
 
@@ -107,7 +109,8 @@ async function fetchOrgUnits() {
     .catch(({ response }) => {
       console.error('Error fetching org units:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در دریافت واحدهای سازمانی'
+      uiState.errorMessage
+        = response.data.message || 'خطا در دریافت واحدهای سازمانی'
     })
 }
 
@@ -140,7 +143,8 @@ async function updateOrganizationChart() {
     .catch(({ response }) => {
       console.error('Error updating organization chart:', response.data.message)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در بروزرسانی چارت سازمانی'
+      uiState.errorMessage
+        = response.data.message || 'خطا در بروزرسانی چارت سازمانی'
     })
     .finally(() => {
       pendingState.updateOrganizationChart = false
@@ -369,8 +373,11 @@ function onDrag(element, event) {
         && this.classList.contains('droppable')
       ) {
         dropNode.value = d2
-        return d2
+
+        return true
       }
+
+      return false
     })
     .select('rect')
     .attr('fill', 'rgba(var(--v-theme-success), 0.2)')
@@ -496,11 +503,39 @@ function updateExpandLevel(level) {
 }
 
 async function reload() {
-  fetchOrgChartNodes()
+  // Save current state before reload
+  const chartState = orgChartInstance.value?.getChartState()
+  const savedTransform = chartState?.lastTransform
+
+  // Save expanded state of each node
+  const expandedNodesMap = {}
+  chartState.allNodes.forEach((node) => {
+    expandedNodesMap[node.data.id] = node.data._expanded
+  })
+
+  await fetchOrgChartNodes()
   await fetchOrgUnits()
+
+  // Restore expanded state to the new data
+  orgChartNodes.value.forEach((node) => {
+    if (expandedNodesMap[node.id] !== undefined) {
+      node._expanded = expandedNodesMap[node.id]
+    }
+  })
 
   await nextTick()
   drawOrgChart()
+
+  // Restore transform after reload
+  await nextTick()
+  if (savedTransform && orgChartInstance.value) {
+    const { svg, zoomBehavior } = orgChartInstance.value.getChartState()
+    const transform = d3.zoomIdentity
+      .translate(savedTransform.x, savedTransform.y)
+      .scale(savedTransform.k)
+
+    svg.call(zoomBehavior.transform, transform)
+  }
 }
 
 function toComparisonKey(str) {
