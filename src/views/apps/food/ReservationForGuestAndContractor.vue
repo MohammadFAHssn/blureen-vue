@@ -27,6 +27,7 @@ const meals = ref([])
 const contractors = ref([])
 const reservedMealsForContractor = ref([])
 const reservedMealsForGuest = ref([])
+const reservedMealsForRepairman = ref([])
 
 const selectedContractor = ref(null)
 const selectedMeal = ref(null)
@@ -139,8 +140,10 @@ async function submit() {
 
     if (reservationType.value === 'contractor')
       fetchReservedMealsForContractorOnDate()
-    else
+    else if (reservationType.value === 'guest')
       fetchReservedMealsForGuestOnDate()
+    else if (reservationType.value === 'repairman')
+      fetchReservedMealsForRepairmanOnDate()
 
     selectedContractor.value = null
     selectedMeal.value = null
@@ -190,6 +193,11 @@ async function onConfirmDelete() {
           reserv => reserv.id !== selectedReservedMeal.value.id,
         )
       }
+      else if (reservationType.value === 'repairman') {
+        reservedMealsForRepairman.value = reservedMealsForRepairman.value.filter(
+          reserv => reserv.id !== selectedReservedMeal.value.id,
+        )
+      }
     }
     else {
       setError('نمیتوان رزرو تحویل شده را حذف کرد')
@@ -197,6 +205,8 @@ async function onConfirmDelete() {
         fetchReservedMealsForContractorOnDate()
       else if (reservationType.value === 'guest')
         fetchReservedMealsForGuestOnDate()
+      else if (reservationType.value === 'repairman')
+        fetchReservedMealsForRepairmanOnDate()
     }
   }
   catch (err) {
@@ -259,6 +269,29 @@ async function fetchReservedMealsForGuestOnDate() {
   }
 }
 
+async function fetchReservedMealsForRepairmanOnDate() {
+  reservedMealsForRepairman.value = []
+  pendingState.fetchingReservedMeals = true
+
+  try {
+    const res = await $api('/food/meal-reservation/get-for-repairman-on-date', {
+      method: 'GET',
+      params: {
+        'date[]': reserveDates.value,
+      },
+    })
+
+    reservedMealsForRepairman.value = (res.data || []).flat()
+  }
+  catch (err) {
+    console.error('Error fetching reserved meals:', err)
+    setError('خطا در دریافت رزروها')
+  }
+  finally {
+    pendingState.fetchingReservedMeals = false
+  }
+}
+
 async function fetchContractors() {
   pendingState.fetchingContractors = true
   try {
@@ -297,8 +330,10 @@ function onChange() {
   attendanceHour.value = null
   if (reservationType.value === 'contractor')
     fetchReservedMealsForContractorOnDate()
-  else
+  else if (reservationType.value === 'guest')
     fetchReservedMealsForGuestOnDate()
+  else if (reservationType.value === 'repairman')
+    fetchReservedMealsForRepairmanOnDate()
 }
 
 // dialog related methods
@@ -316,6 +351,12 @@ const sortedReservedMealsForContractor = computed(() =>
 
 const sortedReservedMealsForGuest = computed(() =>
   [...reservedMealsForGuest.value].sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)),
+  ),
+)
+
+const sortedReservedMealsForRepairman = computed(() =>
+  [...reservedMealsForRepairman.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
   ),
 )
@@ -617,6 +658,56 @@ onMounted(async () => {
                 </tr>
               </tbody>
             </VTable>
+            <VTable v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'repairman' && sortedReservedMealsForRepairman.length > 0">
+              <thead>
+                <tr>
+                  <th>ردیف</th>
+                  <th>وعده</th>
+                  <th>کد تحویل</th>
+                  <th>وضعیت</th>
+                  <th>تاریخ</th>
+                  <th>تعداد</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in sortedReservedMealsForRepairman" :key="item.id">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ item.meal?.name }}</td>
+                  <td>
+                    <VChip color="success">
+                      {{ item.delivery_code }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip :color="item.status ? 'success' : 'error'" size="small">
+                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip>
+                      {{ item.date }}
+                    </VChip>
+                  </td>
+                  <td>
+                    {{
+                      item.details?.reduce(
+                        (sum, detail) => sum + (detail.quantity || 0),
+                        0,
+                      )
+                    }}
+                  </td>
+                  <td>
+                    <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
+                      <VIcon icon="tabler-trash" size="20" />
+                    </VBtn>
+                    <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
+                      <VIcon icon="tabler-file-description" size="20" />
+                    </VBtn>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
             <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
             <div v-else class="text-center">
               <VChip color="error">
@@ -774,6 +865,76 @@ onMounted(async () => {
                   </VExpansionPanel>
                 </VExpansionPanels>
               </VExpansionPanelText>
+              <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'repairman' && sortedReservedMealsForRepairman.length > 0">
+                <VExpansionPanels variant="accordion">
+                  <VExpansionPanel
+                    v-for="(item) in sortedReservedMealsForRepairman"
+                    :key="item.id"
+                    class="mb-2"
+                  >
+                    <VExpansionPanelTitle>
+                      <div class="d-flex flex-column w-100">
+                        <div class="d-flex justify-space-between align-center mb-1">
+                          <span class="font-weight-medium">
+                            {{ item.meal?.name }}
+                          </span>
+                          <VChip size="small">
+                            {{ item.date }}
+                          </VChip>
+                        </div>
+                        <div class="d-flex justify-space-between align-center">
+                          <VChip color="success">
+                            {{ item.delivery_code }}
+                          </VChip>
+                          <VChip
+                            :color="item.status ? 'success' : 'error'"
+                            size="small"
+                            label
+                          >
+                            {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                          </VChip>
+                        </div>
+                      </div>
+                    </VExpansionPanelTitle>
+
+                    <VExpansionPanelText>
+                      <div class="pa-2">
+                        <div>
+                          <strong>تعداد:</strong> {{
+                            item.details?.reduce(
+                              (sum, detail) => sum + (detail.quantity || 0),
+                              0,
+                            )
+                          }}
+                        </div>
+                        <div class="mb-2 d-flex justify-space-between align-start">
+                          <strong class="me-2">توضیحات:</strong>
+                          <div
+                            style="
+                              max-width: 100%;
+                              white-space: normal;
+                              overflow-wrap: anywhere;
+                              word-break: break-word;
+                              text-align: right;
+                              flex: 1;
+                            "
+                          >
+                            {{ item.description || '—' }}
+                          </div>
+                        </div>
+                        <div class="mt-2 text-center">
+                          <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
+                            <VIcon icon="tabler-trash" size="20" />
+                          </VBtn>
+                          <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
+                            <VIcon icon="tabler-file-description" size="20" />
+                          </VBtn>
+                        </div>
+                      </div>
+                    </VExpansionPanelText>
+                  </VExpansionPanel>
+                </VExpansionPanels>
+              </VExpansionPanelText>
               <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
               <div v-else class="text-center">
                 <VChip color="error">
@@ -858,9 +1019,9 @@ onMounted(async () => {
               <VChip color="cyan" size="small">
                 {{
                   {
-                    personnel: 'پرسنل',
                     contractor: 'پیمانکار',
                     guest: 'مهمان',
+                    repairman: 'تعمیرکار',
                   }[selectedReservedMeal.reserve_type] || ''
                 }}
               </VChip>
