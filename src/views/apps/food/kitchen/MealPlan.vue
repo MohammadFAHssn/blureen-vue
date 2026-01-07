@@ -112,7 +112,7 @@ async function submit() {
   }
 }
 
-function onClickEdit(mealPlan) {
+async function onClickEdit(mealPlan) {
   const [year, month, day] = String(planDate.value).split('/').map(Number)
   const selectedKey = year * 10000 + month * 100 + day
   const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
@@ -122,6 +122,26 @@ function onClickEdit(mealPlan) {
     uiState.isEditDialogVisible = false
     return
   }
+
+  let deliveredExists = false
+
+  try {
+    const res = await $api('/food/meal-reservation/check-for-delivered', {
+      method: 'GET',
+      params: { date: mealPlan.date },
+    })
+
+    deliveredExists = !!res?.data
+  }
+  catch (err) {
+    console.error('Error checking:', err)
+  }
+
+  if (deliveredExists) {
+    setError('درخواست تحویل داده شده وجود دارد. قابلیت ویرایش غیرفعال است.')
+    return
+  }
+
   selectedMealPlan.value = mealPlan
   selectedFoodEdit.value = mealPlan.food.id
   uiState.isEditDialogVisible = true
