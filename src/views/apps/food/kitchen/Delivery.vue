@@ -527,6 +527,7 @@ onMounted(async () => {
                           personnel: 'پرسنل',
                           contractor: 'پیمانکار',
                           guest: 'مهمان',
+                          repairman: 'تعمیرکار',
                         }[item.reserve_type] || ''
                       }}
                     </VChip>
@@ -665,12 +666,13 @@ onMounted(async () => {
                                 personnel: 'پرسنل',
                                 contractor: 'پیمانکار',
                                 guest: 'مهمان',
+                                repairman: 'تعمیرکار',
                               }[item.reserve_type] || ''
                             }}
                           </VChip>
                         </div>
 
-                        <div class="mb-2 d-flex justify-space-between">
+                        <div v-if="item.reserve_type === 'contractor'" class="mb-2 d-flex justify-space-between">
                           <strong>پیمانکار:</strong>
                           <VChip>
                             {{
@@ -693,7 +695,7 @@ onMounted(async () => {
                           }} عدد
                         </div>
 
-                        <div class="mb-2 d-flex justify-space-between align-start">
+                        <div v-if="item.description" class="mb-2 d-flex justify-space-between align-start">
                           <strong class="me-2">توضیحات:</strong>
                           <div
                             style="
@@ -808,12 +810,13 @@ onMounted(async () => {
           <VCol cols="12" sm="6">
             <p>
               <strong>نوع رزرو:</strong>
-              <VChip>
+              <VChip size="small">
                 {{
                   {
                     personnel: 'پرسنل',
                     contractor: 'پیمانکار',
                     guest: 'مهمان',
+                    repairman: 'تعمیرکار',
                   }[reservedMeal.reserve_type] || ''
                 }}
               </VChip>
@@ -823,7 +826,7 @@ onMounted(async () => {
           <VCol v-if="reservedMeal.details?.[0]?.contractor" cols="12" sm="6">
             <p>
               <strong>پیمانکار:</strong>
-              <VChip>
+              <VChip size="small">
                 {{
                   `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
                 }}
@@ -834,12 +837,18 @@ onMounted(async () => {
           <VCol v-if="reservedMeal.reserve_type === 'guest'" cols="12" sm="6">
             <p>
               <strong>نوع سرو:</strong>
-              <VChip>
+              <VChip color="cyan" size="small">
                 {{
                   {
                     serve_in_kitchen: 'سرو در رستوران',
                     deliver: 'تحویل(بیرون‌بر)',
                   }[reservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="reservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  reservedMeal.attendance_hour
                 }}
               </VChip>
             </p>
