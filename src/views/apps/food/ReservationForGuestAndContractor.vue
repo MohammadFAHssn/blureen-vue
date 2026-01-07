@@ -34,6 +34,7 @@ const selectedReservedMeal = ref(null)
 const quantity = ref(null)
 const description = ref(null)
 const serveType = ref(null)
+const attendanceHour = ref(null)
 
 const reservationType = ref(null)
 
@@ -68,6 +69,7 @@ async function submit() {
   if (reservationType.value === 'contractor' && !selectedContractor.value) return setError('لطفاً پیمانکار را انتخاب کنید.')
   if (!quantity.value) return setError('لطفاً تعداد را وارد کنید.')
   if (reservationType.value === 'guest' && !description.value) return setError('لطفاً توضیحات را وارد کنید.')
+  if (reservationType.value === 'guest' && serveType.value === 'serve_in_kitchen' && !attendanceHour.value) return setError('لطفا ساعت حضور در رستوران را تعیین کنید.')
 
   for (const dateStr of selectedDates) {
     const [year, month, day] = String(dateStr).split('/').map(Number)
@@ -82,24 +84,35 @@ async function submit() {
 
   const userId = useCookie('userData')?.value?.id
 
-  const payload = reservationType.value === 'contractor'
-    ? {
-        date: reserveDates.value,
-        meal_id: selectedMeal.value,
-        reserve_type: 'contractor',
-        supervisor_id: userId,
-        contractor: selectedContractor.value,
-        quantity: quantity.value,
-      }
-    : {
-        date: reserveDates.value,
-        meal_id: selectedMeal.value,
-        reserve_type: 'guest',
-        supervisor_id: userId,
-        quantity: quantity.value,
-        description: description.value,
-        serve_place: serveType.value,
-      }
+  let payload = {
+    date: reserveDates.value,
+    meal_id: selectedMeal.value,
+    supervisor_id: userId,
+    reserve_type: reservationType.value,
+  }
+  if (reservationType.value === 'contractor') {
+    payload = {
+      ...payload,
+      contractor: selectedContractor.value,
+      quantity: quantity.value,
+    }
+  }
+  else if (reservationType.value === 'guest') {
+    payload = {
+      ...payload,
+      quantity: quantity.value,
+      description: description.value,
+      serve_place: serveType.value,
+      ...(attendanceHour.value ? { attendance_hour: attendanceHour.value } : {}),
+    }
+  }
+  else if (reservationType.value === 'repairman') {
+    payload = {
+      ...payload,
+      quantity: quantity.value,
+      description: description.value,
+    }
+  }
 
   try {
     await $api('/food/meal-reservation', {
@@ -133,6 +146,7 @@ async function submit() {
     selectedMeal.value = null
     quantity.value = null
     description.value = null
+    attendanceHour.value = null
   }
   catch (err) {
     console.error('Error submitting reservation:', err)
@@ -276,6 +290,11 @@ async function fetchMeals() {
 }
 
 function onChange() {
+  quantity.value = null
+  selectedContractor.value = null
+  description.value = null
+  serveType.value = 'deliver'
+  attendanceHour.value = null
   if (reservationType.value === 'contractor')
     fetchReservedMealsForContractorOnDate()
   else
@@ -395,6 +414,7 @@ onMounted(async () => {
             >
               <VRadio label="پیمانکار" value="contractor" />
               <VRadio label="میهمان" value="guest" />
+              <VRadio label="تعمیرکار" value="repairman" />
             </VRadioGroup>
             <VCol v-if="reservationType === 'guest'" cols="12" class="mb-3">
               <VTextField
@@ -412,10 +432,19 @@ onMounted(async () => {
                 v-model="serveType"
                 class="mt-2"
                 inline
+                @change="attendanceHour = null"
               >
                 <VRadio label="سرو در رستوران" value="serve_in_kitchen" />
                 <VRadio label="تحویل(بیرون‌بر)" value="deliver" />
               </VRadioGroup>
+              <VCol v-if="serveType === 'serve_in_kitchen'" cols="12" md="12">
+                <PersianDatetimePicker
+                  v-model="attendanceHour"
+                  type="time"
+                  label="حضور"
+                  append-to="body"
+                />
+              </VCol>
             </VCol>
             <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
               <VAutocomplete
@@ -432,6 +461,19 @@ onMounted(async () => {
                 v-model="quantity"
                 label="تعداد"
                 type="number"
+                variant="outlined"
+              />
+            </VCol>
+            <VCol v-else-if="reservationType === 'repairman'" cols="12" class="mb-3">
+              <VTextField
+                v-model="quantity"
+                label="تعداد"
+                type="number"
+                variant="outlined"
+              />
+              <VTextField
+                v-model="description"
+                label="توضیحات"
                 variant="outlined"
               />
             </VCol>
@@ -845,6 +887,12 @@ onMounted(async () => {
                     serve_in_kitchen: 'سرو در رستوران',
                     deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="selectedReservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  selectedReservedMeal.attendance_hour
                 }}
               </VChip>
             </p>
