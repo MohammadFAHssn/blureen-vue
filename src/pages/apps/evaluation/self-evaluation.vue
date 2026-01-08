@@ -216,7 +216,15 @@ await fetchQuestions()
     {{ uiState.successMessage }}
   </VSnackbar>
 
-  <VContainer class="py-6">
+  <VRow v-if="!questions.length">
+    <VCol>
+      <VCard variant="text">
+        ارزیابی فعالی وجود ندارد.
+      </VCard>
+    </VCol>
+  </VRow>
+
+  <VContainer v-else-if="questions.length" class="py-6">
     <VRow justify="center">
       <VCol
         cols="12"
