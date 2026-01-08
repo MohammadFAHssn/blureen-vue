@@ -128,7 +128,7 @@ async function onClickEdit(mealPlan) {
   try {
     const res = await $api('/food/meal-reservation/check-for-delivered', {
       method: 'GET',
-      params: { date: mealPlan.date },
+      params: { date: mealPlan.date, meal_id: mealPlan.meal.id },
     })
 
     deliveredExists = !!res?.data
