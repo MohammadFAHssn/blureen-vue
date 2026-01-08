@@ -1,0 +1,1 @@
+import{bs as e,cZ as a}from"./index-CVMLsVkI.js";async function t(){e("accessToken").value=null;const u=e("userData");u.value.role.includes("supplier")?await a.replace({path:"/login-supplier",query:{isRedirectedFromUnauthorizedStatus:!0}}):await a.replace({path:"/login",query:{isRedirectedFromUnauthorizedStatus:!0}}),u.value=null,e("userAbilityRules").value=null}export{t as u};
