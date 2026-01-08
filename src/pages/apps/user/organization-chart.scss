@@ -1,6 +1,48 @@
 .org-chart-container {
   overflow: hidden !important;
-  block-size: 97%;
+
+  // Drag and Drop styles
+  &.drag-enabled {
+    // Hide action buttons during drag mode
+    :deep(.org-chart-action-bar) {
+      display: none;
+    }
+
+    // Show grab cursor on draggable nodes
+    :deep(.node.draggable) {
+      cursor: grab;
+    }
+
+    &:not(.dragging-active) {
+      :deep(.node.draggable) {
+        stroke: rgb(var(--v-theme-secondary));
+        stroke-dasharray: 4px;
+        stroke-width: 2px;
+      }
+    }
+
+    &.dragging-active {
+      :deep(.node.droppable:not(.dragging)) {
+        stroke: rgb(var(--v-theme-success));
+        stroke-dasharray: 5px;
+        stroke-width: 2px;
+      }
+
+      :deep(.node.dragging) {
+        cursor: grabbing;
+      }
+    }
+  }
+
+  :deep(.node.dragging) {
+    stroke-dasharray: 0 !important;
+    stroke-width: 0 !important;
+
+    .org-chart-card {
+      box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+      opacity: 0.9;
+    }
+  }
 
   :deep(.org-chart-card) {
     display: flex;
@@ -59,15 +101,22 @@
   }
 
   :deep(.org-unit) {
-    background-color: rgb(var(--v-theme-secondary));
+    border: 1px solid rgb(var(--v-theme-primary));
+    background-color: transparent;
     block-size: 55px;
     border-end-end-radius: 6px;
     border-end-start-radius: 6px;
-    color: rgb(var(--v-theme-on-secondary));
+    color: rgb(var(--v-theme-primary));
     font-size: 0.875rem;
     font-weight: 500;
     padding-block: 8px;
     text-align: center;
+  }
+
+  :deep(.org-chart-node.highlighted .org-unit) {
+    border: none;
+    background-color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-primary));
   }
 
   :deep(.org-expand-btn) {

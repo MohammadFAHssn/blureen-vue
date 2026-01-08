@@ -141,8 +141,7 @@ function onFormSubmit() {
         const name = selectedOrgUnit.value.trim()
 
         selectedOrgUnit.value = {
-          // TODO: Replace with real ID from backend
-          id: Math.floor(Math.random() * (1000 - 100 + 1)) + 100,
+          id: `${Date.now()}-${Math.random()}`,
           name,
         }
 
@@ -257,6 +256,14 @@ watch(
                 </template>
 
                 <template #append>
+                  <VChip
+                    variant="outlined"
+                    color="secondary"
+                    class="ml-3"
+                  >
+                    {{ selectedUsers.length }}
+                  </VChip>
+
                   <VBtn
                     variant="outlined"
                     color="secondary"

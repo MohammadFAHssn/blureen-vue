@@ -5,8 +5,10 @@ export function getNodeContent(d) {
     = ORG_POSITION_COLORS[d.data.orgPosition.id]
       || 'rgb(var(--v-theme-on-secondary))'
 
+  const isHighlighted = d.data._highlighted
+
   return `
-    <div class="org-chart-node" style="width: ${d.width}px; height: ${d.height}px;">
+    <div class="org-chart-node ${isHighlighted ? 'highlighted' : ''}" style="width: ${d.width}px; height: ${d.height}px;">
       <!-- Node Card -->
       <div class="org-chart-card">
         <!-- Action Buttons -->

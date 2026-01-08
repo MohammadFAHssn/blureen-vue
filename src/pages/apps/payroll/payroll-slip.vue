@@ -109,19 +109,42 @@ function getPayrollItemByLabel(label) {
 
 async function print() {
   pendingState.print = true
+
   try {
-    const { data, error } = await useApi(
-      createUrl('/payroll/payroll-slip/print'),
-    )
+    const response = await axiosInstance.get('/payroll/payroll-slip/print', {
+      params: {
+        month: payrollSlipOfCurrentPeriod.value.payroll_batch.month,
+        year: payrollSlipOfCurrentPeriod.value.payroll_batch.year,
+      },
+      responseType: 'blob',
+    })
 
-    pendingState.print = false
+    const blob = new Blob([response.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
 
-    if (error.value) throw error.value
+    const filename
+      = 'فیش حقوقی '
+        + `${getJalaliMonthNameByIndex(
+          payrollSlipOfCurrentPeriod.value.payroll_batch.month,
+        )}`
+        + ` ${payrollSlipOfCurrentPeriod.value.payroll_batch.year}.pdf`
+
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
   }
-  catch (e) {
-    console.error('Error printing payrollSlip:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در چاپ فیش حقوقی'
+  catch (error) {
+    // console.error('Error printing payrollSlip:', error)
+    // uiState.hasError = true
+    // uiState.errorMessage = error.response?.data?.message || 'خطا در چاپ فیش حقوقی'
+  }
+  finally {
+    pendingState.print = false
   }
 }
 </script>
@@ -346,18 +369,17 @@ async function print() {
     </VRow>
   </div>
 
-  <!--
-    <VBtn
-        class="print-btn"
-        icon
-        size="x-large"
-        :disabled="pendingState.print"
-        :loading="pendingState.print"
-        @click="print"
-      >
-        <VIcon icon="tabler-printer" size="x-large" />
-    </VBtn>
-  -->
+  <VBtn
+    color="secondary"
+    class="print-btn"
+    icon
+    size="x-large"
+    :disabled="pendingState.print"
+    :loading="pendingState.print"
+    @click="print"
+  >
+    <VIcon icon="tabler-printer" size="x-large" />
+  </VBtn>
 </template>
 
 <style lang="scss" scoped>
