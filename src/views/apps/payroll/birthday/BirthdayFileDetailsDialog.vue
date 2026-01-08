@@ -132,7 +132,7 @@ async function toggleUserStatus(u) {
 
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(createUrl('/base/user'))
+    const { data, error } = await useApi(createUrl('/base/user/details'))
     if (error.value) {
       uiState.hasError = true
       uiState.errorMessage = 'خطا در دریافت کاربران'

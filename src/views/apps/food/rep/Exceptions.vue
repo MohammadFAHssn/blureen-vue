@@ -164,7 +164,7 @@ async function onChangeStatusClick() {
 }
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(createUrl('/base/user?filter[active]=true'))
+    const { data, error } = await useApi(createUrl('/base/user/details'))
     if (error.value) {
       setError('خطا در دریافت کاربران')
       throw error.value
