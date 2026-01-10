@@ -9,13 +9,13 @@ import suppliers from './suppliers'
 import userManagement from './userManagement'
 
 export default [
-  ...food,
   ...home,
-  ...contractor,
   ...payroll,
+  ...humanResources,
+  ...food,
   ...evaluationAndSurvey,
   ...hse,
+  ...contractor,
   ...suppliers,
   ...userManagement,
-  ...humanResources,
 ]
