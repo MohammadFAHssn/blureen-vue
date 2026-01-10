@@ -27,6 +27,7 @@ const meals = ref([])
 const contractors = ref([])
 const reservedMealsForContractor = ref([])
 const reservedMealsForGuest = ref([])
+const reservedMealsForRepairman = ref([])
 
 const selectedContractor = ref(null)
 const selectedMeal = ref(null)
@@ -34,22 +35,9 @@ const selectedReservedMeal = ref(null)
 const quantity = ref(null)
 const description = ref(null)
 const serveType = ref(null)
+const attendanceHour = ref(null)
 
 const reservationType = ref(null)
-
-// rules
-const countInputRules = [
-  (value) => {
-    if (value === null || value === undefined || value === '')
-      return true
-
-    const isInteger = /^\d+$/.test(String(value))
-    if (!isInteger)
-      return 'فقط باید عدد باشد!'
-
-    return true
-  },
-]
 
 // helper methods
 // computed string just for showing in text field
@@ -77,10 +65,12 @@ function setError(message) {
 async function submit() {
   const selectedDates = getSelectedDatesArray()
 
-  if (!selectedDates.length) {
-    setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
-    return
-  }
+  if (!selectedDates.length) return setError('لطفاً حداقل یک تاریخ برای رزرو انتخاب کنید.')
+  if (!selectedMeal.value) return setError('لطفاً وعده را انتخاب کنید.')
+  if (reservationType.value === 'contractor' && !selectedContractor.value) return setError('لطفاً پیمانکار را انتخاب کنید.')
+  if (!quantity.value) return setError('لطفاً تعداد را وارد کنید.')
+  if (reservationType.value === 'guest' && !description.value) return setError('لطفاً توضیحات را وارد کنید.')
+  if (reservationType.value === 'guest' && serveType.value === 'serve_in_kitchen' && !attendanceHour.value) return setError('لطفا ساعت حضور در رستوران را تعیین کنید.')
 
   for (const dateStr of selectedDates) {
     const [year, month, day] = String(dateStr).split('/').map(Number)
@@ -95,24 +85,35 @@ async function submit() {
 
   const userId = useCookie('userData')?.value?.id
 
-  const payload = reservationType.value === 'contractor'
-    ? {
-        date: reserveDates.value,
-        meal_id: selectedMeal.value,
-        reserve_type: 'contractor',
-        supervisor_id: userId,
-        contractor: selectedContractor.value,
-        quantity: quantity.value,
-      }
-    : {
-        date: reserveDates.value,
-        meal_id: selectedMeal.value,
-        reserve_type: 'guest',
-        supervisor_id: userId,
-        quantity: quantity.value,
-        description: description.value,
-        serve_place: serveType.value,
-      }
+  let payload = {
+    date: reserveDates.value,
+    meal_id: selectedMeal.value,
+    supervisor_id: userId,
+    reserve_type: reservationType.value,
+  }
+  if (reservationType.value === 'contractor') {
+    payload = {
+      ...payload,
+      contractor: selectedContractor.value,
+      quantity: quantity.value,
+    }
+  }
+  else if (reservationType.value === 'guest') {
+    payload = {
+      ...payload,
+      quantity: quantity.value,
+      description: description.value,
+      serve_place: serveType.value,
+      ...(attendanceHour.value ? { attendance_hour: attendanceHour.value } : {}),
+    }
+  }
+  else if (reservationType.value === 'repairman') {
+    payload = {
+      ...payload,
+      quantity: quantity.value,
+      description: description.value,
+    }
+  }
 
   try {
     await $api('/food/meal-reservation', {
@@ -139,13 +140,16 @@ async function submit() {
 
     if (reservationType.value === 'contractor')
       fetchReservedMealsForContractorOnDate()
-    else
+    else if (reservationType.value === 'guest')
       fetchReservedMealsForGuestOnDate()
+    else if (reservationType.value === 'repairman')
+      fetchReservedMealsForRepairmanOnDate()
 
     selectedContractor.value = null
     selectedMeal.value = null
     quantity.value = null
     description.value = null
+    attendanceHour.value = null
   }
   catch (err) {
     console.error('Error submitting reservation:', err)
@@ -189,6 +193,11 @@ async function onConfirmDelete() {
           reserv => reserv.id !== selectedReservedMeal.value.id,
         )
       }
+      else if (reservationType.value === 'repairman') {
+        reservedMealsForRepairman.value = reservedMealsForRepairman.value.filter(
+          reserv => reserv.id !== selectedReservedMeal.value.id,
+        )
+      }
     }
     else {
       setError('نمیتوان رزرو تحویل شده را حذف کرد')
@@ -196,6 +205,8 @@ async function onConfirmDelete() {
         fetchReservedMealsForContractorOnDate()
       else if (reservationType.value === 'guest')
         fetchReservedMealsForGuestOnDate()
+      else if (reservationType.value === 'repairman')
+        fetchReservedMealsForRepairmanOnDate()
     }
   }
   catch (err) {
@@ -258,6 +269,29 @@ async function fetchReservedMealsForGuestOnDate() {
   }
 }
 
+async function fetchReservedMealsForRepairmanOnDate() {
+  reservedMealsForRepairman.value = []
+  pendingState.fetchingReservedMeals = true
+
+  try {
+    const res = await $api('/food/meal-reservation/get-for-repairman-on-date', {
+      method: 'GET',
+      params: {
+        'date[]': reserveDates.value,
+      },
+    })
+
+    reservedMealsForRepairman.value = (res.data || []).flat()
+  }
+  catch (err) {
+    console.error('Error fetching reserved meals:', err)
+    setError('خطا در دریافت رزروها')
+  }
+  finally {
+    pendingState.fetchingReservedMeals = false
+  }
+}
+
 async function fetchContractors() {
   pendingState.fetchingContractors = true
   try {
@@ -289,10 +323,17 @@ async function fetchMeals() {
 }
 
 function onChange() {
+  quantity.value = null
+  selectedContractor.value = null
+  description.value = null
+  serveType.value = 'deliver'
+  attendanceHour.value = null
   if (reservationType.value === 'contractor')
     fetchReservedMealsForContractorOnDate()
-  else
+  else if (reservationType.value === 'guest')
     fetchReservedMealsForGuestOnDate()
+  else if (reservationType.value === 'repairman')
+    fetchReservedMealsForRepairmanOnDate()
 }
 
 // dialog related methods
@@ -310,6 +351,12 @@ const sortedReservedMealsForContractor = computed(() =>
 
 const sortedReservedMealsForGuest = computed(() =>
   [...reservedMealsForGuest.value].sort((a, b) =>
+    String(a.date).localeCompare(String(b.date)),
+  ),
+)
+
+const sortedReservedMealsForRepairman = computed(() =>
+  [...reservedMealsForRepairman.value].sort((a, b) =>
     String(a.date).localeCompare(String(b.date)),
   ),
 )
@@ -387,7 +434,6 @@ onMounted(async () => {
                 label="تاریخ رزرو"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -399,41 +445,47 @@ onMounted(async () => {
                 label="وعده"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VRadioGroup
               v-model="reservationType"
-              :rules="[requiredValidator]"
               class="mt-2"
               inline
               @change="onChange"
             >
               <VRadio label="پیمانکار" value="contractor" />
               <VRadio label="میهمان" value="guest" />
+              <VRadio label="تعمیرکار" value="repairman" />
             </VRadioGroup>
             <VCol v-if="reservationType === 'guest'" cols="12" class="mb-3">
               <VTextField
                 v-model="quantity"
                 label="تعداد"
+                type="number"
                 variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
               />
               <VTextField
                 v-model="description"
                 label="توضیحات"
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
               <VRadioGroup
                 v-model="serveType"
-                :rules="[requiredValidator]"
                 class="mt-2"
                 inline
+                @change="attendanceHour = null"
               >
-                <VRadio label="سرو در آشپزخانه" value="serve_in_kitchen" />
-                <VRadio label="تحویل" value="deliver" />
+                <VRadio label="سرو در رستوران" value="serve_in_kitchen" />
+                <VRadio label="تحویل(بیرون‌بر)" value="deliver" />
               </VRadioGroup>
+              <VCol v-if="serveType === 'serve_in_kitchen'" cols="12" md="12">
+                <PersianDatetimePicker
+                  v-model="attendanceHour"
+                  type="time"
+                  label="حضور"
+                  append-to="body"
+                />
+              </VCol>
             </VCol>
             <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
               <VAutocomplete
@@ -445,13 +497,25 @@ onMounted(async () => {
                 chips
                 clearable
                 variant="outlined"
-                :rules="[requiredValidator]"
               />
               <VTextField
                 v-model="quantity"
                 label="تعداد"
+                type="number"
                 variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
+              />
+            </VCol>
+            <VCol v-else-if="reservationType === 'repairman'" cols="12" class="mb-3">
+              <VTextField
+                v-model="quantity"
+                label="تعداد"
+                type="number"
+                variant="outlined"
+              />
+              <VTextField
+                v-model="description"
+                label="توضیحات"
+                variant="outlined"
               />
             </VCol>
           </VRow>
@@ -545,10 +609,8 @@ onMounted(async () => {
                   <th>کد تحویل</th>
                   <th>وضعیت</th>
                   <th>تاریخ</th>
-                  <th>رزرو شده توسط</th>
                   <th>سرو غذا</th>
                   <th>تعداد</th>
-                  <th>توضیحات</th>
                   <th>عملیات</th>
                 </tr>
               </thead>
@@ -572,13 +634,8 @@ onMounted(async () => {
                     </VChip>
                   </td>
                   <td>
-                    <VChip>
-                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                    </VChip>
-                  </td>
-                  <td>
                     <VChip size="small">
-                      {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
+                      {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در رستوران' : 'تحویل(بیرون‌بر)' }}
                     </VChip>
                   </td>
 
@@ -590,22 +647,55 @@ onMounted(async () => {
                       )
                     }}
                   </td>
-                  <td class="py-2">
-                    <VTooltip location="top" :disabled="!(item.description?.length > 6)">
-                      <template #activator="{ props }">
-                        <div
-                          v-bind="props"
-                          class="text-truncate"
-                          style="max-width: 120px;"
-                        >
-                          {{ item.description || '—' }}
-                        </div>
-                      </template>
-
-                      <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
-                        {{ item.description }}
-                      </div>
-                    </VTooltip>
+                  <td>
+                    <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
+                      <VIcon icon="tabler-trash" size="20" />
+                    </VBtn>
+                    <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
+                      <VIcon icon="tabler-file-description" size="20" />
+                    </VBtn>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
+            <VTable v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'repairman' && sortedReservedMealsForRepairman.length > 0">
+              <thead>
+                <tr>
+                  <th>ردیف</th>
+                  <th>وعده</th>
+                  <th>کد تحویل</th>
+                  <th>وضعیت</th>
+                  <th>تاریخ</th>
+                  <th>تعداد</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in sortedReservedMealsForRepairman" :key="item.id">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ item.meal?.name }}</td>
+                  <td>
+                    <VChip color="success">
+                      {{ item.delivery_code }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip :color="item.status ? 'success' : 'error'" size="small">
+                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip>
+                      {{ item.date }}
+                    </VChip>
+                  </td>
+                  <td>
+                    {{
+                      item.details?.reduce(
+                        (sum, detail) => sum + (detail.quantity || 0),
+                        0,
+                      )
+                    }}
                   </td>
                   <td>
                     <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
@@ -736,9 +826,79 @@ onMounted(async () => {
                         <div>
                           <strong>سرو غذا:</strong>
                           <VChip size="small">
-                            {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در آشپزخانه' : 'تحویل' }}
+                            {{ item.serve_place === 'serve_in_kitchen' ? 'سرو در رستوران' : 'تحویل(بیرون‌بر)' }}
                           </VChip>
                         </div>
+                        <div>
+                          <strong>تعداد:</strong> {{
+                            item.details?.reduce(
+                              (sum, detail) => sum + (detail.quantity || 0),
+                              0,
+                            )
+                          }}
+                        </div>
+                        <div class="mb-2 d-flex justify-space-between align-start">
+                          <strong class="me-2">توضیحات:</strong>
+                          <div
+                            style="
+                              max-width: 100%;
+                              white-space: normal;
+                              overflow-wrap: anywhere;
+                              word-break: break-word;
+                              text-align: right;
+                              flex: 1;
+                            "
+                          >
+                            {{ item.description || '—' }}
+                          </div>
+                        </div>
+                        <div class="mt-2 text-center">
+                          <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
+                            <VIcon icon="tabler-trash" size="20" />
+                          </VBtn>
+                          <VBtn color="primary" variant="plain" size="small" @click="onClickDetail(item)">
+                            <VIcon icon="tabler-file-description" size="20" />
+                          </VBtn>
+                        </div>
+                      </div>
+                    </VExpansionPanelText>
+                  </VExpansionPanel>
+                </VExpansionPanels>
+              </VExpansionPanelText>
+              <VExpansionPanelText v-else-if="!pendingState.fetchingReservedMeals && reservationType === 'repairman' && sortedReservedMealsForRepairman.length > 0">
+                <VExpansionPanels variant="accordion">
+                  <VExpansionPanel
+                    v-for="(item) in sortedReservedMealsForRepairman"
+                    :key="item.id"
+                    class="mb-2"
+                  >
+                    <VExpansionPanelTitle>
+                      <div class="d-flex flex-column w-100">
+                        <div class="d-flex justify-space-between align-center mb-1">
+                          <span class="font-weight-medium">
+                            {{ item.meal?.name }}
+                          </span>
+                          <VChip size="small">
+                            {{ item.date }}
+                          </VChip>
+                        </div>
+                        <div class="d-flex justify-space-between align-center">
+                          <VChip color="success">
+                            {{ item.delivery_code }}
+                          </VChip>
+                          <VChip
+                            :color="item.status ? 'success' : 'error'"
+                            size="small"
+                            label
+                          >
+                            {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                          </VChip>
+                        </div>
+                      </div>
+                    </VExpansionPanelTitle>
+
+                    <VExpansionPanelText>
+                      <div class="pa-2">
                         <div>
                           <strong>تعداد:</strong> {{
                             item.details?.reduce(
@@ -859,9 +1019,9 @@ onMounted(async () => {
               <VChip color="cyan" size="small">
                 {{
                   {
-                    personnel: 'پرسنل',
                     contractor: 'پیمانکار',
                     guest: 'مهمان',
+                    repairman: 'تعمیرکار',
                   }[selectedReservedMeal.reserve_type] || ''
                 }}
               </VChip>
@@ -885,9 +1045,15 @@ onMounted(async () => {
               <VChip color="cyan" size="small">
                 {{
                   {
-                    serve_in_kitchen: 'سرو در آشپزخانه',
-                    deliver: 'تحویل',
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="selectedReservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  selectedReservedMeal.attendance_hour
                 }}
               </VChip>
             </p>

@@ -91,20 +91,6 @@ watch([receivedCount, todayFoodCount, secondFoodReceivedCount, thirdFoodReceived
   }
 })
 
-// rules
-const countInputRules = [
-  (value) => {
-    if (value === null || value === undefined || value === '')
-      return true
-
-    const isInteger = /^\d+$/.test(String(value))
-    if (!isInteger)
-      return 'فقط باید عدد باشد!'
-
-    return true
-  },
-]
-
 // helper methods
 function setError(message) {
   uiState.hasError = true
@@ -301,7 +287,7 @@ async function deliver() {
             .filter(Boolean)
 
           uiState.errorMessage
-            = `برای پرسنل با کد/های پرسنلی زیر، ترددی ثبت نشده است. لطفا گزینه 'تحویل نگرفت' آن‌ها را علامت زده سپس، اقدام به ارسال نمایید:\n${
+            = `برای پرسنل با کد/های پرسنلی زیر، ترددی ثبت نشده است. لطفا گزینه 'تحویل نگرفت' آن‌ها را علامت زده سپس، اقدام به تحویل نمایید:\n${
               codes}`
 
           return
@@ -312,7 +298,7 @@ async function deliver() {
           return
         }
 
-        uiState.errorMessage = data?.message || 'خطا در ارسال'
+        uiState.errorMessage = data?.message || 'خطا در تحویل'
       },
     })
 
@@ -324,7 +310,7 @@ async function deliver() {
   catch (err) {
     console.error('Error deliver:', err)
     if (uiState.hasError && uiState.errorMessage) return
-    setError('خطا در ارسال اطلاعات')
+    setError('خطا در تحویل اطلاعات')
   }
   finally {
     pendingState.deliverReservedMeal = false
@@ -404,313 +390,314 @@ onMounted(async () => {
     </VBtn>
   </div>
 
-  <VContainer>
-    <VSnackbar
-      v-model="uiState.hasError"
-      :timeout="2000"
-      location="center"
-      variant="flat"
-      color="error"
-    >
-      {{ uiState.errorMessage }}
-    </VSnackbar>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
 
-    <VSnackbar
-      v-model="uiState.success"
-      :timeout="2000"
-      location="center"
-      variant="flat"
-      color="success"
-    >
-      {{ uiState.successMessage }}
-    </VSnackbar>
+  <VSnackbar
+    v-model="uiState.success"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="success"
+  >
+    {{ uiState.successMessage }}
+  </VSnackbar>
 
-    <VRow dense>
-      <VCol cols="12" md="12">
-        <VCard class="mb-4">
-          <label class="font-weight-medium mb-2 mt-2 d-block text-center">
-            تحویل غذا
-          </label>
+  <VRow dense>
+    <VCol cols="12" md="12">
+      <VCard class="mb-4">
+        <label class="font-weight-medium mb-2 mt-2 d-block text-center">
+          تحویل غذا
+        </label>
 
-          <VRow class="mb-4 px-4">
-            <VCol cols="12" sm="12" md="12">
-              <VTextField
-                v-model="deliveryCode"
-                label="کد تحویل"
-                variant="outlined"
-                :rules="[requiredValidator, ...countInputRules]"
-                @keydown.enter="search"
-              />
-            </VCol>
-          </VRow>
+        <VRow class="mb-4 px-4">
+          <VCol cols="12" sm="12" md="12">
+            <VTextField
+              v-model="deliveryCode"
+              label="کد تحویل"
+              variant="outlined"
+              type="number"
+              @keydown.enter="search"
+            />
+          </VCol>
+        </VRow>
 
-          <VRow justify="center" class="mb-4">
-            <VCol cols="auto">
-              <VBtn
-                color="primary"
-                :loading="pendingState.searchReservedMeal"
-                :disabled="pendingState.searchReservedMeal"
-                @click="search"
-              >
-                جستجو
-              </VBtn>
-            </VCol>
-          </VRow>
-        </VCard>
-
-        <!-- برای دسکتاپ -->
-        <div class="ma-3 overflow-auto d-none d-md-block">
-          <VCard v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" class="pa-4">
-            <label class="font-weight-medium mb-4 d-block text-center">
-              رزروهای امروز
-            </label>
-            <div
-              v-if="sortedReservedMeals.length"
-              class="text-center mb-4"
+        <VRow justify="center" class="mb-4">
+          <VCol cols="auto">
+            <VBtn
+              color="primary"
+              :loading="pendingState.searchReservedMeal"
+              :disabled="pendingState.searchReservedMeal"
+              @click="search"
             >
-              <VChip
-                v-for="meal in mealTotals"
-                :key="meal.name"
-                class="ma-1"
-                color="primary"
-                size="small"
-                variant="outlined"
-              >
-                {{ meal.name }}: {{ meal.total }}
-              </VChip>
-              <VChip
-                v-for="meal in undeliveredMealTotals"
-                :key="meal.name"
-                class="ma-1"
-                color="primary"
-                size="small"
-                variant="outlined"
-              >
-                {{ meal.name }}: {{ meal.total }}
-              </VChip>
-            </div>
+              جستجو
+            </VBtn>
+          </VCol>
+        </VRow>
+      </VCard>
 
-            <VTable>
-              <thead>
-                <tr>
-                  <th>ردیف</th>
-                  <th>وعده</th>
-                  <th>رزرو کننده</th>
-                  <th>کد پرسنلی</th>
-                  <th>کد تحویل</th>
-                  <th>نوع رزرو</th>
-                  <th>وضعیت</th>
-                  <th>پیمانکار</th>
-                  <th>تعداد</th>
-                  <th>توضیحات</th>
-                  <th>عملیات</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr
-                  v-for="(item, index) in sortedReservedMeals"
-                  :key="item.id"
-                >
-                  <td>{{ index + 1 }}</td>
-
-                  <td>{{ item.meal?.name }}</td>
-
-                  <td>
-                    <VChip>
-                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                    </VChip>
-                  </td>
-
-                  <td>
-                    <VChip>
-                      {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
-                    </VChip>
-                  </td>
-
-                  <td>
-                    <VChip color="success">
-                      {{ item.delivery_code }}
-                    </VChip>
-                  </td>
-
-                  <td>
-                    <VChip>
-                      {{
-                        {
-                          personnel: 'پرسنل',
-                          contractor: 'پیمانکار',
-                          guest: 'مهمان',
-                        }[item.reserve_type] || ''
-                      }}
-                    </VChip>
-                  </td>
-
-                  <td>
-                    <VChip :color="item.status ? 'success' : 'error'" size="small">
-                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
-                    </VChip>
-                  </td>
-
-                  <td>
-                    <VChip v-if="item.details?.[0]?.contractor">
-                      {{
-                        `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
-                      }}
-                    </VChip>
-                    <span v-else>—</span>
-                  </td>
-
-                  <td>
-                    {{
-                      item.details?.reduce(
-                        (sum, detail) => sum + (detail.quantity || 0),
-                        0,
-                      )
-                    }}
-                  </td>
-
-                  <td class="py-2">
-                    <VTooltip location="top" :disabled="!(item.description?.length > 6)">
-                      <template #activator="{ props }">
-                        <div
-                          v-bind="props"
-                          class="text-truncate"
-                          style="max-width: 120px;"
-                        >
-                          {{ item.description || '—' }}
-                        </div>
-                      </template>
-
-                      <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
-                        {{ item.description }}
-                      </div>
-                    </VTooltip>
-                  </td>
-
-                  <td>
-                    <VBtn
-                      color="orange-darken-2"
-                      variant="plain"
-                      @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
-                    >
-                      <VIcon icon="tabler-circle-dashed-check" size="20" start />
-                      تحویل
-                    </VBtn>
-                  </td>
-                </tr>
-              </tbody>
-            </VTable>
-          </VCard>
-          <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
-          <div v-else class="text-center">
-            <VChip color="error">
-              رزروی برای نمایش وجود ندارد
+      <!-- برای دسکتاپ -->
+      <div class="ma-3 overflow-auto d-none d-md-block">
+        <VCard v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" class="pa-4">
+          <label class="font-weight-medium mb-4 d-block text-center">
+            رزروهای امروز
+          </label>
+          <div
+            v-if="sortedReservedMeals.length"
+            class="text-center mb-4"
+          >
+            <VChip
+              v-for="meal in mealTotals"
+              :key="meal.name"
+              class="ma-1"
+              color="primary"
+              size="small"
+              variant="outlined"
+            >
+              {{ meal.name }}: {{ meal.total }}
+            </VChip>
+            <VChip
+              v-for="meal in undeliveredMealTotals"
+              :key="meal.name"
+              class="ma-1"
+              color="primary"
+              size="small"
+              variant="outlined"
+            >
+              {{ meal.name }}: {{ meal.total }}
             </VChip>
           </div>
-        </div>
 
-        <!-- برای موبایل -->
-        <div class="d-md-none pa-3">
-          <VExpansionPanels v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" variant="accordion">
-            <VExpansionPanel>
-              <VExpansionPanelTitle class="font-weight-bold">
-                رزروهای امروز
-                <div
-                  v-if="sortedReservedMeals.length"
-                  class="text-center mb-4"
-                >
-                  <VChip
-                    v-for="meal in mealTotals"
-                    :key="meal.name"
-                    class="ma-1"
-                    color="primary"
-                    size="small"
-                    variant="outlined"
-                  >
-                    {{ meal.name }}: {{ meal.total }}
-                  </VChip>
-                  <VChip
-                    v-for="meal in undeliveredMealTotals"
-                    :key="meal.name"
-                    class="ma-1"
-                    color="primary"
-                    size="small"
-                    variant="outlined"
-                  >
-                    {{ meal.name }}: {{ meal.total }}
-                  </VChip>
-                </div>
-              </VExpansionPanelTitle>
+          <VTable>
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>وعده</th>
+                <th>رزرو کننده</th>
+                <th>کد پرسنلی</th>
+                <th>کد تحویل</th>
+                <th>نوع رزرو</th>
+                <th>وضعیت</th>
+                <th>پیمانکار</th>
+                <th>تعداد</th>
+                <th>توضیحات</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
 
-              <VExpansionPanelText>
-                <VExpansionPanels variant="accordion">
-                  <VExpansionPanel
-                    v-for="item in sortedReservedMeals"
-                    :key="item.id"
-                    class="mb-2"
-                  >
-                    <VExpansionPanelTitle>
-                      <div class="d-flex flex-column w-100">
-                        <div class="d-flex justify-space-between align-center mb-1">
-                          <span>{{ item.meal?.name }}</span>
-                          <VChip>
-                            {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                          </VChip>
-                        </div>
-                        <div class="d-flex justify-space-between align-center">
-                          <VChip>
-                            {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
-                          </VChip>
-                          <VChip color="success">
-                            {{ item.delivery_code }}
-                          </VChip>
-                        </div>
+            <tbody>
+              <tr
+                v-for="(item, index) in sortedReservedMeals"
+                :key="item.id"
+              >
+                <td>{{ index + 1 }}</td>
+
+                <td>{{ item.meal?.name }}</td>
+
+                <td>
+                  <VChip>
+                    {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                  </VChip>
+                </td>
+
+                <td>
+                  <VChip>
+                    {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
+                  </VChip>
+                </td>
+
+                <td>
+                  <VChip color="success">
+                    {{ item.delivery_code }}
+                  </VChip>
+                </td>
+
+                <td>
+                  <VChip>
+                    {{
+                      {
+                        personnel: 'پرسنل',
+                        contractor: 'پیمانکار',
+                        guest: 'مهمان',
+                        repairman: 'تعمیرکار',
+                      }[item.reserve_type] || ''
+                    }}
+                  </VChip>
+                </td>
+
+                <td>
+                  <VChip :color="item.status ? 'success' : 'error'" size="small">
+                    {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                  </VChip>
+                </td>
+
+                <td>
+                  <VChip v-if="item.details?.[0]?.contractor">
+                    {{
+                      `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
+                    }}
+                  </VChip>
+                  <span v-else>—</span>
+                </td>
+
+                <td>
+                  {{
+                    item.details?.reduce(
+                      (sum, detail) => sum + (detail.quantity || 0),
+                      0,
+                    )
+                  }}
+                </td>
+
+                <td class="py-2">
+                  <VTooltip location="top" :disabled="!(item.description?.length > 6)">
+                    <template #activator="{ props }">
+                      <div
+                        v-bind="props"
+                        class="text-truncate"
+                        style="max-width: 120px;"
+                      >
+                        {{ item.description || '—' }}
                       </div>
-                    </VExpansionPanelTitle>
+                    </template>
 
-                    <VExpansionPanelText>
-                      <div class="pa-2">
-                        <div class="mb-2 d-flex justify-space-between">
-                          <strong>نوع رزرو:</strong>
-                          <VChip>
-                            {{
-                              {
-                                personnel: 'پرسنل',
-                                contractor: 'پیمانکار',
-                                guest: 'مهمان',
-                              }[item.reserve_type] || ''
-                            }}
-                          </VChip>
-                        </div>
+                    <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
+                      {{ item.description }}
+                    </div>
+                  </VTooltip>
+                </td>
 
-                        <div class="mb-2 d-flex justify-space-between">
-                          <strong>پیمانکار:</strong>
-                          <VChip>
-                            {{
-                              item.details?.[0]?.contractor
-                                ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
-                                : '—'
-                            }}
-                          </VChip>
-                        </div>
+                <td>
+                  <VBtn
+                    color="orange-darken-2"
+                    variant="plain"
+                    @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
+                  >
+                    <VIcon icon="tabler-circle-dashed-check" size="20" start />
+                    تحویل
+                  </VBtn>
+                </td>
+              </tr>
+            </tbody>
+          </VTable>
+        </VCard>
+        <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+        <div v-else class="text-center">
+          <VChip color="error">
+            رزروی برای نمایش وجود ندارد
+          </VChip>
+        </div>
+      </div>
 
-                        <div class="mb-2 d-flex justify-space-between">
-                          <VChip :color="item.status ? 'success' : 'error'" size="small">
-                            {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
-                          </VChip>
+      <!-- برای موبایل -->
+      <div class="d-md-none pa-3">
+        <VExpansionPanels v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" variant="accordion">
+          <VExpansionPanel>
+            <VExpansionPanelTitle class="font-weight-bold">
+              رزروهای امروز
+              <div
+                v-if="sortedReservedMeals.length"
+                class="text-center mb-4"
+              >
+                <VChip
+                  v-for="meal in mealTotals"
+                  :key="meal.name"
+                  class="ma-1"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                >
+                  {{ meal.name }}: {{ meal.total }}
+                </VChip>
+                <VChip
+                  v-for="meal in undeliveredMealTotals"
+                  :key="meal.name"
+                  class="ma-1"
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                >
+                  {{ meal.name }}: {{ meal.total }}
+                </VChip>
+              </div>
+            </VExpansionPanelTitle>
+
+            <VExpansionPanelText>
+              <VExpansionPanels variant="accordion">
+                <VExpansionPanel
+                  v-for="item in sortedReservedMeals"
+                  :key="item.id"
+                  class="mb-2"
+                >
+                  <VExpansionPanelTitle>
+                    <div class="d-flex flex-column w-100">
+                      <div class="d-flex justify-space-between align-center mb-1">
+                        <span>{{ item.meal?.name }}</span>
+                        <VChip>
+                          {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                        </VChip>
+                      </div>
+                      <div class="d-flex justify-space-between align-center">
+                        <VChip>
+                          {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
+                        </VChip>
+                        <VChip color="success">
+                          {{ item.delivery_code }}
+                        </VChip>
+                      </div>
+                    </div>
+                  </VExpansionPanelTitle>
+
+                  <VExpansionPanelText>
+                    <div class="pa-2">
+                      <div class="mb-2 d-flex justify-space-between">
+                        <strong>نوع رزرو:</strong>
+                        <VChip>
                           {{
-                            item.details?.reduce(
-                              (sum, detail) => sum + (detail.quantity || 0),
-                              0,
-                            )
-                          }} عدد
-                        </div>
+                            {
+                              personnel: 'پرسنل',
+                              contractor: 'پیمانکار',
+                              guest: 'مهمان',
+                              repairman: 'تعمیرکار',
+                            }[item.reserve_type] || ''
+                          }}
+                        </VChip>
+                      </div>
 
-                        <div class="mb-2 d-flex justify-space-between align-start">
-                          <strong class="me-2">توضیحات:</strong>
-                          <div
-                            style="
+                      <div v-if="item.reserve_type === 'contractor'" class="mb-2 d-flex justify-space-between">
+                        <strong>پیمانکار:</strong>
+                        <VChip>
+                          {{
+                            item.details?.[0]?.contractor
+                              ? `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
+                              : '—'
+                          }}
+                        </VChip>
+                      </div>
+
+                      <div class="mb-2 d-flex justify-space-between">
+                        <VChip :color="item.status ? 'success' : 'error'" size="small">
+                          {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                        </VChip>
+                        {{
+                          item.details?.reduce(
+                            (sum, detail) => sum + (detail.quantity || 0),
+                            0,
+                          )
+                        }} عدد
+                      </div>
+
+                      <div v-if="item.description" class="mb-2 d-flex justify-space-between align-start">
+                        <strong class="me-2">توضیحات:</strong>
+                        <div
+                          style="
                               max-width: 100%;
                               white-space: normal;
                               overflow-wrap: anywhere;
@@ -718,38 +705,37 @@ onMounted(async () => {
                               text-align: right;
                               flex: 1;
                             "
-                          >
-                            {{ item.description || '—' }}
-                          </div>
-                        </div>
-
-                        <div class="mt-2 text-center">
-                          <VBtn
-                            color="orange-darken-2"
-                            variant="plain"
-                            @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
-                          >
-                            <VIcon icon="tabler-circle-dashed-check" size="20" start />
-                            تحویل
-                          </VBtn>
+                        >
+                          {{ item.description || '—' }}
                         </div>
                       </div>
-                    </VExpansionPanelText>
-                  </VExpansionPanel>
-                </VExpansionPanels>
-              </VExpansionPanelText>
-            </VExpansionPanel>
-          </VExpansionPanels>
-          <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
-          <div v-else class="text-center">
-            <VChip color="error">
-              رزروی برای نمایش وجود ندارد
-            </VChip>
-          </div>
+
+                      <div class="mt-2 text-center">
+                        <VBtn
+                          color="orange-darken-2"
+                          variant="plain"
+                          @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
+                        >
+                          <VIcon icon="tabler-circle-dashed-check" size="20" start />
+                          تحویل
+                        </VBtn>
+                      </div>
+                    </div>
+                  </VExpansionPanelText>
+                </VExpansionPanel>
+              </VExpansionPanels>
+            </VExpansionPanelText>
+          </VExpansionPanel>
+        </VExpansionPanels>
+        <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+        <div v-else class="text-center">
+          <VChip color="error">
+            رزروی برای نمایش وجود ندارد
+          </VChip>
         </div>
-      </VCol>
-    </VRow>
-  </VContainer>
+      </div>
+    </VCol>
+  </VRow>
 
   <!-- Reserved Meal Delivery Dialog -->
   <VDialog
@@ -762,29 +748,40 @@ onMounted(async () => {
 
     <VCard>
       <VCardTitle class="text-h6">
-        تحویل
+        تحویل غذا
       </VCardTitle>
 
       <VCardActions class="justify-end">
         <VBtn
-          color="primary"
+          color="green-darken-4"
           variant="tonal"
           :loading="pendingState.deliverReservedMeal"
           :disabled="pendingState.deliverReservedMeal || reservedMeal.status"
           @click="deliver"
         >
-          ارسال
+          <VIcon icon="tabler-circle-dashed-check" size="20" start />
+          تحویل
         </VBtn>
       </VCardActions>
 
       <VCardText>
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>رزرو کننده:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}</p>
+            <p>
+              <strong>رزرو کننده:</strong>
+              <VChip color="orange" size="small">
+                {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}
+              </vchip>
+            </p>
           </VCol>
 
           <VCol cols="12" sm="6">
-            <p><strong>کد پرسنلی:</strong> {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}</p>
+            <p>
+              <strong>کد پرسنلی:</strong>
+              <VChip color="orange" size="small">
+                {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}
+              </vchip>
+            </p>
           </VCol>
         </VRow>
 
@@ -792,43 +789,66 @@ onMounted(async () => {
 
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>کد تحویل:</strong> {{ reservedMeal.delivery_code }}</p>
+            <strong>کد تحویل:</strong>
+            <VChip color="primary" size="small">
+              {{ reservedMeal.delivery_code }}
+            </VChip>
           </VCol>
-
           <VCol cols="12" sm="6">
-            <p><strong>وعده:</strong> {{ reservedMeal.meal?.name }}</p>
+            <p>
+              <strong>وعده:</strong>
+              <VChip color="primary" size="small">
+                {{ reservedMeal.meal?.name }}
+              </VChip>
+            </p>
           </VCol>
 
           <VDivider class="my-3" />
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>نوع رزرو:</strong> {{
-                {
-                  personnel: 'پرسنل',
-                  contractor: 'پیمانکار',
-                  guest: 'مهمان',
-                }[reservedMeal.reserve_type] || ''
-              }}
+              <strong>نوع رزرو:</strong>
+              <VChip size="small">
+                {{
+                  {
+                    personnel: 'پرسنل',
+                    contractor: 'پیمانکار',
+                    guest: 'مهمان',
+                    repairman: 'تعمیرکار',
+                  }[reservedMeal.reserve_type] || ''
+                }}
+              </VChip>
             </p>
           </VCol>
 
           <VCol v-if="reservedMeal.details?.[0]?.contractor" cols="12" sm="6">
             <p>
-              <strong>پیمانکار:</strong> {{
-                `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
-              }}
+              <strong>پیمانکار:</strong>
+              <VChip size="small">
+                {{
+                  `${reservedMeal.details[0].contractor.first_name} ${reservedMeal.details[0].contractor.last_name}`
+                }}
+              </VChip>
             </p>
           </VCol>
 
           <VCol v-if="reservedMeal.reserve_type === 'guest'" cols="12" sm="6">
             <p>
-              <strong>نوع سرو:</strong> {{
-                {
-                  serve_in_kitchen: 'سرو در آشپزخانه',
-                  deliver: 'تحویل',
-                }[reservedMeal.serve_place] || ''
-              }}
+              <strong>نوع سرو:</strong>
+              <VChip color="cyan" size="small">
+                {{
+                  {
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
+                  }[reservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="reservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  reservedMeal.attendance_hour
+                }}
+              </VChip>
             </p>
           </VCol>
         </VRow>
@@ -837,17 +857,25 @@ onMounted(async () => {
 
         <VRow>
           <VCol cols="12" sm="6">
-            <p><strong>وضعیت:</strong> {{ reservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}</p>
+            <p>
+              <strong>وضعیت:</strong>
+              <VChip :color="reservedMeal.status ? 'success' : 'error'" size="small">
+                {{ reservedMeal.status ? 'تحویل شده' : 'تحویل نشده' }}
+              </VChip>
+            </p>
           </VCol>
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>تعداد:</strong> {{
-                reservedMeal.details?.reduce(
-                  (sum, detail) => sum + (detail.quantity || 0),
-                  0,
-                )
-              }}
+              <strong>تعداد:</strong>
+              <VChip size="small">
+                {{
+                  reservedMeal.details?.reduce(
+                    (sum, detail) => sum + (detail.quantity || 0),
+                    0,
+                  )
+                }}
+              </VChip>
             </p>
           </VCol>
         </VRow>
