@@ -10,6 +10,8 @@ declare global {
   const COOKIE_MAX_AGE_1_MONTH: typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_MONTH']
   const COOKIE_MAX_AGE_1_YEAR: typeof import('./src/utils/constants.js').COOKIE_MAX_AGE_1_YEAR
   const EffectScope: typeof import('vue').EffectScope
+  const HR_REQUEST_STATUSES: typeof import('./src/utils/constants.js').HR_REQUEST_STATUSES
+  const HR_REQUEST_TYPES: typeof import('./src/utils/constants.js').HR_REQUEST_TYPES
   const MAX_FILE_SIZE: typeof import('./src/utils/constants.js').MAX_FILE_SIZE
   const ORG_POSITION_COLORS: typeof import('./src/utils/constants.js').ORG_POSITION_COLORS
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
@@ -388,6 +390,8 @@ declare module 'vue' {
     readonly $api: UnwrapRef<typeof import('./src/utils/api.js')['$api']>
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly HR_REQUEST_STATUSES: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_STATUSES']>
+    readonly HR_REQUEST_TYPES: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_TYPES']>
     readonly MAX_FILE_SIZE: UnwrapRef<typeof import('./src/utils/constants.js')['MAX_FILE_SIZE']>
     readonly ORG_POSITION_COLORS: UnwrapRef<typeof import('./src/utils/constants.js')['ORG_POSITION_COLORS']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>

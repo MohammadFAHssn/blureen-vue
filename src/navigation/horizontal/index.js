@@ -1,9 +1,19 @@
 import contractor from './contractor'
-import food from './food'
+import evaluationAndSurvey from './evaluation-and-survey'
 import home from './home'
 import hse from './hse'
+import humanResources from './humanResources.js'
 import payroll from './payroll'
 import suppliers from './suppliers'
 import userManagement from './userManagement'
 
-export default [...home, ...payroll, ...food, ...hse, ...contractor, ...suppliers, ...userManagement]
+export default [
+  ...home,
+  ...contractor,
+  ...payroll,
+  ...evaluationAndSurvey,
+  ...hse,
+  ...suppliers,
+  ...userManagement,
+  ...humanResources,
+]

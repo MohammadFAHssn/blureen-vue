@@ -41,7 +41,10 @@ function onCancelClick() {
 
 <template>
   <div class="d-flex gap-1">
-    <IconBtn v-if="params.value.addImage" @click="params.onAddImageClick(params.node)">
+    <IconBtn
+      v-if="params.value.addImage"
+      @click="params.onAddImageClick(params.node)"
+    >
       <VIcon icon="tabler-photo-plus" />
     </IconBtn>
 
@@ -86,8 +89,23 @@ function onCancelClick() {
       <VIcon icon="tabler-trash" />
     </IconBtn>
 
-    <IconBtn v-if="params.value.detailsable" @click="params.onDetailsClick(params.node)">
+    <IconBtn
+      v-if="params.value.detailsable"
+      @click="params.onDetailsClick(params.node)"
+    >
       <VIcon icon="tabler-file-description" />
+    </IconBtn>
+    <IconBtn
+      v-if="params.value.approvable"
+      @click="params.onApproveClick(params.node, true)"
+    >
+      <VIcon icon="tabler-check" />
+    </IconBtn>
+    <IconBtn
+      v-if="params.value.approvable"
+      @click="params.onApproveClick(params.node, false)"
+    >
+      <VIcon icon="tabler-ban" />
     </IconBtn>
 
     <v-switch
