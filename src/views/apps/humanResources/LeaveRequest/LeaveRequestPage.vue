@@ -4,9 +4,7 @@ import DailyLeave from '@/views/apps/humanResources/LeaveRequest/DailyLeave/Dail
 import HourlyLeave from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/HourlyLeave.vue'
 import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
 
-// تعریف emit
 const emit = defineEmits(['back'])
-
 const current = ref('root')
 
 const leaveTypes = [
@@ -58,18 +56,28 @@ function goBack() {
             class="pa-4 d-flex flex-column align-center justify-center"
             variant="outlined"
             rounded="xl"
-            @click="current = item.key"
           >
-            <VAvatar variant="tonal" color="primary" size="56" class="mb-2">
+            <!--            @click="current = item.key" -->
+
+            <VAvatar
+              :color="item.key === 'daily' ? 'primary' : 'secondary'"
+              variant="tonal"
+              size="56"
+              class="mb-2"
+            >
               <VIcon :icon="item.icon" size="32" />
             </VAvatar>
             <span>{{ item.label }}</span>
+            <span
+              v-if="item.key === 'daily'"
+              class="font-weight-medium"
+              style="color: red"
+            >(به زودی)</span>
           </VCard>
         </VCol>
       </VRow>
     </div>
 
-    <!-- فرم انتخاب‌شده -->
     <component :is="currentComponent" v-else />
   </div>
 </template>

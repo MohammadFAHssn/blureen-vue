@@ -28,6 +28,8 @@ function goBack() {
 }
 
 function open(key) {
+  if (key !== 'leave')
+    return
   current.value = key
 }
 </script>
@@ -50,7 +52,7 @@ function open(key) {
             rounded="xl"
             @click="open(req.key)"
           >
-            <VAvatar variant="tonal" color="primary" size="56" class="mb-2">
+            <VAvatar variant="tonal" :color="req.key === 'leave' ? 'primary' : 'secondary'" size="56" class="mb-2">
               <VIcon :icon="req.icon" size="32" />
             </VAvatar>
             <span class="font-weight-medium">{{ req.label }}</span>
