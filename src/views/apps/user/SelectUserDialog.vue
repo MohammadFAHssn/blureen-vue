@@ -36,10 +36,18 @@ const columnDefs = ref([
   { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
   { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
   { headerName: 'مرکز هزینه', field: 'costCenter', rowGroup: true, hide: true },
-  { headerName: 'سمت شغلی', field: 'jobPosition', rowGroup: true, hide: true },
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
+  {
+    headerName: 'وضعیت',
+    field: 'active',
+    cellRenderer: 'Active',
+    cellStyle: { 'display': 'flex', 'align-items': 'center' },
+    filterParams: {
+      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    },
+  },
 ])
 
 const rowSelection = ref({
@@ -59,7 +67,7 @@ function rowData() {
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
       costCenter: user.profile?.cost_center?.name,
-      jobPosition: user.profile?.job_position?.name,
+      active: user.active,
     }
   })
 }

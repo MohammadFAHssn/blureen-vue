@@ -81,7 +81,6 @@ const userProfileList = [
 ]
 </script>
 
-// TODO: add personnel avatars
 <template>
   <VBadge
     v-if="userData"

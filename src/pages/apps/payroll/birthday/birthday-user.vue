@@ -96,8 +96,10 @@ function openImageDialog(gift) {
 }
 
 // Init
-await fetchBirthdayGifts()
 await canSee()
+if (theGift.value !== null) {
+  await fetchBirthdayGifts()
+}
 </script>
 
 <template>
@@ -112,13 +114,11 @@ await canSee()
       {{ uiState.errorMessage }}
     </VSnackbar>
 
-    <VAlert
-      v-if="theGift === null"
-      type="error"
-      variant="tonal"
-    >
-      در حال حاضر شما اجازه مشاهده یا انتخاب هدیه را ندارید.
-    </VAlert>
+    <VCol v-if="theGift === null">
+      <VCard variant="text">
+        در حال حاضر شما اجازه مشاهده یا انتخاب هدیه را ندارید.
+      </VCard>
+    </VCol>
 
     <div v-else class="flex-grow-1 overflow-y-auto pb-8">
       <div v-if="pendingState.fetchingBirthdayGifts" class="d-flex justify-center align-center h-100">

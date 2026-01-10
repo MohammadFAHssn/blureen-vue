@@ -30,6 +30,8 @@ const emit = defineEmits(['add', 'update:isDialogVisible'])
 const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 
 // ----- states -----
+const refVForm = ref()
+
 const uiState = reactive({
   isSelectUserDialogOpen: false,
 })
@@ -91,6 +93,10 @@ function normalizeForFuse(parts) {
     .replace(/[\s\u200C]+/g, '')
 }
 
+function toComparisonKey(str) {
+  return (str || '').toString().replace(/[\s\u200C]+/g, '')
+}
+
 function guardBackspace(e) {
   if (e.key === 'Backspace' && !userSearchQuery.value) {
     e.stopPropagation()
@@ -124,19 +130,27 @@ function onSelectUserFromDialog(userIds) {
 }
 
 function onFormSubmit() {
-  if (typeof selectedOrgUnit.value === 'string') {
-    const name = selectedOrgUnit.value.trim()
+  refVForm.value?.validate().then(({ valid: isValid }) => {
+    if (isValid) {
+      if (typeof selectedOrgUnit.value === 'string') {
+        const name = selectedOrgUnit.value.trim()
 
-    selectedOrgUnit.value = {
-      id: crypto.randomUUID(),
-      name,
+        selectedOrgUnit.value = {
+          id: `${Date.now()}-${Math.random()}`,
+          name,
+        }
+
+        orgUnits.value.push(selectedOrgUnit.value)
+      }
+
+      emit('add', {
+        orgPosition: selectedOrgPosition.value,
+        orgUnit: selectedOrgUnit.value,
+        users: selectedUsers.value,
+      })
+      emit('update:isDialogVisible', false)
     }
-
-    orgUnits.value.push(selectedOrgUnit.value)
-  }
-
-  emit('add')
-  emit('update:isDialogVisible', false)
+  })
 }
 
 function onFormReset() {
@@ -177,7 +191,7 @@ watch(
           افزودن گره جدید
         </h6>
         <!-- 👉 Form -->
-        <VForm @submit.prevent="onFormSubmit">
+        <VForm ref="refVForm" validate-on="submit lazy" @submit.prevent="onFormSubmit">
           <VRow>
             <!-- 👉 Org Position -->
             <VCol cols="12" md="6">
@@ -187,6 +201,8 @@ watch(
                 :items="props.orgPositions"
                 item-title="name"
                 item-value="id"
+                return-object
+                :rules="[requiredValidator]"
               />
             </VCol>
             <!-- 👉 Org unit -->
@@ -197,6 +213,7 @@ watch(
                 :items="orgUnits"
                 item-title="name"
                 item-value="id"
+                :rules="[requiredValidator]"
                 @update:model-value="onOrgUnitComboboxUpdate"
               />
             </VCol>
@@ -215,6 +232,7 @@ watch(
                 label="کاربران"
                 :no-filter="true"
                 return-object
+                :rules="[requiredValidator]"
                 @keydown.capture="guardBackspace"
               >
                 <template #selection />
@@ -245,7 +263,7 @@ watch(
           </VRow>
 
           <VRow>
-            <VCol cols="12">
+            <VCol cols="12" style="max-block-size: 50em;" class="overflow-auto">
               <v-chip
                 v-for="selectedUser in selectedUsers"
                 v-bind="props"

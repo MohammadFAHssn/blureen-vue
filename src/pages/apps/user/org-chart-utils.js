@@ -2,11 +2,13 @@ import { ORG_POSITION_COLORS } from '@/utils/constants'
 
 export function getNodeContent(d) {
   const orgPositionColor
-    = ORG_POSITION_COLORS[d.data.orgPositionId]
+    = ORG_POSITION_COLORS[d.data.orgPosition.id]
       || 'rgb(var(--v-theme-on-secondary))'
 
+  const isHighlighted = d.data._highlighted
+
   return `
-    <div class="org-chart-node" style="width: ${d.width}px; height: ${d.height}px;">
+    <div class="org-chart-node ${isHighlighted ? 'highlighted' : ''}" style="width: ${d.width}px; height: ${d.height}px;">
       <!-- Node Card -->
       <div class="org-chart-card">
         <!-- Action Buttons -->
@@ -45,11 +47,11 @@ export function getNodeContent(d) {
         </div>
         <!-- OrgPosition (top) -->
         <div class="org-position" style="background-color: ${orgPositionColor};">
-          ${d.data.orgPositionName}
+          ${d.data.orgPosition.name}
         </div>
         <!-- OrgUnit (middle) -->
         <div class="org-unit">
-          ${d.data.orgUnitName}
+          ${d.data.orgUnit.name}
         </div>
       </div>
     </div>

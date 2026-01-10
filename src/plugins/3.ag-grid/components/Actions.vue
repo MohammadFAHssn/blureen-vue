@@ -45,6 +45,10 @@ function onCancelClick() {
       <VIcon icon="tabler-photo-plus" />
     </IconBtn>
 
+    <IconBtn v-if="params.value.status" @click="params.onStatusClick(params.node)">
+      <VIcon icon="tabler-power" />
+    </IconBtn>
+
     <div v-if="params.value.editable?.status">
       <IconBtn
         v-if="params.value.editable.mode === 'view'"
