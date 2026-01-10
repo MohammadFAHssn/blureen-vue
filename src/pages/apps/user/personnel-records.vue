@@ -83,29 +83,20 @@ async function onUserSelected(personnelCode) {
     }
   }
 }
+
 async function fetchUsers() {
   try {
-    const { data, error } = await useApi(
-      createUrl('/base/user'),
-    )
-    if (error.value) {
-      uiState.hasError = true
-      uiState.errorMessage = 'خطا در دریافت کاربران'
-      throw error.value
-    }
+    const { data } = await axiosInstance.get('/base/user')
 
-    if (data.value.data) {
-      users.value = data.value.data.map(u => ({
+    if (data.data) {
+      users.value = data.data.map(u => ({
         ...u,
         fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
       }))
     }
   }
   catch (e) {
-    isLoading.value = false
-    console.error('Unexpected error fetching users:', e)
-    uiState.hasError = true
-    uiState.errorMessage = 'خطای غیرمنتظره در دریافت کاربران'
+    console.log(e)
   }
 }
 
@@ -127,9 +118,7 @@ onMounted(() => {
 
   <VRow>
     <VCol>
-      <h2>
-        سوابق پرسنلی
-      </h2>
+      <h2>سوابق پرسنلی</h2>
     </VCol>
   </VRow>
   <VRow justify="center" align="center">
@@ -159,7 +148,11 @@ onMounted(() => {
         📘 آموزش / بدو استخدام
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <EducationRecord v-if="educationEmploymentData" :education-data="educationEmploymentData" type="employment" />
+        <EducationRecord
+          v-if="educationEmploymentData"
+          :education-data="educationEmploymentData"
+          type="employment"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -169,7 +162,10 @@ onMounted(() => {
         ♻️ کارگزینی / سوابق جابجایی
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <ReassignmentRecord v-if="reassignmentData" :reassignment-data="reassignmentData" />
+        <ReassignmentRecord
+          v-if="reassignmentData"
+          :reassignment-data="reassignmentData"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -179,7 +175,11 @@ onMounted(() => {
         📘 آموزش / جابجایی
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <EducationRecord v-if="educationReassignmentData" :education-data="educationReassignmentData" type="reassignment" />
+        <EducationRecord
+          v-if="educationReassignmentData"
+          :education-data="educationReassignmentData"
+          type="reassignment"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -189,7 +189,10 @@ onMounted(() => {
         📊 ارزیابی عملکرد
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <AssessmentRecord v-if="assessmentData" :assessment-data="assessmentData" />
+        <AssessmentRecord
+          v-if="assessmentData"
+          :assessment-data="assessmentData"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -209,7 +212,10 @@ onMounted(() => {
         🍴 رزرو غذا
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <FoodReservationRecord v-if="foodReserveData" :food-data="foodReserveData" />
+        <FoodReservationRecord
+          v-if="foodReserveData"
+          :food-data="foodReserveData"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -219,7 +225,10 @@ onMounted(() => {
         ⚠️ بهره وری / تخلفات
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <ProductivityRecord v-if="productivityData" :productivity-data="productivityData" />
+        <ProductivityRecord
+          v-if="productivityData"
+          :productivity-data="productivityData"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
 
@@ -229,11 +238,13 @@ onMounted(() => {
         🎁 هدایای تولد
       </VExpansionPanelTitle>
       <VExpansionPanelText>
-        <BirthdayGiftRecord v-if="birthdayGiftData" :birthday-gifts="birthdayGiftData" />
+        <BirthdayGiftRecord
+          v-if="birthdayGiftData"
+          :birthday-gifts="birthdayGiftData"
+        />
       </VExpansionPanelText>
     </VExpansionPanel>
   </VExpansionPanels>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

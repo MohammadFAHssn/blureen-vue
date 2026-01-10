@@ -163,6 +163,7 @@ onMounted(() => {
   </VSnackbar>
 
   <v-dialog
+    v-if="evaluatees.length !== 0"
     v-model="uiState.dialog"
     max-width="400"
     persistent

@@ -110,7 +110,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex-grow-1 overflow-y-auto pb-8">
+  <VContainer>
     <VRow justify="center">
       <VCol cols="12" sm="6" md="4">
         <VInput>
@@ -177,7 +177,7 @@ onMounted(async () => {
         </VCardActions>
       </VCard>
     </VDialog>
-  </div>
+  </VContainer>
 </template>
 
 <style scoped>
