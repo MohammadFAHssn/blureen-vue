@@ -937,7 +937,6 @@ onMounted(async () => {
                 <VNumberInput
                   v-model="receivedCount"
                   :min="1"
-                  :max="maxCount"
                 />
               </VCol>
               <VCol>
@@ -945,7 +944,7 @@ onMounted(async () => {
 
                 <VNumberInput
                   v-model="todayFoodCount"
-                  :min="1"
+                  :min="0"
                   :max="receivedCount"
                 />
               </VCol>
