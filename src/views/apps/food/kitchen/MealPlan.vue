@@ -257,17 +257,18 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <VBtn
-      variant="text"
-      prepend-icon="tabler-arrow-right"
-      class="mb-4"
-      @click="goBack"
-    >
-      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
-    </VBtn>
-  </div>
-  <VContainer>
+  <VContainer max-width="100%">
+    <div>
+      <VBtn
+        variant="text"
+        prepend-icon="tabler-arrow-right"
+        class="mb-4"
+        @click="goBack"
+      >
+        {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
+      </VBtn>
+    </div>
+
     <VSnackbar
       v-model="uiState.hasError"
       :timeout="2000"

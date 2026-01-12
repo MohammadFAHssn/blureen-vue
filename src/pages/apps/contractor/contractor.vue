@@ -37,6 +37,7 @@ function onGridReady(params) {
 
 const columnDefs = ref([
   { headerName: 'نام', field: 'fullName' },
+  { headerName: 'مسئول هزینه', field: 'costResponsible' },
   { headerName: 'توضیحات', field: 'description' },
   {
     headerName: 'وضعیت',
@@ -87,6 +88,7 @@ const rowData = computed(() =>
     return {
       id: contractor.id,
       fullName: contractor.fullName,
+      costResponsible: contractor.costResponsible === 'on_company' ? 'شرکت' : 'پیمانکار',
       description: contractor.description,
       status: contractor.status,
       createdBy: contractor.createdBy?.fullName || '--',
@@ -127,6 +129,7 @@ async function onCreateContractor(payload) {
 
   formData.append('first_name', payload.contractorFirstName)
   formData.append('last_name', payload.contractorLastName)
+  formData.append('cost_responsible', payload.costResponsible)
   if (payload.description) {
     formData.append('description', payload.description)
   }
