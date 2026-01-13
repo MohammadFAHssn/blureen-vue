@@ -2,7 +2,13 @@
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 
-definePage({ meta: { layoutWrapperClasses: 'layout-content-height-fixed' } })
+definePage({
+  meta: {
+    layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'use',
+    subject: 'app',
+  },
+})
 
 const { theme } = useAGGridTheme()
 const { mdAndUp } = useDisplay()
@@ -20,12 +26,14 @@ const state = reactive({
   pendingNodes: [],
 })
 
-const fmtTimeRange = (r) =>
-  r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
-const toIds = (nodes) =>
-  (nodes ?? [])
-    .map((n) => (n?.data ?? n)?.currentItemId ?? (n?.data ?? n)?.id)
+function fmtTimeRange(r) {
+  return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
+}
+function toIds(nodes) {
+  return (nodes ?? [])
+    .map(n => (n?.data ?? n)?.currentItemId ?? (n?.data ?? n)?.id)
     .filter(Boolean)
+}
 function resetSelection() {
   state.gridApi?.deselectAll?.()
   state.selection.gridNodes = []
@@ -41,7 +49,7 @@ function raiseSuccess(msg) {
 }
 
 const rowData = computed(() =>
-  (state.requests ?? []).map((item) => ({
+  (state.requests ?? []).map(item => ({
     currentItemId: item.id,
     personnelCode: item.request.user.personnel_code,
     fullName: `${item.request.user.first_name} ${item.request.user.last_name}`,
@@ -88,20 +96,21 @@ function onGridReady(params) {
   state.gridApi.setGridOption('rowData', rowData.value)
 }
 
-watch(rowData, (rows) => state.gridApi?.setGridOption?.('rowData', rows))
+watch(rowData, rows => state.gridApi?.setGridOption?.('rowData', rows))
 
-const effectiveSelectedIds = () =>
-  isMobile.value
+function effectiveSelectedIds() {
+  return isMobile.value
     ? [...state.selection.cardIds]
     : toIds(state.selection.gridNodes)
-const isCardSelected = (id) => state.selection.cardIds.includes(id)
+}
+const isCardSelected = id => state.selection.cardIds.includes(id)
 function toggleCardSelection(id) {
   state.selection.cardIds = isCardSelected(id)
-    ? state.selection.cardIds.filter((x) => x !== id)
+    ? state.selection.cardIds.filter(x => x !== id)
     : [...state.selection.cardIds, id]
 }
 function selectAllMobile() {
-  state.selection.cardIds = state.requests.map((r) => r.id)
+  state.selection.cardIds = state.requests.map(r => r.id)
 }
 function clearMobileSelection() {
   state.selection.cardIds = []
@@ -130,7 +139,7 @@ async function handleApproveOrReject(approve, nodes) {
       approvalRequestsIds: ids,
       ...(approve === false ? { description: state.rejectReason.trim() } : {}),
     }
-    // eslint-disable-next-line style/max-statements-per-line
+
     await $api('/hr-request/request/approve', {
       method: 'POST',
       body,
@@ -144,9 +153,11 @@ async function handleApproveOrReject(approve, nodes) {
     resetRejectDialogState()
     await fetchRequests()
     resetSelection()
-  } catch (err) {
+  }
+  catch (err) {
     raiseError(err?.message || 'خطایی رخ داد')
-  } finally {
+  }
+  finally {
     state.loading = false
   }
 }
@@ -164,7 +175,7 @@ async function approveSingleRequest(rowOrNode, action) {
 
 async function approveMultiRequest() {
   state.pendingNodes = isMobile.value
-    ? state.selection.cardIds.map((id) => ({ id }))
+    ? state.selection.cardIds.map(id => ({ id }))
     : state.gridApi?.getSelectedRows?.() || []
   state.dialogs.approveConfirm = true
 }
@@ -177,8 +188,9 @@ function openRejectSelectedDialog() {
   state.dialogs.reject = true
 }
 
-const confirmRejectDialog = () =>
-  handleApproveOrReject(false, state.pendingNodes)
+function confirmRejectDialog() {
+  return handleApproveOrReject(false, state.pendingNodes)
+}
 async function confirmApproveDialog() {
   await handleApproveOrReject(true, state.pendingNodes)
   state.dialogs.approveConfirm = false
@@ -193,9 +205,11 @@ async function fetchRequests() {
     if (error.value) throw error.value
     state.requests = data.value.data || []
     resetSelection()
-  } catch (e) {
+  }
+  catch (e) {
     raiseError(e?.message || 'خطا در دریافت درخواست‌ها')
-  } finally {
+  }
+  finally {
     state.loading = false
   }
 }
@@ -396,7 +410,9 @@ onMounted(() => {
 
     <VDialog v-model="state.dialogs.reject" max-width="520">
       <VCard>
-        <VCardTitle class="text-h6"> علت رد درخواست </VCardTitle>
+        <VCardTitle class="text-h6">
+          علت رد درخواست
+        </VCardTitle>
         <VCardText>
           <VTextarea
             v-model="state.rejectReason"
@@ -429,7 +445,9 @@ onMounted(() => {
 
     <VDialog v-model="state.dialogs.details" max-width="640">
       <VCard>
-        <VCardTitle class="text-h6"> جزئیات درخواست </VCardTitle>
+        <VCardTitle class="text-h6">
+          جزئیات درخواست
+        </VCardTitle>
         <VCardText>
           <div v-if="state.detailsItem" class="text-body-2">
             <p>
