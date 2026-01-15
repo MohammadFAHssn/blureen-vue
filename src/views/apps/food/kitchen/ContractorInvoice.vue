@@ -51,7 +51,7 @@ const rowData = computed(() =>
   (reports.value ?? []).map(report => ({
     fullName: `${(report.contractor.first_name ?? '').trim()} ${(report.contractor.last_name ?? '').trim()}`.trim(),
     date: report?.reservation?.date ?? '',
-    costResponsible: report.contractor.cost_responsible ?? '',
+    costResponsible: report.contractor.cost_responsible === 'on_company' ? 'شرکت' : 'پیمانکار',
     mealName: report.reservation?.meal?.name ?? '',
     foodName: report.food?.name ?? '',
     foodPrice: report.food_price ?? '',
