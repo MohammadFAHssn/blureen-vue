@@ -225,7 +225,7 @@ function dialogModelValueUpdate(val) {
 
     <div>
       <div class="d-flex justify-end gap-3 mb-3">
-        <VBtn v-if="can('read', 'Kitchen')" color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
+        <VBtn v-if="can('see', 'Food')" color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
           <VIcon
             icon="tabler-plus"
             size="24"
@@ -284,7 +284,7 @@ function dialogModelValueUpdate(val) {
 
               <td>
                 <VIcon
-                  v-if="can('edit', 'Food-Status')"
+                  v-if="can('see', 'Food')"
                   :disabled="food.id === 1"
                   icon="tabler-power"
                   :color="food.status ? 'red' : 'green'"
@@ -292,7 +292,7 @@ function dialogModelValueUpdate(val) {
                   @click="onChangeStatus(food)"
                 />
                 <VIcon
-                  v-if="can('edit', 'Food-Price')"
+                  v-if="can('see', 'Food')"
                   :disabled="food.id === 1"
                   icon="tabler-edit"
                   color="primary"

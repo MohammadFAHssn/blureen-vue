@@ -1,4 +1,5 @@
 <script setup>
+import { can } from '@layouts/plugins/casl'
 // emit
 const emit = defineEmits(['back'])
 
@@ -206,7 +207,7 @@ function dialogModelValueUpdate(val) {
 
     <div>
       <div class="d-flex justify-end gap-3 mb-3">
-        <VBtn color="primary" @click="uiState.isCreateMealDialogVisible = true;">
+        <VBtn v-if="can('see', 'Meal')" color="primary" @click="uiState.isCreateMealDialogVisible = true;">
           <VIcon
             icon="tabler-plus"
             size="24"
@@ -256,8 +257,8 @@ function dialogModelValueUpdate(val) {
               </td>
 
               <td>
-                <VIcon icon="tabler-power" :color="meal.status ? 'red' : 'green'" size="24" @click="onChangeStatus(meal)" />
-                <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(meal)" />
+                <VIcon v-if="can('see', 'Meal')" icon="tabler-power" :color="meal.status ? 'red' : 'green'" size="24" @click="onChangeStatus(meal)" />
+                <VIcon v-if="can('see', 'Meal')" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(meal)" />
               </td>
             </tr>
           </tbody>

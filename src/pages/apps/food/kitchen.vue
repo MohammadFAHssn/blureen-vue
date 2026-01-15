@@ -18,12 +18,13 @@ definePage({
 const current = ref('root')
 
 const canReadKitchen = computed(() => !!can('read', 'Kitchen'))
-const canEditFoodPrice = computed(() => !!can('edit', 'Food-Price'))
+const canSeeFood = computed(() => !!can('see', 'Food'))
+const canSeeMeal = computed(() => !!can('see', 'Meal'))
 const canReadContractorInvoice = computed(() => !!can('read', 'Contractor-Invoice'))
 
 const componentsIcons = [
-  { key: 'foods', label: 'غذاها', icon: 'tabler-meat', show: () => canReadKitchen.value || canEditFoodPrice.value },
-  { key: 'meals', label: 'وعده‌های غذایی', icon: 'tabler-bowl-chopsticks', show: () => canReadKitchen.value },
+  { key: 'foods', label: 'غذاها', icon: 'tabler-meat', show: () => canSeeFood.value },
+  { key: 'meals', label: 'وعده‌های غذایی', icon: 'tabler-bowl-chopsticks', show: () => canSeeMeal.value },
   { key: 'mealPlan', label: 'برنامه غذایی', icon: 'tabler-calendar-time', show: () => canReadKitchen.value },
   { key: 'statistics', label: 'آمار', icon: 'tabler-report-analytics', show: () => canReadKitchen.value },
   {
