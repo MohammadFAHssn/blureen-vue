@@ -39,6 +39,7 @@ function onGridReady(params) {
 const columnDefs = ref([
   { headerName: 'نام', field: 'fullName' },
   { headerName: 'تاریخ', field: 'date' },
+  { headerName: 'مسئول هزینه', field: 'costResponsible' },
   { headerName: 'وعده', field: 'mealName' },
   { headerName: 'غذا', field: 'foodName' },
   { headerName: 'مبلغ جزء', field: 'foodPrice' },
@@ -50,6 +51,7 @@ const rowData = computed(() =>
   (reports.value ?? []).map(report => ({
     fullName: `${(report.contractor.first_name ?? '').trim()} ${(report.contractor.last_name ?? '').trim()}`.trim(),
     date: report?.reservation?.date ?? '',
+    costResponsible: report.contractor.cost_responsible ?? '',
     mealName: report.reservation?.meal?.name ?? '',
     foodName: report.food?.name ?? '',
     foodPrice: report.food_price ?? '',
