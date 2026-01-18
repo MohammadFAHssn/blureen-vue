@@ -34,7 +34,7 @@ const selectedReservedMeal = ref(null)
 const reservationType = ref(null)
 
 const userData = useCookie('userData')
-const canReserveFood = computed(() => !!can('use', 'reserve-food'))
+const canReserveFood = computed(() => !!can('use', 'Reserve-Food'))
 const datesKey = computed(() => {
   const v = reserveDates.value
   const arr = Array.isArray(v) ? v : (v ? [v] : [])
@@ -426,7 +426,7 @@ onMounted(async () => {
       </VCol>
 
       <VCol cols="12" md="8">
-        <VCard v-if="can('read', 'Reserve-Meal')" class="mb-4">
+        <VCard v-if="can('read', 'Reserve-Food')" class="mb-4">
           <label class="font-weight-medium mb-2 mt-2 d-block text-center">
             جزئیات
           </label>
@@ -486,7 +486,7 @@ onMounted(async () => {
             </label>
 
             <VRadioGroup
-              v-if="can('read', 'Reserve-Meal')"
+              v-if="can('read', 'Reserve-Food')"
               v-model="reservationType"
               class="mt-2"
               inline
@@ -608,7 +608,7 @@ onMounted(async () => {
                 رزروهای تاریخ‌های انتخاب شده
               </VExpansionPanelTitle>
               <VRadioGroup
-                v-if="can('read', 'Reserve-Meal')"
+                v-if="can('read', 'Reserve-Food')"
                 v-model="reservationType"
                 class="mt-2"
                 inline
