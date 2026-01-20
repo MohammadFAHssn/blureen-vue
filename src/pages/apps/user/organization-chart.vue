@@ -52,6 +52,9 @@ const isDragStarting = ref(false)
 const expandLevel = ref(1)
 const maxDepth = ref(0)
 
+// Event listener reference for cleanup
+let nodeActionClickHandler = null
+
 const vuetifyTheme = useTheme()
 
 watch(
@@ -78,11 +81,11 @@ async function fetchOrgChartNodes() {
         }
       })
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org chart nodes:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org chart nodes:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت چارت سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت چارت سازمانی'
     })
 }
 
@@ -92,11 +95,11 @@ async function fetchOrgPositions() {
     .then(({ data: { data } }) => {
       orgPositions.value = data.sort((a, b) => a.level - b.level)
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org positions:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org positions:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت سمت‌های سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت سمت‌های سازمانی'
     })
 }
 
@@ -106,11 +109,11 @@ async function fetchOrgUnits() {
     .then(({ data: { data } }) => {
       orgUnits.value = data
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org units:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org units:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت واحدهای سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت واحدهای سازمانی'
     })
 }
 
@@ -120,14 +123,16 @@ async function fetchUsers() {
     .then(({ data: { data } }) => {
       users.value = data
     })
-    .catch(({ response }) => {
-      console.error('Error fetching users:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching users:', error)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در دریافت کاربران'
+      uiState.errorMessage = error.response?.data?.message || 'خطا در دریافت کاربران'
     })
 }
 
 async function updateOrganizationChart() {
+  if (!orgChartInstance.value) return
+
   pendingState.updateOrganizationChart = true
 
   const chartState = orgChartInstance.value.getChartState()
@@ -140,11 +145,11 @@ async function updateOrganizationChart() {
     .then(() => {
       reload()
     })
-    .catch(({ response }) => {
-      console.error('Error updating organization chart:', response.data.message)
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در بروزرسانی چارت سازمانی'
+        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
     })
     .finally(() => {
       pendingState.updateOrganizationChart = false
@@ -153,6 +158,8 @@ async function updateOrganizationChart() {
 
 function drawOrgChart() {
   if (!orgChartRef.value || orgChartNodes.value.length === 0) return
+
+  orgChartRef.value.innerHTML = ''
 
   orgChartInstance.value = new OrgChart()
     .container(orgChartRef.value)
@@ -227,7 +234,12 @@ function calculateMaxDepth() {
 function setupNodeActionButtons() {
   if (!orgChartRef.value) return
 
-  orgChartRef.value.addEventListener('click', (event) => {
+  // Remove previous event listener if exists
+  if (nodeActionClickHandler) {
+    orgChartRef.value.removeEventListener('click', nodeActionClickHandler)
+  }
+
+  nodeActionClickHandler = (event) => {
     const button = event.target.closest('.node-action-btn')
     if (!button) return
 
@@ -247,7 +259,9 @@ function setupNodeActionButtons() {
         onDeleteNode(nodeId)
         break
     }
-  })
+  }
+
+  orgChartRef.value.addEventListener('click', nodeActionClickHandler)
 }
 
 function onEditNode(nodeId) {
@@ -550,6 +564,19 @@ await fetchUsers()
 onMounted(async () => {
   await nextTick()
   drawOrgChart()
+})
+
+onUnmounted(() => {
+  // Cleanup event listener
+  if (orgChartRef.value && nodeActionClickHandler) {
+    orgChartRef.value.removeEventListener('click', nodeActionClickHandler)
+    nodeActionClickHandler = null
+  }
+
+  // Cleanup chart instance
+  if (orgChartInstance.value) {
+    orgChartInstance.value = null
+  }
 })
 </script>
 
