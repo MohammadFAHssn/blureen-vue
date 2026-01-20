@@ -521,6 +521,8 @@ async function reload() {
   const chartState = orgChartInstance.value?.getChartState()
   const savedTransform = chartState?.lastTransform
 
+  if (!chartState?.allNodes) return
+
   // Save expanded state of each node
   const expandedNodesMap = {}
   chartState.allNodes.forEach((node) => {
