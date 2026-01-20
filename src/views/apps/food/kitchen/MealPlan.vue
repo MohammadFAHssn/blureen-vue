@@ -65,6 +65,9 @@ function onResetForm() {
 }
 
 async function submit() {
+  if (!planDate.value) return setError('تاریخ را انتخاب کنید.')
+  if (!selectedMeal.value) return setError('وعده را انتخاب کنید.')
+  if (!selectedFood.value) return setError('غذا را انتخاب کنید.')
   pendingState.createPlan = true
   try {
     const [year, month, day] = String(planDate.value).split('/').map(Number)
@@ -72,10 +75,7 @@ async function submit() {
     const selectedKey = year * 10000 + month * 100 + day
     const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
 
-    if (selectedKey < todayKey) {
-      setError('نمیتوان برای گذشته برنامه غذایی ثبت کرد.')
-      return
-    }
+    if (selectedKey < todayKey) return setError('نمیتوان برای گذشته برنامه غذایی ثبت کرد.')
 
     const payload = {
       date: planDate.value,
@@ -112,7 +112,7 @@ async function submit() {
   }
 }
 
-function onClickEdit(mealPlan) {
+async function onClickEdit(mealPlan) {
   const [year, month, day] = String(planDate.value).split('/').map(Number)
   const selectedKey = year * 10000 + month * 100 + day
   const todayKey = jdate.value.jy * 10000 + jdate.value.jm * 100 + jdate.value.jd
@@ -122,6 +122,26 @@ function onClickEdit(mealPlan) {
     uiState.isEditDialogVisible = false
     return
   }
+
+  let deliveredExists = false
+
+  try {
+    const res = await $api('/food/meal-reservation/check-for-delivered', {
+      method: 'GET',
+      params: { date: mealPlan.date, meal_id: mealPlan.meal.id },
+    })
+
+    deliveredExists = !!res?.data
+  }
+  catch (err) {
+    console.error('Error checking:', err)
+  }
+
+  if (deliveredExists) {
+    setError('درخواست تحویل داده شده وجود دارد. قابلیت ویرایش غیرفعال است.')
+    return
+  }
+
   selectedMealPlan.value = mealPlan
   selectedFoodEdit.value = mealPlan.food.id
   uiState.isEditDialogVisible = true
@@ -237,17 +257,18 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <VBtn
-      variant="text"
-      prepend-icon="tabler-arrow-right"
-      class="mb-4"
-      @click="goBack"
-    >
-      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
-    </VBtn>
-  </div>
-  <VContainer>
+  <VContainer max-width="100%">
+    <div>
+      <VBtn
+        variant="text"
+        prepend-icon="tabler-arrow-right"
+        class="mb-4"
+        @click="goBack"
+      >
+        {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
+      </VBtn>
+    </div>
+
     <VSnackbar
       v-model="uiState.hasError"
       :timeout="2000"
@@ -291,7 +312,6 @@ onMounted(async () => {
                 label="تاریخ"
                 variant="outlined"
                 readonly
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -303,7 +323,6 @@ onMounted(async () => {
                 label="وعده"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
             <VCol cols="12" md="12">
@@ -315,13 +334,12 @@ onMounted(async () => {
                 label="غذا"
                 variant="outlined"
                 clearable
-                :rules="[requiredValidator]"
               />
             </VCol>
           </VRow>
           <VRow justify="center" class="mb-4">
             <VCol cols="auto">
-              <VBtn color="primary" @click="submit">
+              <VBtn color="primary" :disabled="pendingState.createPlan" :loading="pendingState.createPlan" @click="submit">
                 ثبت
               </VBtn>
             </VCol>

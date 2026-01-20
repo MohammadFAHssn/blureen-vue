@@ -130,210 +130,213 @@ const undeliveredMealTotals = computed(() => {
 </script>
 
 <template>
-  <div>
-    <VBtn
-      variant="text"
-      prepend-icon="tabler-arrow-right"
-      class="mb-4"
-      @click="goBack"
+  <VContainer max-width="100%">
+    <div>
+      <VBtn
+        variant="text"
+        prepend-icon="tabler-arrow-right"
+        class="mb-4"
+        @click="goBack"
+      >
+        {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
+      </VBtn>
+    </div>
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="error"
     >
-      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
-    </VBtn>
-  </div>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
+      {{ uiState.errorMessage }}
+    </VSnackbar>
 
-  <VSnackbar
-    v-model="uiState.success"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="success"
-  >
-    {{ uiState.successMessage }}
-  </VSnackbar>
+    <VSnackbar
+      v-model="uiState.success"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="success"
+    >
+      {{ uiState.successMessage }}
+    </VSnackbar>
 
-  <VRow dense>
-    <VCol>
-      <VCol class="d-flex justify-center">
-        <PersianDatetimePicker
-          v-model="dates"
-          format="jYYYY/jMM/jDD"
-          range
-        />
-      </VCol>
-      <VCol class="d-flex justify-center">
-        <VBtn
-          color="primary"
-          :loading="pendingState.fetchingReservedMeals"
-          :disabled="pendingState.fetchingReservedMeals"
-          @click="fetchReservedMealsOnDateRange"
-        >
-          جستجو
-        </VBtn>
-      </VCol>
-
-      <div class="overflow-auto d-md-block">
-        <VCol v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" cols="12" md="12">
-          <label class="font-weight-medium mb-4 d-block text-center">
-            رزروهای بازه
-          </label>
-          <div
-            v-if="sortedReservedMeals.length"
-            class="text-center mb-4"
+    <VRow dense>
+      <VCol>
+        <VCol class="d-flex justify-center">
+          <PersianDatetimePicker
+            v-model="dates"
+            format="jYYYY/jMM/jDD"
+            range
+          />
+        </VCol>
+        <VCol class="d-flex justify-center">
+          <VBtn
+            color="primary"
+            :loading="pendingState.fetchingReservedMeals"
+            :disabled="pendingState.fetchingReservedMeals"
+            @click="fetchReservedMealsOnDateRange"
           >
-            <VChip
-              v-for="meal in mealTotals"
-              :key="meal.name"
-              class="ma-1"
-              color="primary"
-              size="small"
-              variant="outlined"
+            جستجو
+          </VBtn>
+        </VCol>
+
+        <div class="overflow-auto d-md-block">
+          <VCol v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" cols="12" md="12">
+            <label class="font-weight-medium mb-4 d-block text-center">
+              رزروهای بازه
+            </label>
+            <div
+              v-if="sortedReservedMeals.length"
+              class="text-center mb-4"
             >
-              {{ meal.name }}: {{ meal.total }}
-            </VChip>
-            <VChip
-              v-for="meal in undeliveredMealTotals"
-              :key="meal.name"
-              class="ma-1"
-              color="primary"
-              size="small"
-              variant="outlined"
-            >
-              {{ meal.name }}: {{ meal.total }}
+              <VChip
+                v-for="meal in mealTotals"
+                :key="meal.name"
+                class="ma-1"
+                color="primary"
+                size="small"
+                variant="outlined"
+              >
+                {{ meal.name }}: {{ meal.total }}
+              </VChip>
+              <VChip
+                v-for="meal in undeliveredMealTotals"
+                :key="meal.name"
+                class="ma-1"
+                color="primary"
+                size="small"
+                variant="outlined"
+              >
+                {{ meal.name }}: {{ meal.total }}
+              </VChip>
+            </div>
+
+            <VTable>
+              <thead>
+                <tr>
+                  <th>ردیف</th>
+                  <th>وعده</th>
+                  <th>رزرو کننده</th>
+                  <th>کد پرسنلی</th>
+                  <th>تاریخ</th>
+                  <th>کد تحویل</th>
+                  <th>نوع رزرو</th>
+                  <th>وضعیت</th>
+                  <th>پیمانکار</th>
+                  <th>تعداد</th>
+                  <th>توضیحات</th>
+                  <th>جزئیات</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  v-for="(item, index) in sortedReservedMeals"
+                  :key="item.id"
+                >
+                  <td>{{ index + 1 }}</td>
+
+                  <td>{{ item.meal?.name }}</td>
+
+                  <td>
+                    <VChip color="primary">
+                      {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip>
+                      {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip>
+                      {{ item.date }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip color="success">
+                      {{ item.delivery_code }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip color="orange">
+                      {{
+                        {
+                          personnel: 'پرسنل',
+                          contractor: 'پیمانکار',
+                          guest: 'مهمان',
+                          repairman: 'تعمیرکار',
+                        }[item.reserve_type] || ''
+                      }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip :color="item.status ? 'success' : 'error'" size="small">
+                      {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip v-if="item.details?.[0]?.contractor">
+                      {{
+                        `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
+                      }}
+                    </VChip>
+                    <span v-else>—</span>
+                  </td>
+
+                  <td>
+                    {{
+                      item.details?.reduce(
+                        (sum, detail) => sum + (detail.quantity || 0),
+                        0,
+                      )
+                    }}
+                  </td>
+
+                  <td class="py-2">
+                    <VTooltip location="top" :disabled="!(item.description?.length > 6)">
+                      <template #activator="{ props }">
+                        <div
+                          v-bind="props"
+                          class="text-truncate"
+                          style="max-width: 120px;"
+                        >
+                          {{ item.description || '—' }}
+                        </div>
+                      </template>
+
+                      <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
+                        {{ item.description }}
+                      </div>
+                    </VTooltip>
+                  </td>
+
+                  <td>
+                    <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
+                      <VIcon icon="tabler-file-description" size="20" />
+                    </VBtn>
+                  </td>
+                </tr>
+              </tbody>
+            </VTable>
+          </VCol>
+          <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
+          <div v-else class="text-center">
+            <VChip color="error">
+              رزروی برای نمایش وجود ندارد
             </VChip>
           </div>
-
-          <VTable>
-            <thead>
-              <tr>
-                <th>ردیف</th>
-                <th>وعده</th>
-                <th>رزرو کننده</th>
-                <th>کد پرسنلی</th>
-                <th>تاریخ</th>
-                <th>کد تحویل</th>
-                <th>نوع رزرو</th>
-                <th>وضعیت</th>
-                <th>پیمانکار</th>
-                <th>تعداد</th>
-                <th>توضیحات</th>
-                <th>جزئیات</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr
-                v-for="(item, index) in sortedReservedMeals"
-                :key="item.id"
-              >
-                <td>{{ index + 1 }}</td>
-
-                <td>{{ item.meal?.name }}</td>
-
-                <td>
-                  <VChip color="primary">
-                    {{ item.created_by ? `${item.created_by.first_name} ${item.created_by.last_name}` : '—' }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip>
-                    {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip>
-                    {{ item.date }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip color="success">
-                    {{ item.delivery_code }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip color="orange">
-                    {{
-                      {
-                        personnel: 'پرسنل',
-                        contractor: 'پیمانکار',
-                        guest: 'مهمان',
-                      }[item.reserve_type] || ''
-                    }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip :color="item.status ? 'success' : 'error'" size="small">
-                    {{ item.status ? 'تحویل شده' : 'تحویل نشده' }}
-                  </VChip>
-                </td>
-
-                <td>
-                  <VChip v-if="item.details?.[0]?.contractor">
-                    {{
-                      `${item.details[0].contractor.first_name} ${item.details[0].contractor.last_name}`
-                    }}
-                  </VChip>
-                  <span v-else>—</span>
-                </td>
-
-                <td>
-                  {{
-                    item.details?.reduce(
-                      (sum, detail) => sum + (detail.quantity || 0),
-                      0,
-                    )
-                  }}
-                </td>
-
-                <td class="py-2">
-                  <VTooltip location="top" :disabled="!(item.description?.length > 6)">
-                    <template #activator="{ props }">
-                      <div
-                        v-bind="props"
-                        class="text-truncate"
-                        style="max-width: 120px;"
-                      >
-                        {{ item.description || '—' }}
-                      </div>
-                    </template>
-
-                    <div style="max-width: 420px; white-space: normal; overflow-wrap: anywhere;">
-                      {{ item.description }}
-                    </div>
-                  </VTooltip>
-                </td>
-
-                <td>
-                  <VBtn color="primary" variant="text" size="small" @click="onClickDetail(item)">
-                    <VIcon icon="tabler-file-description" size="20" />
-                  </VBtn>
-                </td>
-              </tr>
-            </tbody>
-          </VTable>
-        </VCol>
-        <VSkeletonLoader v-else-if="pendingState.fetchingReservedMeals" type="card" />
-        <div v-else class="text-center">
-          <VChip color="error">
-            رزروی برای نمایش وجود ندارد
-          </VChip>
         </div>
-      </div>
-    </VCol>
-  </VRow>
+      </VCol>
+    </VRow>
+  </VContainer>
 
   <!-- Reserved Meal Details Dialog -->
   <VDialog
@@ -394,12 +397,13 @@ const undeliveredMealTotals = computed(() => {
           <VCol cols="12" sm="6">
             <p>
               <strong>نوع رزرو:</strong>
-              <VChip>
+              <VChip size="small">
                 {{
                   {
                     personnel: 'پرسنل',
                     contractor: 'پیمانکار',
                     guest: 'مهمان',
+                    repairman: 'تعمیرکار',
                   }[selectedReservedMeal.reserve_type] || ''
                 }}
               </VChip>
@@ -420,12 +424,18 @@ const undeliveredMealTotals = computed(() => {
           <VCol v-if="selectedReservedMeal.reserve_type === 'guest'" cols="12" sm="6">
             <p>
               <strong>نوع سرو:</strong>
-              <VChip>
+              <VChip color="cyan" size="small">
                 {{
                   {
-                    serve_in_kitchen: 'سرو در آشپزخانه',
-                    deliver: 'تحویل',
+                    serve_in_kitchen: 'سرو در رستوران',
+                    deliver: 'تحویل(بیرون‌بر)',
                   }[selectedReservedMeal.serve_place] || ''
+                }}
+              </VChip>
+              <VChip v-if="selectedReservedMeal.serve_place === 'serve_in_kitchen'" size="small">
+                ساعت حضور:
+                {{
+                  selectedReservedMeal.attendance_hour
                 }}
               </VChip>
             </p>

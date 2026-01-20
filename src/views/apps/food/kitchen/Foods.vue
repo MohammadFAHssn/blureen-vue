@@ -1,4 +1,5 @@
 <script setup>
+import { can } from '@layouts/plugins/casl'
 // emit
 const emit = defineEmits(['back'])
 
@@ -201,100 +202,116 @@ function dialogModelValueUpdate(val) {
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
-  <div>
-    <VBtn
-      variant="text"
-      prepend-icon="tabler-arrow-right"
-      class="mb-4"
-      @click="goBack"
+  <VContainer max-width="100%">
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="error"
     >
-      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
-    </VBtn>
-  </div>
-
-  <div>
-    <div class="d-flex justify-end gap-3 mb-3">
-      <VBtn color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
-        <VIcon
-          icon="tabler-plus"
-          size="24"
-          style="cursor: pointer"
-        />
+      {{ uiState.errorMessage }}
+    </VSnackbar>
+    <div>
+      <VBtn
+        variant="text"
+        prepend-icon="tabler-arrow-right"
+        class="mb-4"
+        @click="goBack"
+      >
+        {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
       </VBtn>
     </div>
+
     <div>
-      <VTable v-if="!pendingState.fetchingFoods && foods.length > 0">
-        <thead>
-          <tr>
-            <th>ردیف</th>
-            <th>نام</th>
-            <th>وضعیت</th>
-            <th>قیمت</th>
-            <th>ایجاد شده توسط</th>
-            <th>آخرین ویرایش توسط</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(food, index) in foods" :key="food.id">
-            <td>{{ index + 1 }}</td>
+      <div class="d-flex justify-end gap-3 mb-3">
+        <VBtn v-if="can('see', 'Food')" color="primary" @click="uiState.isCreateFoodDialogVisible = true;">
+          <VIcon
+            icon="tabler-plus"
+            size="24"
+            style="cursor: pointer"
+          />
+        </VBtn>
+      </div>
+      <div>
+        <VTable v-if="!pendingState.fetchingFoods && foods.length > 0">
+          <thead>
+            <tr>
+              <th>ردیف</th>
+              <th>نام</th>
+              <th>وضعیت</th>
+              <th>قیمت</th>
+              <th>ایجاد شده توسط</th>
+              <th>آخرین ویرایش توسط</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(food, index) in foods" :key="food.id">
+              <td>{{ index + 1 }}</td>
 
-            <td>{{ food.name }}</td>
+              <td>{{ food.name }}</td>
 
-            <td v-if="food.id !== 1">
-              <VChip :color="food.status ? 'success' : 'error'" size="small">
-                {{ food.status ? 'فعال' : 'غیرفعال' }}
-              </VChip>
-            </td>
+              <td v-if="food.id !== 1">
+                <VChip :color="food.status ? 'success' : 'error'" size="small">
+                  {{ food.status ? 'فعال' : 'غیرفعال' }}
+                </VChip>
+              </td>
 
-            <td v-if="food.id === 1">
-              <VChip color="success" size="small">
-                فعال
-              </VChip>
-            </td>
+              <td v-if="food.id === 1">
+                <VChip color="success" size="small">
+                  فعال
+                </VChip>
+              </td>
 
-            <td>
-              <VChip color="primary">
-                {{ Number(food.price).toLocaleString('fa-IR') }}
-              </VChip>
-            </td>
+              <td>
+                <VChip color="primary">
+                  {{ Number(food.price).toLocaleString('fa-IR') }}
+                </VChip>
+              </td>
 
-            <td>
-              <VChip>
-                {{ food.createdBy ? `${food.createdBy.fullName} - ${food.createdBy.username}` : '—' }}
-              </VChip>
-            </td>
+              <td>
+                <VChip>
+                  {{ food.createdBy ? `${food.createdBy.fullName} - ${food.createdBy.username}` : '—' }}
+                </VChip>
+              </td>
 
-            <td>
-              <VChip>
-                {{ food.editedBy ? `${food.editedBy.fullName} - ${food.editedBy.username}` : '—' }}
-              </VChip>
-            </td>
+              <td>
+                <VChip>
+                  {{ food.editedBy ? `${food.editedBy.fullName} - ${food.editedBy.username}` : '—' }}
+                </VChip>
+              </td>
 
-            <td>
-              <VIcon :disabled="food.id === 1" icon="tabler-power" :color="food.status ? 'red' : 'green'" size="24" @click="onChangeStatus(food)" />
-              <VIcon :disabled="food.id === 1" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(food)" />
-            </td>
-          </tr>
-        </tbody>
-      </VTable>
-      <VSkeletonLoader v-else-if="pendingState.fetchingFoods" type="card" />
-      <div v-else class="text-center">
-        <VChip color="error">
-          غذایی برای نمایش وجود ندارد
-        </VChip>
+              <td>
+                <VIcon
+                  v-if="can('see', 'Food')"
+                  :disabled="food.id === 1"
+                  icon="tabler-power"
+                  :color="food.status ? 'red' : 'green'"
+                  size="24"
+                  @click="onChangeStatus(food)"
+                />
+                <VIcon
+                  v-if="can('see', 'Food')"
+                  :disabled="food.id === 1"
+                  icon="tabler-edit"
+                  color="primary"
+                  size="24"
+                  @click="onClickEdit(food)"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </VTable>
+        <VSkeletonLoader v-else-if="pendingState.fetchingFoods" type="card" />
+        <div v-else class="text-center">
+          <VChip color="error">
+            غذایی برای نمایش وجود ندارد
+          </VChip>
+        </div>
       </div>
     </div>
-  </div>
+  </VContainer>
 
   <!-- Create New Food Dialog -->
   <VDialog

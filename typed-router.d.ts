@@ -27,6 +27,8 @@ declare module 'vue-router/auto-routes' {
     'apps-food-report': RouteRecordInfo<'apps-food-report', '/apps/food/report', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-user': RouteRecordInfo<'apps-payroll-birthday-birthday-user', '/apps/payroll/birthday/birthday-user', Record<never, never>, Record<never, never>>,
@@ -100,6 +102,14 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/hse/health-certificate-management.vue': {
       routes: 'apps-hse-health-certificate-management'
+      views: never
+    }
+    'src/pages/apps/human-resources/approvals-inbox.vue': {
+      routes: 'apps-human-resources-approvals-inbox'
+      views: never
+    }
+    'src/pages/apps/human-resources/requests.vue': {
+      routes: 'apps-human-resources-requests'
       views: never
     }
     'src/pages/apps/payroll/birthday/birthday-admin-file.vue': {
