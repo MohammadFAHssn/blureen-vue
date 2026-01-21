@@ -467,6 +467,10 @@ onMounted(async () => {
         </VCard>
 
         <VCard class="mb-4">
+          <label class="font-weight-medium mb-2 mt-2 d-block text-center">
+            فیلتر
+          </label>
+
           <VRow class="mb-4 px-4">
             <VCol cols="12" sm="12" md="12">
               <VTextField
@@ -474,6 +478,7 @@ onMounted(async () => {
                 label="فیلتر بر اساس کد پرسنلی"
                 variant="outlined"
                 type="number"
+                @keydown.enter="applyPersonnelFilter"
               />
             </VCol>
           </VRow>
