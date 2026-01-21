@@ -270,6 +270,12 @@ async function deliver() {
         reserved_meal_id: reservedMeal.value.id,
       }
     }
+    else if (reservedMeal.value.reserve_type === 'repairman') {
+    payload = {
+      type: 'repairman',
+      reserved_meal_id: reservedMeal.value.id,
+    }
+  }
 
     const res = await $api('/food/delivery', {
       method: 'POST',
