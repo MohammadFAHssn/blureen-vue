@@ -28,6 +28,9 @@ declare module 'vue-router/auto-routes' {
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-approvals-inbox-new': RouteRecordInfo<'apps-human-resources-approvals-inbox-new', '/apps/human-resources/approvals-inbox-new', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-hr-request-approvals-cards': RouteRecordInfo<'apps-human-resources-hr-request-approvals-cards', '/apps/human-resources/HrRequestApprovalsCards', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-hr-request-approvals-grid': RouteRecordInfo<'apps-human-resources-hr-request-approvals-grid', '/apps/human-resources/HrRequestApprovalsGrid', Record<never, never>, Record<never, never>>,
     'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
@@ -106,6 +109,18 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/human-resources/approvals-inbox.vue': {
       routes: 'apps-human-resources-approvals-inbox'
+      views: never
+    }
+    'src/pages/apps/human-resources/approvals-inbox-new.vue': {
+      routes: 'apps-human-resources-approvals-inbox-new'
+      views: never
+    }
+    'src/pages/apps/human-resources/HrRequestApprovalsCards.vue': {
+      routes: 'apps-human-resources-hr-request-approvals-cards'
+      views: never
+    }
+    'src/pages/apps/human-resources/HrRequestApprovalsGrid.vue': {
+      routes: 'apps-human-resources-hr-request-approvals-grid'
       views: never
     }
     'src/pages/apps/human-resources/requests.vue': {

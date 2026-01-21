@@ -67,7 +67,7 @@ const rowData = computed(() =>
 async function getCurrentMonthRequests() {
   loading.value = true
   await axiosInstance
-    .get('/hr-request/requests/get-user-requests', {
+    .get('/hr-request/request/get-user-requests', {
       params: {
         user_id: props.userId,
         request_type: HR_REQUEST_TYPES.OVERTIME,

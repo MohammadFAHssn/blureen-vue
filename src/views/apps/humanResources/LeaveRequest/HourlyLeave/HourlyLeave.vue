@@ -1,9 +1,9 @@
 <script setup>
-import AttendanceLog from '@/views/apps/humanResources/AttendanceLog.vue'
+import AttendanceLog from '@/views/apps/humanResources/Components/AttendanceLog.vue'
 import Form from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/Form.vue'
 import List from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/List.vue'
 import RemainingLeave from '@/views/apps/humanResources/LeaveRequest/RemainingLeave.vue'
-import SelectUserSubOrdinate from '@/views/apps/humanResources/SelectUserSubOrdinate.vue'
+import SelectUserSubOrdinate from '@/views/apps/humanResources/Components/SelectUserSubOrdinate.vue'
 
 const uiState = reactive({
   success: false,

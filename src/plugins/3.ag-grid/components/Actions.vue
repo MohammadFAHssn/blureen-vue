@@ -48,7 +48,10 @@ function onCancelClick() {
       <VIcon icon="tabler-photo-plus" />
     </IconBtn>
 
-    <IconBtn v-if="params.value.status" @click="params.onStatusClick(params.node)">
+    <IconBtn
+      v-if="params.value.status"
+      @click="params.onStatusClick(params.node)"
+    >
       <VIcon icon="tabler-power" />
     </IconBtn>
 
@@ -106,6 +109,12 @@ function onCancelClick() {
       @click="params.onApproveClick(params.node, false)"
     >
       <VIcon icon="tabler-ban" />
+    </IconBtn>
+    <IconBtn
+      v-if="params.value.approvalFlow"
+      @click="params.onShowApprovalFlowClick(params.node, false)"
+    >
+      <VIcon icon="tabler-route" />
     </IconBtn>
 
     <v-switch

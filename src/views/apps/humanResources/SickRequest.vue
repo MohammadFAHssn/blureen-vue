@@ -44,7 +44,7 @@ async function submit() {
     }
 
     try {
-      await $api('/hr-request/requests/create', {
+      await $api('/hr-request/request/create', {
         method: 'POST',
         body: requestData,
         onResponseError({ response }) {
@@ -78,7 +78,7 @@ async function getCurrentMonthRequests() {
   try {
     const { data, error } = await useApi(
       createUrl(
-        `/hr-request/requests/get-user-requests?request_type=${HR_REQUEST_TYPES.SICK_LEAVE}`,
+        `/hr-request/request/get-user-requests?request_type=${HR_REQUEST_TYPES.SICK_LEAVE}`,
       ),
     )
     isLoading.value = false

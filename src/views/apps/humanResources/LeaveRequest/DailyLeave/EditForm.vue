@@ -47,21 +47,25 @@ function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
       try {
-        await axiosInstance.patch(
-          '/hr-request/requests/update',
-          {
-            formData: {
-              requestId: props.request.id,
-              startDate,
-              endDate,
-            },
-          },
-        )
-        dialogModelValueUpdate(false)
+        await axiosInstance.patch('/hr-request/request/update', {
+          requestId: props.request.id,
+          start_date: startDate.value,
+          end_date: endDate.value,
+        })
+        emit('submit')
+        emit('update:isDialogVisible', false)
       }
       catch (error) {
+        let error_message
+        if (!('errors' in error.response.data)) {
+          error_message = error.response.data.message
+        }
+        else {
+          error_message = error.response.data.message
+        }
+
         uiState.hasError = true
-        uiState.errorMessage = error.message ?? 'خطا هنگام بروزرسانی درخواست'
+        uiState.errorMessage = error_message
       }
     }
   })
@@ -123,7 +127,7 @@ function dialogModelValueUpdate(val) {
                   <input id="startDate-input" style="display: none" />
                   <PersianDatetimePicker
                     v-model="startDate"
-                    format="jYYYY/jMM/jDD"
+                    format="jYYYY-jMM-jDD"
                     inline
                     custom-input="#startDate-input"
                     @change="selectStart"
@@ -146,7 +150,7 @@ function dialogModelValueUpdate(val) {
                   <input id="endDate-input" style="display: none" />
                   <PersianDatetimePicker
                     v-model="endDate"
-                    format="jYYYY/jMM/jDD"
+                    format="jYYYY-jMM-jDD"
                     inline
                     custom-input="#endDate-input"
                     @change="selectEnd"
