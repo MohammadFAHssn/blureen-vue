@@ -144,7 +144,9 @@ async function search() {
 }
 
 function applyPersonnelFilter() {
-  appliedPersonnelCode.value = personnelCodeInput ? Number(personnelCodeInput) : null
+  const raw = String(personnelCodeInput.value ?? '').trim()
+  const cleaned = raw.replace(/\D/g, '')
+  appliedPersonnelCode.value = cleaned ? Number(cleaned) : null
 }
 
 function clearPersonnelFilter() {
