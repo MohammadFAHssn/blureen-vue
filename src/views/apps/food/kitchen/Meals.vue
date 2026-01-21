@@ -1,4 +1,5 @@
 <script setup>
+import { can } from '@layouts/plugins/casl'
 // emit
 const emit = defineEmits(['back'])
 
@@ -183,89 +184,91 @@ function dialogModelValueUpdate(val) {
 </script>
 
 <template>
-  <VSnackbar
-    v-model="uiState.hasError"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="error"
-  >
-    {{ uiState.errorMessage }}
-  </VSnackbar>
-  <div>
-    <VBtn
-      variant="text"
-      prepend-icon="tabler-arrow-right"
-      class="mb-4"
-      @click="goBack"
+  <VContainer max-width="100%">
+    <VSnackbar
+      v-model="uiState.hasError"
+      :timeout="2000"
+      location="center"
+      variant="flat"
+      color="error"
     >
-      {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
-    </VBtn>
-  </div>
-
-  <div>
-    <div class="d-flex justify-end gap-3 mb-3">
-      <VBtn color="primary" @click="uiState.isCreateMealDialogVisible = true;">
-        <VIcon
-          icon="tabler-plus"
-          size="24"
-          style="cursor: pointer"
-        />
+      {{ uiState.errorMessage }}
+    </VSnackbar>
+    <div>
+      <VBtn
+        variant="text"
+        prepend-icon="tabler-arrow-right"
+        class="mb-4"
+        @click="goBack"
+      >
+        {{ current === 'root' ? 'آشپزخانه' : 'صفحه قبل' }}
       </VBtn>
     </div>
-    <VCard v-if="pendingState.fetchingMeals" class="text-center">
-      <VCardText>
-        <VProgressCircular indeterminate color="primary" />
-      </VCardText>
-    </VCard>
-    <div v-else>
-      <VTable v-if="meals.length > 0">
-        <thead>
-          <tr>
-            <th>ردیف</th>
-            <th>نام</th>
-            <th>وضعیت</th>
-            <th>ایجاد شده توسط</th>
-            <th>آخرین ویرایش توسط</th>
-            <th>عملیات</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(meal, index) in meals" :key="meal.id">
-            <td>{{ index + 1 }}</td>
 
-            <td>{{ meal.name }}</td>
+    <div>
+      <div class="d-flex justify-end gap-3 mb-3">
+        <VBtn v-if="can('see', 'Meal')" color="primary" @click="uiState.isCreateMealDialogVisible = true;">
+          <VIcon
+            icon="tabler-plus"
+            size="24"
+            style="cursor: pointer"
+          />
+        </VBtn>
+      </div>
+      <VCard v-if="pendingState.fetchingMeals" class="text-center">
+        <VCardText>
+          <VProgressCircular indeterminate color="primary" />
+        </VCardText>
+      </VCard>
+      <div v-else>
+        <VTable v-if="meals.length > 0">
+          <thead>
+            <tr>
+              <th>ردیف</th>
+              <th>نام</th>
+              <th>وضعیت</th>
+              <th>ایجاد شده توسط</th>
+              <th>آخرین ویرایش توسط</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(meal, index) in meals" :key="meal.id">
+              <td>{{ index + 1 }}</td>
 
-            <td>
-              <VChip :color="meal.status ? 'success' : 'error'" size="small">
-                {{ meal.status ? 'فعال' : 'غیرفعال' }}
-              </VChip>
-            </td>
+              <td>{{ meal.name }}</td>
 
-            <td>
-              <VChip>
-                {{ meal.createdBy ? `${meal.createdBy.fullName} - ${meal.createdBy.username}` : '—' }}
-              </VChip>
-            </td>
+              <td>
+                <VChip :color="meal.status ? 'success' : 'error'" size="small">
+                  {{ meal.status ? 'فعال' : 'غیرفعال' }}
+                </VChip>
+              </td>
 
-            <td>
-              <VChip>
-                {{ meal.editedBy ? `${meal.editedBy.fullName} - ${meal.editedBy.username}` : '—' }}
-              </VChip>
-            </td>
+              <td>
+                <VChip>
+                  {{ meal.createdBy ? `${meal.createdBy.fullName} - ${meal.createdBy.username}` : '—' }}
+                </VChip>
+              </td>
 
-            <td>
-              <VIcon icon="tabler-power" :color="meal.status ? 'red' : 'green'" size="24" @click="onChangeStatus(meal)" />
-              <VIcon icon="tabler-edit" color="primary" size="24" @click="onClickEdit(meal)" />
-            </td>
-          </tr>
-        </tbody>
-      </VTable>
-      <div v-else class="text-center">
-        وعده‌ای برای نمایش وجود ندارد
+              <td>
+                <VChip>
+                  {{ meal.editedBy ? `${meal.editedBy.fullName} - ${meal.editedBy.username}` : '—' }}
+                </VChip>
+              </td>
+
+              <td>
+                <VIcon v-if="can('see', 'Meal')" icon="tabler-power" :color="meal.status ? 'red' : 'green'" size="24" @click="onChangeStatus(meal)" />
+                <VIcon v-if="can('see', 'Meal')" icon="tabler-edit" color="primary" size="24" @click="onClickEdit(meal)" />
+              </td>
+            </tr>
+          </tbody>
+        </VTable>
+        <div v-else class="text-center">
+          وعده‌ای برای نمایش وجود ندارد
+        </div>
       </div>
     </div>
-  </div>
+  </VContainer>
 
   <!-- Create New Meal Dialog -->
   <VDialog

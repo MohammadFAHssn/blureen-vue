@@ -60,14 +60,13 @@ async function getOtpCode() {
 
     useCookie('otpExpiresAt').value = otpExpiresAt
     useCookie('mobileNumber').value = credentials.value.mobileNumber
-    await nextTick(() => {
-      router.replace({
-        path: '/two-step-forgot-password',
-      })
-    })
+    await router.replace({ name: 'two-step-forgot-password' })
   }
   catch (err) {
     console.error(err)
+  }
+  finally {
+    isItWaitingServerResponse.value = false
   }
 }
 
