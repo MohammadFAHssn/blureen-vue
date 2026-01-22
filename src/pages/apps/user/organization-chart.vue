@@ -288,8 +288,8 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode({ orgPosition, orgUnit, users }) {
-  const newNodeId = `${Date.now()}-${Math.random()}`
+function handleAddNode({ id, orgPosition, orgUnit, users }) {
+  const newNodeId = id
 
   orgChartInstance.value.addNode({
     id: newNodeId,
@@ -688,6 +688,7 @@ onUnmounted(() => {
 
   <AddNodeDialog
     v-model:is-dialog-visible="uiState.isAddNodeDialogOpen"
+    :selected-node-id="selectedNodeId"
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"

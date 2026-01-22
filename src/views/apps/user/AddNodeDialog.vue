@@ -9,6 +9,11 @@ const props = defineProps({
     required: true,
   },
 
+  selectedNodeId: {
+    type: Number,
+    required: true,
+  },
+
   orgPositions: {
     type: Array,
     required: true,
@@ -34,6 +39,10 @@ const refVForm = ref()
 
 const uiState = reactive({
   isSelectUserDialogOpen: false,
+})
+
+const pendingState = reactive({
+  createOrgChartNode: false,
 })
 
 const orgUnits = ref(props.orgUnits)
@@ -143,14 +152,39 @@ function onFormSubmit() {
         orgUnits.value.push(selectedOrgUnit.value)
       }
 
-      emit('add', {
-        orgPosition: selectedOrgPosition.value,
-        orgUnit: selectedOrgUnit.value,
-        users: selectedUsers.value,
-      })
-      emit('update:isDialogVisible', false)
+      create()
     }
   })
+}
+
+async function create() {
+  const orgChartNode = {
+    id: `${Date.now()}-${Math.random()}`,
+    orgPosition: selectedOrgPosition.value,
+    orgUnit: selectedOrgUnit.value,
+    users: selectedUsers.value,
+    parentId: props.selectedNodeId,
+  }
+
+  pendingState.createOrgChartNode = true
+
+  await axiosInstance
+    .put('/base/org-chart-node/update', {
+      orgChartNode,
+    })
+    .then(() => {
+      emit('add', orgChartNode)
+      emit('update:isDialogVisible', false)
+    })
+    .catch((error) => {
+      console.error('Error creating organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در ایجاد گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.createOrgChartNode = false
+    })
 }
 
 function onFormReset() {
@@ -289,7 +323,7 @@ watch(
           <!-- 👉 Submit and Cancel -->
           <VRow>
             <VCol cols="12" class="d-flex justify-center gap-4">
-              <VBtn type="submit">
+              <VBtn type="submit" :loading="pendingState.createOrgChartNode">
                 افزودن
               </VBtn>
 
