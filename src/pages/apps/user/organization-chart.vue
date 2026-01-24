@@ -282,6 +282,8 @@ function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
   orgChartInstance.value.data(orgChartNodes.value).render()
 
   orgChartInstance.value.setCentered(id).render()
+
+  reload()
 }
 
 function onAddNode(nodeId) {
@@ -301,6 +303,8 @@ function handleAddNode({ id, orgPosition, orgUnit, users }) {
   })
 
   orgChartInstance.value.setCentered(newNodeId).render()
+
+  reload()
 }
 
 function onDeleteNode(nodeId) {
@@ -316,8 +320,9 @@ async function handleDeleteNode() {
       id: selectedNodeId.value,
     } })
     .then(() => {
-      orgChartInstance.value.removeNode(selectedNodeId.value)
       uiState.isDeleteNodeDialogOpen = false
+      orgChartInstance.value.removeNode(selectedNodeId.value)
+      reload()
     })
     .catch((error) => {
       console.error('Error deleting organization chart node:', error)
