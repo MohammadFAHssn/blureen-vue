@@ -33,6 +33,8 @@ const reservedMeals = ref([])
 const reservedMeal = ref(null)
 const todayDate = ref(null)
 const deliveryCode = ref(null)
+const personnelCodeInput = ref('')
+const appliedPersonnelCode = ref(null)
 
 // details dialog data
 // personnel reservation
@@ -139,6 +141,17 @@ async function search() {
   finally {
     pendingState.searchReservedMeal = false
   }
+}
+
+function applyPersonnelFilter() {
+  const raw = String(personnelCodeInput.value ?? '').trim()
+  const cleaned = raw.replace(/\D/g, '')
+  appliedPersonnelCode.value = cleaned ? Number(cleaned) : null
+}
+
+function clearPersonnelFilter() {
+  personnelCodeInput.value = ''
+  appliedPersonnelCode.value = null
 }
 
 async function fetchReservedMealsOnDate() {
@@ -270,6 +283,12 @@ async function deliver() {
         reserved_meal_id: reservedMeal.value.id,
       }
     }
+    else if (reservedMeal.value.reserve_type === 'repairman') {
+    payload = {
+      type: 'repairman',
+      reserved_meal_id: reservedMeal.value.id,
+    }
+  }
 
     const res = await $api('/food/delivery', {
       method: 'POST',
@@ -317,28 +336,43 @@ async function deliver() {
   }
 }
 
-const sortedReservedMeals = computed(() =>
-  [...reservedMeals.value].sort((a, b) =>
-    String(a?.meal?.name || '').localeCompare(String(b?.meal?.name || '')),
-  ),
-)
+const displayedMeals = computed(() => {
+  const typeOrder = {
+    guest: 0,
+    contractor: 1,
+    repairman: 2,
+    personnel: 3,
+  }
+
+  const code = appliedPersonnelCode.value
+
+  const list = [...reservedMeals.value].filter((item) => {
+    if (!code) return true
+    const pc = item?.created_by?.personnel_code
+    return Number(pc) === Number(code)
+  })
+
+  return list.sort((a, b) => {
+    const ta = typeOrder[a?.reserve_type] ?? 999
+    const tb = typeOrder[b?.reserve_type] ?? 999
+    if (ta !== tb) return ta - tb
+
+    const sa = a?.status ? 1 : 0
+    const sb = b?.status ? 1 : 0
+    if (sa !== sb) return sa - sb
+
+    return String(a?.meal?.name || '').localeCompare(String(b?.meal?.name || ''), 'fa')
+  })
+})
+
 
 const mealTotals = computed(() => {
   const totalsByMeal = {}
 
-  for (const item of reservedMeals.value) {
+  for (const item of displayedMeals.value) {
     const mealName = item.meal?.name || 'نامشخص'
-
-    const itemTotal
-      = item.details?.reduce(
-        (sum, detail) => sum + (detail.quantity || 0),
-        0,
-      ) || 0
-
-    if (!totalsByMeal[mealName])
-      totalsByMeal[mealName] = 0
-
-    totalsByMeal[mealName] += itemTotal
+    const itemTotal = item.details?.reduce((sum, d) => sum + (d.quantity || 0), 0) || 0
+    totalsByMeal[mealName] = (totalsByMeal[mealName] || 0) + itemTotal
   }
 
   return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
@@ -347,20 +381,10 @@ const mealTotals = computed(() => {
 const undeliveredMealTotals = computed(() => {
   const totalsByMeal = {}
 
-  for (const item of reservedMeals.value) {
+  for (const item of displayedMeals.value) {
     const mealName = `${item.meal?.name || 'نامشخص'} تحویل نشده`
-
-    const itemTotal
-      = item.details?.reduce(
-        (sum, detail) =>
-          sum + (!detail.delivery_status ? (detail.quantity || 0) : 0),
-        0,
-      ) ?? 0
-
-    if (!totalsByMeal[mealName])
-      totalsByMeal[mealName] = 0
-
-    totalsByMeal[mealName] += itemTotal
+    const itemTotal = item.details?.reduce((sum, d) => sum + (!d.delivery_status ? (d.quantity || 0) : 0), 0) ?? 0
+    totalsByMeal[mealName] = (totalsByMeal[mealName] || 0) + itemTotal
   }
 
   return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
@@ -444,14 +468,43 @@ onMounted(async () => {
           </VRow>
         </VCard>
 
+        <VCard class="mb-4">
+          <label class="font-weight-medium mb-2 mt-2 d-block text-center">
+            فیلتر
+          </label>
+
+          <VRow class="mb-4 px-4">
+            <VCol cols="12" sm="12" md="12">
+              <VTextField
+                v-model="personnelCodeInput"
+                label="فیلتر بر اساس کد پرسنلی"
+                variant="outlined"
+                type="number"
+                @keydown.enter="applyPersonnelFilter"
+              />
+            </VCol>
+          </VRow>
+
+          <VRow justify="center" class="mb-4">
+            <VCol cols="auto">
+              <VBtn color="primary" @click="applyPersonnelFilter">
+                فیلتر
+              </VBtn>
+              <VBtn variant="tonal" color="grey" @click="clearPersonnelFilter">
+                پاک کردن
+              </VBtn>
+            </VCol>
+          </VRow>
+        </VCard>
+
         <!-- برای دسکتاپ -->
         <div class="ma-3 overflow-auto d-none d-md-block">
-          <VCard v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" class="pa-4">
+          <VCard v-if="!pendingState.fetchingReservedMeals && displayedMeals.length > 0" class="pa-4">
             <label class="font-weight-medium mb-4 d-block text-center">
               رزروهای امروز
             </label>
             <div
-              v-if="sortedReservedMeals.length"
+              v-if="displayedMeals.length"
               class="text-center mb-4"
             >
               <VChip
@@ -495,7 +548,7 @@ onMounted(async () => {
 
               <tbody>
                 <tr
-                  v-for="(item, index) in sortedReservedMeals"
+                  v-for="(item, index) in displayedMeals"
                   :key="item.id"
                 >
                   <td>{{ index + 1 }}</td>
@@ -599,12 +652,12 @@ onMounted(async () => {
 
         <!-- برای موبایل -->
         <div class="d-md-none pa-3">
-          <VExpansionPanels v-if="!pendingState.fetchingReservedMeals && sortedReservedMeals.length > 0" variant="accordion">
+          <VExpansionPanels v-if="!pendingState.fetchingReservedMeals && displayedMeals.length > 0" variant="accordion">
             <VExpansionPanel>
               <VExpansionPanelTitle class="font-weight-bold">
                 رزروهای امروز
                 <div
-                  v-if="sortedReservedMeals.length"
+                  v-if="displayedMeals.length"
                   class="text-center mb-4"
                 >
                   <VChip
@@ -633,7 +686,7 @@ onMounted(async () => {
               <VExpansionPanelText>
                 <VExpansionPanels variant="accordion">
                   <VExpansionPanel
-                    v-for="item in sortedReservedMeals"
+                    v-for="item in displayedMeals"
                     :key="item.id"
                     class="mb-2"
                   >
