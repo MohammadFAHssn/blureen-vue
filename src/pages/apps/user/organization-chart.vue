@@ -28,6 +28,7 @@ const uiState = reactive({
 
 const pendingState = reactive({
   updateOrganizationChart: false,
+  deleteOrgChartNode: false,
 })
 
 const orgChartNodes = ref([])
@@ -307,9 +308,26 @@ function onDeleteNode(nodeId) {
   uiState.isDeleteNodeDialogOpen = true
 }
 
-function handleDeleteNode() {
-  orgChartInstance.value.removeNode(selectedNodeId.value)
-  uiState.isDeleteNodeDialogOpen = false
+async function handleDeleteNode() {
+  pendingState.deleteOrgChartNode = true
+
+  await axiosInstance
+    .delete('/base/org-chart-node', { params: {
+      id: selectedNodeId.value,
+    } })
+    .then(() => {
+      orgChartInstance.value.removeNode(selectedNodeId.value)
+      uiState.isDeleteNodeDialogOpen = false
+    })
+    .catch((error) => {
+      console.error('Error deleting organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در حذف گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.deleteOrgChartNode = false
+    })
 }
 
 // Drag and Drop handlers
@@ -682,7 +700,7 @@ onUnmounted(() => {
   <AreYouSureDialog
     v-model:is-dialog-visible="uiState.isDeleteNodeDialogOpen"
     title="آیا از حذف این مورد اطمینان دارید؟"
-    :loading="false"
+    :loading="pendingState.deleteOrgChartNode"
     @confirm="handleDeleteNode"
   />
 
