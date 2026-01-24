@@ -29,6 +29,7 @@ const uiState = reactive({
 const pendingState = reactive({
   updateOrganizationChart: false,
   deleteOrgChartNode: false,
+  organizeOrgChart: false,
 })
 
 const orgChartNodes = ref([])
@@ -128,32 +129,6 @@ async function fetchUsers() {
       console.error('Error fetching users:', error)
       uiState.hasError = true
       uiState.errorMessage = error.response?.data?.message || 'خطا در دریافت کاربران'
-    })
-}
-
-async function updateOrganizationChart() {
-  if (!orgChartInstance.value) return
-
-  pendingState.updateOrganizationChart = true
-
-  const chartState = orgChartInstance.value.getChartState()
-  orgChartNodes.value = chartState.allNodes.map(node => node.data)
-
-  await axiosInstance
-    .put('/base/org-chart-node/update', {
-      orgChartNodes: orgChartNodes.value,
-    })
-    .then(() => {
-      reload()
-    })
-    .catch((error) => {
-      console.error('Error updating organization chart:', error)
-      uiState.hasError = true
-      uiState.errorMessage
-        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
-    })
-    .finally(() => {
-      pendingState.updateOrganizationChart = false
     })
 }
 
@@ -519,9 +494,31 @@ function enableDrag() {
   orgChartRef.value?.classList.add('drag-enabled')
 }
 
-function disableDrag() {
-  dragEnabled.value = false
-  orgChartRef.value?.classList.remove('drag-enabled')
+async function onOrganize() {
+  pendingState.organizeOrgChart = true
+
+  const chartState = orgChartInstance.value.getChartState()
+  orgChartNodes.value = chartState.allNodes.map(node => node.data)
+
+  await axiosInstance
+    .put('/base/org-chart-node/organize', {
+      orgChartNodes: orgChartNodes.value,
+    })
+    .then(() => {
+      dragEnabled.value = false
+      orgChartRef.value?.classList.remove('drag-enabled')
+
+      reload()
+    })
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.organizeOrgChart = false
+    })
 }
 
 function updateExpandLevel(level) {
@@ -683,23 +680,13 @@ onUnmounted(() => {
         سازماندهی
       </VBtn>
 
-      <VBtn v-else color="success" variant="tonal" @click="disableDrag">
+      <VBtn v-else color="success" variant="tonal" :loading="pendingState.organizeOrgChart" @click="onOrganize">
         <VIcon start icon="tabler-check" />
         تایید
       </VBtn>
     </div>
 
     <div ref="orgChartRef" class="org-chart-container" />
-
-    <IconBtn
-      size="x-large"
-      variant="elevated"
-      color="primary"
-      :loading="pendingState.updateOrganizationChart"
-      @click="updateOrganizationChart"
-    >
-      <VIcon icon="tabler-device-floppy" size="35" />
-    </IconBtn>
   </div>
 
   <AreYouSureDialog
