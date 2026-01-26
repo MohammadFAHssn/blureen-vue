@@ -29,7 +29,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ شروع',
     field: 'startDate',
-    valueFormatter: params =>
+    valueFormatter: (params) =>
       params.value
         ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
         : null,
@@ -37,7 +37,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ پایان',
     field: 'endDate',
-    valueFormatter: params =>
+    valueFormatter: (params) =>
       params.value
         ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
         : null,
@@ -69,11 +69,11 @@ const rowData = computed(() =>
       endDate: item.end_date,
       status: item.status.title,
       actions: {
-        /*editable: {
-          status: true,
+        editable: {
+          status: useCookie('userData').value.id === props.userId,
           mode: 'view',
-        },*/
-        deletable: true,
+        },
+        deletable: useCookie('userData').value.id === props.userId,
         approvalFlow: true,
       },
     }
@@ -114,24 +114,29 @@ function onDeleteClick(request) {
 async function onDelete() {
   uiState.deleteLoading = true
   try {
-    await axiosInstance.delete(`hr-request/request/${selectedRequest.value.id}`)
+    await axiosInstance.delete('hr-request/request/delete', {
+      params: {
+        requestId: selectedRequest.value.id,
+        delegator:
+          useCookie('userData').value.id === props.userId
+            ? 'personnel'
+            : 'supervisor',
+      },
+    })
     await getCurrentMonthRequests()
     uiState.successMessage = `درخواست مرخصی با موفقیت حذف شد`
     uiState.success = true
-  }
-  catch (error) {
+  } catch (error) {
     let error_message
     if (!('errors' in error.response.data)) {
       error_message = error.response.data.message
-    }
-    else {
+    } else {
       error_message = error.response.data.message
     }
 
     uiState.hasError = true
     uiState.errorMessage = error_message
-  }
-  finally {
+  } finally {
     uiState.deleteLoading = false
     uiState.isDeleteRequestDialogVisible = false
   }

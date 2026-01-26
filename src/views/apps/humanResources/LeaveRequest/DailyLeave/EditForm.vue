@@ -17,7 +17,6 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
 })
 const refVForm = ref()
 const startDate = ref(props.request.start_date)
@@ -51,6 +50,7 @@ function onFormSubmit() {
           requestId: props.request.id,
           start_date: startDate.value,
           end_date: endDate.value,
+          editor: useCookie('userData').value.id === props.request.user_id ? 'personnel' : 'supervisor',
         })
         emit('submit')
         emit('update:isDialogVisible', false)

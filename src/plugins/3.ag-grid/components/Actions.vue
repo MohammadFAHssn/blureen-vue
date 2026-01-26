@@ -111,6 +111,12 @@ function onCancelClick() {
       <VIcon icon="tabler-ban" />
     </IconBtn>
     <IconBtn
+      v-if="params.value.referrable"
+      @click="params.onReferralClick(params.node)"
+    >
+      <VIcon icon="tabler-user-share" />
+    </IconBtn>
+    <IconBtn
       v-if="params.value.approvalFlow"
       @click="params.onShowApprovalFlowClick(params.node, false)"
     >

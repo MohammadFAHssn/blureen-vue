@@ -5,7 +5,6 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
 })
 
 const selectedUser = ref(useCookie('userData').value)

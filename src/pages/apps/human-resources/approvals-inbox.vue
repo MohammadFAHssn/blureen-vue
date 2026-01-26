@@ -2,6 +2,7 @@
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
@@ -28,6 +29,7 @@ const state = reactive({
     approveConfirm: false,
     edit: false,
     details: false,
+    referral: false,
   },
   detailsItem: null,
   rejectReason: '',
@@ -67,13 +69,13 @@ const rowData = computed(() =>
     timeRange: fmtTimeRange(item.request),
     actions: {
       approvable: true,
-      detailsable: true,
+      detailsable: false,
       editable: {
         status: true,
         mode: 'view',
       },
+      referrable: true,
     },
-    raw: item,
   })),
 )
 
@@ -96,6 +98,7 @@ const columnDefs = ref([
         onApproveClick: approveSingleRequest,
         onDetailsClick: openDetails,
         onEditClick,
+        onReferralClick,
       },
     }),
   },
@@ -133,14 +136,20 @@ function clearMobileSelection() {
 }
 
 function openDetails(item) {
-  state.detailsItem = item?.raw ?? item
+  state.detailsItem = item?.currentItem ?? item
   state.dialogs.details = true
 }
 
-async function onEditClick(request) {
+function onEditClick(request) {
   state.pendingNodes = [request.data.currentItem]
   state.dialogs.edit = true
 }
+
+function onReferralClick(request) {
+  state.pendingNodes = [request.data.currentItem]
+  state.dialogs.referral = true
+}
+
 function resetRejectDialogState() {
   state.dialogs.reject = false
   state.pendingNodes = []
@@ -171,7 +180,7 @@ async function handleApproveOrReject(approve, nodes) {
       },
     })
     raiseSuccess(`با موفقیت ${approve ? 'تایید' : 'رد'} شد.`)
-    resetRejectDialogState()
+    await resetRejectDialogState()
     await fetchRequests()
     resetSelection()
   } catch (err) {
@@ -447,10 +456,16 @@ onMounted(() => {
       "
     />
 
+    <ReferralToSupervisorDialog
+      v-if="state.dialogs.referral"
+      v-model:is-dialog-visible="state.dialogs.referral"
+      :request="state.pendingNodes[0]?.request"
+    />
+
     <EditForm
       v-if="state.dialogs.edit"
       v-model:is-dialog-visible="state.dialogs.edit"
-      :request="state.pendingNodes[0].request"
+      :request="state.pendingNodes[0]?.request"
       @submit="
         () => {
           raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
