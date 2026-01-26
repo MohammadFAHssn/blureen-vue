@@ -1,1 +1,0 @@
-import{b8 as a,cZ as m,Y as r,c_ as h,c$ as o}from"./index-LTwBu3aY.js";function i(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};
