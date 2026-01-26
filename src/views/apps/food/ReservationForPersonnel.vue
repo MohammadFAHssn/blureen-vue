@@ -23,8 +23,6 @@ const maxDate = ref('')
 const todayKey = ref(null)
 
 const users = ref([])
-const requestSwitchPersonnel = ref(false)
-const requestNewPersonnel = ref(null)
 const meals = ref([])
 const reservedMealsByYou = ref([])
 const reservedMealsForYou = ref([])
@@ -297,31 +295,6 @@ function dialogModelValueUpdate(val) {
 }
 
 async function deletePersonnel(id) {
-  try {
-    const res = await $api(`/food/meal-reservation-detail/${id}`, {
-      method: 'DELETE',
-      onResponseError({ response }) {
-        setError(response._data?.message || 'خطا در حذف')
-      },
-    })
-
-    if (res?.data) {
-      selectedReservedMeal.value.details = selectedReservedMeal.value.details.filter(
-        detail => detail.id !== id,
-      )
-    }
-    else {
-      setError('نمیتوان پرسنل رزرو تحویل شده را حذف کرد')
-      uiState.isDetailsDialogVisible = false
-      fetchReservedMealsForDateByUser()
-    }
-  }
-  catch (err) {
-    console.error(err)
-  }
-}
-
-async function switchPersonnel(id) {
   try {
     const res = await $api(`/food/meal-reservation-detail/${id}`, {
       method: 'DELETE',
@@ -884,21 +857,14 @@ onMounted(async () => {
                     {{ d.personnel.personnel_code }}
                   </VChip>
                 </td>
-                <td>
-                  <VBtn v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
+                <td
+                  v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
                     (sum, detail) => sum + (detail.quantity || 0),
                     0,
-                  ) || 0) > 1" color="red" variant="text" size="small" @click="deletePersonnel(d.id)">
+                  ) || 0) > 1"
+                >
+                  <VBtn color="red" variant="text" size="small" @click="deletePersonnel(d.id)">
                     <VIcon icon="tabler-trash" size="20" />
-                  </VBtn>
-                  <VBtn v-if="!requestSwitchPersonnel" color="orange" variant="text" size="small" @click="requestSwitchPersonnel = true">
-                    <VIcon icon="tabler-switch" size="20" />
-                  </VBtn>
-                  <VBtn v-if="requestSwitchPersonnel" color="success" variant="text" size="small" @click="deletePersonnel(d.id)">
-                    <VIcon icon="tabler-check" size="20" />
-                  </VBtn>
-                  <VBtn v-if="requestSwitchPersonnel" color="red" variant="text" size="small" @click="requestSwitchPersonnel = false">
-                    <VIcon icon="tabler-x" size="20" />
                   </VBtn>
                 </td>
                 <td v-if="selectedReservedMeal.status">
