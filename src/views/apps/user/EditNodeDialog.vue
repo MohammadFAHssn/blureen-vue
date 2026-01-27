@@ -41,6 +41,10 @@ const uiState = reactive({
   isSelectUserDialogOpen: false,
 })
 
+const pendingState = reactive({
+  editOrgChartNode: false,
+})
+
 const orgUnits = ref(props.orgUnits)
 
 const selectedOrgPosition = ref(null)
@@ -148,16 +152,39 @@ function onFormSubmit() {
         orgUnits.value.push(selectedOrgUnit.value)
       }
 
-      emit('edit', {
-        id: props.node.id,
-        parentId: props.node.parentId,
-        orgPosition: selectedOrgPosition.value,
-        orgUnit: selectedOrgUnit.value,
-        users: selectedUsers.value,
-      })
-      emit('update:isDialogVisible', false)
+      update()
     }
   })
+}
+
+async function update() {
+  const orgChartNode = {
+    id: props.node.id,
+    parentId: props.node.parentId,
+    orgPosition: selectedOrgPosition.value,
+    orgUnit: selectedOrgUnit.value,
+    users: selectedUsers.value,
+  }
+
+  pendingState.editOrgChartNode = true
+
+  await axiosInstance
+    .put('/base/org-chart-node/update', {
+      orgChartNode,
+    })
+    .then(() => {
+      emit('edit', orgChartNode)
+      emit('update:isDialogVisible', false)
+    })
+    .catch((error) => {
+      console.error('Error editing organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در ویرایش گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.editOrgChartNode = false
+    })
 }
 
 function onFormReset() {
@@ -304,7 +331,7 @@ watch(
           <!-- 👉 Submit and Cancel -->
           <VRow>
             <VCol cols="12" class="d-flex justify-center gap-4">
-              <VBtn type="submit">
+              <VBtn type="submit" :loading="pendingState.editOrgChartNode">
                 ویرایش
               </VBtn>
 

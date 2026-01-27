@@ -34,7 +34,7 @@ const selectedReservedMeal = ref(null)
 const reservationType = ref(null)
 
 const userData = useCookie('userData')
-const canReserveFood = computed(() => !!can('use', 'Reserve-Food'))
+const canReserveFood = computed(() => !!can('read', 'Reserve-Food'))
 const datesKey = computed(() => {
   const v = reserveDates.value
   const arr = Array.isArray(v) ? v : (v ? [v] : [])

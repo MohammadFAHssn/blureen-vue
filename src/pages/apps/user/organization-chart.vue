@@ -28,6 +28,8 @@ const uiState = reactive({
 
 const pendingState = reactive({
   updateOrganizationChart: false,
+  deleteOrgChartNode: false,
+  organizeOrgChart: false,
 })
 
 const orgChartNodes = ref([])
@@ -127,32 +129,6 @@ async function fetchUsers() {
       console.error('Error fetching users:', error)
       uiState.hasError = true
       uiState.errorMessage = error.response?.data?.message || 'خطا در دریافت کاربران'
-    })
-}
-
-async function updateOrganizationChart() {
-  if (!orgChartInstance.value) return
-
-  pendingState.updateOrganizationChart = true
-
-  const chartState = orgChartInstance.value.getChartState()
-  orgChartNodes.value = chartState.allNodes.map(node => node.data)
-
-  await axiosInstance
-    .put('/base/org-chart-node/update', {
-      orgChartNodes: orgChartNodes.value,
-    })
-    .then(() => {
-      reload()
-    })
-    .catch((error) => {
-      console.error('Error updating organization chart:', error)
-      uiState.hasError = true
-      uiState.errorMessage
-        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
-    })
-    .finally(() => {
-      pendingState.updateOrganizationChart = false
     })
 }
 
@@ -281,6 +257,8 @@ function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
   orgChartInstance.value.data(orgChartNodes.value).render()
 
   orgChartInstance.value.setCentered(id).render()
+
+  reload()
 }
 
 function onAddNode(nodeId) {
@@ -288,8 +266,8 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode({ orgPosition, orgUnit, users }) {
-  const newNodeId = `${Date.now()}-${Math.random()}`
+function handleAddNode({ id, orgPosition, orgUnit, users }) {
+  const newNodeId = id
 
   orgChartInstance.value.addNode({
     id: newNodeId,
@@ -300,6 +278,8 @@ function handleAddNode({ orgPosition, orgUnit, users }) {
   })
 
   orgChartInstance.value.setCentered(newNodeId).render()
+
+  reload()
 }
 
 function onDeleteNode(nodeId) {
@@ -307,9 +287,27 @@ function onDeleteNode(nodeId) {
   uiState.isDeleteNodeDialogOpen = true
 }
 
-function handleDeleteNode() {
-  orgChartInstance.value.removeNode(selectedNodeId.value)
-  uiState.isDeleteNodeDialogOpen = false
+async function handleDeleteNode() {
+  pendingState.deleteOrgChartNode = true
+
+  await axiosInstance
+    .delete('/base/org-chart-node', { params: {
+      id: selectedNodeId.value,
+    } })
+    .then(() => {
+      uiState.isDeleteNodeDialogOpen = false
+      orgChartInstance.value.removeNode(selectedNodeId.value)
+      reload()
+    })
+    .catch((error) => {
+      console.error('Error deleting organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در حذف گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.deleteOrgChartNode = false
+    })
 }
 
 // Drag and Drop handlers
@@ -496,9 +494,31 @@ function enableDrag() {
   orgChartRef.value?.classList.add('drag-enabled')
 }
 
-function disableDrag() {
-  dragEnabled.value = false
-  orgChartRef.value?.classList.remove('drag-enabled')
+async function onOrganize() {
+  pendingState.organizeOrgChart = true
+
+  const chartState = orgChartInstance.value.getChartState()
+  orgChartNodes.value = chartState.allNodes.map(node => node.data)
+
+  await axiosInstance
+    .put('/base/org-chart-node/organize', {
+      orgChartNodes: orgChartNodes.value,
+    })
+    .then(() => {
+      dragEnabled.value = false
+      orgChartRef.value?.classList.remove('drag-enabled')
+
+      reload()
+    })
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.organizeOrgChart = false
+    })
 }
 
 function updateExpandLevel(level) {
@@ -520,6 +540,8 @@ async function reload() {
   // Save current state before reload
   const chartState = orgChartInstance.value?.getChartState()
   const savedTransform = chartState?.lastTransform
+
+  if (!chartState?.allNodes) return
 
   // Save expanded state of each node
   const expandedNodesMap = {}
@@ -658,34 +680,25 @@ onUnmounted(() => {
         سازماندهی
       </VBtn>
 
-      <VBtn v-else color="success" variant="tonal" @click="disableDrag">
+      <VBtn v-else color="success" variant="tonal" :loading="pendingState.organizeOrgChart" @click="onOrganize">
         <VIcon start icon="tabler-check" />
         تایید
       </VBtn>
     </div>
 
     <div ref="orgChartRef" class="org-chart-container" />
-
-    <IconBtn
-      size="x-large"
-      variant="elevated"
-      color="primary"
-      :loading="pendingState.updateOrganizationChart"
-      @click="updateOrganizationChart"
-    >
-      <VIcon icon="tabler-device-floppy" size="35" />
-    </IconBtn>
   </div>
 
   <AreYouSureDialog
     v-model:is-dialog-visible="uiState.isDeleteNodeDialogOpen"
     title="آیا از حذف این مورد اطمینان دارید؟"
-    :loading="false"
+    :loading="pendingState.deleteOrgChartNode"
     @confirm="handleDeleteNode"
   />
 
   <AddNodeDialog
     v-model:is-dialog-visible="uiState.isAddNodeDialogOpen"
+    :selected-node-id="selectedNodeId"
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
