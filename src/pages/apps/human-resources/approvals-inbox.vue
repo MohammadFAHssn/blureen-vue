@@ -410,9 +410,10 @@ onMounted(() => {
                 <VBtn
                   size="small"
                   color="success"
+                  variant="tonal"
                   @click="approveSingleRequest({ id: item.id }, true)"
                 >
-                  تایید
+                  <VIcon icon="tabler-check" />
                 </VBtn>
                 <VBtn
                   size="small"
@@ -420,17 +421,33 @@ onMounted(() => {
                   variant="tonal"
                   @click="approveSingleRequest({ id: item.id }, false)"
                 >
-                  رد
+                  <VIcon icon="tabler-ban" />
                 </VBtn>
                 <VSpacer />
                 <VBtn
+                  size="small"
+                  color="warning"
+                  variant="tonal"
+                  @click="onEditClick({ id: item.id }, false)"
+                >
+                  <VIcon icon="tabler-edit" />
+                </VBtn>
+                <VBtn
+                  size="small"
+                  color="info"
+                  variant="tonal"
+                  @click="onReferralClick({ id: item.id }, false)"
+                >
+                  <VIcon icon="tabler-user-share" />
+                </VBtn>
+                <!--                <VBtn
                   size="small"
                   variant="outlined"
                   color="primary"
                   @click="openDetails(item)"
                 >
                   جزئیات
-                </VBtn>
+                </VBtn>-->
               </VCardActions>
             </VCard>
           </VCol>
