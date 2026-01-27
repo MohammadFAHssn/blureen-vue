@@ -50,7 +50,6 @@ function onFormSubmit() {
           requestId: props.request.id,
           start_date: startDate.value,
           end_date: endDate.value,
-          editor: useCookie('userData').value.id === props.request.user_id ? 'personnel' : 'supervisor',
         })
         emit('submit')
         emit('update:isDialogVisible', false)

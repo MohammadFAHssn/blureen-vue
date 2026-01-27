@@ -117,10 +117,6 @@ async function onDelete() {
     await axiosInstance.delete('hr-request/request/delete', {
       params: {
         requestId: selectedRequest.value.id,
-        delegator:
-          useCookie('userData').value.id === props.userId
-            ? 'personnel'
-            : 'supervisor',
       },
     })
     await getCurrentMonthRequests()
@@ -228,6 +224,7 @@ onMounted(() => {
 
                 <div class="mt-3 text-center">
                   <VBtn
+                    v-if="useCookie('userData').value.id === props.userId"
                     color="orange"
                     variant="text"
                     size="small"
@@ -254,6 +251,7 @@ onMounted(() => {
                     <VIcon icon="tabler-route" size="20" />
                   </VBtn>
                   <VBtn
+                    v-if="useCookie('userData').value.id === props.userId"
                     color="red"
                     variant="text"
                     size="small"

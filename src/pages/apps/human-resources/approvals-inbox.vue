@@ -39,9 +39,15 @@ const state = reactive({
 function fmtTimeRange(r) {
   return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
 }
-function toIds(nodes) {
+function toIdsOld(nodes) {
   return (nodes ?? [])
     .map((n) => (n?.data ?? n)?.currentItem.id ?? (n?.data ?? n)?.id)
+    .filter(Boolean)
+}
+function toIds(nodes) {
+  console.log(nodes)
+  return (nodes ?? [])
+    .map((n) => n?.currentItem?.id ?? n.id)
     .filter(Boolean)
 }
 function resetSelection() {
@@ -141,12 +147,12 @@ function openDetails(item) {
 }
 
 function onEditClick(request) {
-  state.pendingNodes = [request.data.currentItem]
+  state.pendingNodes = [request.data ? request.data.currentItem : request]
   state.dialogs.edit = true
 }
 
 function onReferralClick(request) {
-  state.pendingNodes = [request.data.currentItem]
+  state.pendingNodes = [request.data ? request.data.currentItem : request]
   state.dialogs.referral = true
 }
 
@@ -335,8 +341,7 @@ onMounted(() => {
         pagination
         :row-selection="{
           mode: 'multiRow',
-          enableClickSelection: false,
-          enableSelectionWithoutKeys: true,
+          enableClickSelection: true,
           checkboxes: true,
           headerCheckbox: true,
         }"
@@ -428,7 +433,7 @@ onMounted(() => {
                   size="small"
                   color="warning"
                   variant="tonal"
-                  @click="onEditClick({ id: item.id }, false)"
+                  @click="onEditClick(item, false)"
                 >
                   <VIcon icon="tabler-edit" />
                 </VBtn>
@@ -436,7 +441,7 @@ onMounted(() => {
                   size="small"
                   color="info"
                   variant="tonal"
-                  @click="onReferralClick({ id: item.id }, false)"
+                  @click="onReferralClick(item, false)"
                 >
                   <VIcon icon="tabler-user-share" />
                 </VBtn>
@@ -447,7 +452,7 @@ onMounted(() => {
                   @click="openDetails(item)"
                 >
                   جزئیات
-                </VBtn>-->
+                </VBtn> -->
               </VCardActions>
             </VCard>
           </VCol>
@@ -477,6 +482,12 @@ onMounted(() => {
       v-if="state.dialogs.referral"
       v-model:is-dialog-visible="state.dialogs.referral"
       :request="state.pendingNodes[0]?.request"
+      @submit="
+        () => {
+          raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
+          fetchRequests()
+        }
+      "
     />
 
     <EditForm
@@ -485,8 +496,8 @@ onMounted(() => {
       :request="state.pendingNodes[0]?.request"
       @submit="
         () => {
-          raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
           fetchRequests()
+          raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
         }
       "
     />
