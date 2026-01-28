@@ -75,7 +75,7 @@ onMounted(() => {
       </VCol>
       <VCol cols="auto">
         <div class="text-h6 font-weight-bold text-primary-darken-3">
-          مانده مرخصی
+          مانده مرخصی تقریبی
         </div>
         <VSkeletonLoader v-if="Loading" type="list-item" />
         <div v-else class="text-h5 font-weight-bold text-success">

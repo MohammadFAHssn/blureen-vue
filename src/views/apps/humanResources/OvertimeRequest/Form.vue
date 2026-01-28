@@ -46,7 +46,7 @@ function onFormSubmit() {
           end_time: endTime.value,
           description: description.value,
         }
-        await axiosInstance.post('/hr-request/requests/create', requestData)
+        await axiosInstance.post('/hr-request/request/create', requestData)
 
         uiState.success = true
         uiState.successMessage = `درخواست اضافه کار با موفقیت ثبت شد`

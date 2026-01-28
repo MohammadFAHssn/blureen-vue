@@ -2,7 +2,7 @@
 import Form from '@/views/apps/humanResources/LeaveRequest/DailyLeave/Form.vue'
 import List from '@/views/apps/humanResources/LeaveRequest/DailyLeave/List.vue'
 import RemainingLeave from '@/views/apps/humanResources/LeaveRequest/RemainingLeave.vue'
-import SelectUserSubOrdinate from '@/views/apps/humanResources/SelectUserSubOrdinate.vue'
+import SelectUserSubOrdinate from '@/views/apps/humanResources/Components/SelectUserSubOrdinate.vue'
 
 const uiState = reactive({
   success: false,
