@@ -912,82 +912,48 @@ onMounted(async () => {
                     {{ d.delivery_status ? 'تحویل شده' : 'تحویل نشده' }}
                   </VChip>
                 </td>
-                <td v-if="!selectedReservedMeal.status">
-                  <template v-if="switchRowId !== d.id">
-                    <VBtn
-                      color="red"
-                      variant="text"
-                      size="small"
-                      @click="deletePersonnel(d.id)"
-                    >
-                      <VIcon icon="tabler-trash" size="20" />
-                    </VBtn>
+                <td>
+                  <VBtn
+                    v-if="!d.delivery_status"
+                    color="red"
+                    variant="text"
+                    size="small"
+                    @click="deletePersonnel(d.id)"
+                  >
+                    <VIcon icon="tabler-trash" size="20" />
+                  </VBtn>
 
-                    <VBtn
-                      color="orange"
-                      variant="text"
-                      size="small"
-                      @click="startSwitch(d)"
-                    >
-                      <VIcon icon="tabler-switch-horizontal" size="20" />
-                    </VBtn>
-                  </template>
+                  <VBtn
+                    v-if="switchRowId !== d.id"
+                    color="orange"
+                    variant="text"
+                    size="small"
+                    @click="startSwitch(d)"
+                  >
+                    <VIcon icon="tabler-switch-horizontal" size="20" />
+                  </VBtn>
 
-                  <template v-else>
-                    <VBtn
-                      :disabled="pendingState.switchingPersonnel"
-                      color="success"
-                      variant="text"
-                      size="small"
-                      @click="confirmSwitch(d.id)"
-                    >
-                      <VIcon icon="tabler-check" size="20" />
-                    </VBtn>
+                  <VBtn
+                    v-if="switchRowId === d.id"
+                    :disabled="pendingState.switchingPersonnel"
+                    color="success"
+                    variant="text"
+                    size="small"
+                    @click="confirmSwitch(d.id)"
+                  >
+                    <VIcon icon="tabler-check" size="20" />
+                  </VBtn>
 
-                    <VBtn
-                      :disabled="pendingState.switchingPersonnel"
-                      color="red"
-                      variant="text"
-                      size="small"
-                      @click="cancelSwitch"
-                    >
-                      <VIcon icon="tabler-x" size="20" />
-                    </VBtn>
-                  </template>
-                </td>
-
-                <td v-else>
-                  <template v-if="switchRowId !== d.id">
-                    <VBtn
-                      color="orange"
-                      variant="text"
-                      size="small"
-                      @click="startSwitch(d)"
-                    >
-                      <VIcon icon="tabler-switch-horizontal" size="20" />
-                    </VBtn>
-                  </template>
-                  <template v-else>
-                    <VBtn
-                      :disabled="pendingState.switchingPersonnel"
-                      color="success"
-                      variant="text"
-                      size="small"
-                      @click="confirmSwitch(d.id)"
-                    >
-                      <VIcon icon="tabler-check" size="20" />
-                    </VBtn>
-
-                    <VBtn
-                      :disabled="pendingState.switchingPersonnel"
-                      color="red"
-                      variant="text"
-                      size="small"
-                      @click="cancelSwitch"
-                    >
-                      <VIcon icon="tabler-x" size="20" />
-                    </VBtn>
-                  </template>
+                  <VBtn
+                    v-if="switchRowId === d.id"
+                    :disabled="pendingState.switchingPersonnel"
+                    color="red"
+                    variant="text"
+                    size="small"
+                    @click="cancelSwitch"
+                  >
+                    <VIcon icon="tabler-x" size="20" />
+                  </VBtn>
                 </td>
               </tr>
             </tbody>
