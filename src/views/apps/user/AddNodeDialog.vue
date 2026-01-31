@@ -11,7 +11,6 @@ const props = defineProps({
 
   selectedNodeId: {
     type: Number,
-    required: true,
   },
 
   orgPositions: {
