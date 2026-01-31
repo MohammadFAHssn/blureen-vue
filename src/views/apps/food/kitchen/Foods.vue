@@ -266,7 +266,7 @@ function dialogModelValueUpdate(val) {
 
               <td>
                 <VChip color="primary">
-                  {{ Number(food.price).toLocaleString('fa-IR') }}
+                  {{ Number(food.price).toLocaleString('fa-IR') }} ریال
                 </VChip>
               </td>
 

@@ -46,8 +46,7 @@ function onFormSubmit() {
           start_date: startDate.value,
           end_date: endDate.value,
         }
-        await axiosInstance.post('/hr-request/requests/create', requestData)
-
+        await axiosInstance.post('/hr-request/request/create', requestData)
         uiState.success = true
         uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
         startDate.value = ''

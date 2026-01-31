@@ -56,11 +56,19 @@ function goBack() {
             class="pa-4 d-flex flex-column align-center justify-center"
             variant="outlined"
             rounded="xl"
+            @click="() => {
+              if (item.key === 'daily')
+                current = item.key
+            }"
           >
             <!--            @click="current = item.key" -->
 
             <VAvatar
-              :color="item.key === 'daily' ? 'primary' : 'secondary'"
+              :color="
+                item.key === 'daily' || item.key === 'hourly'
+                  ? 'primary'
+                  : 'secondary'
+              "
               variant="tonal"
               size="56"
               class="mb-2"
@@ -69,7 +77,7 @@ function goBack() {
             </VAvatar>
             <span>{{ item.label }}</span>
             <span
-              v-if="item.key === 'daily'"
+              v-if="item.key === 'hourly'"
               class="font-weight-medium"
               style="color: red"
             >(به زودی)</span>

@@ -1,6 +1,10 @@
 <script setup>
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+import RejectDialog from '@/components/dialogs/RejectDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
+import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
 definePage({
   meta: {
@@ -20,7 +24,13 @@ const state = reactive({
   requests: [],
   gridApi: null,
   selection: { gridNodes: [], cardIds: [] },
-  dialogs: { reject: false, approveConfirm: false, details: false },
+  dialogs: {
+    reject: false,
+    approveConfirm: false,
+    edit: false,
+    details: false,
+    referral: false,
+  },
   detailsItem: null,
   rejectReason: '',
   pendingNodes: [],
@@ -29,9 +39,15 @@ const state = reactive({
 function fmtTimeRange(r) {
   return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
 }
-function toIds(nodes) {
+function toIdsOld(nodes) {
   return (nodes ?? [])
-    .map(n => (n?.data ?? n)?.currentItemId ?? (n?.data ?? n)?.id)
+    .map((n) => (n?.data ?? n)?.currentItem.id ?? (n?.data ?? n)?.id)
+    .filter(Boolean)
+}
+function toIds(nodes) {
+  console.log(nodes)
+  return (nodes ?? [])
+    .map((n) => n?.currentItem?.id ?? n.id)
     .filter(Boolean)
 }
 function resetSelection() {
@@ -49,16 +65,23 @@ function raiseSuccess(msg) {
 }
 
 const rowData = computed(() =>
-  (state.requests ?? []).map(item => ({
-    currentItemId: item.id,
+  (state.requests ?? []).map((item) => ({
+    currentItem: item,
     personnelCode: item.request.user.personnel_code,
     fullName: `${item.request.user.first_name} ${item.request.user.last_name}`,
     requestType: item.request.type.name,
     startDate: item.request.start_date,
     endDate: item.request.end_date,
     timeRange: fmtTimeRange(item.request),
-    actions: { approvable: true, detailsable: true },
-    raw: item,
+    actions: {
+      approvable: true,
+      detailsable: false,
+      editable: {
+        status: true,
+        mode: 'view',
+      },
+      referrable: true,
+    },
   })),
 )
 
@@ -80,6 +103,8 @@ const columnDefs = ref([
       params: {
         onApproveClick: approveSingleRequest,
         onDetailsClick: openDetails,
+        onEditClick,
+        onReferralClick,
       },
     }),
   },
@@ -96,30 +121,41 @@ function onGridReady(params) {
   state.gridApi.setGridOption('rowData', rowData.value)
 }
 
-watch(rowData, rows => state.gridApi?.setGridOption?.('rowData', rows))
+watch(rowData, (rows) => state.gridApi?.setGridOption?.('rowData', rows))
 
 function effectiveSelectedIds() {
   return isMobile.value
     ? [...state.selection.cardIds]
     : toIds(state.selection.gridNodes)
 }
-const isCardSelected = id => state.selection.cardIds.includes(id)
+const isCardSelected = (id) => state.selection.cardIds.includes(id)
 function toggleCardSelection(id) {
   state.selection.cardIds = isCardSelected(id)
-    ? state.selection.cardIds.filter(x => x !== id)
+    ? state.selection.cardIds.filter((x) => x !== id)
     : [...state.selection.cardIds, id]
 }
 function selectAllMobile() {
-  state.selection.cardIds = state.requests.map(r => r.id)
+  state.selection.cardIds = state.requests.map((r) => r.id)
 }
 function clearMobileSelection() {
   state.selection.cardIds = []
 }
 
 function openDetails(item) {
-  state.detailsItem = item?.raw ?? item
+  state.detailsItem = item?.currentItem ?? item
   state.dialogs.details = true
 }
+
+function onEditClick(request) {
+  state.pendingNodes = [request.data ? request.data.currentItem : request]
+  state.dialogs.edit = true
+}
+
+function onReferralClick(request) {
+  state.pendingNodes = [request.data ? request.data.currentItem : request]
+  state.dialogs.referral = true
+}
+
 function resetRejectDialogState() {
   state.dialogs.reject = false
   state.pendingNodes = []
@@ -150,14 +186,12 @@ async function handleApproveOrReject(approve, nodes) {
       },
     })
     raiseSuccess(`با موفقیت ${approve ? 'تایید' : 'رد'} شد.`)
-    resetRejectDialogState()
+    await resetRejectDialogState()
     await fetchRequests()
     resetSelection()
-  }
-  catch (err) {
+  } catch (err) {
     raiseError(err?.message || 'خطایی رخ داد')
-  }
-  finally {
+  } finally {
     state.loading = false
   }
 }
@@ -175,14 +209,14 @@ async function approveSingleRequest(rowOrNode, action) {
 
 async function approveMultiRequest() {
   state.pendingNodes = isMobile.value
-    ? state.selection.cardIds.map(id => ({ id }))
+    ? state.selection.cardIds.map((id) => ({ id }))
     : state.gridApi?.getSelectedRows?.() || []
   state.dialogs.approveConfirm = true
 }
 
 function openRejectSelectedDialog() {
   state.pendingNodes = isMobile.value
-    ? state.selection.cardIds.map(id => ({ id }))
+    ? state.selection.cardIds.map((id) => ({ id }))
     : state.gridApi?.getSelectedRows?.() || []
   state.rejectReason = ''
   state.dialogs.reject = true
@@ -199,17 +233,19 @@ async function confirmApproveDialog() {
 async function fetchRequests() {
   state.loading = true
   try {
-    const { data, error } = await useApi(
-      createUrl('/hr-request/requests/get-by-approver'),
-    )
-    if (error.value) throw error.value
-    state.requests = data.value.data || []
-    resetSelection()
-  }
-  catch (e) {
-    raiseError(e?.message || 'خطا در دریافت درخواست‌ها')
-  }
-  finally {
+    const { data } = await axiosInstance('/hr-request/request/get-by-approver')
+    state.requests = data.data || []
+  } catch (error) {
+    let error_message
+    if (!('errors' in error.response.data)) {
+      error_message = error.response.data.message
+    } else {
+      error_message = error.response.data.message
+    }
+
+    uiState.hasError = true
+    uiState.errorMessage = error_message
+  } finally {
     state.loading = false
   }
 }
@@ -305,8 +341,7 @@ onMounted(() => {
         pagination
         :row-selection="{
           mode: 'multiRow',
-          enableClickSelection: false,
-          enableSelectionWithoutKeys: true,
+          enableClickSelection: true,
           checkboxes: true,
           headerCheckbox: true,
         }"
@@ -380,9 +415,10 @@ onMounted(() => {
                 <VBtn
                   size="small"
                   color="success"
+                  variant="tonal"
                   @click="approveSingleRequest({ id: item.id }, true)"
                 >
-                  تایید
+                  <VIcon icon="tabler-check" />
                 </VBtn>
                 <VBtn
                   size="small"
@@ -390,17 +426,33 @@ onMounted(() => {
                   variant="tonal"
                   @click="approveSingleRequest({ id: item.id }, false)"
                 >
-                  رد
+                  <VIcon icon="tabler-ban" />
                 </VBtn>
                 <VSpacer />
                 <VBtn
+                  size="small"
+                  color="warning"
+                  variant="tonal"
+                  @click="onEditClick(item, false)"
+                >
+                  <VIcon icon="tabler-edit" />
+                </VBtn>
+                <VBtn
+                  size="small"
+                  color="info"
+                  variant="tonal"
+                  @click="onReferralClick(item, false)"
+                >
+                  <VIcon icon="tabler-user-share" />
+                </VBtn>
+                <!--                <VBtn
                   size="small"
                   variant="outlined"
                   color="primary"
                   @click="openDetails(item)"
                 >
                   جزئیات
-                </VBtn>
+                </VBtn> -->
               </VCardActions>
             </VCard>
           </VCol>
@@ -408,60 +460,47 @@ onMounted(() => {
       </VContainer>
     </section>
 
-    <VDialog v-model="state.dialogs.reject" max-width="520">
-      <VCard>
-        <VCardTitle class="text-h6">
-          علت رد درخواست
-        </VCardTitle>
-        <VCardText>
-          <VTextarea
-            v-model="state.rejectReason"
-            label="علت رد"
-            auto-grow
-            rows="3"
-            :rules="[(v) => !!v || 'وارد کردن علت الزامی است']"
-            :disabled="state.loading"
-          />
-        </VCardText>
-        <VCardActions class="justify-space-between">
-          <VBtn
-            variant="text"
-            :disabled="state.loading"
-            @click="resetRejectDialogState"
-          >
-            لغو
-          </VBtn>
-          <VBtn
-            color="error"
-            :loading="state.loading"
-            :disabled="!state.rejectReason"
-            @click="confirmRejectDialog"
-          >
-            تایید رد
-          </VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
+    <RejectDialog
+      v-model:show="state.dialogs.reject"
+      v-model:reason="state.rejectReason"
+      max-width="520"
+      @confirm="confirmRejectDialog"
+      @cancel="resetRejectDialogState"
+    />
 
-    <VDialog v-model="state.dialogs.details" max-width="640">
-      <VCard>
-        <VCardTitle class="text-h6">
-          جزئیات درخواست
-        </VCardTitle>
-        <VCardText>
-          <div v-if="state.detailsItem" class="text-body-2">
-            <p>
-              اینجا محل نمایش جزئیات است. بعداً فیلدهای موردنظر اضافه می‌شود.
-            </p>
-          </div>
-        </VCardText>
-        <VCardActions class="justify-end">
-          <VBtn variant="text" @click="state.dialogs.details = false">
-            بستن
-          </VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
+    <DetailsDialog
+      v-model:show="state.dialogs.details"
+      :details="state.detailsItem"
+      @close="
+        () => {
+          state.dialogs.details = false
+        }
+      "
+    />
+
+    <ReferralToSupervisorDialog
+      v-if="state.dialogs.referral"
+      v-model:is-dialog-visible="state.dialogs.referral"
+      :request="state.pendingNodes[0]?.request"
+      @submit="
+        () => {
+          raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
+          fetchRequests()
+        }
+      "
+    />
+
+    <EditForm
+      v-if="state.dialogs.edit"
+      v-model:is-dialog-visible="state.dialogs.edit"
+      :request="state.pendingNodes[0]?.request"
+      @submit="
+        () => {
+          fetchRequests()
+          raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
+        }
+      "
+    />
 
     <AreYouSureDialog
       v-if="state.dialogs.approveConfirm"
