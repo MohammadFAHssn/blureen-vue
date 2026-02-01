@@ -1,14 +1,9 @@
 <script setup>
 import { useDisplay } from 'vuetify'
-import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
-import RejectDialog from '@/components/dialogs/RejectDialog.vue'
-import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
-import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import RequestsCards from '@/views/apps/humanResources/Confirmation/RequestsCards.vue'
-
+import RequestsDialogsHost from '@/views/apps/humanResources/Confirmation/RequestsDialogsHost.vue'
 import RequestsGrid from '@/views/apps/humanResources/Confirmation/RequestsGrid.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
-import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
 definePage({
   meta: {
@@ -81,10 +76,7 @@ const rowData = computed(() =>
     actions: {
       approvable: true,
       detailsable: false,
-      editable: {
-        status: true,
-        mode: 'view',
-      },
+      editable: { status: true, mode: 'view' },
       referrable: true,
     },
   })),
@@ -295,6 +287,16 @@ function onCardsReject(id) {
   approveSingleRequest({ id }, false)
 }
 
+function onSubmittedEdit() {
+  fetchRequests()
+  raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
+}
+
+function onSubmittedReferral() {
+  raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
+  fetchRequests()
+}
+
 onMounted(() => {
   fetchRequests()
 })
@@ -357,54 +359,21 @@ onMounted(() => {
       />
     </section>
 
-    <RejectDialog
-      v-model:show="state.dialogs.reject"
-      v-model:reason="state.rejectReason"
-      max-width="520"
-      @confirm="confirmRejectDialog"
-      @cancel="resetRejectDialogState"
-    />
-
-    <DetailsDialog
-      v-model:show="state.dialogs.details"
-      :details="state.detailsItem"
-      @close="
-        () => {
-          state.dialogs.details = false
-        }
-      "
-    />
-
-    <ReferralToSupervisorDialog
-      v-if="state.dialogs.referral"
-      v-model:is-dialog-visible="state.dialogs.referral"
-      :request="state.pendingItem?.request"
-      @submit="
-        () => {
-          raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
-          fetchRequests()
-        }
-      "
-    />
-
-    <EditForm
-      v-if="state.dialogs.edit"
-      v-model:is-dialog-visible="state.dialogs.edit"
-      :request="state.pendingItem?.request"
-      @submit="
-        () => {
-          fetchRequests()
-          raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
-        }
-      "
-    />
-
-    <AreYouSureDialog
-      v-if="state.dialogs.approveConfirm"
-      v-model:is-dialog-visible="state.dialogs.approveConfirm"
-      :title="approveConfirmTitle"
+    <RequestsDialogsHost
+      v-model:show-reject="state.dialogs.reject"
+      v-model:show-approve-confirm="state.dialogs.approveConfirm"
+      v-model:show-edit="state.dialogs.edit"
+      v-model:show-details="state.dialogs.details"
+      v-model:show-referral="state.dialogs.referral"
+      v-model:reject-reason="state.rejectReason"
       :loading="state.loading"
-      @confirm="confirmApproveDialog"
+      :approve-confirm-title="approveConfirmTitle"
+      :details-item="state.detailsItem"
+      :pending-request="state.pendingItem?.request"
+      @confirm-approve="confirmApproveDialog"
+      @confirm-reject="confirmRejectDialog"
+      @submitted-edit="onSubmittedEdit"
+      @submitted-referral="onSubmittedReferral"
     />
   </VLayout>
 </template>
