@@ -21,14 +21,10 @@ const { theme } = useAGGridTheme()
 const { mdAndUp } = useDisplay()
 const isMobile = computed(() => !mdAndUp.value)
 
-function fmtTimeRange(r) {
-  return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
-}
-
 const logic = useApprovalsLogic({ isMobile })
 
 const rowData = computed(() =>
-  (logic.state.requests ?? []).map((item) => ({
+  (logic.state.requests ?? []).map(item => ({
     currentItem: item,
     id: item.id,
     personnelCode: item.request.user.personnel_code,
@@ -36,7 +32,10 @@ const rowData = computed(() =>
     requestType: item.request.type.name,
     startDate: item.request.start_date,
     endDate: item.request.end_date,
-    timeRange: fmtTimeRange(item.request),
+    timeRange:
+      item.request.start_time && item.request.end_time
+        ? `${item.request.start_time} - ${item.request.end_time}`
+        : '-',
     actions: {
       approvable: true,
       detailsable: false,
