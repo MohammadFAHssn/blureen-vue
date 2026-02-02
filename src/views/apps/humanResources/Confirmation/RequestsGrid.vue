@@ -24,7 +24,7 @@ function fmtTimeRange(r) {
 }
 
 const rowData = computed(() =>
-  (props.items ?? []).map((item) => ({
+  (props.items ?? []).map(item => ({
     currentItem: item,
     id: item.id,
     personnelCode: item.request.user.personnel_code,
@@ -43,12 +43,12 @@ const rowData = computed(() =>
 )
 
 const columnDefs = computed(() => [
-  { headerName: 'کد پرسنلی', field: 'personnelCode' },
+  { headerName: 'کد', field: 'personnelCode', maxWidth: 100 },
   { headerName: 'نام و نام خانوادگی', field: 'fullName' },
-  { headerName: 'نوع درخواست', field: 'requestType' },
-  { headerName: 'تاریخ شروع', field: 'startDate' },
-  { headerName: 'تاریخ پایان', field: 'endDate' },
-  { headerName: 'زمان', field: 'timeRange' },
+  { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
+  { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
+  { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+  { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -70,7 +70,7 @@ const columnDefs = computed(() => [
 function syncSelectedIds() {
   const rows = gridApi.value?.getSelectedRows?.() ?? []
   selectedIds.value = rows
-    .map((r) => r?.id ?? r?.currentItem?.id)
+    .map(r => r?.id ?? r?.currentItem?.id)
     .filter(Boolean)
 }
 

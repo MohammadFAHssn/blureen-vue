@@ -1,4 +1,3 @@
-<!-- src/views/apps/humanResources/Confirmation/ApprovalsInbox.vue -->
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
