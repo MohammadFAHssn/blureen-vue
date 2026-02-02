@@ -248,7 +248,7 @@ onMounted(() => {
                       }
                     "
                   >
-                    <VIcon icon="tabler-route" size="20" />
+                    <VIcon icon="tabler-git-branch" size="20" />
                   </VBtn>
                   <VBtn
                     v-if="useCookie('userData').value.id === props.userId"

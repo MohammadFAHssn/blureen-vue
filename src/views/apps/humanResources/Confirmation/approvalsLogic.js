@@ -187,27 +187,18 @@ function createShared() {
 
   return {
     state,
-
-    raiseError,
-    raiseSuccess,
-
     fetchRequests,
-
     openDetails,
     onEditClick,
     onReferralClick,
-
     approveSingleRequest,
     approveMultiRequest,
     openRejectSelectedDialog,
-
     confirmApproveDialog,
     confirmRejectDialog,
     resetRejectDialogState,
-
     onSubmittedEdit,
     onSubmittedReferral,
-
     approveConfirmTitle,
     pendingRequest,
   }
