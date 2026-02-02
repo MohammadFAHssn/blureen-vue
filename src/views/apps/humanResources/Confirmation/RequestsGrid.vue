@@ -1,11 +1,12 @@
 <script setup>
 defineProps({
   columnDefs: { type: Array, required: true },
-  theme: { type: [String, Object], default: null },
+  rowData: { type: Array, required: true },
   loading: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['gridReady', 'selectionChanged'])
+const { theme } = useAGGridTheme()
 
 function onGridReady(params) {
   emit('gridReady', params)
@@ -20,6 +21,7 @@ function onSelectionChanged(params) {
   <AgGridVue
     style="block-size: 100%; inline-size: 100%"
     :column-defs="columnDefs"
+    :row-data="rowData"
     :suppress-click-edit="true"
     :loading="loading"
     enable-rtl
