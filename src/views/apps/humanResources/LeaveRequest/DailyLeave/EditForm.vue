@@ -11,12 +11,12 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
-// states
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  loading: false,
 })
 const refVForm = ref()
 const startDate = ref(props.request.start_date)
@@ -46,6 +46,7 @@ function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
       try {
+        uiState.loading = true
         await axiosInstance.patch('/hr-request/request/update', {
           requestId: props.request.id,
           start_date: startDate.value,
@@ -55,16 +56,11 @@ function onFormSubmit() {
         emit('update:isDialogVisible', false)
       }
       catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage = error.response.data.message
+      }
+      finally {
+        uiState.loading = false
       }
     }
   })
@@ -159,7 +155,11 @@ function dialogModelValueUpdate(val) {
             </VCol>
 
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit" @click="refVForm?.validate()">
+              <VBtn
+                type="submit"
+                :loading="uiState.loading"
+                :disabled="uiState.loading"
+              >
                 ذخیره
               </VBtn>
 

@@ -10,7 +10,7 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
+  loading: false,
 })
 const startDate = ref('')
 const endDate = ref('')
@@ -40,6 +40,7 @@ function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
       try {
+        uiState.loading = true
         const requestData = {
           request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
           user_id: props.userId,
@@ -54,16 +55,11 @@ function onFormSubmit() {
         emit('created')
       }
       catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage = error.response.data.message
+      }
+      finally {
+        uiState.loading = false
       }
     }
   })
@@ -149,7 +145,12 @@ function onFormSubmit() {
       </VRow>
       <VRow justify="center" class="mt-4">
         <VCol cols="auto">
-          <VBtn type="submit" color="primary" @click="refVForm?.validate()">
+          <VBtn
+            type="submit"
+            color="primary"
+            :loading="uiState.loading"
+            :disabled="uiState.loading"
+          >
             ثبت درخواست
           </VBtn>
         </VCol>
