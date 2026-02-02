@@ -1,5 +1,10 @@
-/* global axiosInstance */
-export function useApprovalsLogic({ isMobile }) {
+/* global axiosInstance, $api */
+import { computed, reactive } from 'vue'
+
+let _state
+let _fns
+
+function createShared() {
   const state = reactive({
     ui: {
       hasError: false,
@@ -9,12 +14,6 @@ export function useApprovalsLogic({ isMobile }) {
     },
     loading: false,
     requests: [],
-    gridApi: null,
-
-    selection: {
-      gridIds: [],
-      cardIds: [],
-    },
 
     dialogs: {
       reject: false,
@@ -41,53 +40,20 @@ export function useApprovalsLogic({ isMobile }) {
     state.ui.successMessage = msg
   }
 
-  function resetSelection() {
-    state.gridApi?.deselectAll?.()
-    state.selection.gridIds = []
-    state.selection.cardIds = []
-  }
-
-  function effectiveSelectedIds() {
-    return isMobile.value
-      ? [...state.selection.cardIds]
-      : [...state.selection.gridIds]
-  }
-
-  const selectedCount = computed(() => effectiveSelectedIds().length)
-
-  const approveConfirmTitle = computed(() => {
-    const count = state.pendingIds.length || 1
-    return `آیا از تایید ${count === 1 ? 'این مورد' : `${count} مورد`} اطمینان دارید؟`
-  })
-
-  function onGridReady(params) {
-    state.gridApi = params.api
-  }
-
-  function onSelectionChanged() {
-    const rows = state.gridApi?.getSelectedRows?.() ?? []
-    state.selection.gridIds = rows
-      .map(r => r?.id ?? r?.currentItem?.id)
-      .filter(Boolean)
-    state.gridApi?.refreshCells?.({ force: true })
-  }
-
-  function isCardSelected(id) {
-    return state.selection.cardIds.includes(id)
-  }
-
-  function toggleCardSelection(id) {
-    state.selection.cardIds = isCardSelected(id)
-      ? state.selection.cardIds.filter(x => x !== id)
-      : [...state.selection.cardIds, id]
-  }
-
-  function selectAllMobile() {
-    state.selection.cardIds = state.requests.map(r => r.id).filter(Boolean)
-  }
-
-  function clearMobileSelection() {
-    state.selection.cardIds = []
+  async function fetchRequests() {
+    state.loading = true
+    try {
+      const { data } = await axiosInstance(
+        '/hr-request/request/get-by-approver',
+      )
+      state.requests = data.data || []
+    }
+    catch (e) {
+      raiseError(e?.message || 'خطا در دریافت درخواست‌ها')
+    }
+    finally {
+      state.loading = false
+    }
   }
 
   function openDetails(item) {
@@ -125,20 +91,6 @@ export function useApprovalsLogic({ isMobile }) {
     state.pendingItem = null
   }
 
-  async function fetchRequests() {
-    state.loading = true
-    try {
-      const { data } = await axiosInstance('/hr-request/request/get-by-approver')
-      state.requests = data.data || []
-    }
-    catch (e) {
-      raiseError(e?.message || 'خطا در دریافت درخواست‌ها')
-    }
-    finally {
-      state.loading = false
-    }
-  }
-
   async function handleApproveOrReject(approve) {
     const ids = [...(state.pendingIds || [])].filter(Boolean)
     if (!ids.length)
@@ -156,7 +108,6 @@ export function useApprovalsLogic({ isMobile }) {
           : {}),
       }
 
-      // eslint-disable-next-line no-undef
       await $api('/hr-request/request/approve', {
         method: 'POST',
         body,
@@ -174,7 +125,6 @@ export function useApprovalsLogic({ isMobile }) {
       else resetRejectDialogState()
 
       await fetchRequests()
-      resetSelection()
     }
     catch (err) {
       raiseError(err?.message || 'خطایی رخ داد')
@@ -197,14 +147,14 @@ export function useApprovalsLogic({ isMobile }) {
     state.dialogs.approveConfirm = true
   }
 
-  function approveMultiRequest() {
-    state.pendingIds = effectiveSelectedIds()
+  function approveMultiRequest(ids) {
+    state.pendingIds = (ids ?? []).filter(Boolean)
     state.pendingItem = null
     state.dialogs.approveConfirm = true
   }
 
-  function openRejectSelectedDialog() {
-    state.pendingIds = effectiveSelectedIds()
+  function openRejectSelectedDialog(ids) {
+    state.pendingIds = (ids ?? []).filter(Boolean)
     state.pendingItem = null
     state.rejectReason = ''
     state.dialogs.reject = true
@@ -218,14 +168,6 @@ export function useApprovalsLogic({ isMobile }) {
     await handleApproveOrReject(true)
   }
 
-  function onCardsApprove(id) {
-    approveSingleRequest({ id }, true)
-  }
-
-  function onCardsReject(id) {
-    approveSingleRequest({ id }, false)
-  }
-
   async function onSubmittedEdit() {
     raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
     await fetchRequests()
@@ -236,32 +178,51 @@ export function useApprovalsLogic({ isMobile }) {
     await fetchRequests()
   }
 
+  const approveConfirmTitle = computed(() => {
+    const count = state.pendingIds.length || 1
+    return `آیا از تایید ${count === 1 ? 'این مورد' : `${count} مورد`} اطمینان دارید؟`
+  })
+
   const pendingRequest = computed(() => state.pendingItem?.request)
 
   return {
     state,
 
-    selectedCount,
-    approveConfirmTitle,
-    pendingRequest,
+    raiseError,
+    raiseSuccess,
 
     fetchRequests,
-    onGridReady,
-    onSelectionChanged,
-    toggleCardSelection,
-    selectAllMobile,
-    clearMobileSelection,
-    approveMultiRequest,
-    openRejectSelectedDialog,
-    confirmApproveDialog,
-    confirmRejectDialog,
+
     openDetails,
     onEditClick,
     onReferralClick,
-    onCardsApprove,
-    onCardsReject,
+
+    approveSingleRequest,
+    approveMultiRequest,
+    openRejectSelectedDialog,
+
+    confirmApproveDialog,
+    confirmRejectDialog,
+    resetRejectDialogState,
+
     onSubmittedEdit,
     onSubmittedReferral,
-    approveSingleRequest,
+
+    approveConfirmTitle,
+    pendingRequest,
+  }
+}
+
+export function useApprovalsLogic({ isMobile } = {}) {
+  if (!_state || !_fns) {
+    const shared = createShared()
+    _state = shared.state
+    _fns = shared
+  }
+
+  return {
+    ..._fns,
+    state: _state,
+    isMobile: isMobile ?? computed(() => false),
   }
 }

@@ -1,13 +1,15 @@
-<!-- Updated main component (Stage 4) -->
+<!-- src/views/apps/humanResources/Confirmation/ApprovalsInbox.vue -->
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
-
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+import RejectDialog from '@/components/dialogs/RejectDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/ApprovalsCardsView.vue'
+import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
 import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
-import RequestsCards from '@/views/apps/humanResources/Confirmation/RequestsCards.vue'
-import RequestsDialogsHost from '@/views/apps/humanResources/Confirmation/RequestsDialogsHost.vue'
-import RequestsGrid from '@/views/apps/humanResources/Confirmation/RequestsGrid.vue'
-import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
+import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
+import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
 definePage({
   meta: {
@@ -17,58 +19,10 @@ definePage({
   },
 })
 
-const { theme } = useAGGridTheme()
 const { mdAndUp } = useDisplay()
 const isMobile = computed(() => !mdAndUp.value)
 
 const logic = useApprovalsLogic({ isMobile })
-
-const rowData = computed(() =>
-  (logic.state.requests ?? []).map(item => ({
-    currentItem: item,
-    id: item.id,
-    personnelCode: item.request.user.personnel_code,
-    fullName: `${item.request.user.first_name} ${item.request.user.last_name}`,
-    requestType: item.request.type.name,
-    startDate: item.request.start_date,
-    endDate: item.request.end_date,
-    timeRange:
-      item.request.start_time && item.request.end_time
-        ? `${item.request.start_time} - ${item.request.end_time}`
-        : '-',
-    actions: {
-      approvable: true,
-      detailsable: false,
-      editable: { status: true, mode: 'view' },
-      referrable: true,
-    },
-  })),
-)
-
-const columnDefs = [
-  { headerName: 'کد پرسنلی', field: 'personnelCode' },
-  { headerName: 'نام و نام خانوادگی', field: 'fullName' },
-  { headerName: 'نوع درخواست', field: 'requestType' },
-  { headerName: 'تاریخ شروع', field: 'startDate' },
-  { headerName: 'تاریخ پایان', field: 'endDate' },
-  { headerName: 'زمان', field: 'timeRange' },
-  {
-    headerName: 'عملیات',
-    field: 'actions',
-    valueFormatter: () => '',
-    suppressHeaderMenuButton: true,
-    suppressHeaderContextMenu: true,
-    cellRendererSelector: () => ({
-      component: 'Actions',
-      params: {
-        onApproveClick: logic.approveSingleRequest,
-        onDetailsClick: logic.openDetails,
-        onEditClick: logic.onEditClick,
-        onReferralClick: logic.onReferralClick,
-      },
-    }),
-  },
-]
 
 onMounted(() => {
   logic.fetchRequests()
@@ -97,57 +51,43 @@ onMounted(() => {
       {{ logic.state.ui.successMessage }}
     </VSnackbar>
 
-    <RequestsToolbar
-      :is-mobile="isMobile"
-      :selected-count="logic.selectedCount.value"
-      :loading="logic.state.loading"
-      :has-requests="!!logic.state.requests?.length"
-      @refresh="logic.fetchRequests"
-      @approve-selected="logic.approveMultiRequest"
-      @reject-selected="logic.openRejectSelectedDialog"
-      @select-all-mobile="logic.selectAllMobile"
-      @clear-mobile-selection="logic.clearMobileSelection"
+    <ApprovalsGridView v-if="!isMobile" />
+    <ApprovalsCardsView v-else />
+
+    <RejectDialog
+      v-model:show="logic.state.dialogs.reject"
+      v-model:reason="logic.state.rejectReason"
+      max-width="520"
+      @confirm="logic.confirmRejectDialog"
+      @cancel="logic.resetRejectDialogState"
     />
 
-    <section v-show="!isMobile" style="block-size: 100%">
-      <RequestsGrid
-        :column-defs="columnDefs"
-        :row-data="rowData"
-        :loading="logic.state.loading"
-        :theme="theme"
-        @grid-ready="logic.onGridReady"
-        @selection-changed="logic.onSelectionChanged"
-      />
-    </section>
+    <DetailsDialog
+      v-model:show="logic.state.dialogs.details"
+      :details="logic.state.detailsItem"
+      @close="logic.state.dialogs.details = false"
+    />
 
-    <section v-show="isMobile" class="cards-wrapper">
-      <RequestsCards
-        :items="logic.state.requests"
-        :loading="logic.state.loading"
-        :selected-ids="logic.state.selection.cardIds"
-        @toggle-select="logic.toggleCardSelection"
-        @approve="logic.onCardsApprove"
-        @reject="logic.onCardsReject"
-        @edit="logic.onEditClick"
-        @referral="logic.onReferralClick"
-      />
-    </section>
+    <ReferralToSupervisorDialog
+      v-if="logic.state.dialogs.referral"
+      v-model:is-dialog-visible="logic.state.dialogs.referral"
+      :request="logic.pendingRequest.value"
+      @submit="logic.onSubmittedReferral"
+    />
 
-    <RequestsDialogsHost
-      v-model:show-reject="logic.state.dialogs.reject"
-      v-model:show-approve-confirm="logic.state.dialogs.approveConfirm"
-      v-model:show-edit="logic.state.dialogs.edit"
-      v-model:show-details="logic.state.dialogs.details"
-      v-model:show-referral="logic.state.dialogs.referral"
-      v-model:reject-reason="logic.state.rejectReason"
+    <EditForm
+      v-if="logic.state.dialogs.edit"
+      v-model:is-dialog-visible="logic.state.dialogs.edit"
+      :request="logic.pendingRequest.value"
+      @submit="logic.onSubmittedEdit"
+    />
+
+    <AreYouSureDialog
+      v-if="logic.state.dialogs.approveConfirm"
+      v-model:is-dialog-visible="logic.state.dialogs.approveConfirm"
+      :title="logic.approveConfirmTitle.value"
       :loading="logic.state.loading"
-      :approve-confirm-title="logic.approveConfirmTitle.value"
-      :details-item="logic.state.detailsItem"
-      :pending-request="logic.pendingRequest.value"
-      @confirm-approve="logic.confirmApproveDialog"
-      @confirm-reject="logic.confirmRejectDialog"
-      @submitted-edit="logic.onSubmittedEdit"
-      @submitted-referral="logic.onSubmittedReferral"
+      @confirm="logic.confirmApproveDialog"
     />
   </VLayout>
 </template>
@@ -155,15 +95,9 @@ onMounted(() => {
 <style scoped lang="scss">
 .app-layout {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
   inline-size: 100%;
   block-size: 100%;
   overflow-x: hidden;
-}
-.cards-wrapper {
-  block-size: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-inline: 0.25rem;
 }
 </style>
