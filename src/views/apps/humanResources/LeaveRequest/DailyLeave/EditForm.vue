@@ -21,6 +21,11 @@ const uiState = reactive({
 const refVForm = ref()
 const startDate = ref(props.request.start_date)
 const endDate = ref(props.request.end_date)
+
+const description = ref(props.request?.details?.description ?? '')
+const replacementUser = ref(props.request?.details?.replacement_user_id ?? null)
+const replacements = ref([])
+
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
 function selectStart(val) {
@@ -38,9 +43,27 @@ const startDateRules = [
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
   () =>
-    !(endDate.value < startDate.value)
-    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+    !(endDate.value < startDate.value) ||
+    'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
+
+async function fetchReplacements() {
+  try {
+    const { data } = await axiosInstance.get('/base/user/replacements', {
+      params: {
+        user_id: props.request.user_id,
+      },
+    })
+    replacements.value = (data.data || []).map((u) => ({
+      ...u,
+      fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+    }))
+  } catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage =
+      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+  }
+}
 
 function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
@@ -51,23 +74,31 @@ function onFormSubmit() {
           requestId: props.request.id,
           start_date: startDate.value,
           end_date: endDate.value,
+          details: {
+            replacement_user_id: replacementUser.value,
+            description: description.value,
+          },
         })
         emit('submit')
         emit('update:isDialogVisible', false)
-      }
-      catch (error) {
+      } catch (error) {
         uiState.hasError = true
-        uiState.errorMessage = error.response.data.message
-      }
-      finally {
+        uiState.errorMessage =
+          error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+      } finally {
         uiState.loading = false
       }
     }
   })
 }
+
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
+
+onMounted(() => {
+  fetchReplacements()
+})
 </script>
 
 <template>
@@ -80,6 +111,7 @@ function dialogModelValueUpdate(val) {
   >
     {{ uiState.errorMessage }}
   </VSnackbar>
+
   <VSnackbar
     v-model="uiState.success"
     :timeout="2000"
@@ -89,6 +121,7 @@ function dialogModelValueUpdate(val) {
   >
     {{ uiState.successMessage }}
   </VSnackbar>
+
   <VDialog
     :width="$vuetify.display.smAndDown ? 'auto' : 900"
     :model-value="props.isDialogVisible"
@@ -98,9 +131,8 @@ function dialogModelValueUpdate(val) {
 
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">
-          ویرایش درخواست
-        </h4>
+        <h4 class="text-h5 text-center mb-2">ویرایش درخواست</h4>
+
         <VForm
           ref="refVForm"
           class="mt-6"
@@ -152,6 +184,30 @@ function dialogModelValueUpdate(val) {
                   />
                 </VCard>
               </VDialog>
+            </VCol>
+
+            <VCol cols="12" sm="6">
+              <VSelect
+                v-model="replacementUser"
+                :items="replacements"
+                item-title="fullName"
+                item-value="id"
+                label="انتخاب جانشین(اختیاری)"
+                variant="outlined"
+                :disabled="uiState.loading"
+                clearable
+              />
+            </VCol>
+
+            <VCol cols="12" sm="6">
+              <VTextarea
+                v-model="description"
+                label="توضیحات(اختیاری)"
+                variant="outlined"
+                :disabled="uiState.loading"
+                auto-grow
+                rows="2"
+              />
             </VCol>
 
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">

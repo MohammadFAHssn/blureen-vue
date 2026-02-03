@@ -14,6 +14,10 @@ const uiState = reactive({
 })
 const startDate = ref('')
 const endDate = ref('')
+const description = ref('')
+const replacementUser = ref(null)
+const replacements = ref([])
+
 const startDateRules = [
   () => !!startDate.value || 'لطفا تاریخ شروع را انتخاب کنید',
 ]
@@ -46,12 +50,18 @@ function onFormSubmit() {
           user_id: props.userId,
           start_date: startDate.value,
           end_date: endDate.value,
+          details: {
+            replacement_user_id: replacementUser.value,
+            description: description.value,
+          },
         }
         await axiosInstance.post('/hr-request/request/create', requestData)
         uiState.success = true
         uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
         startDate.value = ''
         endDate.value = ''
+        description.value = ''
+        replacementUser.value = null
         emit('created')
       }
       catch (error) {
@@ -64,6 +74,37 @@ function onFormSubmit() {
     }
   })
 }
+
+async function fetchReplacements() {
+  try {
+    const { data } = await axiosInstance.get('/base/user/replacements', {
+      params: {
+        user_id: props.userId,
+      },
+    })
+    replacements.value = data.data.map(u => ({
+      ...u,
+      fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+    }))
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage = error.response.data.message
+  }
+}
+
+onMounted(() => {
+  fetchReplacements()
+})
+watch(
+  () => props.userId,
+  (newVal) => {
+    if (newVal) {
+      replacementUser.value = null
+      fetchReplacements()
+    }
+  },
+)
 </script>
 
 <template>
@@ -141,6 +182,30 @@ function onFormSubmit() {
               />
             </VCard>
           </VDialog>
+        </VCol>
+
+        <VCol cols="12" sm="6">
+          <VSelect
+            v-model="replacementUser"
+            :items="replacements"
+            item-title="fullName"
+            item-value="id"
+            label="انتخاب جانشین(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            clearable
+          />
+        </VCol>
+
+        <VCol cols="12" sm="6">
+          <VTextarea
+            v-model="description"
+            label="توضیحات(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            auto-grow
+            rows="2"
+          />
         </VCol>
       </VRow>
       <VRow justify="center" class="mt-4">

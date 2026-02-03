@@ -5,8 +5,13 @@ const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
   request: { type: Object, default: null },
 })
-
 const emit = defineEmits(['update:isDialogVisible'])
+
+const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
+  loading: false,
+})
 
 const { smAndDown } = useDisplay()
 
@@ -25,18 +30,49 @@ function getFullName(u) {
   if (!u) return 'نامشخص'
   return `${u.first_name ?? ''} ${u.last_name ?? ''}`.trim() || 'نامشخص'
 }
+const requestApprovals = ref([])
 
-const requestApprovals = computed(() => {
-  return [...(props.request?.approvals ?? [])].sort(
-    (a, b) => a.priority - b.priority,
-  )
-})
 function close() {
   emit('update:isDialogVisible', false)
 }
+async function getRequestApprovals() {
+  try {
+    uiState.loading = true
+    const { data } = await axiosInstance.get(
+      '/hr-request/request/get-approvals-flow',
+      {
+        params: {
+          requestId: props.request.id,
+        },
+      },
+    )
+    requestApprovals.value = data.data
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage = 'خطا در دریافت رده تاییدیه'
+    console.log(error)
+  }
+  finally {
+    uiState.loading = false
+  }
+}
+
+onMounted(() => {
+  getRequestApprovals()
+})
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
   <VDialog
     :model-value="props.isDialogVisible"
     :width="smAndDown ? 'auto' : 600"
@@ -56,7 +92,12 @@ function close() {
         </VAlert>
 
         <template v-else>
-          <VAlert v-if="!requestApprovals.length" type="info" variant="tonal">
+          <VSkeletonLoader v-if="uiState.loading" type="list-item@3" />
+          <VAlert
+            v-else-if="!requestApprovals.length"
+            type="info"
+            variant="tonal"
+          >
             برای این درخواست تاییدکننده‌ای ثبت نشده است.
           </VAlert>
 
@@ -97,7 +138,9 @@ function close() {
       </VCardText>
 
       <VCardActions class="justify-end">
-        <VBtn color="secondary" variant="tonal" @click="close"> بستن </VBtn>
+        <VBtn color="secondary" variant="tonal" @click="close">
+          بستن
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>
