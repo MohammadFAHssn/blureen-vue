@@ -1,8 +1,8 @@
 <script setup>
-import ReservationForGuestAndContractor from '@/views/apps/food/ReservationForGuestAndContractor.vue'
-import ReservationForPersonnel from '@/views/apps/food/ReservationForPersonnel.vue'
 import { can } from '@layouts/plugins/casl'
 import { onMounted, ref } from 'vue'
+import ReservationForGuestAndContractor from '@/views/apps/food/ReservationForGuestAndContractor.vue'
+import ReservationForPersonnel from '@/views/apps/food/ReservationForPersonnel.vue'
 
 definePage({
   meta: {
@@ -15,7 +15,7 @@ definePage({
 const reserveType = ref(null)
 
 onMounted(() => {
-  reserveType.value = "personnel"
+  reserveType.value = 'personnel'
 })
 </script>
 

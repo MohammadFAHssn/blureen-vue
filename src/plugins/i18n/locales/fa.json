@@ -245,5 +245,8 @@
   "FOOD Kitchen": "آشپزخانه",
   "FOOD report": "گزارش",
   "CONTRACTOR": "پیمانکار",
-  "CONTRACTOR Management": "مدیریت پیمانکار"
+  "CONTRACTOR Management": "مدیریت پیمانکار",
+  "TRANSPORT": "حمل و نقل",
+  "TRANSPORT Service": "سرویس",
+  "TRANSPORT Management": "مدیریت"
 }

@@ -6,6 +6,7 @@ import hse from './hse'
 import humanResources from './humanResources.js'
 import payroll from './payroll'
 import suppliers from './suppliers'
+import transport from './transport'
 import userManagement from './userManagement'
 
 export default [
@@ -14,6 +15,7 @@ export default [
   ...humanResources,
   ...food,
   ...evaluationAndSurvey,
+  ...transport,
   ...hse,
   ...contractor,
   ...suppliers,
