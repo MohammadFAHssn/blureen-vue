@@ -13,7 +13,7 @@ export default [
   },
   {
     title: 'HSE Management',
-    icon: { icon: 'tabler-hospital-circle' },
+    icon: { icon: 'tabler-adjustments' },
     action: 'read',
     subject: 'Health-Certificate',
     children: [
