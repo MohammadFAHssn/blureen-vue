@@ -41,37 +41,35 @@ function open(key) {
 </script>
 
 <template>
-  <VContainer>
-    <div v-if="current === 'root'">
-      <VRow>
-        <VCol
-          v-for="req in requests"
-          :key="req.key"
-          cols="6"
-          sm="4"
-          md="3"
-          class="text-center"
+  <div v-if="current === 'root'">
+    <VRow>
+      <VCol
+        v-for="req in requests"
+        :key="req.key"
+        cols="6"
+        sm="4"
+        md="3"
+        class="text-center"
+      >
+        <VCard
+          class="pa-4 d-flex flex-column align-center justify-center"
+          variant="outlined"
+          rounded="xl"
+          @click="open(req.key)"
         >
-          <VCard
-            class="pa-4 d-flex flex-column align-center justify-center"
-            variant="outlined"
-            rounded="xl"
-            @click="open(req.key)"
+          <VAvatar
+            variant="tonal"
+            :color="req.key === 'leave' ? 'primary' : 'secondary'"
+            size="56"
+            class="mb-2"
           >
-            <VAvatar
-              variant="tonal"
-              :color="req.key === 'leave' ? 'primary' : 'secondary'"
-              size="56"
-              class="mb-2"
-            >
-              <VIcon :icon="req.icon" size="32" />
-            </VAvatar>
-            <span class="font-weight-medium">{{ req.label }}</span>
-          </VCard>
-        </VCol>
-      </VRow>
-    </div>
+            <VIcon :icon="req.icon" size="32" />
+          </VAvatar>
+          <span class="font-weight-medium">{{ req.label }}</span>
+        </VCard>
+      </VCol>
+    </VRow>
+  </div>
 
-    <component :is="pages[current]" @back="goBack" />
-  </VContainer>
+  <component :is="pages[current]" @back="goBack" />
 </template>

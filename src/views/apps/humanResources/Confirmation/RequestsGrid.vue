@@ -28,7 +28,7 @@ const rowData = computed(() =>
     currentItem: item,
     id: item.id,
     personnelCode: item.request.user.personnel_code,
-    fullName: `${item.request.user.first_name} ${item.request.user.last_name}`,
+    personnel: `${item.request.user.personnel_code} - ${item.request.user.first_name} ${item.request.user.last_name}`,
     requestType: item.request.type.name,
     startDate: item.request.start_date,
     endDate: item.request.end_date,
@@ -43,8 +43,7 @@ const rowData = computed(() =>
 )
 
 const columnDefs = computed(() => [
-  { headerName: 'کد', field: 'personnelCode', maxWidth: 100 },
-  { headerName: 'نام و نام خانوادگی', field: 'fullName' },
+  { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
