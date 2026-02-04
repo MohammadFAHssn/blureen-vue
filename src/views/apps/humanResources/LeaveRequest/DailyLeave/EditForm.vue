@@ -22,8 +22,12 @@ const refVForm = ref()
 const startDate = ref(props.request.start_date)
 const endDate = ref(props.request.end_date)
 
-const description = ref(props.request?.details?.description ?? '')
-const replacementUser = ref(props.request?.details?.replacement_user_id ?? null)
+function getDetailValue(key) {
+  return props.request?.details?.find(d => d.key === key)?.value ?? ''
+}
+
+const description = ref(getDetailValue('description'))
+const replacementUser = ref(null)
 const replacements = ref([])
 
 const showStartPicker = ref(false)
@@ -43,8 +47,8 @@ const startDateRules = [
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
   () =>
-    !(endDate.value < startDate.value) ||
-    'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+    !(endDate.value < startDate.value)
+    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
 
 async function fetchReplacements() {
@@ -54,14 +58,18 @@ async function fetchReplacements() {
         user_id: props.request.user_id,
       },
     })
-    replacements.value = (data.data || []).map((u) => ({
+    replacements.value = (data.data || []).map(u => ({
       ...u,
       fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
     }))
-  } catch (error) {
+
+    const replacementId = getDetailValue('replacement_user_id') || 0
+    replacementUser.value = Number(replacementId) ?? null
+  }
+  catch (error) {
     uiState.hasError = true
-    uiState.errorMessage =
-      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+    uiState.errorMessage
+      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
   }
 }
 
@@ -81,11 +89,13 @@ function onFormSubmit() {
         })
         emit('submit')
         emit('update:isDialogVisible', false)
-      } catch (error) {
+      }
+      catch (error) {
         uiState.hasError = true
-        uiState.errorMessage =
-          error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-      } finally {
+        uiState.errorMessage
+          = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+      }
+      finally {
         uiState.loading = false
       }
     }
@@ -131,7 +141,9 @@ onMounted(() => {
 
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">ویرایش درخواست</h4>
+        <h4 class="text-h5 text-center mb-2">
+          ویرایش درخواست
+        </h4>
 
         <VForm
           ref="refVForm"
