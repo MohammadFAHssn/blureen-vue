@@ -63,8 +63,8 @@ async function fetchReplacements() {
       fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
     }))
 
-    const replacementId = getDetailValue('replacement_user_id') || 0
-    replacementUser.value = Number(replacementId) ?? null
+    const replacementId = getDetailValue('replacement_user_id')
+    replacementUser.value = replacementId ? Number(replacementId) : null
   }
   catch (error) {
     uiState.hasError = true
@@ -141,9 +141,7 @@ onMounted(() => {
 
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">
-          ویرایش درخواست
-        </h4>
+        <h4 class="text-h5 text-center mb-2">ویرایش درخواست</h4>
 
         <VForm
           ref="refVForm"

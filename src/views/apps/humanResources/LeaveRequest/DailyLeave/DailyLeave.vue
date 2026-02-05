@@ -44,7 +44,7 @@ async function onUserSelected(selected) {
     </h2>
   </div>
   <VRow justify="center" align="center">
-    <VCol cols="12" sm="12" md="12" lg="10" xl="12">
+    <VCol cols="12" sm="12" md="12" lg="10" xl="10">
       <VCard>
         <SelectUserSubOrdinate @select="onUserSelected" />
       </VCard>

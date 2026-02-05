@@ -45,7 +45,6 @@ const columnDefs = ref([
   {
     headerName: 'وضعیت',
     field: 'status',
-    valueFormatter: p => p.value?.title ?? '-',
   },
   {
     headerName: 'عملیات',
@@ -70,7 +69,7 @@ const rowData = computed(() =>
       currentItem: item,
       startDate: item.start_date,
       endDate: item.end_date,
-      status: item.status,
+      status: item.status.title ?? '-',
       actions: {
         editable: {
           status: useCookie('userData').value.id === props.userId,
