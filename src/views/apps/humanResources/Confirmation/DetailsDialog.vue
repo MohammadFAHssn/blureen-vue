@@ -1,11 +1,8 @@
 <script setup>
-import { computed } from 'vue'
-
 const props = defineProps({
   show: { type: Boolean, default: false },
-  details: { type: Object, default: null },
+  request: { type: Object, default: null },
   loading: { type: Boolean, default: false },
-
   title: { type: String, default: 'جزئیات درخواست' },
   maxWidth: { type: [Number, String], default: 640 },
   closeText: { type: String, default: 'بستن' },
@@ -22,6 +19,16 @@ function onClose() {
   emit('close')
   model.value = false
 }
+
+const normalizedDetails = computed(() =>
+  (props.request?.details ?? [])
+    .filter(d => HR_REQUEST_DETAILS_TITLE[d.key])
+    .map(d => ({
+      key: d.key,
+      title: HR_REQUEST_DETAILS_TITLE[d.key],
+      value: d.value??'-',
+    })),
+)
 </script>
 
 <template>
@@ -32,17 +39,26 @@ function onClose() {
       </VCardTitle>
 
       <VCardText>
-        <slot name="content" :details="details">
-          <div v-if="details" class="text-body-2">
-            <p>
-              اینجا محل نمایش جزئیات است. بعداً فیلدهای موردنظر اضافه می‌شود.
-            </p>
-          </div>
+        <div v-if="request && normalizedDetails.length">
+          <VList density="compact">
+            <VListItem v-for="item in normalizedDetails" :key="item.key">
+              <template #title>
+                <div class="d-flex align-center justify-space-between w-100">
+                  <span class="text-body-2 font-weight-medium">
+                    {{ item.title }}
+                  </span>
+                  <span class="text-body-2">
+                    {{ item.value }}
+                  </span>
+                </div>
+              </template>
+            </VListItem>
+          </VList>
+        </div>
 
-          <div v-else class="text-body-2">
-            <p>جزئیاتی برای نمایش وجود ندارد.</p>
-          </div>
-        </slot>
+        <div v-else class="text-body-2">
+          جزئیاتی برای نمایش وجود ندارد.
+        </div>
       </VCardText>
 
       <VCardActions class="justify-end">

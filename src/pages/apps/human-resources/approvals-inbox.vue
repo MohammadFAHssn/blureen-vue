@@ -62,8 +62,9 @@ onMounted(() => {
     />
 
     <DetailsDialog
+      v-if="logic.state.dialogs.details"
       v-model:show="logic.state.dialogs.details"
-      :details="logic.state.detailsItem"
+      :request="logic.pendingRequest.value"
       @close="logic.state.dialogs.details = false"
     />
 

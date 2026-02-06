@@ -25,3 +25,8 @@ export const HR_REQUEST_TYPES = {
   OVERTIME: 3,
   SICK_LEAVE: 4,
 }
+
+export const HR_REQUEST_DETAILS_TITLE = {
+  description: 'توضیحات',
+  replacement_user: 'جایگزین',
+}

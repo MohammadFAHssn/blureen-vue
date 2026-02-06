@@ -56,8 +56,8 @@ function createShared() {
     }
   }
 
-  function openDetails(item) {
-    state.detailsItem = item?.currentItem ?? item
+  function openDetails(request) {
+    setPendingFromItem(request)
     state.dialogs.details = true
   }
 

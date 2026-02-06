@@ -107,6 +107,13 @@ function fmtTimeRange(r) {
 
             <VBtn
               size="small"
+              variant="tonal"
+              @click="emit('details', item)"
+            >
+              <VIcon icon="tabler-eye" />
+            </VBtn>
+            <VBtn
+              size="small"
               color="warning"
               variant="tonal"
               @click="emit('edit', item)"

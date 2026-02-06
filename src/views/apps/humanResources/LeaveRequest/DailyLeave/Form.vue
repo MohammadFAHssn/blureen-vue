@@ -24,8 +24,8 @@ const startDateRules = [
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
   () =>
-    !(endDate.value < startDate.value)
-    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+    !(endDate.value < startDate.value) ||
+    'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
@@ -51,7 +51,7 @@ function onFormSubmit() {
           start_date: startDate.value,
           end_date: endDate.value,
           details: {
-            replacement_user_id: replacementUser.value,
+            replacement_user: replacementUser.value,
             description: description.value,
           },
         }
@@ -63,12 +63,10 @@ function onFormSubmit() {
         description.value = ''
         replacementUser.value = null
         emit('created')
-      }
-      catch (error) {
+      } catch (error) {
         uiState.hasError = true
         uiState.errorMessage = error.response.data.message
-      }
-      finally {
+      } finally {
         uiState.loading = false
       }
     }
@@ -82,12 +80,11 @@ async function fetchReplacements() {
         user_id: props.userId,
       },
     })
-    replacements.value = data.data.map(u => ({
+    replacements.value = data.data.map((u) => ({
       ...u,
       fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
     }))
-  }
-  catch (error) {
+  } catch (error) {
     uiState.hasError = true
     uiState.errorMessage = error.response.data.message
   }
@@ -189,7 +186,7 @@ watch(
             v-model="replacementUser"
             :items="replacements"
             item-title="fullName"
-            item-value="id"
+            item-value="fullName"
             label="انتخاب جانشین(اختیاری)"
             variant="outlined"
             :disabled="uiState.loading"

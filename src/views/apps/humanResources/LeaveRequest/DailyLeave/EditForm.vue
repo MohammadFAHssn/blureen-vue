@@ -1,12 +1,9 @@
 <script setup>
+import { computed, reactive, ref, watch, onMounted } from 'vue'
+
 const props = defineProps({
-  isDialogVisible: {
-    type: Boolean,
-    required: true,
-  },
-  request: {
-    required: true,
-  },
+  isDialogVisible: { type: Boolean, required: true },
+  request: { type: Object, required: true },
 })
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
@@ -18,86 +15,104 @@ const uiState = reactive({
   errorMessage: '',
   loading: false,
 })
+
 const refVForm = ref()
-const startDate = ref(props.request.start_date)
-const endDate = ref(props.request.end_date)
+
+const replacements = ref([])
+const replacementUserId = ref(null)
+
+const startDate = ref('')
+const endDate = ref('')
+const description = ref('')
 
 function getDetailValue(key) {
   return props.request?.details?.find(d => d.key === key)?.value ?? ''
 }
 
-const description = ref(getDetailValue('description'))
-const replacementUser = ref(null)
-const replacements = ref([])
+function hydrateFromRequest() {
+  startDate.value = props.request?.start_date ?? ''
+  endDate.value = props.request?.end_date ?? ''
+  description.value = getDetailValue('description')
 
-const showStartPicker = ref(false)
-const showEndPicker = ref(false)
-function selectStart(val) {
-  startDate.value = val.format ? val.format('jYYYY-jMM-jDD') : val
-  showStartPicker.value = false
-}
-function selectEnd(val) {
-  endDate.value = val.format ? val.format('jYYYY-jMM-jDD') : val
-  showEndPicker.value = false
-}
+  const savedName = getDetailValue('replacement_user')
+  if (!savedName) {
+    replacementUserId.value = null
+    return
+  }
 
-const startDateRules = [
-  () => !!startDate.value || 'لطفا تاریخ شروع را انتخاب کنید',
-]
-const endDateRules = [
-  () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
-  () =>
-    !(endDate.value < startDate.value)
-    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
-]
+  const match = (replacements.value ?? []).find(u => u.fullName === savedName)
+  replacementUserId.value = match?.id ?? null
+}
 
 async function fetchReplacements() {
   try {
     const { data } = await axiosInstance.get('/base/user/replacements', {
-      params: {
-        user_id: props.request.user_id,
-      },
+      params: { user_id: props.request.user_id },
     })
+
     replacements.value = (data.data || []).map(u => ({
       ...u,
       fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
     }))
 
-    const replacementId = getDetailValue('replacement_user_id')
-    replacementUser.value = replacementId ? Number(replacementId) : null
+    hydrateFromRequest()
   }
   catch (error) {
     uiState.hasError = true
-    uiState.errorMessage
-      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+    uiState.errorMessage =
+      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
   }
 }
 
+const showStartPicker = ref(false)
+const showEndPicker = ref(false)
+
+function selectStart(val) {
+  startDate.value = val?.format ? val.format('jYYYY-jMM-jDD') : val
+  showStartPicker.value = false
+}
+
+function selectEnd(val) {
+  endDate.value = val?.format ? val.format('jYYYY-jMM-jDD') : val
+  showEndPicker.value = false
+}
+
+const startDateRules = [() => !!startDate.value || 'لطفا تاریخ شروع را انتخاب کنید']
+const endDateRules = [
+  () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
+  () => !(endDate.value < startDate.value) || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+]
+
 function onFormSubmit() {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
-    if (isValid) {
-      try {
-        uiState.loading = true
-        await axiosInstance.patch('/hr-request/request/update', {
-          requestId: props.request.id,
-          start_date: startDate.value,
-          end_date: endDate.value,
-          details: {
-            replacement_user_id: replacementUser.value,
-            description: description.value,
-          },
-        })
-        emit('submit')
-        emit('update:isDialogVisible', false)
-      }
-      catch (error) {
-        uiState.hasError = true
-        uiState.errorMessage
-          = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-      }
-      finally {
-        uiState.loading = false
-      }
+  refVForm.value?.validate().then(async ({ valid }) => {
+    if (!valid) return
+
+    try {
+      uiState.loading = true
+
+      const selected = (replacements.value ?? []).find(u => u.id === replacementUserId.value)
+      const replacementName = selected?.fullName ?? null
+
+      await axiosInstance.patch('/hr-request/request/update', {
+        requestId: props.request.id,
+        start_date: startDate.value,
+        end_date: endDate.value,
+        details: {
+          replacement_user: replacementName,
+          description: description.value,
+        },
+      })
+
+      emit('submit')
+      emit('update:isDialogVisible', false)
+    }
+    catch (error) {
+      uiState.hasError = true
+      uiState.errorMessage =
+        error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+    }
+    finally {
+      uiState.loading = false
     }
   })
 }
@@ -106,8 +121,27 @@ function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
 
+watch(
+  () => props.request,
+  () => {
+    hydrateFromRequest()
+    if (props.isDialogVisible) fetchReplacements()
+  },
+  { deep: true },
+)
+
+watch(
+  () => props.isDialogVisible,
+  v => {
+    if (v) {
+      hydrateFromRequest()
+      fetchReplacements()
+    }
+  },
+)
+
 onMounted(() => {
-  fetchReplacements()
+  if (props.isDialogVisible) fetchReplacements()
 })
 </script>
 
@@ -198,7 +232,7 @@ onMounted(() => {
 
             <VCol cols="12" sm="6">
               <VSelect
-                v-model="replacementUser"
+                v-model="replacementUserId"
                 :items="replacements"
                 item-title="fullName"
                 item-value="id"
@@ -221,19 +255,11 @@ onMounted(() => {
             </VCol>
 
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn
-                type="submit"
-                :loading="uiState.loading"
-                :disabled="uiState.loading"
-              >
+              <VBtn type="submit" :loading="uiState.loading" :disabled="uiState.loading">
                 ذخیره
               </VBtn>
 
-              <VBtn
-                color="secondary"
-                variant="tonal"
-                @click="emit('update:isDialogVisible', false)"
-              >
+              <VBtn color="secondary" variant="tonal" @click="emit('update:isDialogVisible', false)">
                 انصراف
               </VBtn>
             </VCol>

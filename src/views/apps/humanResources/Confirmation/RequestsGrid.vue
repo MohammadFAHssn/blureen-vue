@@ -35,7 +35,7 @@ const rowData = computed(() =>
     timeRange: fmtTimeRange(item.request),
     actions: {
       approvable: true,
-      detailsable: false,
+      detailsable: true,
       editable: { status: true, mode: 'view' },
       referrable: true,
     },
@@ -51,6 +51,7 @@ const columnDefs = computed(() => [
   {
     headerName: 'عملیات',
     field: 'actions',
+    maxWidth: 250,
     valueFormatter: () => '',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
