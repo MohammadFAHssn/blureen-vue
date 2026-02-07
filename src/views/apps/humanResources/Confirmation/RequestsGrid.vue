@@ -51,7 +51,7 @@ const columnDefs = computed(() => [
   {
     headerName: 'عملیات',
     field: 'actions',
-    maxWidth: 250,
+    width: 250,
     valueFormatter: () => '',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
