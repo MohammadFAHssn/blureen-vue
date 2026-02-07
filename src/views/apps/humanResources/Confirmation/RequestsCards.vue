@@ -11,6 +11,7 @@ const emit = defineEmits([
   'reject',
   'edit',
   'referral',
+  'details',
 ])
 
 function isSelected(id) {
@@ -105,12 +106,8 @@ function fmtTimeRange(r) {
 
             <VSpacer />
 
-            <VBtn
-              size="small"
-              variant="tonal"
-              @click="emit('details', item)"
-            >
-              <VIcon icon="tabler-eye" />
+            <VBtn size="small" variant="tonal" @click="emit('details', item)">
+              <VIcon icon="tabler-file-description" />
             </VBtn>
             <VBtn
               size="small"
