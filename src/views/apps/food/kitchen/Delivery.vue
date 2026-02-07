@@ -423,15 +423,24 @@ const undeliveredMealTotals = computed(() => {
   return Object.entries(totalsByMeal).map(([name, total]) => ({ name, total }))
 })
 
+let pollerId = null
 onMounted(async () => {
   const today = new Date()
   const jToday = jalaali.toJalaali(today.getFullYear(), today.getMonth() + 1, today.getDate())
   const fmt = j => `${j.jy}/${String(j.jm).padStart(2, '0')}/${String(j.jd).padStart(2, '0')}`
-
   todayDate.value = fmt(jToday)
 
   await fetchReservedMealsOnDate()
   await fetchFoods()
+
+  pollerId = setInterval(() => {
+    if (!pendingState.fetchingReservedMeals && !pendingState.searchReservedMeal && !pendingState.deliverReservedMeal && !pendingState.fetchingFoods && !uiState.isDeliveryDialogVisible) fetchReservedMealsOnDate()
+  }, 20_000)
+})
+
+onBeforeUnmount(() => {
+  if (pollerId) clearInterval(pollerId)
+  pollerId = null
 })
 </script>
 
