@@ -1,0 +1,1 @@
+const E=5242880,_={1:"#D32F2F",7:"#7B1FA2",2:"#1976D2",6:"#388E3C",3:"#F57C00",5:"#455A64",4:"#616161"},S={HR_REQUEST_PENDING_STATUS:1,HR_REQUEST_Approved_STATUS:2,HR_REQUEST_REJECTED_STATUS:3},T={DAILY_LEAVE:1,HOURLY_LEAVE:2,OVERTIME:3,SICK_LEAVE:4},R={description:"توضیحات",replacement_user:"جایگزین"};export{R as H,E as M,_ as O,T as a,S as b};
