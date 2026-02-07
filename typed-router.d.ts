@@ -20,8 +20,6 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'apps-contractor-contractor': RouteRecordInfo<'apps-contractor-contractor', '/apps/contractor/contractor', Record<never, never>, Record<never, never>>,
-    'apps-employee-transport-em-management': RouteRecordInfo<'apps-employee-transport-em-management', '/apps/employee-transport/em-management', Record<never, never>, Record<never, never>>,
-    'apps-employee-transport-em-user': RouteRecordInfo<'apps-employee-transport-em-user', '/apps/employee-transport/em-user', Record<never, never>, Record<never, never>>,
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-food-food-reservation': RouteRecordInfo<'apps-food-food-reservation', '/apps/food/food-reservation', Record<never, never>, Record<never, never>>,
@@ -76,14 +74,6 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/contractor/contractor.vue': {
       routes: 'apps-contractor-contractor'
-      views: never
-    }
-    'src/pages/apps/employee-transport/em-management.vue': {
-      routes: 'apps-employee-transport-em-management'
-      views: never
-    }
-    'src/pages/apps/employee-transport/em-user.vue': {
-      routes: 'apps-employee-transport-em-user'
       views: never
     }
     'src/pages/apps/evaluation/peer-evaluation.vue': {
