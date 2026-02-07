@@ -282,7 +282,7 @@ async function fetchReservedMealsForDateForUser() {
 
 async function fetchUsers() {
   try {
-    const { data } = await $api('/base/org-chart-node/user-subordinates', {
+    const { data } = await $api('/base/user/subordinates', {
       method: 'GET',
       params: { user_id: useCookie('userData')?.value?.id },
     })

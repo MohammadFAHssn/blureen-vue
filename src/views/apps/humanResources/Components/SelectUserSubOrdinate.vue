@@ -13,7 +13,7 @@ async function fetchUsers() {
   try {
     const loggedInUserId = useCookie('userData').value?.id
     const { data } = await axiosInstance.get(
-      '/base/org-chart-node/user-subordinates',
+      '/base/user/subordinates',
       {
         params: { user_id: loggedInUserId },
       },
