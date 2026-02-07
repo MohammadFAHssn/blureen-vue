@@ -42,8 +42,9 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'کد پرسنلی', field: 'userName' },
-  { headerName: 'نام', field: 'fullName' },
+  { headerName: 'پرسنل', field: 'person' },
+  { headerName: 'واحد', field: 'unit' },
+  { headerName: 'رزروکننده', field: 'reserver' },
   { headerName: 'وعده', field: 'mealName' },
   { headerName: 'غذا', field: 'foodName' },
   { headerName: 'قیمت', field: 'foodPrice' },
@@ -52,16 +53,25 @@ const columnDefs = ref([
 ])
 
 const rowData = computed(() =>
-  (reports.value ?? []).map(report => ({
-    id: report.id,
-    userName: report.personnel?.username ?? '',
-    fullName: `${(report.personnel?.first_name ?? '').trim()} ${(report.personnel?.last_name ?? '').trim()}`.trim(),
-    mealName: report.reservation?.meal?.name ?? '',
-    foodName: report.food?.name ?? '',
-    foodPrice: report.food?.price ?? '',
-    date: report.reservation?.date ?? '',
-    checkout: report?.check_out_time ?? '-',
-  })),
+  (reports.value ?? []).map((report) => {
+    const orgUnits
+      = report.reservation?.created_by?.org_chart_nodes_as_primary
+        ?.map(n => n.org_unit?.name)
+        .filter(Boolean)
+        .join(' , ') ?? '—'
+
+    return {
+      id: report.id,
+      person: `${(report.personnel?.first_name ?? '').trim()} ${(report.personnel?.last_name ?? '').trim()} - ${(report.personnel?.personnel_code ?? '').trim()}`.trim(),
+      unit: orgUnits,
+      reserver: `${(report.reservation?.created_by?.first_name ?? '').trim()} ${(report.reservation?.created_by?.last_name ?? '').trim()} - ${(report.reservation?.created_by?.personnel_code ?? '').trim()}`.trim(),
+      mealName: report.reservation?.meal?.name ?? '',
+      foodName: report.food?.name ?? '',
+      foodPrice: report.food?.price ?? '',
+      date: report.reservation?.date ?? '',
+      checkout: report?.check_out_time ?? '-',
+    }
+  }),
 )
 
 // ----- end ag-grid -----
