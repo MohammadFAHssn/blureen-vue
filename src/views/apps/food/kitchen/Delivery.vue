@@ -33,8 +33,60 @@ const reservedMeals = ref([])
 const reservedMeal = ref(null)
 const todayDate = ref(null)
 const deliveryCode = ref(null)
-const personnelCodeInput = ref('')
-const appliedPersonnelCode = ref(null)
+
+const searchQuery = ref('')
+
+function norm(v) {
+  return String(v ?? '')
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')
+}
+
+function itemSearchText(item) {
+  const createdBy = item?.created_by
+  const mealName = item?.meal?.name
+  const orgUnits = createdBy?.org_chart_nodes_as_primary
+    ?.map(n => n.org_unit?.name)
+    .filter(Boolean)
+    .join(' , ')
+
+  const contractorName = item?.details?.[0]?.contractor
+    ? `${item.details[0].contractor.first_name ?? ''} ${item.details[0].contractor.last_name ?? ''}`
+    : ''
+
+  const totalQty = item?.details?.reduce((sum, d) => sum + (d.quantity || 0), 0) || 0
+
+  const reserveTypeFa = ({
+    personnel: 'پرسنل',
+    contractor: 'پیمانکار',
+    guest: 'مهمان',
+    repairman: 'تعمیرکار',
+  }[item?.reserve_type] || '')
+
+  const statusFa = item?.status ? 'تحویل شده' : 'تحویل نشده'
+
+  const detailPersonnel = (item?.details || [])
+    .filter(d => d?.personnel)
+    .map(d => `${d.personnel.first_name ?? ''} ${d.personnel.last_name ?? ''} ${d.personnel.personnel_code ?? ''}`)
+    .join(' | ')
+
+  return norm([
+    mealName,
+    createdBy?.first_name,
+    createdBy?.last_name,
+    createdBy?.personnel_code,
+    orgUnits,
+    item?.delivery_code,
+    item?.reserve_type,
+    reserveTypeFa,
+    statusFa,
+    contractorName,
+    item?.description,
+    totalQty,
+    detailPersonnel,
+  ].join(' | '))
+}
 
 // details dialog data
 // personnel reservation
@@ -141,17 +193,6 @@ async function search() {
   finally {
     pendingState.searchReservedMeal = false
   }
-}
-
-function applyPersonnelFilter() {
-  const raw = String(personnelCodeInput.value ?? '').trim()
-  const cleaned = raw.replace(/\D/g, '')
-  appliedPersonnelCode.value = cleaned ? Number(cleaned) : null
-}
-
-function clearPersonnelFilter() {
-  personnelCodeInput.value = ''
-  appliedPersonnelCode.value = null
 }
 
 async function fetchReservedMealsOnDate() {
@@ -284,11 +325,11 @@ async function deliver() {
       }
     }
     else if (reservedMeal.value.reserve_type === 'repairman') {
-    payload = {
-      type: 'repairman',
-      reserved_meal_id: reservedMeal.value.id,
+      payload = {
+        type: 'repairman',
+        reserved_meal_id: reservedMeal.value.id,
+      }
     }
-  }
 
     const res = await $api('/food/delivery', {
       method: 'POST',
@@ -337,19 +378,12 @@ async function deliver() {
 }
 
 const displayedMeals = computed(() => {
-  const typeOrder = {
-    guest: 0,
-    contractor: 1,
-    repairman: 2,
-    personnel: 3,
-  }
-
-  const code = appliedPersonnelCode.value
+  const typeOrder = { guest: 0, contractor: 1, repairman: 2, personnel: 3 }
+  const q = norm(searchQuery.value)
 
   const list = [...reservedMeals.value].filter((item) => {
-    if (!code) return true
-    const pc = item?.created_by?.personnel_code
-    return Number(pc) === Number(code)
+    if (!q) return true
+    return itemSearchText(item).includes(q)
   })
 
   return list.sort((a, b) => {
@@ -364,7 +398,6 @@ const displayedMeals = computed(() => {
     return String(a?.meal?.name || '').localeCompare(String(b?.meal?.name || ''), 'fa')
   })
 })
-
 
 const mealTotals = computed(() => {
   const totalsByMeal = {}
@@ -476,23 +509,11 @@ onMounted(async () => {
           <VRow class="mb-4 px-4">
             <VCol cols="12" sm="12" md="12">
               <VTextField
-                v-model="personnelCodeInput"
-                label="فیلتر بر اساس کد پرسنلی"
+                v-model="searchQuery"
+                label="فیلتر براساس همه فیلدها (نام، کد پرسنلی، کد تحویل، واحد، غذا، توضیحات...)"
                 variant="outlined"
-                type="number"
-                @keydown.enter="applyPersonnelFilter"
+                clearable
               />
-            </VCol>
-          </VRow>
-
-          <VRow justify="center" class="mb-4">
-            <VCol cols="auto">
-              <VBtn color="primary" @click="applyPersonnelFilter">
-                فیلتر
-              </VBtn>
-              <VBtn variant="tonal" color="grey" @click="clearPersonnelFilter">
-                پاک کردن
-              </VBtn>
             </VCol>
           </VRow>
         </VCard>
@@ -536,6 +557,7 @@ onMounted(async () => {
                   <th>وعده</th>
                   <th>رزرو کننده</th>
                   <th>کد پرسنلی</th>
+                  <th>واحد</th>
                   <th>کد تحویل</th>
                   <th>نوع رزرو</th>
                   <th>وضعیت</th>
@@ -564,6 +586,17 @@ onMounted(async () => {
                   <td>
                     <VChip>
                       {{ item.created_by ? `${item.created_by.personnel_code}` : '—' }}
+                    </VChip>
+                  </td>
+
+                  <td>
+                    <VChip>
+                      {{
+                        item.created_by?.org_chart_nodes_as_primary
+                          ?.map(n => n.org_unit?.name)
+                          .filter(Boolean)
+                          .join(' , ') ?? '—'
+                      }}
                     </VChip>
                   </td>
 
@@ -712,6 +745,18 @@ onMounted(async () => {
                     <VExpansionPanelText>
                       <div class="pa-2">
                         <div class="mb-2 d-flex justify-space-between">
+                          <strong>واحد:</strong>
+                          <VChip>
+                            {{
+                              item.created_by?.org_chart_nodes_as_primary
+                                ?.map(n => n.org_unit?.name)
+                                .filter(Boolean)
+                                .join(' , ') ?? '—'
+                            }}
+                          </VChip>
+                        </div>
+
+                        <div class="mb-2 d-flex justify-space-between">
                           <strong>نوع رزرو:</strong>
                           <VChip>
                             {{
@@ -827,14 +872,22 @@ onMounted(async () => {
               <VChip color="orange" size="small">
                 {{ reservedMeal.created_by ? `${reservedMeal.created_by.first_name} ${reservedMeal.created_by.last_name}` : '—' }}
               </vchip>
+              <VChip color="primary" size="small">
+                {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}
+              </vchip>
             </p>
           </VCol>
 
           <VCol cols="12" sm="6">
             <p>
-              <strong>کد پرسنلی:</strong>
+              <strong>واحد:</strong>
               <VChip color="orange" size="small">
-                {{ reservedMeal.created_by ? `${reservedMeal.created_by.personnel_code}` : '—' }}
+                {{
+                  reservedMeal.created_by?.org_chart_nodes_as_primary
+                    ?.map(n => n.org_unit?.name)
+                    .filter(Boolean)
+                    .join(' , ') ?? '—'
+                }}
               </vchip>
             </p>
           </VCol>
