@@ -16,8 +16,8 @@ const pendingState = reactive({
   fetchingMeals: false,
   reserveMeal: false,
   deleteReservedMeal: false,
+  switchingPersonnel: false,
 })
-
 const reserveDates = ref([])
 const maxDate = ref('')
 const todayKey = ref(null)
@@ -41,6 +41,33 @@ const datesKey = computed(() => {
   return arr.filter(Boolean).join('|')
 })
 const loadedForReserveFood = ref(false)
+
+function calcTotalQty(details) {
+  return (details || []).reduce((sum, d) => sum + (d?.quantity || 0), 0)
+}
+function totalQtyOf(item) {
+  return calcTotalQty(item?.details)
+}
+const selectedTotalQty = computed(() =>
+  calcTotalQty(selectedReservedMeal.value?.details),
+)
+
+const requestNewPersonnel = ref(null)
+const switchRowId = ref(false)
+function startSwitch(d) {
+  switchRowId.value = d.id
+  const found = users.value.find(
+    user => user.personnel_code === d.personnel.personnel_code,
+  )
+  requestNewPersonnel.value = found?.id ?? null
+}
+function cancelSwitch() {
+  switchRowId.value = null
+}
+async function confirmSwitch(id) {
+  await switchPersonnel(id)
+  cancelSwitch()
+}
 
 // helper methods
 // computed string just for showing in text field
@@ -218,10 +245,12 @@ async function fetchReservedMealsForDateByUser() {
 
     // res.data is [ [reservation], [reservation], ... ]
     reservedMealsByYou.value = (res.data || []).flat()
+    return reservedMealsByYou.value
   }
   catch (err) {
     console.error('Error fetching reserved meals:', err)
     setError('خطا در دریافت رزروها')
+    return []
   }
   finally {
     pendingState.fetchingReservedMeals = false
@@ -253,7 +282,7 @@ async function fetchReservedMealsForDateForUser() {
 
 async function fetchUsers() {
   try {
-    const { data } = await $api('/base/org-chart-node/user-subordinates', {
+    const { data } = await $api('/base/user/subordinates', {
       method: 'GET',
       params: { user_id: useCookie('userData')?.value?.id },
     })
@@ -290,11 +319,15 @@ function onChange() {
 // dialog related methods
 function dialogModelValueUpdate(val) {
   uiState.isDetailsDialogVisible = val
-  if (!val)
+  if (!val) {
     selectedReservedMeal.value = null
+    requestNewPersonnel.value = null
+    cancelSwitch()
+  }
 }
 
 async function deletePersonnel(id) {
+  if (selectedTotalQty.value < 2) return setError('نمیتوان تمام کاربران درخواست را حذف کرد')
   try {
     const res = await $api(`/food/meal-reservation-detail/${id}`, {
       method: 'DELETE',
@@ -316,6 +349,37 @@ async function deletePersonnel(id) {
   }
   catch (err) {
     console.error(err)
+  }
+}
+
+async function switchPersonnel(id) {
+  pendingState.switchingPersonnel = true
+  const payload = {
+    id,
+    new_personnel: requestNewPersonnel.value,
+    date: selectedReservedMeal.value.date,
+    status: selectedReservedMeal.value.status,
+    reserved_meal_id: selectedReservedMeal.value.id,
+  }
+  try {
+    const _res = await $api('/food/meal-reservation-detail/switch', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      onResponseError({ response }) {
+        setError(response._data?.error || 'خطا در جابه‌جایی')
+      },
+    })
+    const list = await fetchReservedMealsForDateByUser()
+    const updated = list.find(r => r.id === selectedReservedMeal.value?.id)
+    if (updated) selectedReservedMeal.value = updated
+    requestNewPersonnel.value = null
+    pendingState.switchingPersonnel = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.switchingPersonnel = false
   }
 }
 
@@ -534,12 +598,7 @@ onMounted(async () => {
                   </td>
 
                   <td>
-                    {{
-                      item.details?.reduce(
-                        (sum, detail) => sum + (detail.quantity || 0),
-                        0,
-                      )
-                    }}
+                    {{ totalQtyOf(item) }}
                   </td>
 
                   <td>
@@ -653,12 +712,7 @@ onMounted(async () => {
                           </VChip>
                         </div>
                         <div>
-                          <strong>تعداد:</strong> {{
-                            item.details?.reduce(
-                              (sum, detail) => sum + (detail.quantity || 0),
-                              0,
-                            )
-                          }}
+                          <strong>تعداد:</strong> {{ totalQtyOf(item) }}
                         </div>
                         <div class="mt-2 text-center">
                           <VBtn v-if="!item.status" color="red" variant="plain" size="small" @click="onClickDelete(item)">
@@ -807,12 +861,7 @@ onMounted(async () => {
             <p>
               <strong>تعداد:</strong>
               <VChip size="small">
-                {{
-                  selectedReservedMeal.details?.reduce(
-                    (sum, detail) => sum + (detail.quantity || 0),
-                    0,
-                  )
-                }}
+                {{ totalQtyOf(selectedReservedMeal) }}
               </VChip>
             </p>
           </VCol>
@@ -827,17 +876,8 @@ onMounted(async () => {
                 <th>ردیف</th>
                 <th>نام</th>
                 <th>کد پرسنلی</th>
-                <th
-                  v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
-                    (sum, detail) => sum + (detail.quantity || 0),
-                    0,
-                  ) || 0) > 1"
-                >
-                  عملیات
-                </th>
-                <th v-if="selectedReservedMeal.status">
-                  وضعیت
-                </th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
               </tr>
             </thead>
 
@@ -848,29 +888,72 @@ onMounted(async () => {
               >
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <VChip>
+                  <VChip v-show="switchRowId !== d.id">
                     {{ `${d.personnel.first_name} ${d.personnel.last_name}` }}
                   </VChip>
+                  <VAutocomplete
+                    v-show="switchRowId === d.id"
+                    v-model="requestNewPersonnel"
+                    :items="users"
+                    :item-title="item => `${item.first_name} ${item.last_name} - ${item.personnel_code}`"
+                    item-value="id"
+                    label="فرد"
+                    chips=""
+                    variant="outlined"
+                  />
                 </td>
                 <td>
                   <VChip>
                     {{ d.personnel.personnel_code }}
                   </VChip>
                 </td>
-                <td
-                  v-if="!selectedReservedMeal.status && (selectedReservedMeal.details?.reduce(
-                    (sum, detail) => sum + (detail.quantity || 0),
-                    0,
-                  ) || 0) > 1"
-                >
-                  <VBtn color="red" variant="text" size="small" @click="deletePersonnel(d.id)">
-                    <VIcon icon="tabler-trash" size="20" />
-                  </VBtn>
-                </td>
-                <td v-if="selectedReservedMeal.status">
+                <td>
                   <VChip :color="d.delivery_status ? 'success' : 'error'" size="small">
                     {{ d.delivery_status ? 'تحویل شده' : 'تحویل نشده' }}
                   </VChip>
+                </td>
+                <td>
+                  <VBtn
+                    v-if="!d.delivery_status"
+                    color="red"
+                    variant="text"
+                    size="small"
+                    @click="deletePersonnel(d.id)"
+                  >
+                    <VIcon icon="tabler-trash" size="20" />
+                  </VBtn>
+
+                  <VBtn
+                    v-if="switchRowId !== d.id"
+                    color="orange"
+                    variant="text"
+                    size="small"
+                    @click="startSwitch(d)"
+                  >
+                    <VIcon icon="tabler-switch-horizontal" size="20" />
+                  </VBtn>
+
+                  <VBtn
+                    v-if="switchRowId === d.id"
+                    :disabled="pendingState.switchingPersonnel"
+                    color="success"
+                    variant="text"
+                    size="small"
+                    @click="confirmSwitch(d.id)"
+                  >
+                    <VIcon icon="tabler-check" size="20" />
+                  </VBtn>
+
+                  <VBtn
+                    v-if="switchRowId === d.id"
+                    :disabled="pendingState.switchingPersonnel"
+                    color="red"
+                    variant="text"
+                    size="small"
+                    @click="cancelSwitch"
+                  >
+                    <VIcon icon="tabler-x" size="20" />
+                  </VBtn>
                 </td>
               </tr>
             </tbody>

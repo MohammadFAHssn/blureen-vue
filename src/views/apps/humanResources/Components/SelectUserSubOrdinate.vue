@@ -13,7 +13,7 @@ async function fetchUsers() {
   try {
     const loggedInUserId = useCookie('userData').value?.id
     const { data } = await axiosInstance.get(
-      '/base/org-chart-node/user-subordinates',
+      '/base/user/subordinates',
       {
         params: { user_id: loggedInUserId },
       },
@@ -75,7 +75,7 @@ onMounted(() => {
       <v-autocomplete
         v-model="selectedUser"
         clearable
-        label="جستجوی پرسنل"
+        label="انتخاب پرسنل"
         :items="users"
         item-title="fullName"
         return-object

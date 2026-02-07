@@ -33,14 +33,12 @@ export default [
     children: [
       {
         title: 'Payroll Birthday Management file',
-        icon: { icon: 'tabler-file' },
         action: 'read',
         subject: 'Birthdays',
         to: 'apps-payroll-birthday-birthday-admin-file',
       },
       {
         title: 'Payroll Birthday Management gift',
-        icon: { icon: 'tabler-gift' },
         action: 'read',
         subject: 'Birthdays',
         to: 'apps-payroll-birthday-birthday-admin-gift',

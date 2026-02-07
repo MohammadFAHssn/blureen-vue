@@ -1,4 +1,5 @@
 import contractor from './contractor'
+import employeeTransport from './employeeTransport'
 import evaluationAndSurvey from './evaluation-and-survey'
 import food from './food.js'
 import home from './home'
@@ -14,6 +15,7 @@ export default [
   ...humanResources,
   ...food,
   ...evaluationAndSurvey,
+  ...employeeTransport,
   ...hse,
   ...contractor,
   ...suppliers,

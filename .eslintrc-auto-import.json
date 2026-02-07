@@ -10,6 +10,7 @@
     "ExtractDefaultPropTypes": true,
     "ExtractPropTypes": true,
     "ExtractPublicPropTypes": true,
+    "HR_REQUEST_DETAILS_TITLE": true,
     "HR_REQUEST_STATUSES": true,
     "HR_REQUEST_TYPES": true,
     "InjectionKey": true,

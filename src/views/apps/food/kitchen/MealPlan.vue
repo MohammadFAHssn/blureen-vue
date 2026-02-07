@@ -326,7 +326,7 @@ onMounted(async () => {
               />
             </VCol>
             <VCol cols="12" md="12">
-              <VSelect
+              <VAutocomplete
                 v-model="selectedFood"
                 :items="foods"
                 item-title="name"

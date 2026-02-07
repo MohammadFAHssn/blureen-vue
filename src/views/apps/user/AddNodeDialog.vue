@@ -11,7 +11,6 @@ const props = defineProps({
 
   selectedNodeId: {
     type: Number,
-    required: true,
   },
 
   orgPositions: {
@@ -38,6 +37,7 @@ const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 const refVForm = ref()
 
 const uiState = reactive({
+  hasError: false,
   isSelectUserDialogOpen: false,
 })
 
