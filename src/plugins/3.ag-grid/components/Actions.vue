@@ -120,7 +120,7 @@ function onCancelClick() {
       v-if="params.value.approvalFlow"
       @click="params.onShowApprovalFlowClick(params.node, false)"
     >
-      <VIcon icon="tabler-route" />
+      <VIcon icon="tabler-git-branch" />
     </IconBtn>
 
     <v-switch

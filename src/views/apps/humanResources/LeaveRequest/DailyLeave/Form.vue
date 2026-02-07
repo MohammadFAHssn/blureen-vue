@@ -10,18 +10,22 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
+  loading: false,
 })
 const startDate = ref('')
 const endDate = ref('')
+const description = ref('')
+const replacementUser = ref(null)
+const replacements = ref([])
+
 const startDateRules = [
   () => !!startDate.value || 'لطفا تاریخ شروع را انتخاب کنید',
 ]
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
   () =>
-    !(endDate.value < startDate.value)
-    || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
+    !(endDate.value < startDate.value) ||
+    'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
@@ -40,34 +44,64 @@ function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
       try {
+        uiState.loading = true
         const requestData = {
           request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
           user_id: props.userId,
           start_date: startDate.value,
           end_date: endDate.value,
+          details: {
+            replacement_user: replacementUser.value,
+            description: description.value,
+          },
         }
         await axiosInstance.post('/hr-request/request/create', requestData)
         uiState.success = true
         uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
         startDate.value = ''
         endDate.value = ''
+        description.value = ''
+        replacementUser.value = null
         emit('created')
-      }
-      catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
+      } catch (error) {
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage = error.response.data.message
+      } finally {
+        uiState.loading = false
       }
     }
   })
 }
+
+async function fetchReplacements() {
+  try {
+    const { data } = await axiosInstance.get('/base/user/replacements', {
+      params: {
+        user_id: props.userId,
+      },
+    })
+    replacements.value = data.data.map((u) => ({
+      ...u,
+      fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+    }))
+  } catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage = error.response.data.message
+  }
+}
+
+onMounted(() => {
+  fetchReplacements()
+})
+watch(
+  () => props.userId,
+  (newVal) => {
+    if (newVal) {
+      replacementUser.value = null
+      fetchReplacements()
+    }
+  },
+)
 </script>
 
 <template>
@@ -146,10 +180,39 @@ function onFormSubmit() {
             </VCard>
           </VDialog>
         </VCol>
+
+        <VCol cols="12" sm="6">
+          <VSelect
+            v-model="replacementUser"
+            :items="replacements"
+            item-title="fullName"
+            item-value="fullName"
+            label="انتخاب جانشین(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            clearable
+          />
+        </VCol>
+
+        <VCol cols="12" sm="6">
+          <VTextarea
+            v-model="description"
+            label="توضیحات(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            auto-grow
+            rows="2"
+          />
+        </VCol>
       </VRow>
       <VRow justify="center" class="mt-4">
         <VCol cols="auto">
-          <VBtn type="submit" color="primary" @click="refVForm?.validate()">
+          <VBtn
+            type="submit"
+            color="primary"
+            :loading="uiState.loading"
+            :disabled="uiState.loading"
+          >
             ثبت درخواست
           </VBtn>
         </VCol>

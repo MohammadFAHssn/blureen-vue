@@ -11,33 +11,34 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
 })
+
 const Loading = ref(false)
 const remainingLeave = ref(null)
+
+const leaveClass = computed(() =>
+  String(remainingLeave.value ?? '').includes('-')
+    ? 'text-error'
+    : 'text-success',
+)
 
 async function getRemainingLeave() {
   Loading.value = true
   try {
-    const { data } = await axiosInstance.get('/kasra/reports/get-remaining-leave', {
-      params: {
-        user_id: props.userId,
+    const { data } = await axiosInstance.get(
+      '/kasra/reports/get-remaining-leave',
+      {
+        params: {
+          user_id: props.userId,
+        },
       },
-    })
-    Loading.value = false
+    )
     remainingLeave.value = data.data.remaining_leave
-  }
-  catch (error) {
-    Loading.value = false
-
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    }
-    else {
-      error_message = error.response.data.message
-    }
-
+  } catch (error) {
     uiState.hasError = true
-    uiState.errorMessage = error_message
+    uiState.errorMessage =
+      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+  } finally {
+    Loading.value = false
   }
 }
 
@@ -56,15 +57,6 @@ onMounted(() => {
   >
     {{ uiState.errorMessage }}
   </VSnackbar>
-  <VSnackbar
-    v-model="uiState.success"
-    :timeout="2000"
-    location="center"
-    variant="flat"
-    color="success"
-  >
-    {{ uiState.successMessage }}
-  </VSnackbar>
 
   <VCard color="primary" variant="tonal" class="mb-4 pa-4 text-center">
     <VRow align="center" justify="center">
@@ -73,18 +65,23 @@ onMounted(() => {
           <VIcon icon="tabler-calendar-stats" size="32" />
         </VAvatar>
       </VCol>
+
       <VCol cols="auto">
         <div class="text-h6 font-weight-bold text-primary-darken-3">
           مانده مرخصی تقریبی
         </div>
+
         <VSkeletonLoader v-if="Loading" type="list-item" />
-        <div v-else class="text-h5 font-weight-bold text-success">
-          {{ remainingLeave }}
+
+        <div
+          v-else
+          class="text-h5 font-weight-bold"
+          :class="leaveClass"
+          dir="ltr"
+        >
+          {{ remainingLeave ?? '-' }}
         </div>
       </VCol>
     </VRow>
   </VCard>
 </template>
-
-<style scoped>
-</style>
