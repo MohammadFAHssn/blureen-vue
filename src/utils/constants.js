@@ -13,10 +13,11 @@ export const ORG_POSITION_COLORS = {
   4: '#616161', // کارگر
 }
 
-export const HR_REQUEST_STATUSES = {
-  HR_REQUEST_PENDING_STATUS: 1,
-  HR_REQUEST_Approved_STATUS: 2,
-  HR_REQUEST_REJECTED_STATUS: 3,
+export const STATUSES = {
+  PENDING: 1,
+  APPROVED: 2,
+  REJECTED: 3,
+  REJECTED_BY_SYSTEM: 4,
 }
 
 export const HR_REQUEST_TYPES = {

@@ -59,7 +59,7 @@ async function submit() {
       currentMonthRequests.value.push({
         start_date: startDate.value,
         end_date: endDate.value,
-        status_id: HR_REQUEST_STATUSES.HR_REQUEST_PENDING_STATUS,
+        status_id: STATUSES.PENDING,
       })
       startDate.value = ''
       endDate.value = ''
