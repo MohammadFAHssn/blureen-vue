@@ -120,7 +120,7 @@ function handleCancel() {
           <VIcon>mdi-close</VIcon>
         </VBtn>
         <VToolbarTitle>
-          {{ evaluatee.user.personnel_code }} - {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user.profile.cost_center.name }})
+          {{ evaluatee.user.personnel_code }} - {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user?.profile?.cost_center?.name }})
         </VToolbarTitle>
       </VToolbar>
 
