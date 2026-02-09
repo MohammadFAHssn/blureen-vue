@@ -75,7 +75,7 @@ onMounted(() => {
       <v-autocomplete
         v-model="selectedUser"
         clearable
-        label="جستجوی پرسنل"
+        label="انتخاب پرسنل"
         :items="users"
         item-title="fullName"
         return-object

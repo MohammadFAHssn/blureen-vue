@@ -29,7 +29,7 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ شروع',
     field: 'startDate',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       params.value
         ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
         : null,
@@ -37,13 +37,15 @@ const columnDefs = ref([
   {
     headerName: 'تاریخ پایان',
     field: 'endDate',
-    valueFormatter: (params) =>
+    valueFormatter: params =>
       params.value
         ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
         : null,
   },
-
-  { headerName: 'وضعیت', field: 'status' },
+  {
+    headerName: 'وضعیت',
+    field: 'status',
+  },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -67,7 +69,7 @@ const rowData = computed(() =>
       currentItem: item,
       startDate: item.start_date,
       endDate: item.end_date,
-      status: item.status.title,
+      status: item.status.title ?? '-',
       actions: {
         editable: {
           status: useCookie('userData').value.id === props.userId,
@@ -122,17 +124,20 @@ async function onDelete() {
     await getCurrentMonthRequests()
     uiState.successMessage = `درخواست مرخصی با موفقیت حذف شد`
     uiState.success = true
-  } catch (error) {
+  }
+  catch (error) {
     let error_message
     if (!('errors' in error.response.data)) {
       error_message = error.response.data.message
-    } else {
+    }
+    else {
       error_message = error.response.data.message
     }
 
     uiState.hasError = true
     uiState.errorMessage = error_message
-  } finally {
+  }
+  finally {
     uiState.deleteLoading = false
     uiState.isDeleteRequestDialogVisible = false
   }
@@ -248,7 +253,7 @@ onMounted(() => {
                       }
                     "
                   >
-                    <VIcon icon="tabler-route" size="20" />
+                    <VIcon icon="tabler-git-branch" size="20" />
                   </VBtn>
                   <VBtn
                     v-if="useCookie('userData').value.id === props.userId"

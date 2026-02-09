@@ -1,0 +1,1 @@
+import{b8 as a,c$ as m,Y as r,d0 as h,d1 as o}from"./index-CARnxoG4.js";function i(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};

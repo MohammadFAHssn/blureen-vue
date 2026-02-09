@@ -435,7 +435,7 @@ onMounted(async () => {
 
   pollerId = setInterval(() => {
     if (!pendingState.fetchingReservedMeals && !pendingState.searchReservedMeal && !pendingState.deliverReservedMeal && !pendingState.fetchingFoods && !uiState.isDeliveryDialogVisible) fetchReservedMealsOnDate()
-  }, 20_000)
+  }, 50_000)
 })
 
 onBeforeUnmount(() => {
@@ -563,6 +563,7 @@ onBeforeUnmount(() => {
               <thead>
                 <tr>
                   <th>ردیف</th>
+                  <th>عملیات</th>
                   <th>وعده</th>
                   <th>رزرو کننده</th>
                   <th>کد پرسنلی</th>
@@ -573,7 +574,6 @@ onBeforeUnmount(() => {
                   <th>پیمانکار</th>
                   <th>تعداد</th>
                   <th>توضیحات</th>
-                  <th>عملیات</th>
                 </tr>
               </thead>
 
@@ -583,6 +583,17 @@ onBeforeUnmount(() => {
                   :key="item.id"
                 >
                   <td>{{ index + 1 }}</td>
+
+                  <td>
+                    <VBtn
+                      color="orange-darken-2"
+                      variant="plain"
+                      @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
+                    >
+                      <VIcon icon="tabler-circle-dashed-check" size="20" start />
+                      تحویل
+                    </VBtn>
+                  </td>
 
                   <td>{{ item.meal?.name }}</td>
 
@@ -668,17 +679,6 @@ onBeforeUnmount(() => {
                         {{ item.description }}
                       </div>
                     </VTooltip>
-                  </td>
-
-                  <td>
-                    <VBtn
-                      color="orange-darken-2"
-                      variant="plain"
-                      @click="reservedMeal = item; uiState.isDeliveryDialogVisible = true"
-                    >
-                      <VIcon icon="tabler-circle-dashed-check" size="20" start />
-                      تحویل
-                    </VBtn>
                   </td>
                 </tr>
               </tbody>

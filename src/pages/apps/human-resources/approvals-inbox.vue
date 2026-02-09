@@ -1,8 +1,12 @@
 <script setup>
+import { computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/ApprovalsCardsView.vue'
+import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
+import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
@@ -14,592 +18,86 @@ definePage({
   },
 })
 
-const { theme } = useAGGridTheme()
 const { mdAndUp } = useDisplay()
 const isMobile = computed(() => !mdAndUp.value)
 
-const state = reactive({
-  ui: { hasError: false, errorMessage: '', success: false, successMessage: '' },
-  loading: false,
-  requests: [],
-  gridApi: null,
-  selection: { gridNodes: [], cardIds: [] },
-  dialogs: {
-    reject: false,
-    approveConfirm: false,
-    edit: false,
-    details: false,
-    referral: false,
-  },
-  detailsItem: null,
-  rejectReason: '',
-  pendingNodes: [],
-})
-
-function fmtTimeRange(r) {
-  return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
-}
-function toIdsOld(nodes) {
-  return (nodes ?? [])
-    .map((n) => (n?.data ?? n)?.currentItem.id ?? (n?.data ?? n)?.id)
-    .filter(Boolean)
-}
-function toIds(nodes) {
-  console.log(nodes)
-  return (nodes ?? [])
-    .map((n) => n?.currentItem?.id ?? n.id)
-    .filter(Boolean)
-}
-function resetSelection() {
-  state.gridApi?.deselectAll?.()
-  state.selection.gridNodes = []
-  state.selection.cardIds = []
-}
-function raiseError(msg) {
-  state.ui.hasError = true
-  state.ui.errorMessage = msg
-}
-function raiseSuccess(msg) {
-  state.ui.success = true
-  state.ui.successMessage = msg
-}
-
-const rowData = computed(() =>
-  (state.requests ?? []).map((item) => ({
-    currentItem: item,
-    personnelCode: item.request.user.personnel_code,
-    fullName: `${item.request.user.first_name} ${item.request.user.last_name}`,
-    requestType: item.request.type.name,
-    startDate: item.request.start_date,
-    endDate: item.request.end_date,
-    timeRange: fmtTimeRange(item.request),
-    actions: {
-      approvable: true,
-      detailsable: false,
-      editable: {
-        status: true,
-        mode: 'view',
-      },
-      referrable: true,
-    },
-  })),
-)
-
-const columnDefs = ref([
-  { headerName: 'کد پرسنلی', field: 'personnelCode' },
-  { headerName: 'نام و نام خانوادگی', field: 'fullName' },
-  { headerName: 'نوع درخواست', field: 'requestType' },
-  { headerName: 'تاریخ شروع', field: 'startDate' },
-  { headerName: 'تاریخ پایان', field: 'endDate' },
-  { headerName: 'زمان', field: 'timeRange' },
-  {
-    headerName: 'عملیات',
-    field: 'actions',
-    valueFormatter: () => '',
-    suppressHeaderMenuButton: true,
-    suppressHeaderContextMenu: true,
-    cellRendererSelector: () => ({
-      component: 'Actions',
-      params: {
-        onApproveClick: approveSingleRequest,
-        onDetailsClick: openDetails,
-        onEditClick,
-        onReferralClick,
-      },
-    }),
-  },
-])
-
-const selectedCount = computed(() => effectiveSelectedIds().length)
-const approveConfirmTitle = computed(() => {
-  const count = toIds(state.pendingNodes).length || 1
-  return `آیا از تایید ${count === 1 ? 'این مورد' : `${count} مورد`} اطمینان دارید؟`
-})
-
-function onGridReady(params) {
-  state.gridApi = params.api
-  state.gridApi.setGridOption('rowData', rowData.value)
-}
-
-watch(rowData, (rows) => state.gridApi?.setGridOption?.('rowData', rows))
-
-function effectiveSelectedIds() {
-  return isMobile.value
-    ? [...state.selection.cardIds]
-    : toIds(state.selection.gridNodes)
-}
-const isCardSelected = (id) => state.selection.cardIds.includes(id)
-function toggleCardSelection(id) {
-  state.selection.cardIds = isCardSelected(id)
-    ? state.selection.cardIds.filter((x) => x !== id)
-    : [...state.selection.cardIds, id]
-}
-function selectAllMobile() {
-  state.selection.cardIds = state.requests.map((r) => r.id)
-}
-function clearMobileSelection() {
-  state.selection.cardIds = []
-}
-
-function openDetails(item) {
-  state.detailsItem = item?.currentItem ?? item
-  state.dialogs.details = true
-}
-
-function onEditClick(request) {
-  state.pendingNodes = [request.data ? request.data.currentItem : request]
-  state.dialogs.edit = true
-}
-
-function onReferralClick(request) {
-  state.pendingNodes = [request.data ? request.data.currentItem : request]
-  state.dialogs.referral = true
-}
-
-function resetRejectDialogState() {
-  state.dialogs.reject = false
-  state.pendingNodes = []
-  state.rejectReason = ''
-}
-
-async function handleApproveOrReject(approve, nodes) {
-  const ids = toIds(nodes)
-  if (!ids.length) return raiseError('هیچ ردیفی انتخاب نشده است.')
-  if (approve === false && !state.rejectReason?.trim())
-    return raiseError('ثبت علت رد الزامی است.')
-
-  state.loading = true
-  try {
-    const body = {
-      approve,
-      approvalRequestsIds: ids,
-      ...(approve === false ? { description: state.rejectReason.trim() } : {}),
-    }
-
-    await $api('/hr-request/request/approve', {
-      method: 'POST',
-      body,
-      onResponseError({ response }) {
-        throw new Error(
-          response?._data?.message || 'خطا در ثبت تایید/رد درخواست',
-        )
-      },
-    })
-    raiseSuccess(`با موفقیت ${approve ? 'تایید' : 'رد'} شد.`)
-    await resetRejectDialogState()
-    await fetchRequests()
-    resetSelection()
-  } catch (err) {
-    raiseError(err?.message || 'خطایی رخ داد')
-  } finally {
-    state.loading = false
-  }
-}
-
-async function approveSingleRequest(rowOrNode, action) {
-  const data = rowOrNode?.data ?? rowOrNode
-  state.pendingNodes = [data]
-  if (action === false) {
-    state.rejectReason = ''
-    state.dialogs.reject = true
-    return
-  }
-  state.dialogs.approveConfirm = true
-}
-
-async function approveMultiRequest() {
-  state.pendingNodes = isMobile.value
-    ? state.selection.cardIds.map((id) => ({ id }))
-    : state.gridApi?.getSelectedRows?.() || []
-  state.dialogs.approveConfirm = true
-}
-
-function openRejectSelectedDialog() {
-  state.pendingNodes = isMobile.value
-    ? state.selection.cardIds.map((id) => ({ id }))
-    : state.gridApi?.getSelectedRows?.() || []
-  state.rejectReason = ''
-  state.dialogs.reject = true
-}
-
-function confirmRejectDialog() {
-  return handleApproveOrReject(false, state.pendingNodes)
-}
-async function confirmApproveDialog() {
-  await handleApproveOrReject(true, state.pendingNodes)
-  state.dialogs.approveConfirm = false
-}
-
-async function fetchRequests() {
-  state.loading = true
-  try {
-    const { data } = await axiosInstance('/hr-request/request/get-by-approver')
-    state.requests = data.data || []
-  } catch (error) {
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    } else {
-      error_message = error.response.data.message
-    }
-
-    uiState.hasError = true
-    uiState.errorMessage = error_message
-  } finally {
-    state.loading = false
-  }
-}
-
-function onSelectionChanged() {
-  state.selection.gridNodes = state.gridApi?.getSelectedRows?.() ?? []
-  state.gridApi?.refreshCells?.({ force: true })
-}
+const logic = useApprovalsLogic({ isMobile })
 
 onMounted(() => {
-  fetchRequests()
+  logic.fetchRequests()
 })
 </script>
 
 <template>
   <VLayout class="app-layout">
     <VSnackbar
-      v-model="state.ui.hasError"
+      v-model="logic.state.ui.hasError"
       :timeout="3000"
       location="center"
       variant="flat"
       color="error"
     >
-      {{ state.ui.errorMessage }}
+      {{ logic.state.ui.errorMessage }}
     </VSnackbar>
+
     <VSnackbar
-      v-model="state.ui.success"
+      v-model="logic.state.ui.success"
       :timeout="2000"
       location="center"
       variant="flat"
       color="success"
     >
-      {{ state.ui.successMessage }}
+      {{ logic.state.ui.successMessage }}
     </VSnackbar>
 
-    <section class="toolbar">
-      <div class="left-actions">
-        <VBtn
-          v-if="selectedCount > 1"
-          color="success"
-          @click="approveMultiRequest"
-        >
-          تایید انتخاب‌شده‌ها ({{ selectedCount }})
-        </VBtn>
-        <VBtn
-          v-if="selectedCount > 1"
-          color="error"
-          @click="openRejectSelectedDialog"
-        >
-          رد انتخاب‌شده‌ها ({{ selectedCount }})
-        </VBtn>
-
-        <template v-if="isMobile">
-          <VBtn
-            variant="text"
-            density="comfortable"
-            :disabled="!state.requests?.length"
-            @click="selectAllMobile"
-          >
-            انتخاب همه
-          </VBtn>
-          <VBtn
-            variant="text"
-            density="comfortable"
-            :disabled="!selectedCount"
-            @click="clearMobileSelection"
-          >
-            حذف انتخاب‌ها
-          </VBtn>
-        </template>
-      </div>
-      <VSpacer />
-      <VBtn
-        variant="flat"
-        color="primary"
-        :loading="state.loading"
-        :disabled="state.loading"
-        title="بروزرسانی لیست"
-        @click="fetchRequests"
-      >
-        <VIcon icon="tabler-refresh" />
-      </VBtn>
-    </section>
-
-    <section v-show="!isMobile" style="block-size: 100%">
-      <AgGridVue
-        style="block-size: 100%; inline-size: 100%"
-        :column-defs="columnDefs"
-        :suppress-click-edit="true"
-        :loading="state.loading"
-        enable-rtl
-        row-numbers
-        pagination
-        :row-selection="{
-          mode: 'multiRow',
-          enableClickSelection: true,
-          checkboxes: true,
-          headerCheckbox: true,
-        }"
-        :theme="theme"
-        @grid-ready="onGridReady"
-        @selection-changed="onSelectionChanged"
-      />
-    </section>
-
-    <section v-show="isMobile" class="cards-wrapper">
-      <VEmptyState
-        v-if="!state.loading && !state.requests.length"
-        headline="درخواستی یافت نشد"
-        title="لیست خالی است"
-      />
-      <VContainer v-else fluid class="pa-2">
-        <VRow dense>
-          <VCol v-for="item in state.requests" :key="item.id" cols="12">
-            <VCard
-              class="request-card"
-              :elevation="isCardSelected(item.id) ? 6 : 2"
-              :class="{ 'request-card--selected': isCardSelected(item.id) }"
-            >
-              <VCardText class="pa-3">
-                <div class="card-header">
-                  <div class="card-title">
-                    <div class="name">
-                      {{ item.request.user.first_name }}
-                      {{ item.request.user.last_name }}
-                    </div>
-                    <div class="meta">
-                      کد پرسنلی: {{ item.request.user.personnel_code }}
-                    </div>
-                  </div>
-                  <VCheckbox
-                    :model-value="isCardSelected(item.id)"
-                    density="comfortable"
-                    :ripple="false"
-                    class="card-checkbox"
-                    color="primary"
-                    hide-details
-                    @update:model-value="toggleCardSelection(item.id)"
-                  />
-                </div>
-
-                <div class="chips">
-                  <VChip size="small" color="primary" variant="flat">
-                    {{ item.request.type.name }}
-                  </VChip>
-                </div>
-
-                <div class="rows">
-                  <div class="row">
-                    <span class="label">تاریخ شروع</span>
-                    <span class="value">{{ item.request.start_date }}</span>
-                  </div>
-                  <div class="row">
-                    <span class="label">تاریخ پایان</span>
-                    <span class="value">{{ item.request.end_date }}</span>
-                  </div>
-                  <div class="row">
-                    <span class="label">زمان</span>
-                    <span class="value">{{ fmtTimeRange(item.request) }}</span>
-                  </div>
-                </div>
-              </VCardText>
-
-              <VDivider />
-
-              <VCardActions class="pa-2 actions">
-                <VBtn
-                  size="small"
-                  color="success"
-                  variant="tonal"
-                  @click="approveSingleRequest({ id: item.id }, true)"
-                >
-                  <VIcon icon="tabler-check" />
-                </VBtn>
-                <VBtn
-                  size="small"
-                  color="error"
-                  variant="tonal"
-                  @click="approveSingleRequest({ id: item.id }, false)"
-                >
-                  <VIcon icon="tabler-ban" />
-                </VBtn>
-                <VSpacer />
-                <VBtn
-                  size="small"
-                  color="warning"
-                  variant="tonal"
-                  @click="onEditClick(item, false)"
-                >
-                  <VIcon icon="tabler-edit" />
-                </VBtn>
-                <VBtn
-                  size="small"
-                  color="info"
-                  variant="tonal"
-                  @click="onReferralClick(item, false)"
-                >
-                  <VIcon icon="tabler-user-share" />
-                </VBtn>
-                <!--                <VBtn
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                  @click="openDetails(item)"
-                >
-                  جزئیات
-                </VBtn> -->
-              </VCardActions>
-            </VCard>
-          </VCol>
-        </VRow>
-      </VContainer>
-    </section>
+    <ApprovalsGridView v-if="!isMobile" />
+    <ApprovalsCardsView v-else />
 
     <RejectDialog
-      v-model:show="state.dialogs.reject"
-      v-model:reason="state.rejectReason"
+      v-model:show="logic.state.dialogs.reject"
+      v-model:reason="logic.state.rejectReason"
       max-width="520"
-      @confirm="confirmRejectDialog"
-      @cancel="resetRejectDialogState"
+      @confirm="logic.confirmRejectDialog"
+      @cancel="logic.resetRejectDialogState"
     />
 
     <DetailsDialog
-      v-model:show="state.dialogs.details"
-      :details="state.detailsItem"
-      @close="
-        () => {
-          state.dialogs.details = false
-        }
-      "
+      v-if="logic.state.dialogs.details"
+      v-model:show="logic.state.dialogs.details"
+      :request="logic.pendingRequest.value"
+      @close="logic.state.dialogs.details = false"
     />
 
     <ReferralToSupervisorDialog
-      v-if="state.dialogs.referral"
-      v-model:is-dialog-visible="state.dialogs.referral"
-      :request="state.pendingNodes[0]?.request"
-      @submit="
-        () => {
-          raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
-          fetchRequests()
-        }
-      "
+      v-if="logic.state.dialogs.referral"
+      v-model:is-dialog-visible="logic.state.dialogs.referral"
+      :request="logic.pendingRequest.value"
+      @submit="logic.onSubmittedReferral"
     />
 
     <EditForm
-      v-if="state.dialogs.edit"
-      v-model:is-dialog-visible="state.dialogs.edit"
-      :request="state.pendingNodes[0]?.request"
-      @submit="
-        () => {
-          fetchRequests()
-          raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
-        }
-      "
+      v-if="logic.state.dialogs.edit"
+      v-model:is-dialog-visible="logic.state.dialogs.edit"
+      :request="logic.pendingRequest.value"
+      @submit="logic.onSubmittedEdit"
     />
 
     <AreYouSureDialog
-      v-if="state.dialogs.approveConfirm"
-      v-model:is-dialog-visible="state.dialogs.approveConfirm"
-      :title="approveConfirmTitle"
-      :loading="state.loading"
-      @confirm="confirmApproveDialog"
+      v-if="logic.state.dialogs.approveConfirm"
+      v-model:is-dialog-visible="logic.state.dialogs.approveConfirm"
+      :title="logic.approveConfirmTitle.value"
+      :loading="logic.state.loading"
+      @confirm="logic.confirmApproveDialog"
     />
   </VLayout>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .app-layout {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
   inline-size: 100%;
   block-size: 100%;
   overflow-x: hidden;
-}
-.toolbar {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  padding: 0.5rem;
-  flex-wrap: wrap;
-}
-.left-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  flex-wrap: wrap;
-  max-inline-size: 100%;
-}
-.cards-wrapper {
-  block-size: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-inline: 0.25rem;
-}
-.request-card {
-  inline-size: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-.request-card--selected {
-  outline: 2px solid rgba(var(--v-theme-primary), 0.45);
-  outline-offset: 0;
-}
-.request-card .card-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  justify-content: space-between;
-}
-.request-card .card-title {
-  display: grid;
-  gap: 0.125rem;
-}
-.request-card .card-title .name {
-  font-weight: 600;
-}
-.request-card .card-title .meta {
-  font-size: 0.85rem;
-  opacity: 0.7;
-}
-.request-card .card-checkbox {
-  margin-inline-start: 0.25rem;
-  margin-inline-end: 0;
-}
-.request-card .chips {
-  margin-block: 0.5rem;
-}
-.request-card .rows {
-  display: grid;
-  gap: 0.375rem;
-}
-.request-card .row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  column-gap: 1rem;
-}
-.request-card .label {
-  opacity: 0.75;
-  font-size: 0.9rem;
-}
-.request-card .value {
-  font-weight: 500;
-}
-.request-card .actions {
-  gap: 0.5rem;
-}
-:deep(.v-btn) {
-  min-height: 36px;
-}
-@media (max-width: 960px) {
-  .left-actions .v-btn {
-    flex: 1 1 48%;
-    min-width: 0;
-  }
 }
 </style>
