@@ -34,16 +34,33 @@ const isDialogVisible = computed({
 // State for user ratings
 const ratings = ref({})
 
+const groupedQuestions = computed(() => {
+  const groups = {}
+  if (props.questions && props.questions.length > 0) {
+    props.questions.forEach((question) => {
+      const cat = question.category
+      if (cat) {
+        if (!groups[cat.id]) {
+          groups[cat.id] = {
+            ...cat,
+            questions: [],
+          }
+        }
+        groups[cat.id].questions.push(question)
+      }
+    })
+  }
+  return Object.values(groups)
+})
+
 // Initialize ratings object, prefilling from initialRatings if provided
 function buildRatingsFromProps() {
   const newRatings = {}
   if (props.questions && props.questions.length > 0) {
-    props.questions.forEach((category) => {
-      category.questions.forEach((question) => {
-        const qid = question.id
-        const initial = props.initialRatings?.[qid] ?? 0
-        newRatings[qid] = initial
-      })
+    props.questions.forEach((question) => {
+      const qid = question.id
+      const initial = props.initialRatings?.[qid] ?? 0
+      newRatings[qid] = initial
     })
   }
   ratings.value = newRatings
@@ -113,7 +130,7 @@ function handleCancel() {
           <VRow>
             <VCol cols="12">
               <div
-                v-for="category in questions"
+                v-for="category in groupedQuestions"
                 :key="category.id"
                 class="mb-8"
               >
