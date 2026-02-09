@@ -40,7 +40,7 @@ function submit() {
   monthlyRequests.value.push({
     from: startDate.value,
     to: endDate.value,
-    status: HR_REQUEST_STATUSES.HR_REQUEST_PENDING_STATUS,
+    status: STATUSES.PENDING,
   })
   startDate.value = ''
   endDate.value = ''

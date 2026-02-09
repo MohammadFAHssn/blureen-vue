@@ -15,12 +15,6 @@ const uiState = reactive({
 
 const { smAndDown } = useDisplay()
 
-const approvalStatusMap = {
-  1: { title: 'در حال بررسی', color: 'warning' },
-  2: { title: 'تایید شده', color: 'success' },
-  3: { title: 'رد شده', color: 'error' },
-}
-
 function convertDate(date) {
   return moment(date)
     .utc('jYYYY-jMM-jDDTHH:mm:ss.SSZ')
@@ -124,12 +118,12 @@ onMounted(() => {
 
               <template #append>
                 <VChip
-                  :color="approvalStatusMap[a.status_id].color"
+                  :color="a.status.color"
                   size="small"
                   label
                   variant="tonal"
                 >
-                  {{ approvalStatusMap[a.status_id].title }}
+                  {{ a.status.title }}
                 </VChip>
               </template>
             </VListItem>
