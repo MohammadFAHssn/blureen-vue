@@ -34,7 +34,7 @@ async function submit() {
   }
   else {
     const requestData = {
-      request_type_id: HR_REQUEST_TYPES.SICK_LEAVE,
+      request_type_id: '???',
       user_id: useCookie('userData').value.id,
       start_date: startDate.value,
       end_date: endDate.value,
@@ -74,30 +74,7 @@ async function submit() {
 }
 
 async function getCurrentMonthRequests() {
-  isLoading.value = true
-  try {
-    const { data, error } = await useApi(
-      createUrl(
-        `/hr-request/request/get-user-requests?request_type=${HR_REQUEST_TYPES.SICK_LEAVE}`,
-      ),
-    )
-    isLoading.value = false
-    if (error.value) {
-      uiState.hasError = true
-      uiState.errorMessage = 'خطا در دریافت درخواست ها'
-      throw error.value
-    }
 
-    if (data.value.data) {
-      currentMonthRequests.value = data.value.data
-    }
-  }
-  catch (e) {
-    isLoading.value = false
-    console.error('Unexpected error fetching users:', e)
-    uiState.hasError = true
-    uiState.errorMessage = 'خطای غیرمنتظره هنگام دریافت درخواست ها'
-  }
 }
 
 onMounted(() => {
