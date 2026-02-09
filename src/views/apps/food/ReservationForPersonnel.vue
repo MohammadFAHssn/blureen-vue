@@ -620,6 +620,7 @@ onMounted(async () => {
                   <th>تاریخ</th>
                   <th>رزرو شده توسط</th>
                   <th>کد پرسنلی</th>
+                  <th>کد تحویل</th>
                   <th>وضعیت</th>
                 </tr>
               </thead>
@@ -640,6 +641,11 @@ onMounted(async () => {
                   <td>
                     <VChip>
                       {{ item.personnelCode }}
+                    </VChip>
+                  </td>
+                  <td>
+                    <VChip>
+                      {{ item.deliveryCode }}
                     </VChip>
                   </td>
                   <td>
@@ -761,6 +767,12 @@ onMounted(async () => {
                           <strong>کد پرسنلی:</strong>
                           <VChip color="primary">
                             {{ item.personnelCode }}
+                          </VChip>
+                        </div>
+                        <div>
+                          <strong>کد تحویل:</strong>
+                          <VChip>
+                            {{ item.deliveryCode }}
                           </VChip>
                         </div>
                       </div>
