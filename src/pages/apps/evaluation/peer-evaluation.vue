@@ -214,7 +214,7 @@ onMounted(() => {
       <VCard :class="{ 'border-success': !!evaluationsByEvaluatee[evaluatee.id] }">
         <VCardTitle class="text-center mb-5 text-wrap">
           {{ evaluatee.user.personnel_code }} -
-          {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user.profile.cost_center.name }})
+          {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user?.profile?.cost_center?.name }})
         </VCardTitle>
 
         <VCardActions class="justify-center">
