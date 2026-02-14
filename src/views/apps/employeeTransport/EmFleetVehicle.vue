@@ -1,6 +1,6 @@
 <script setup>
-import EmCommuteStationCreateDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteStationCreateDialog.vue'
-import EmCommuteStationEditDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteStationEditDialog.vue'
+import EmFleetVehicleCreateDialog from '@/views/apps/employeeTransport/emdialog/EmFleetVehicleCreateDialog.vue'
+import EmFleetVehicleEditDialog from '@/views/apps/employeeTransport/emdialog/EmFleetVehicleEditDialog.vue'
 // emit
 const emit = defineEmits(['back'])
 const current = ref('root')
@@ -16,22 +16,22 @@ function goBack() {
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  isEmCommuteStationCreateDialogVisible: false,
-  isEmCommuteStationEditDialogVisible: false,
+  isEmFleetVehicleCreateDialogVisible: false,
+  isEmFleetVehicleEditDialogVisible: false,
 })
 const pendingState = reactive({
-  fetchingEmCommuteStations: false,
-  fetchingCities: false,
-  creatingEmCommuteStation: false,
-  editingEmCommuteStation: false,
+  fetchingEmFleetVehicles: false,
+  fetchingEmVehicleTypes: false,
+  creatingEmFleetVehicle: false,
+  editingEmFleetVehicle: false,
 })
 function setError(message) {
   uiState.hasError = true
   uiState.errorMessage = message
 }
-const cities = ref([])
-const emCommuteStations = ref([])
-const selectedEmCommuteStation = ref(null)
+const vehicleTypes = ref([])
+const emFleetVehicles = ref([])
+const selectedEmFleetVehicle = ref(null)
 // ----- start ag-grid -----
 const gridApi = ref(null)
 const { theme } = useAGGridTheme()
@@ -42,21 +42,12 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'نوع', field: 'city' },
-  { headerName: 'نام راننده', field: 'code' },
-  { headerName: 'شماره راننده', field: 'address' },
-  { headerName: 'نام صاحب', field: 'address' },
-  { headerName: 'پلاک', field: 'address' },
-  { headerName: 'تعداد مسافر', field: 'address' },
-  // {
-  //   headerName: 'وضعیت',
-  //   field: 'active',
-  //   cellRenderer: 'Active',
-  //   cellStyle: { 'display': 'flex', 'align-items': 'center' },
-  //   filterParams: {
-  //     valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
-  //   },
-  // },
+  { headerName: 'نوع', field: 'type' },
+  { headerName: 'نام راننده', field: 'driverName' },
+  { headerName: 'شماره راننده', field: 'driverMobile' },
+  { headerName: 'نام صاحب', field: 'owner' },
+  { headerName: 'پلاک', field: 'plate' },
+  { headerName: 'تعداد مسافر', field: 'seatsCount' },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -65,16 +56,9 @@ const columnDefs = ref([
         component: 'Actions',
         params: {
           onEditClick: (selectedNode) => {
-            selectedEmCommuteStation.value = selectedNode.data
-            uiState.isEmCommuteStationEditDialogVisible = true
+            selectedEmFleetVehicle.value = selectedNode.data
+            uiState.isEmFleetVehicleEditDialogVisible = true
           },
-          // onActivityChange: (selectedNode, event) => {
-          //   selectedEmCommuteStation.value = selectedNode.data
-          //   onChangeStatus({
-          //     active: event.target.checked,
-          //   },
-          //   )
-          // },
         },
       }
     },
@@ -82,36 +66,37 @@ const columnDefs = ref([
 ])
 
 const rowData = computed(() =>
-  (emCommuteStations.value).map(commuteStation => ({
-    id: commuteStation.id,
-    city: commuteStation.emCity.name ?? '',
-    code: commuteStation.code ?? '',
-    address: commuteStation.address ?? '',
-    active: commuteStation.active,
+  (emFleetVehicles.value).map(emFleetVehicle => ({
+    id: emFleetVehicle.id,
+    type: emFleetVehicle.emVehicleType.name ?? '',
+    driverName: emFleetVehicle.driverName ?? '',
+    driverMobile: emFleetVehicle.driverMobileNumber ?? '',
+    owner: emFleetVehicle.ownerName,
+    plate: emFleetVehicle.plate,
+    seatsCount: emFleetVehicle.seatsCount,
     actions: {
       editable: {
         status: true,
         mode: 'view',
       },
-      // activable: true,
     },
   })),
 )
 
 // ----- end ag-grid -----
-async function onCreateCommuteStation(payload) {
+async function onCreateEmFleetVehicle(payload) {
   const formData = new FormData()
-  formData.append('city_name', payload.cityName?.name ?? payload.cityName)
-  formData.append('address', payload.address)
-  formData.append('code', payload.code)
-  if (payload.description) {
-    formData.append('description', payload.description)
-  }
+  formData.append('vehicle_type', payload.vehicleType?.name ?? payload.vehicleType)
+  formData.append('driver_name', payload.driverName)
+  formData.append('driver_mobile_number', payload.driverMobileNumber)
+  formData.append('owner_name', payload.ownerName)
+  formData.append('plate', payload.plate)
+  formData.append('seats_count', payload.seatsCount)
 
-  pendingState.creatingEmCommuteStation = true
+  pendingState.creatingEmFleetVehicle = true
 
   try {
-    await $api('/employee-transport/commute-station', {
+    await $api('/employee-transport/fleet-vehicle', {
       method: 'POST',
       body: formData,
       onResponseError({ response }) {
@@ -126,30 +111,32 @@ async function onCreateCommuteStation(payload) {
       },
     })
 
-    uiState.isEmCommuteStationCreateDialogVisible = false
+    uiState.isEmFleetVehicleCreateDialogVisible = false
   }
   catch (err) {
     console.error(err)
   }
   finally {
-    pendingState.creatingEmCommuteStation = false
-    fetchEmCommuteStations()
-    fetchEmCities()
+    pendingState.creatingEmFleetVehicle = false
+    fetchEmFleetVehicles()
+    fetchEmVehicleTypes()
   }
 }
 
-async function onUpdateCommuteStation(payload) {
+async function onUpdateEmFleetVehicle(payload) {
   const formData = new FormData()
-  const id = selectedEmCommuteStation.value.id
-  formData.append('city_name', payload.cityName?.name ?? payload.cityName)
-  formData.append('address', payload.address)
-  formData.append('code', payload.code)
-  formData.append('description', payload.description)
+  const id = selectedEmFleetVehicle.value.id
+  formData.append('vehicle_type', payload.vehicleType?.name ?? payload.vehicleType)
+  formData.append('driver_name', payload.driverName)
+  formData.append('driver_mobile_number', payload.driverMobileNumber)
+  formData.append('owner_name', payload.ownerName)
+  formData.append('plate', payload.plate)
+  formData.append('seats_count', payload.seatsCount)
 
-  pendingState.editingEmCommuteStation = true
+  pendingState.editingEmFleetVehicle = true
 
   try {
-    await $api(`/employee-transport/commute-station/update/${id}`, {
+    await $api(`/employee-transport/fleet-vehicle/update/${id}`, {
       method: 'POST',
       body: formData,
       onResponseError({ response }) {
@@ -164,84 +151,52 @@ async function onUpdateCommuteStation(payload) {
       },
     })
 
-    uiState.isEmCommuteStationEditDialogVisible = false
+    uiState.isEmFleetVehicleEditDialogVisible = false
   }
   catch (err) {
     console.error(err)
   }
   finally {
-    pendingState.editingEmCommuteStation = false
-    fetchEmCommuteStations()
-    fetchEmCities()
+    pendingState.editingEmFleetVehicle = false
+    fetchEmFleetVehicles()
+    fetchEmVehicleTypes()
   }
 }
 
-// async function onChangeStatus(data) {
-//   const id = selectedEmCommuteStation.value.id
-
-//   pendingState.editingEmCommuteStation = true
-
-//   try {
-//     await $api(`/employee-transport/commute-station/update/${id}`, {
-//       method: 'POST',
-//       body: data,
-//       onResponseError({ response }) {
-//         uiState.hasError = true
-//         if (response._data?.errors) {
-//           const errors = Object.values(response._data.errors).flat().join(' | ')
-//           uiState.errorMessage = errors
-//         }
-//         else {
-//           uiState.errorMessage = response._data?.message || 'خطا در ویرایش ایستگاه'
-//         }
-//       },
-//     })
-
-//     uiState.isEmCommuteStationEditDialogVisible = false
-//   }
-//   catch (err) {
-//     console.error(err)
-//   }
-//   finally {
-//     pendingState.editingEmCommuteStation = false
-//     fetchEmCommuteStations()
-//     fetchEmCities()
-//   }
-// }
-
-async function fetchEmCities() {
-  pendingState.fetchingCities = true
+async function fetchEmVehicleTypes() {
+  pendingState.fetchingEmVehicleTypes = true
   try {
-    const res = await $api('/employee-transport/em-city', { method: 'GET' })
-    cities.value = res?.data.emCities || []
+    const res = await $api('/employee-transport/em-vehicle-type', { method: 'GET' })
+    vehicleTypes.value = res?.data.emVehicleTypes || []
   }
   catch (e) {
-    console.error('Error fetching cities:', e)
-    setError(e.message || 'خطا در دریافت شهرها')
+    console.error('Error fetching vehicleTypes:', e)
+    setError(e.message || 'خطا در دریافت انواع وسیله نقلیه')
   }
   finally {
-    pendingState.fetchingCities = false
+    pendingState.fetchingEmVehicleTypes = false
   }
 }
 
-async function fetchEmCommuteStations() {
+async function fetchEmFleetVehicles() {
+  pendingState.fetchingEmFleetVehicles = true
   gridApi.value?.setGridOption('loading', true)
   try {
-    const res = await $api('/employee-transport/commute-station', { method: 'GET' })
-    emCommuteStations.value = res?.data.emCommuteStations || []
+    const res = await $api('/employee-transport/fleet-vehicle', { method: 'GET' })
+    emFleetVehicles.value = res?.data.emFleetVehicles || []
   }
   catch (e) {
-    console.error('Error fetching emCommuteStations:', e)
-    setError(e.message || 'خطا در دریافت ایستگاه‌ها')
+    console.error('Error fetching emFleetVehicles:', e)
+    setError(e.message || 'خطا در دریافت وسایل نقلیه')
   }
   finally {
-    pendingState.fetchingEmCommuteStations = false
+    pendingState.fetchingEmFleetVehicles = false
     gridApi.value?.setGridOption('loading', false)
   }
 }
 
 onMounted(async () => {
-  await Promise.all([fetchEmCities(), fetchEmCommuteStations()])
+  await Promise.all([fetchEmVehicleTypes(), fetchEmFleetVehicles()])
 })
 </script>
 
@@ -281,21 +236,21 @@ onMounted(async () => {
       />
     </section>
 
-    <EmCommuteStationCreateDialog
-      v-if="uiState.isEmCommuteStationCreateDialogVisible"
-      v-model:is-dialog-visible="uiState.isEmCommuteStationCreateDialogVisible"
-      :loading="pendingState.creatingEmCommuteStation"
-      :cities="cities"
-      @submit="onCreateCommuteStation"
+    <EmFleetVehicleCreateDialog
+      v-if="uiState.isEmFleetVehicleCreateDialogVisible"
+      v-model:is-dialog-visible="uiState.isEmFleetVehicleCreateDialogVisible"
+      :loading="pendingState.creatingEmFleetVehicle"
+      :vehicle-types="vehicleTypes"
+      @submit="onCreateEmFleetVehicle"
     />
 
-    <EmCommuteStationEditDialog
-      v-if="uiState.isEmCommuteStationEditDialogVisible"
-      v-model:is-dialog-visible="uiState.isEmCommuteStationEditDialogVisible"
-      :loading="pendingState.editingEmCommuteStation"
-      :cities="cities"
-      :station="selectedEmCommuteStation"
-      @submit="onUpdateCommuteStation"
+    <EmFleetVehicleEditDialog
+      v-if="uiState.isEmFleetVehicleEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isEmFleetVehicleEditDialogVisible"
+      :loading="pendingState.editingEmFleetVehicle"
+      :vehicle-types="vehicleTypes"
+      :em-vehicle-type="selectedEmFleetVehicle"
+      @submit="onUpdateEmFleetVehicle"
     />
 
     <VApp>
@@ -303,7 +258,7 @@ onMounted(async () => {
         app
         icon="tabler-plus"
         size="x-large"
-        @click="uiState.isEmCommuteStationCreateDialogVisible = true"
+        @click="uiState.isEmFleetVehicleCreateDialogVisible = true"
       />
     </VApp>
   </VLayout>
