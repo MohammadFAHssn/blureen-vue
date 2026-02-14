@@ -131,6 +131,7 @@ function toComparisonKey(str) {
                 v-model="driverMobileNumber"
                 :rules="[requiredValidator]"
                 :disabled="loading"
+                type="number"
                 label="موبایل راننده"
               />
             </VCol>
