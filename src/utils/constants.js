@@ -18,6 +18,8 @@ export const STATUSES = {
   APPROVED: 2,
   REJECTED: 3,
   REJECTED_BY_SYSTEM: 4,
+  PENDING_HR_APPROVAL: 5,
+  REJECTED_BY_HR: 6,
 }
 
 export const HR_REQUEST_TYPES = {

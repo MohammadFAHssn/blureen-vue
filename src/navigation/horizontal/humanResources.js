@@ -19,6 +19,13 @@ export default [
         action: 'use',
         subject: 'app',
       },
+      {
+        title: 'Human Resource Cartable',
+        to: 'apps-human-resources-hr-cartable',
+        icon: { icon: 'tabler-clipboard-list' },
+        action: 'see',
+        subject: 'HR-cartable',
+      },
     ],
   },
 ]
