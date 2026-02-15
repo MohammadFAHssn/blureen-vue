@@ -30,6 +30,7 @@ const pendingState = reactive({
   updateOrganizationChart: false,
   deleteOrgChartNode: false,
   organizeOrgChart: false,
+  reloadChart: false,
 })
 
 const orgChartNodes = ref([])
@@ -71,7 +72,7 @@ watch(
 
 async function fetchOrgChartNodes() {
   await axiosInstance
-    .get('/base/org-chart-node')
+    .get('/base/org-chart-node/by-role')
     .then(({ data: { data } }) => {
       orgChartNodes.value = data.map((orgChartNode) => {
         return {
@@ -79,7 +80,9 @@ async function fetchOrgChartNodes() {
           parentId: orgChartNode.parent_id,
           orgPosition: orgChartNode.org_position,
           orgUnit: orgChartNode.org_unit,
-          users: orgChartNode.all_primary_and_deputy_users,
+          users: orgChartNode.users,
+          deputy: orgChartNode.deputy_users[0],
+          liaison: orgChartNode.org_unit.liaisons[0],
         }
       })
     })
@@ -249,16 +252,24 @@ function onEditNode(nodeId) {
   uiState.isEditNodeDialogOpen = true
 }
 
-function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
-  orgChartNodes.value = orgChartNodes.value.filter(
-    node => String(node.id) !== String(id),
+async function handleEditNode({ id, parentId, orgPosition, orgUnit, users, deputy, liaison }) {
+  const nodeIndex = orgChartNodes.value.findIndex(
+    node => String(node.id) === String(id),
   )
-  orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
-  orgChartInstance.value.data(orgChartNodes.value).render()
 
-  orgChartInstance.value.setCentered(id).render()
+  if (nodeIndex !== -1) {
+    orgChartNodes.value[nodeIndex] = { id, parentId, orgPosition, orgUnit, users, deputy, liaison }
+  }
 
-  reload()
+  // Reload and center on the edited node
+  pendingState.reloadChart = true
+  try {
+    await reloadAndCenter(id)
+  }
+  finally {
+    pendingState.reloadChart = false
+    uiState.isEditNodeDialogOpen = false
+  }
 }
 
 function onAddNode(nodeId) {
@@ -266,20 +277,26 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode({ id, orgPosition, orgUnit, users }) {
-  const newNodeId = id
-
-  orgChartInstance.value.addNode({
-    id: newNodeId,
+async function handleAddNode({ id, orgPosition, orgUnit, users, deputy, liaison }) {
+  orgChartNodes.value.push({
+    id,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,
     users,
+    deputy,
+    liaison,
   })
 
-  orgChartInstance.value.setCentered(newNodeId).render()
-
-  reload()
+  // Reload and center on the new node
+  pendingState.reloadChart = true
+  try {
+    await reloadAndCenter(id)
+  }
+  finally {
+    pendingState.reloadChart = false
+    uiState.isAddNodeDialogOpen = false
+  }
 }
 
 function onDeleteNode(nodeId) {
@@ -290,14 +307,23 @@ function onDeleteNode(nodeId) {
 async function handleDeleteNode() {
   pendingState.deleteOrgChartNode = true
 
+  const nodeToDelete = orgChartNodes.value.find(
+    node => String(node.id) === String(selectedNodeId.value),
+  )
+  const parentIdToCenter = nodeToDelete?.parentId
+
   await axiosInstance
     .delete('/base/org-chart-node', { params: {
       id: selectedNodeId.value,
     } })
     .then(() => {
       uiState.isDeleteNodeDialogOpen = false
-      orgChartInstance.value.removeNode(selectedNodeId.value)
-      reload()
+
+      orgChartNodes.value = orgChartNodes.value.filter(
+        node => String(node.id) !== String(selectedNodeId.value),
+      )
+
+      reloadAndCenter(parentIdToCenter)
     })
     .catch((error) => {
       console.error('Error deleting organization chart node:', error)
@@ -536,6 +562,60 @@ function updateExpandLevel(level) {
   orgChartInstance.value.data(data).render().fit()
 }
 
+async function reloadAndCenter(centerNodeId = null) {
+  // Save expanded state before reload
+  const chartState = orgChartInstance.value?.getChartState()
+  if (!chartState?.allNodes) return
+
+  const expandedNodesMap = {}
+  chartState.allNodes.forEach((node) => {
+    expandedNodesMap[node.data.id] = node.data._expanded
+  })
+
+  // Fetch fresh data from server
+  await fetchOrgChartNodes()
+  await fetchOrgUnits()
+
+  // Restore expanded state to the new data
+  orgChartNodes.value.forEach((node) => {
+    if (expandedNodesMap[node.id] !== undefined) {
+      node._expanded = expandedNodesMap[node.id]
+    }
+  })
+
+  // Ensure the path to centered node is expanded
+  if (centerNodeId) {
+    expandPathToNode(centerNodeId)
+  }
+
+  await nextTick()
+  drawOrgChart()
+
+  // Center on the specified node with animation
+  await nextTick()
+  if (centerNodeId && orgChartInstance.value) {
+    // Use setTimeout to ensure the chart is fully rendered
+    setTimeout(() => {
+      orgChartInstance.value.setCentered(centerNodeId).render()
+    }, 100)
+  }
+}
+
+function expandPathToNode(nodeId) {
+  const nodeMap = new Map(orgChartNodes.value.map(n => [String(n.id), n]))
+  let currentNode = nodeMap.get(String(nodeId))
+
+  while (currentNode) {
+    currentNode._expanded = true
+    if (currentNode.parentId) {
+      currentNode = nodeMap.get(String(currentNode.parentId))
+    }
+    else {
+      break
+    }
+  }
+}
+
 async function reload() {
   // Save current state before reload
   const chartState = orgChartInstance.value?.getChartState()
@@ -702,6 +782,7 @@ onUnmounted(() => {
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
+    :reloading="pendingState.reloadChart"
     @add="handleAddNode"
   />
 
@@ -711,6 +792,7 @@ onUnmounted(() => {
     :org-units="orgUnits"
     :users="users"
     :node="selectedNode"
+    :reloading="pendingState.reloadChart"
     @edit="handleEditNode"
   />
 </template>
