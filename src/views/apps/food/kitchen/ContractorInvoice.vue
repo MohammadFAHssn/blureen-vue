@@ -37,27 +37,41 @@ function onGridReady(params) {
 }
 
 const columnDefs = ref([
-  { headerName: 'نام', field: 'fullName' },
+  { headerName: 'نام', field: 'fullName', rowGroup: true, hide: true },
   { headerName: 'تاریخ', field: 'date' },
   { headerName: 'مسئول هزینه', field: 'costResponsible' },
   { headerName: 'وعده', field: 'mealName' },
   { headerName: 'غذا', field: 'foodName' },
-  { headerName: 'مبلغ جزء', field: 'foodPrice' },
+  {
+    headerName: 'مبلغ جزء',
+    field: 'foodPrice',
+    valueFormatter: p => `${Number(p.value ?? 0).toLocaleString()} ریال`,
+  },
   { headerName: 'تعداد', field: 'quantity' },
-  { headerName: 'مبلغ کل', field: 'totalPrice' },
+  {
+    headerName: 'مبلغ کل',
+    field: 'totalPrice',
+    valueFormatter: p => `${Number(p.value ?? 0).toLocaleString()} ریال`,
+    cellStyle: params => (params.node.rowPinned ? { fontWeight: '700' } : null),
+  },
 ])
 
 const rowData = computed(() =>
-  (reports.value ?? []).map(report => ({
-    fullName: `${(report.contractor.first_name ?? '').trim()} ${(report.contractor.last_name ?? '').trim()}`.trim(),
-    date: report?.reservation?.date ?? '',
-    costResponsible: report.contractor.cost_responsible === 'on_company' ? 'شرکت' : 'پیمانکار',
-    mealName: report.reservation?.meal?.name ?? '',
-    foodName: report.food?.name ?? '',
-    foodPrice: report.food_price ?? '',
-    quantity: report.quantity ?? '',
-    totalPrice: (report.quantity) * (report.food_price) ?? '',
-  })),
+  (reports.value ?? []).map((report) => {
+    const quantity = Number(report?.quantity ?? 0)
+    const foodPrice = Number(report?.food_price ?? 0)
+    return {
+
+      fullName: `${(report.contractor.first_name ?? '').trim()} ${(report.contractor.last_name ?? '').trim()}`.trim(),
+      date: report?.reservation?.date ?? '',
+      costResponsible: report.contractor.cost_responsible === 'on_company' ? 'شرکت' : 'پیمانکار',
+      mealName: report.reservation?.meal?.name ?? '',
+      foodName: report.food?.name ?? '',
+      foodPrice,
+      quantity,
+      totalPrice: (report.quantity) * (report.food_price) ?? '',
+    }
+  }),
 )
 
 // ----- end ag-grid -----
@@ -138,6 +152,9 @@ onMounted(async () => {
         style="block-size: 100%; inline-size: 100%"
         :column-defs="columnDefs"
         :row-data="rowData"
+        :auto-group-column-def="{ headerName: 'نام', minWidth: 220 }"
+        group-display-type="singleColumn"
+        :group-default-expanded="1"
         enable-rtl
         row-numbers
         pagination
