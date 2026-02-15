@@ -355,6 +355,7 @@
     "useTrunc": true,
     "useUrlSearchParams": true,
     "useUserMedia": true,
+    "useUserSearch": true,
     "useVModel": true,
     "useVModels": true,
     "useVibrate": true,
