@@ -72,7 +72,7 @@ watch(
 
 async function fetchOrgChartNodes() {
   await axiosInstance
-    .get('/base/org-chart-node')
+    .get('/base/org-chart-node/by-role')
     .then(({ data: { data } }) => {
       orgChartNodes.value = data.map((orgChartNode) => {
         return {
