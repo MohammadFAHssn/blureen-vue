@@ -39,7 +39,7 @@ function fullName(u) {
   return `${u.personnel_code} - ${u.first_name} ${u.last_name}`
 }
 
-const actionsValue = {
+const actions = computed(() => ({
   approvable: props.tab === STATUSES.PENDING_HR_APPROVAL,
   detailsable: true,
   editable: {
@@ -48,7 +48,7 @@ const actionsValue = {
   },
   referrable: props.tab === STATUSES.PENDING_HR_APPROVAL,
   approvalFlow: true,
-}
+}))
 
 const rowData = computed(() =>
   (props.items ?? []).map(item => ({
@@ -65,7 +65,7 @@ const rowData = computed(() =>
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
     approver: pendingApproverName(item.approvals),
-    actions: actionsValue,
+    actions: actions.value,
   })),
 )
 
@@ -73,9 +73,7 @@ const baseCols = [
   { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'واحد', field: 'costCenter' },
   { headerName: 'رابط اداری', field: 'liaisons' },
-  /*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
-*/
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
@@ -90,7 +88,7 @@ const approverCol = {
 const actionsCol = {
   headerName: 'عملیات',
   field: 'actions',
-  width: 250,
+  width: 300,
   valueFormatter: () => '',
   suppressHeaderMenuButton: true,
   suppressHeaderContextMenu: true,
