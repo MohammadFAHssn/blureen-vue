@@ -222,6 +222,7 @@ async function fetchEmCities() {
 }
 
 async function fetchEmCommuteStations() {
+  pendingState.fetchingEmCommuteStations = true
   gridApi.value?.setGridOption('loading', true)
   try {
     const res = await $api('/employee-transport/commute-station', { method: 'GET' })
