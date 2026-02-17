@@ -5,7 +5,6 @@ import { STATUSES } from '@/utils/constants.js'
 export const REQUEST_TABS = Object.freeze([
   { value: STATUSES.PENDING, title: 'در روند' },
   { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
-  { value: STATUSES.REJECTED_BY_HR, title: 'رد شده توسط کارگزینی' },
   { value: STATUSES.APPROVED, title: 'آرشیو تایید شده' },
   { value: STATUSES.REJECTED, title: 'آرشیو رد شده' },
 ])
@@ -28,7 +27,6 @@ export function useRequestsManagementLogic() {
     requestsByTab: {
       [STATUSES.PENDING]: [],
       [STATUSES.PENDING_HR_APPROVAL]: [],
-      [STATUSES.REJECTED_BY_HR]: [],
       [STATUSES.APPROVED]: [],
       [STATUSES.REJECTED]: [],
     },
@@ -190,6 +188,7 @@ export function useRequestsManagementLogic() {
       await axiosInstance.post('/hr-request/request/hr-confirm', {
         requestIds: state.pendingIds,
         approve: 0,
+        description: state.rejectReason,
       })
       resetRejectDialogState()
       raiseSuccess('با موفقیت رد شد.')

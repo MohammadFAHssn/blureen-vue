@@ -109,7 +109,7 @@ onMounted(() => {
 
               <VListItemSubtitle>
                 <span v-if="a.approved_at">
-                  زمان تاییدیه:
+                  زمان ثبت:
                   <span dir="ltr" style="unicode-bidi: isolate">
                     {{ convertDate(a.approved_at) }}
                   </span>
