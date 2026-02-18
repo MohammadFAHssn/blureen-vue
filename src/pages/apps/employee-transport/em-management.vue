@@ -1,5 +1,5 @@
 <script setup>
-import EmCommuteRoute from '@/views/apps/employeeTransport/EmCommuteRoute.vue'
+import EmCommuteService from '@/views/apps/employeeTransport/EmCommuteService.vue'
 import EmCommuteStation from '@/views/apps/employeeTransport/EmCommuteStation.vue'
 import EmFleetVehicle from '@/views/apps/employeeTransport/EmFleetVehicle.vue'
 
@@ -16,7 +16,7 @@ const current = ref('root')
 const componentsIcons = [
   { key: 'stations', label: 'ایستگاه‌ها', icon: 'tabler-bus-stop' },
   { key: 'vehicles', label: 'وسایل نقلیه', icon: 'tabler-bus' },
-  { key: 'routes', label: 'سرویس‌ها', icon: 'tabler-route' },
+  { key: 'services', label: 'سرویس‌ها', icon: 'tabler-route' },
 ]
 
 const visibleComponentsIcons = computed(() =>
@@ -26,7 +26,7 @@ const visibleComponentsIcons = computed(() =>
 const pages = {
   stations: EmCommuteStation,
   vehicles: EmFleetVehicle,
-  routes: EmCommuteRoute,
+  services: EmCommuteService,
 }
 
 function goBack() {
