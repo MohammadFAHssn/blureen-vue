@@ -70,17 +70,12 @@ export function useRequestsManagementLogic() {
     state.pendingIds = item?.id ? [item.id] : []
   }
 
-  function resetRejectDialogState() {
+  function resetConfirmationDialogState() {
     state.dialogs.reject = false
     state.rejectReason = ''
     state.pendingIds = []
     state.pendingItem = null
-  }
-
-  function resetApproveDialogState() {
     state.dialogs.approveConfirm = false
-    state.pendingIds = []
-    state.pendingItem = null
   }
 
   async function fetchRequestsForActiveTab(force = false) {
@@ -170,7 +165,7 @@ export function useRequestsManagementLogic() {
         requestIds: state.pendingIds,
         approve: 1,
       })
-      resetApproveDialogState()
+      resetConfirmationDialogState()
       raiseSuccess('با موفقیت تایید شد.')
       await fetchRequestsForActiveTab(true)
     }
@@ -190,7 +185,7 @@ export function useRequestsManagementLogic() {
         approve: 0,
         description: state.rejectReason,
       })
-      resetRejectDialogState()
+      resetConfirmationDialogState()
       raiseSuccess('با موفقیت رد شد.')
       await fetchRequestsForActiveTab(true)
     }
@@ -233,8 +228,7 @@ export function useRequestsManagementLogic() {
 
     confirmApproveDialog,
     confirmRejectDialog,
-    resetRejectDialogState,
-    resetApproveDialogState,
+    resetConfirmationDialogState,
 
     onSubmittedEdit,
     onSubmittedReferral,

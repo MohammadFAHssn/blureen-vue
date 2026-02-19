@@ -106,7 +106,7 @@ function onRejectSelected() {
       :loading="logic.state.loading"
       max-width="520"
       @confirm="logic.confirmRejectDialog"
-      @cancel="logic.resetRejectDialogState"
+      @cancel="logic.resetConfirmationDialogState"
     />
 
     <DetailsDialog

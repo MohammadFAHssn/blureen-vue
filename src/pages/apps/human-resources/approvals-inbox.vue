@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
+import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/ApprovalsFlowDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
 import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/ApprovalsCardsView.vue'
 import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
@@ -58,7 +59,7 @@ onMounted(() => {
       v-model:reason="logic.state.rejectReason"
       max-width="520"
       @confirm="logic.confirmRejectDialog"
-      @cancel="logic.resetRejectDialogState"
+      @cancel="logic.resetConfirmationDialogState"
     />
 
     <DetailsDialog
@@ -80,6 +81,12 @@ onMounted(() => {
       v-model:is-dialog-visible="logic.state.dialogs.edit"
       :request="logic.pendingRequest.value"
       @submit="logic.onSubmittedEdit"
+    />
+
+    <ApprovalsFlowDialog
+      v-if="logic.state.dialogs.approvalFlow"
+      v-model:is-dialog-visible="logic.state.dialogs.approvalFlow"
+      :request="logic.pendingRequest.value"
     />
 
     <AreYouSureDialog

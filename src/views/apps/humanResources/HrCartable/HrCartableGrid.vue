@@ -39,9 +39,8 @@ function fullName(u) {
   return `${u.personnel_code} - ${u.first_name} ${u.last_name}`
 }
 
-
 const rowData = computed(() =>
-  (props.items ?? []).map(item => ({
+  (props.items ?? []).map((item) => ({
     currentItem: item,
     id: item.id,
     personnel: fullName(item.user),
@@ -56,7 +55,7 @@ const rowData = computed(() =>
     timeRange: fmtTimeRange(item),
     approver: pendingApproverName(item.approvals),
     actions: {
-      approvable: props.tab === STATUSES.PENDING_HR_APPROVAL && item.kasra_credit_id,
+      approvable: item.kasra_credit_id,
       detailsable: true,
     },
   })),
@@ -66,10 +65,14 @@ const baseCols = [
   { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'واحد', field: 'costCenter' },
   { headerName: 'رابط اداری', field: 'liaisons' },
+  /*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
+*/
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+  /*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+*/
 ]
 
 const approverCol = {
@@ -89,7 +92,7 @@ const actionsCol = {
     component: 'Actions',
     params: {
       onApproveClick: (node, approve) => emit('approveRow', node, approve),
-      onDetailsClick: node => emit('details', node),
+      onDetailsClick: (node) => emit('details', node),
     },
   }),
 }
@@ -106,7 +109,7 @@ const columnDefs = computed(() => {
 function syncSelectedIds() {
   const rows = gridApi.value?.getSelectedRows?.() ?? []
   selectedIds.value = rows
-    .map(r => r?.id ?? r?.currentItem?.id)
+    .map((r) => r?.id ?? r?.currentItem?.id)
     .filter(Boolean)
 }
 
@@ -154,7 +157,7 @@ function getContextMenuItems(params) {
 }
 
 function pendingApproverName(approvals) {
-  const pending = (approvals ?? []).filter(a => a?.status_id === 1)
+  const pending = (approvals ?? []).filter((a) => a?.status_id === 1)
 
   const first = pending.reduce((best, cur) => {
     if (!cur) return best

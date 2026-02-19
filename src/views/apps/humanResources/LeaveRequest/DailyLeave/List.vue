@@ -126,16 +126,8 @@ async function onDelete() {
     uiState.success = true
   }
   catch (error) {
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    }
-    else {
-      error_message = error.response.data.message
-    }
-
     uiState.hasError = true
-    uiState.errorMessage = error_message
+    uiState.errorMessage = error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
   }
   finally {
     uiState.deleteLoading = false

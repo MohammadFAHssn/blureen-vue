@@ -9,6 +9,7 @@ const props = defineProps({
   onDetailsClick: { type: Function, required: true },
   onEditClick: { type: Function, required: true },
   onReferralClick: { type: Function, required: true },
+  onShowApprovalFlowClick: { type: Function, required: true },
 })
 
 const selectedIds = defineModel('selectedIds', {
@@ -36,22 +37,24 @@ const rowData = computed(() =>
     actions: {
       approvable: true,
       detailsable: true,
-      editable: { status: true, mode: 'view' },
-      referrable: true,
     },
   })),
 )
 
 const columnDefs = computed(() => [
   { headerName: 'پرسنل', field: 'personnel' },
+/*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
+*/
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+/*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+*/
   {
     headerName: 'عملیات',
     field: 'actions',
-    width: 250,
+    width: 175,
     valueFormatter: () => '',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
@@ -60,8 +63,6 @@ const columnDefs = computed(() => [
       params: {
         onApproveClick: props.onApproveClick,
         onDetailsClick: props.onDetailsClick,
-        onEditClick: props.onEditClick,
-        onReferralClick: props.onReferralClick,
       },
     }),
   },
@@ -82,6 +83,43 @@ function onGridReady(params) {
 function onSelectionChanged() {
   syncSelectedIds()
   gridApi.value?.refreshCells?.({ force: true })
+}
+
+function getContextMenuItems(params) {
+  const api = params.api
+  const node = params.node
+  const data = node?.data
+
+  if (node && !node.isSelected?.()) {
+    api?.deselectAll?.()
+    node.setSelected?.(true)
+  }
+
+  if (!data) return params.defaultItems ?? []
+
+  const items = []
+
+  items.push({
+    name: 'ویرایش',
+    icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+    action: () => props.onEditClick(node),
+  })
+
+  items.push({
+    name: 'نمایش تاییدیه ها',
+    icon: '<i class="tabler-git-branch" style="font-size: 18px;"></i>',
+    action: () => props.onShowApprovalFlowClick(node),
+  })
+
+  items.push({
+    name: 'ارجاع جهت تایید',
+    icon: '<i class="tabler-user-share" style="font-size: 18px;"></i>',
+    action: () => props.onReferralClick(node),
+  })
+
+  if (!items.length) return params.defaultItems ?? []
+
+  return [...items, 'separator', ...(params.defaultItems ?? [])]
 }
 
 defineExpose({
@@ -109,6 +147,7 @@ defineExpose({
       headerCheckbox: true,
     }"
     :theme="theme"
+    :get-context-menu-items="getContextMenuItems"
     @grid-ready="onGridReady"
     @selection-changed="onSelectionChanged"
   />

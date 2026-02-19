@@ -21,6 +21,7 @@ const uiState = reactive({
 const refVForm = ref()
 
 const supervisors = ref([])
+const selectedSupervisor = ref()
 const selectSupervisorRule = [
   () =>
     !!selectedSupervisor.value
@@ -46,20 +47,12 @@ async function fetchUserSupervisors() {
       }))
   }
   catch (error) {
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    }
-    else {
-      error_message = error.response.data.message
-    }
-
     uiState.hasError = true
-    uiState.errorMessage = error_message
+    uiState.errorMessage
+      = error.response.data.message ?? 'خطا در دریافت اطلاعات'
   }
 }
 
-const selectedSupervisor = ref()
 function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
@@ -72,16 +65,9 @@ function onFormSubmit() {
         emit('update:isDialogVisible', false)
       }
       catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage
+          = error?.response?.data?.message ?? 'خطا هنگام ارجاع درخواست'
       }
     }
   })
