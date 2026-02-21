@@ -658,13 +658,14 @@ function toComparisonKey(str) {
   return (str || '').toString().replace(/[\s\u200C]+/g, '')
 }
 
-fetchOrgChartNodes()
-fetchOrgPositions()
-fetchOrgUnits()
-await fetchUsers()
+await Promise.all([
+  fetchOrgChartNodes(),
+  fetchOrgPositions(),
+  fetchOrgUnits(),
+  fetchUsers(),
+])
 
-onMounted(async () => {
-  await nextTick()
+onMounted(() => {
   drawOrgChart()
 })
 
