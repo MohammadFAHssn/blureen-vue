@@ -284,7 +284,7 @@ async function fetchEmCommuteStations() {
     if (res?.data.emCommuteStations) {
       emCommuteStations.value = res?.data.emCommuteStations.map(s => ({
         ...s,
-        name: `${s.emCity.name} - ${s.code} - ${s.address}`,
+        name: `${s.emCity.name} (${s.code}) - ${s.mainStreet}-${s.sideStreet}-${s.boardingPlace}`,
       }))
     }
   }
