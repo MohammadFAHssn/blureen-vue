@@ -2,6 +2,7 @@
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
+import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
@@ -96,6 +97,7 @@ function onRejectSelected() {
         @edit="logic.onEditClick"
         @referral="logic.onReferralClick"
         @approval-flow="logic.onShowApprovalFlowClick"
+        @attendance-log="logic.onShowAttendancesClick"
         @approve-row="logic.approveRow"
       />
     </div>
@@ -141,6 +143,14 @@ function onRejectSelected() {
       v-if="logic.state.dialogs.approvalFlow"
       v-model:is-dialog-visible="logic.state.dialogs.approvalFlow"
       :request="logic.pendingRequest.value"
+    />
+
+    <AttendanceDialog
+      v-if="logic.state.dialogs.attendanceLogs"
+      v-model:is-dialog-visible="logic.state.dialogs.attendanceLogs"
+      :loading="logic.state.loading"
+      :request="logic.pendingRequest.value"
+      @submit="logic.confirmApproveDialog(true)"
     />
   </VLayout>
 </template>

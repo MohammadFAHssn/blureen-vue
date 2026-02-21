@@ -10,6 +10,7 @@ const emit = defineEmits([
   'edit',
   'referral',
   'approvalFlow',
+  'attendanceLog',
   'approveRow',
   'update:selectedIds',
 ])
@@ -40,7 +41,7 @@ function fullName(u) {
 }
 
 const rowData = computed(() =>
-  (props.items ?? []).map(item => ({
+  (props.items ?? []).map((item) => ({
     currentItem: item,
     id: item.id,
     personnel: fullName(item.user),
@@ -92,7 +93,7 @@ const actionsCol = {
     component: 'Actions',
     params: {
       onApproveClick: (node, approve) => emit('approveRow', node, approve),
-      onDetailsClick: node => emit('details', node),
+      onDetailsClick: (node) => emit('details', node),
     },
   }),
 }
@@ -109,7 +110,7 @@ const columnDefs = computed(() => {
 function syncSelectedIds() {
   const rows = gridApi.value?.getSelectedRows?.() ?? []
   selectedIds.value = rows
-    .map(r => r?.id ?? r?.currentItem?.id)
+    .map((r) => r?.id ?? r?.currentItem?.id)
     .filter(Boolean)
 }
 
@@ -146,6 +147,12 @@ function getContextMenuItems(params) {
   }
 
   items.push({
+    name: 'نمایش ترددها',
+    icon: '<i class="tabler-arrows-left-right" style="font-size: 18px;"></i>',
+    action: () => emit('attendanceLog', node),
+  })
+
+  items.push({
     name: 'نمایش تاییدیه ها',
     icon: '<i class="tabler-git-branch" style="font-size: 18px;"></i>',
     action: () => emit('approvalFlow', node),
@@ -157,7 +164,7 @@ function getContextMenuItems(params) {
 }
 
 function pendingApproverName(approvals) {
-  const pending = (approvals ?? []).filter(a => a?.status_id === 1)
+  const pending = (approvals ?? []).filter((a) => a?.status_id === 1)
 
   const first = pending.reduce((best, cur) => {
     if (!cur) return best

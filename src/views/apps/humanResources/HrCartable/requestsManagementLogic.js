@@ -38,6 +38,7 @@ export function useRequestsManagementLogic() {
       details: false,
       referral: false,
       approvalFlow: false,
+      attendanceLogs: false,
     },
 
     rejectReason: '',
@@ -76,6 +77,7 @@ export function useRequestsManagementLogic() {
     state.pendingIds = []
     state.pendingItem = null
     state.dialogs.approveConfirm = false
+    state.dialogs.attendanceLogs = false
   }
 
   async function fetchRequestsForActiveTab(force = false) {
@@ -133,6 +135,11 @@ export function useRequestsManagementLogic() {
     state.dialogs.approvalFlow = true
   }
 
+  function onShowAttendancesClick(node) {
+    setPendingFromNode(node)
+    state.dialogs.attendanceLogs = true
+  }
+
   function approveRow(node, approve) {
     setPendingFromNode(node)
 
@@ -158,42 +165,32 @@ export function useRequestsManagementLogic() {
     state.dialogs.reject = true
   }
 
-  async function confirmApproveDialog() {
-    state.loading = true
-    try {
-      await axiosInstance.post('/hr-request/request/hr-confirm', {
-        requestIds: state.pendingIds,
-        approve: 1,
-      })
-      resetConfirmationDialogState()
-      raiseSuccess('با موفقیت تایید شد.')
-      await fetchRequestsForActiveTab(true)
-    }
-    catch (e) {
-      raiseError(e?.message || 'خطا در تایید درخواست')
-    }
-    finally {
-      state.loading = false
-    }
+  async function confirmApproveDialog(ignoreAttendance = false) {
+    await handleApproveOrReject(true, ignoreAttendance)
   }
 
   async function confirmRejectDialog() {
+    await handleApproveOrReject(false)
+  }
+
+  async function handleApproveOrReject(approve, ignoreAttendance = false) {
     state.loading = true
     try {
       await axiosInstance.post('/hr-request/request/hr-confirm', {
         requestIds: state.pendingIds,
-        approve: 0,
         description: state.rejectReason,
+        approve,
+        ignoreAttendance,
       })
-      resetConfirmationDialogState()
-      raiseSuccess('با موفقیت رد شد.')
-      await fetchRequestsForActiveTab(true)
+      raiseSuccess('با موفقیت ذخیره شد.')
     }
     catch (e) {
-      raiseError(e?.message || 'خطا در رد درخواست')
+      raiseError(e?.response?.data?.message || 'خطایی رخ داد')
     }
     finally {
       state.loading = false
+      resetConfirmationDialogState()
+      await fetchRequestsForActiveTab(true)
     }
   }
 
@@ -221,6 +218,7 @@ export function useRequestsManagementLogic() {
     onEditClick,
     onReferralClick,
     onShowApprovalFlowClick,
+    onShowAttendancesClick,
 
     approveRow,
     approveMultiRequest,
