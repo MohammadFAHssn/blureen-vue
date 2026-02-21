@@ -54,7 +54,9 @@ function dialogModelValueUpdate(val) {
 const { theme } = useAGGridTheme()
 const columnDefs = ref([
   { headerName: 'شهر', field: 'city', sort: 'desc' },
-  { headerName: 'آدرس', field: 'address' },
+  { headerName: 'خیابان اصلی', field: 'mainStreet' },
+  { headerName: 'خیابان فرعی', field: 'sideStreet' },
+  { headerName: 'محل سوار شدن', field: 'boardingPlace' },
   { headerName: 'کد', field: 'code' },
 ])
 
@@ -62,7 +64,9 @@ const rowData = computed(() =>
   service.value.stations?.map((station) => {
     return {
       city: station.city,
-      address: station.address,
+      mainStreet: station.mainStreet,
+      sideStreet: station.sideStreet,
+      boardingPlace: station.boardingPlace,
       code: station.code,
     }
   }),
