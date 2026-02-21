@@ -24,7 +24,9 @@ const refVForm = ref()
 const cities = ref(props.cities)
 
 const city = ref(null)
-const address = ref(null)
+const mainStreet = ref(null)
+const sideStreet = ref(null)
+const boardingPlace = ref(null)
 const code = ref(null)
 
 // methods
@@ -33,7 +35,9 @@ function onFormSubmit() {
     if (isValid) {
       emit('submit', {
         cityName: city.value,
-        address: address.value,
+        mainStreet: mainStreet.value,
+        sideStreet: sideStreet.value,
+        boardingPlace: boardingPlace.value,
         code: code.value,
       })
     }
@@ -113,13 +117,33 @@ function toComparisonKey(str) {
               />
             </VCol>
 
-            <!-- address -->
-            <VCol cols="12" md="12">
-              <VTextarea
-                v-model="address"
+            <!-- main street -->
+            <VCol cols="12" md="6">
+              <VTextField
+                v-model="mainStreet"
                 :rules="[requiredValidator]"
                 :disabled="loading"
-                label="آدرس"
+                label="خیابان اصلی"
+              />
+            </VCol>
+
+            <!-- side street -->
+            <VCol cols="12" md="6">
+              <VTextField
+                v-model="sideStreet"
+                :rules="[requiredValidator]"
+                :disabled="loading"
+                label="خیابان فرعی"
+              />
+            </VCol>
+
+            <!-- boarding place -->
+            <VCol cols="12" md="12">
+              <VTextField
+                v-model="boardingPlace"
+                :rules="[requiredValidator]"
+                :disabled="loading"
+                label="محل سوار شدن"
               />
             </VCol>
 
