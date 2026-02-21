@@ -1,6 +1,4 @@
 <script setup>
-import { computed, ref } from 'vue'
-
 const props = defineProps({
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
@@ -10,6 +8,7 @@ const props = defineProps({
   onEditClick: { type: Function, required: true },
   onReferralClick: { type: Function, required: true },
   onShowApprovalFlowClick: { type: Function, required: true },
+  onShowAttendanceLogsClick: { type: Function, required: true },
 })
 
 const selectedIds = defineModel('selectedIds', {
@@ -43,12 +42,12 @@ const rowData = computed(() =>
 
 const columnDefs = computed(() => [
   { headerName: 'پرسنل', field: 'personnel' },
-/*
+  /*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
 */
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
-/*
+  /*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
 */
   {
@@ -101,8 +100,14 @@ function getContextMenuItems(params) {
 
   items.push({
     name: 'ویرایش',
-    icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+    icon: '<i class="tabler-edit" style="font-size: 18px;"></i>',
     action: () => props.onEditClick(node),
+  })
+
+  items.push({
+    name: 'نمایش ترددها',
+    icon: '<i class="tabler-arrows-left-right" style="font-size: 18px;"></i>',
+    action: () => props.onShowAttendanceLogsClick(node),
   })
 
   items.push({

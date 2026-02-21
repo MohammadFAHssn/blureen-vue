@@ -22,6 +22,7 @@ function createShared() {
       details: false,
       referral: false,
       approvalFlow: false,
+      attendanceLogs: false,
     },
 
     detailsItem: null,
@@ -83,6 +84,10 @@ function createShared() {
     setPendingFromItem(request)
     state.dialogs.approvalFlow = true
   }
+  function onShowAttendanceLogsClick(request) {
+    setPendingFromItem(request)
+    state.dialogs.attendanceLogs = true
+  }
 
   function resetConfirmationDialogState() {
     state.dialogs.reject = false
@@ -90,9 +95,10 @@ function createShared() {
     state.pendingItem = null
     state.rejectReason = ''
     state.dialogs.approveConfirm = false
+    state.dialogs.attendanceLogs = false
   }
 
-  async function handleApproveOrReject(approve) {
+  async function handleApproveOrReject(approve, ignoreAttendance = false) {
     const ids = [...(state.pendingIds || [])].filter(Boolean)
     if (!ids.length)
       return raiseError('هیچ ردیفی انتخاب نشده است.')
@@ -107,6 +113,7 @@ function createShared() {
         ...(approve === false
           ? { description: state.rejectReason.trim() }
           : {}),
+        ignoreAttendance,
       })
       raiseSuccess(`با موفقیت ${approve ? 'تایید' : 'رد'} شد.`)
     }
@@ -150,8 +157,8 @@ function createShared() {
     return handleApproveOrReject(false)
   }
 
-  async function confirmApproveDialog() {
-    await handleApproveOrReject(true)
+  async function confirmApproveDialog(ignoreAttendance = false) {
+    await handleApproveOrReject(true, ignoreAttendance)
   }
 
   async function onSubmittedEdit() {
@@ -178,6 +185,7 @@ function createShared() {
     onEditClick,
     onReferralClick,
     onShowApprovalFlowClick,
+    onShowAttendanceLogsClick,
     approveSingleRequest,
     approveMultiRequest,
     openRejectSelectedDialog,

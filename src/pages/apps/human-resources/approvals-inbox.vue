@@ -3,8 +3,9 @@ import { computed, onMounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
-import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/ApprovalsFlowDialog.vue'
-import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
+import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/ApprovalsCardsView.vue'
 import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
 import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
@@ -87,6 +88,14 @@ onMounted(() => {
       v-if="logic.state.dialogs.approvalFlow"
       v-model:is-dialog-visible="logic.state.dialogs.approvalFlow"
       :request="logic.pendingRequest.value"
+    />
+
+    <AttendanceDialog
+      v-if="logic.state.dialogs.attendanceLogs"
+      v-model:is-dialog-visible="logic.state.dialogs.attendanceLogs"
+      :loading="logic.state.loading"
+      :request="logic.pendingRequest.value"
+      @submit="logic.confirmApproveDialog(true)"
     />
 
     <AreYouSureDialog

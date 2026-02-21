@@ -45,6 +45,7 @@ onBeforeUnmount(() => {
         :on-edit-click="logic.onEditClick"
         :on-referral-click="logic.onReferralClick"
         :on-show-approval-flow-click="logic.onShowApprovalFlowClick"
+        :on-show-attendance-logs-click="logic.onShowAttendanceLogsClick"
       />
     </section>
   </div>

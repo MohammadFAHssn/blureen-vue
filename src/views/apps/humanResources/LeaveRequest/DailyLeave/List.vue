@@ -1,7 +1,7 @@
 <script setup>
 import { useDisplay } from 'vuetify/framework'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
-import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/ApprovalsFlowDialog.vue'
+import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
 const props = defineProps({

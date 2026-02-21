@@ -1,8 +1,8 @@
 <script setup>
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
-import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/ApprovalsFlowDialog.vue'
-import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
