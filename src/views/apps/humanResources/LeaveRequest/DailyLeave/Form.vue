@@ -214,7 +214,7 @@ watch(
             type="submit"
             color="primary"
             :loading="uiState.loading"
-            :disabled="true"
+            :disabled="uiState.loading"
           >
             ثبت درخواست
           </VBtn>

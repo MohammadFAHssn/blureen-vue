@@ -11,7 +11,6 @@ const uiState = reactive({
   errorMessage: '',
   isEditRequestDialogVisible: false,
   requestsKey: 0,
-  disableSubmit: true,
 })
 const selectedUser = ref(useCookie('userData').value)
 async function onUserSelected(selected) {
@@ -59,20 +58,6 @@ async function onUserSelected(selected) {
     </VCol>
   </VRow>
 
-  <v-dialog v-if="uiState.disableSubmit" v-model="uiState.disableSubmit" max-width="400" persistent>
-    <v-card
-      prepend-icon="mdi-map-marker"
-      text="امکان ثبت مرخصی موقتاً در دسترس نمیباشد."
-      title="توجه"
-    >
-      <template #actions>
-        <v-spacer />
-        <v-btn @click="uiState.disableSubmit = false">
-          باشه
-        </v-btn>
-      </template>
-    </v-card>
-  </v-dialog>
 </template>
 
 <style scoped></style>
