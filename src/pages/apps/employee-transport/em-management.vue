@@ -6,8 +6,8 @@ import EmFleetVehicle from '@/views/apps/employeeTransport/EmFleetVehicle.vue'
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
-    action: 'see',
-    subject: 'Kitchen',
+    action: 'read',
+    subject: 'em-Management',
   },
 })
 
