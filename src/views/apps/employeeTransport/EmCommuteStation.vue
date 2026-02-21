@@ -44,7 +44,9 @@ function onGridReady(params) {
 const columnDefs = ref([
   { headerName: 'شهر', field: 'city' },
   { headerName: 'کد', field: 'code' },
-  { headerName: 'آدرس', field: 'address' },
+  { headerName: 'خیابان اصلی', field: 'mainStreet' },
+  { headerName: 'خیابان فرعی', field: 'sideStreet' },
+  { headerName: 'محل سوار شدن', field: 'boardingPlace' },
   {
     headerName: 'وضعیت',
     field: 'active',
@@ -83,7 +85,9 @@ const rowData = computed(() =>
     id: commuteStation.id,
     city: commuteStation.emCity.name ?? '',
     code: commuteStation.code ?? '',
-    address: commuteStation.address ?? '',
+    mainStreet: commuteStation.mainStreet ?? '',
+    sideStreet: commuteStation.sideStreet ?? '',
+    boardingPlace: commuteStation.boardingPlace ?? '',
     active: commuteStation.active,
     actions: {
       editable: {
@@ -99,11 +103,10 @@ const rowData = computed(() =>
 async function onCreateCommuteStation(payload) {
   const formData = new FormData()
   formData.append('city_name', payload.cityName?.name ?? payload.cityName)
-  formData.append('address', payload.address)
+  formData.append('main_street', payload.mainStreet)
+  formData.append('side_street', payload.sideStreet)
+  formData.append('boarding_place', payload.boardingPlace)
   formData.append('code', payload.code)
-  if (payload.description) {
-    formData.append('description', payload.description)
-  }
 
   pendingState.creatingEmCommuteStation = true
 
@@ -139,9 +142,10 @@ async function onUpdateCommuteStation(payload) {
   const formData = new FormData()
   const id = selectedEmCommuteStation.value.id
   formData.append('city_name', payload.cityName?.name ?? payload.cityName)
-  formData.append('address', payload.address)
+  formData.append('main_street', payload.mainStreet)
+  formData.append('side_street', payload.sideStreet)
+  formData.append('boarding_place', payload.boardingPlace)
   formData.append('code', payload.code)
-  formData.append('description', payload.description)
 
   pendingState.editingEmCommuteStation = true
 
