@@ -49,6 +49,13 @@ function onCancelClick() {
     </IconBtn>
 
     <IconBtn
+      v-if="params.value.addStation"
+      @click="params.onAddStationClick(params.node)"
+    >
+      <VIcon icon="tabler-location-plus" />
+    </IconBtn>
+
+    <IconBtn
       v-if="params.value.status"
       @click="params.onStatusClick(params.node)"
     >
