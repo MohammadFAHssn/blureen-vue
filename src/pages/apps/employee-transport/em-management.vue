@@ -7,7 +7,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'read',
-    subject: 'em-Management',
+    subject: 'Em-Management',
   },
 })
 
