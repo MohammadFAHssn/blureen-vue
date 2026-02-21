@@ -2,7 +2,7 @@ export default [
   {
     heading: 'EMPLOYEE TRANSPORT',
     action: 'read',
-    subject: 'em-Management',
+    subject: 'Em-Management',
   },
   {
     title: 'EMPLOYEE TRANSPORT Service',
@@ -16,6 +16,6 @@ export default [
     to: 'apps-employee-transport-em-management',
     icon: { icon: 'tabler-adjustments' },
     action: 'read',
-    subject: 'em-Management',
+    subject: 'Em-Management',
   },
 ]
