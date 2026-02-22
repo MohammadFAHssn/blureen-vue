@@ -10,6 +10,7 @@ const emit = defineEmits([
   'edit',
   'referral',
   'approvalFlow',
+  'attendanceLog',
   'approveRow',
   'update:selectedIds',
 ])
@@ -39,17 +40,6 @@ function fullName(u) {
   return `${u.personnel_code} - ${u.first_name} ${u.last_name}`
 }
 
-const actionsValue = {
-  approvable: props.tab === STATUSES.PENDING_HR_APPROVAL,
-  detailsable: true,
-  editable: {
-    status: props.tab === STATUSES.PENDING_HR_APPROVAL,
-    mode: 'view',
-  },
-  referrable: props.tab === STATUSES.PENDING_HR_APPROVAL,
-  approvalFlow: true,
-}
-
 const rowData = computed(() =>
   (props.items ?? []).map(item => ({
     currentItem: item,
@@ -65,7 +55,10 @@ const rowData = computed(() =>
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
     approver: pendingApproverName(item.approvals),
-    actions: actionsValue,
+    actions: {
+      approvable: item.kasra_credit_id,
+      detailsable: true,
+    },
   })),
 )
 
@@ -78,7 +71,9 @@ const baseCols = [
 */
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+  /*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+*/
 ]
 
 const approverCol = {
@@ -90,7 +85,7 @@ const approverCol = {
 const actionsCol = {
   headerName: 'عملیات',
   field: 'actions',
-  width: 250,
+  width: 150,
   valueFormatter: () => '',
   suppressHeaderMenuButton: true,
   suppressHeaderContextMenu: true,
@@ -99,9 +94,6 @@ const actionsCol = {
     params: {
       onApproveClick: (node, approve) => emit('approveRow', node, approve),
       onDetailsClick: node => emit('details', node),
-      onEditClick: node => emit('edit', node),
-      onReferralClick: node => emit('referral', node),
-      onShowApprovalFlowClick: node => emit('approvalFlow', node),
     },
   }),
 }
@@ -130,6 +122,45 @@ function onGridReady(params) {
 function onSelectionChanged() {
   syncSelectedIds()
   gridApi.value?.refreshCells?.({ force: true })
+}
+
+function getContextMenuItems(params) {
+  const api = params.api
+  const node = params.node
+  const data = node?.data
+
+  if (node && !node.isSelected?.()) {
+    api?.deselectAll?.()
+    node.setSelected?.(true)
+  }
+
+  if (!data) return params.defaultItems ?? []
+
+  const items = []
+
+  if (props.tab === STATUSES.PENDING_HR_APPROVAL) {
+    items.push({
+      name: 'ویرایش',
+      icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
+      action: () => emit('edit', node),
+    })
+  }
+
+  items.push({
+    name: 'نمایش ترددها',
+    icon: '<i class="tabler-arrows-left-right" style="font-size: 18px;"></i>',
+    action: () => emit('attendanceLog', node),
+  })
+
+  items.push({
+    name: 'نمایش تاییدیه ها',
+    icon: '<i class="tabler-git-branch" style="font-size: 18px;"></i>',
+    action: () => emit('approvalFlow', node),
+  })
+
+  if (!items.length) return params.defaultItems ?? []
+
+  return [...items, 'separator', ...(params.defaultItems ?? [])]
 }
 
 function pendingApproverName(approvals) {
@@ -167,6 +198,7 @@ function pendingApproverName(approvals) {
         headerCheckbox: true,
       }"
       :theme="theme"
+      :get-context-menu-items="getContextMenuItems"
       @grid-ready="onGridReady"
       @selection-changed="onSelectionChanged"
     />

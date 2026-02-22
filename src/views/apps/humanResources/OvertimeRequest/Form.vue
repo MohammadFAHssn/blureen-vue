@@ -24,9 +24,7 @@ const startTimeRules = [
   () => !!startTime.value || 'لطفا ساعت شروع را انتخاب کنید',
 ]
 const endTime = ref('')
-const endTimeRules = [
-  () => !!endTime.value || 'لطفا ساعت پایان را انتخاب کنید',
-]
+const endTimeRules = [() => !!endTime.value || 'لطفا ساعت پایان را انتخاب کنید']
 const description = ref('')
 const descriptionRules = [
   () => !!description.value || 'لطفا فیلد توضیحات را تکمیل فرمایید.',
@@ -55,16 +53,8 @@ function onFormSubmit() {
         emit('created')
       }
       catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage = error?.response?.data?.message ?? 'خطا در ثبت درخواست'
       }
     }
   })

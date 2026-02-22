@@ -1,4 +1,4 @@
-/* global axiosInstance, $api */
+/* global axiosInstance */
 import { computed, reactive } from 'vue'
 
 let _state
@@ -21,6 +21,8 @@ function createShared() {
       edit: false,
       details: false,
       referral: false,
+      approvalFlow: false,
+      attendanceLogs: false,
     },
 
     detailsItem: null,
@@ -78,20 +80,25 @@ function createShared() {
     state.dialogs.referral = true
   }
 
-  function resetRejectDialogState() {
+  function onShowApprovalFlowClick(request) {
+    setPendingFromItem(request)
+    state.dialogs.approvalFlow = true
+  }
+  function onShowAttendanceLogsClick(request) {
+    setPendingFromItem(request)
+    state.dialogs.attendanceLogs = true
+  }
+
+  function resetConfirmationDialogState() {
     state.dialogs.reject = false
     state.pendingIds = []
     state.pendingItem = null
     state.rejectReason = ''
-  }
-
-  function resetApproveDialogState() {
     state.dialogs.approveConfirm = false
-    state.pendingIds = []
-    state.pendingItem = null
+    state.dialogs.attendanceLogs = false
   }
 
-  async function handleApproveOrReject(approve) {
+  async function handleApproveOrReject(approve, ignoreAttendance = false) {
     const ids = [...(state.pendingIds || [])].filter(Boolean)
     if (!ids.length)
       return raiseError('هیچ ردیفی انتخاب نشده است.')
@@ -100,37 +107,23 @@ function createShared() {
 
     state.loading = true
     try {
-      const body = {
+      await axiosInstance.post('/hr-request/request/approve', {
         approve,
         approvalRequestsIds: ids,
         ...(approve === false
           ? { description: state.rejectReason.trim() }
           : {}),
-      }
-
-      await $api('/hr-request/request/approve', {
-        method: 'POST',
-        body,
-        onResponseError({ response }) {
-          throw new Error(
-            response?._data?.message || 'خطا در ثبت تایید/رد درخواست',
-          )
-        },
+        ignoreAttendance,
       })
-
       raiseSuccess(`با موفقیت ${approve ? 'تایید' : 'رد'} شد.`)
-
-      if (approve)
-        resetApproveDialogState()
-      else resetRejectDialogState()
-
-      await fetchRequests()
     }
     catch (err) {
-      raiseError(err?.message || 'خطایی رخ داد')
+      raiseError(err?.response?.data?.message || 'خطایی رخ داد')
     }
     finally {
       state.loading = false
+      resetConfirmationDialogState()
+      await fetchRequests()
     }
   }
 
@@ -164,8 +157,8 @@ function createShared() {
     return handleApproveOrReject(false)
   }
 
-  async function confirmApproveDialog() {
-    await handleApproveOrReject(true)
+  async function confirmApproveDialog(ignoreAttendance = false) {
+    await handleApproveOrReject(true, ignoreAttendance)
   }
 
   async function onSubmittedEdit() {
@@ -191,12 +184,14 @@ function createShared() {
     openDetails,
     onEditClick,
     onReferralClick,
+    onShowApprovalFlowClick,
+    onShowAttendanceLogsClick,
     approveSingleRequest,
     approveMultiRequest,
     openRejectSelectedDialog,
     confirmApproveDialog,
     confirmRejectDialog,
-    resetRejectDialogState,
+    resetConfirmationDialogState,
     onSubmittedEdit,
     onSubmittedReferral,
     approveConfirmTitle,

@@ -104,7 +104,14 @@ function fmtTimeRange(r) {
               <VIcon icon="tabler-ban" />
             </VBtn>
 
-            <VSpacer />
+            <VBtn
+              size="small"
+              color="info"
+              variant="tonal"
+              @click="emit('attendance', item)"
+            >
+              <VIcon icon="tabler-arrows-left-right" />
+            </VBtn>
 
             <VBtn size="small" variant="tonal" @click="emit('details', item)">
               <VIcon icon="tabler-file-description" />

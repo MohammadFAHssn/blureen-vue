@@ -70,6 +70,7 @@ onBeforeUnmount(() => {
         @toggle-select="toggleCardSelection"
         @approve="onApprove"
         @reject="onReject"
+        @attendance="logic.onShowAttendanceLogsClick"
         @details="logic.openDetails"
         @edit="logic.onEditClick"
         @referral="logic.onReferralClick"

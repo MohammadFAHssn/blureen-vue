@@ -19,7 +19,7 @@ const emit = defineEmits([
   <section class="toolbar">
     <div class="left-actions">
       <VBtn
-        v-if="selectedCount > 1"
+        v-if="selectedCount > 0"
         color="success"
         @click="emit('approveSelected')"
       >
@@ -27,7 +27,7 @@ const emit = defineEmits([
       </VBtn>
 
       <VBtn
-        v-if="selectedCount > 1"
+        v-if="selectedCount > 0"
         color="error"
         @click="emit('rejectSelected')"
       >
