@@ -107,7 +107,7 @@ async function onFetchReport(payload) {
 async function fetchContractors() {
   pendingState.fetchingContractors = true
   try {
-    const res = await $api('/contractor/get-actives', { method: 'GET' })
+    const res = await $api('/contractor/get-active-responsibles', { method: 'GET' })
     contractors.value = res?.data.contractors || []
   }
   catch (e) {
