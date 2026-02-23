@@ -4,8 +4,8 @@ import { computed, reactive } from 'vue'
 import { STATUSES } from '@/utils/constants.js'
 
 export const REQUEST_TABS = Object.freeze([
-  { value: STATUSES.PENDING, title: 'در روند' },
   { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
+  { value: STATUSES.PENDING, title: 'در روند' },
   { value: STATUSES.APPROVED, title: 'آرشیو تایید شده' },
   { value: STATUSES.REJECTED, title: 'آرشیو رد شده' },
 ])
@@ -35,12 +35,12 @@ export function useRequestsManagementLogic() {
     },
 
     loading: false,
-    activeTab: STATUSES.PENDING,
+    activeTab: STATUSES.PENDING_HR_APPROVAL,
 
     loadedTabs: new Set(),
     requestsByTab: {
-      [STATUSES.PENDING]: [],
       [STATUSES.PENDING_HR_APPROVAL]: [],
+      [STATUSES.PENDING]: [],
       [STATUSES.APPROVED]: [],
       [STATUSES.REJECTED]: [],
     },
