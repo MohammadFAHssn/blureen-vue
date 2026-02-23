@@ -31,29 +31,52 @@ const emit = defineEmits(['submit', 'update:isDialogVisible'])
 // states
 const refVForm = ref()
 
+const shiftTypes = ref(props.shiftTypes)
+const cities = ref(props.cities)
 const selectedEmShiftType = ref(null)
 const selectedEmCity = ref(null)
 const selectedMainStreet = ref(null)
 const selectedSideStreet = ref(null)
-const selectedBoardingPlace = ref(null)
+const selectedStation = ref(null)
 
-const cities = ref(props.cities)
-const mainStreets = computed(() =>
-  props.stations
-    ?.filter(station => station.emCity?.id === selectedEmCity.value)
-    ?.map(station => station.mainStreet) || [],
-)
-const sideStreets = computed(() =>
-  props.stations
-    ?.filter(station => station.emCity?.id === selectedEmCity.value && station.mainStreet === selectedMainStreet.value)
-    ?.map(station => station.sideStreet) || [],
-)
-const boardingPlaces = computed(() =>
-  props.stations
-    ?.filter(station => station.emCity?.id === selectedEmCity.value && station.mainStreet === selectedMainStreet.value && station.sideStreet === selectedSideStreet.value)
-    ?.map(station => station.boardingPlace) || [],
-)
-const shiftTypes = ref(props.shiftTypes)
+const stationTree = computed(() => {
+  const tree = {}
+
+  props.stations.forEach((s) => {
+    const city = s.emCity.id
+    const main = s.mainStreet
+    const side = s.sideStreet
+
+    tree[city] ??= {}
+    tree[city][main] ??= {}
+    tree[city][main][side] ??= []
+
+    tree[city][main][side].push(s)
+  })
+
+  return tree
+})
+const mainStreets = computed(() => {
+  return selectedEmCity.value
+    ? Object.keys(stationTree.value[selectedEmCity.value] || {})
+    : []
+})
+const sideStreets = computed(() => {
+  return selectedEmCity.value && selectedMainStreet.value
+    ? Object.keys(
+        stationTree.value[selectedEmCity.value]?.[selectedMainStreet.value] || {},
+      )
+    : []
+})
+const boardingPlaces = computed(() => {
+  return selectedEmCity.value
+    && selectedMainStreet.value
+    && selectedSideStreet.value
+    ? stationTree.value[selectedEmCity.value]?.[
+      selectedMainStreet.value
+    ]?.[selectedSideStreet.value] || []
+    : []
+})
 
 // methods
 function onFormSubmit() {
@@ -61,10 +84,7 @@ function onFormSubmit() {
     if (isValid) {
       emit('submit', {
         shiftType: selectedEmShiftType.value,
-        cityName: selectedEmCity.value,
-        mainStreet: selectedMainStreet.value,
-        sideStreet: selectedSideStreet.value,
-        boardingPlace: selectedBoardingPlace.value,
+        selectedStation: selectedStation.value,
       })
     }
   })
@@ -81,14 +101,14 @@ function dialogModelValueUpdate(val) {
 watch(selectedEmCity, () => {
   selectedMainStreet.value = null
   selectedSideStreet.value = null
-  selectedBoardingPlace.value = null
+  selectedStation.value = null
 })
 watch(selectedMainStreet, () => {
   selectedSideStreet.value = null
-  selectedBoardingPlace.value = null
+  selectedStation.value = null
 })
 watch(selectedSideStreet, () => {
-  selectedBoardingPlace.value = null
+  selectedStation.value = null
 })
 </script>
 
@@ -103,7 +123,7 @@ watch(selectedSideStreet, () => {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          انتخاب سرویس
+          انتخاب ایستگاه
         </h4>
 
         <!-- 👉 Form -->
@@ -169,11 +189,11 @@ watch(selectedSideStreet, () => {
             <!-- boarding place -->
             <VCol cols="12" md="6">
               <VAutocomplete
-                v-model="selectedBoardingPlace"
-                label="محل سوار شدن"
+                v-model="selectedStation"
+                label="محل سوار شدن(ایستگاه)"
                 :items="boardingPlaces"
-                item-title="name"
-                item-value="name"
+                item-title="boardingPlace"
+                item-value="id"
                 :rules="[requiredValidator]"
                 :disabled="loading"
               />
