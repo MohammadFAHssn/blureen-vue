@@ -2,8 +2,8 @@
 defineProps({
   isMobile: { type: Boolean, required: true },
   selectedCount: { type: Number, required: true },
-  loading: { type: Boolean, default: false },
-  hasRequests: { type: Boolean, default: false },
+  loading: { type: Boolean, required: true },
+  showConfirmBtn: { type: Boolean, required: true },
 })
 
 const emit = defineEmits([
@@ -17,10 +17,11 @@ const emit = defineEmits([
 
 <template>
   <section class="toolbar">
-    <div class="left-actions">
+    <div v-if="showConfirmBtn" class="left-actions">
       <VBtn
         v-if="selectedCount > 0"
         color="success"
+        :disabled="loading"
         @click="emit('approveSelected')"
       >
         تایید انتخاب‌شده‌ها ({{ selectedCount }})
@@ -29,6 +30,7 @@ const emit = defineEmits([
       <VBtn
         v-if="selectedCount > 0"
         color="error"
+        :disabled="loading"
         @click="emit('rejectSelected')"
       >
         رد انتخاب‌شده‌ها ({{ selectedCount }})
@@ -38,7 +40,7 @@ const emit = defineEmits([
         <VBtn
           variant="text"
           density="comfortable"
-          :disabled="!hasRequests"
+          :disabled="loading"
           @click="emit('selectAllMobile')"
         >
           انتخاب همه

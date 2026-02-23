@@ -3,6 +3,7 @@ const props = defineProps({
   tab: { type: Number, required: true },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
+  userCanManage: { type: Boolean, required: true },
 })
 
 const emit = defineEmits([
@@ -40,15 +41,27 @@ function fullName(u) {
   return `${u.personnel_code} - ${u.first_name} ${u.last_name}`
 }
 
-const rowData = computed(() =>
-  (props.items ?? []).map(item => ({
+const rowData = computed(() => {
+  const loginUserId = useCookie('userData').value.id
+  const items = props.items ?? []
+
+  const filtered = props.userCanManage
+    ? items
+    : items.filter((item) => {
+        const liaisonId
+          = item?.user?.org_chart_nodes_as_primary?.[0]?.org_unit?.liaisons?.[0]
+            ?.id
+        return String(liaisonId) === String(loginUserId)
+      })
+
+  return filtered.map(item => ({
     currentItem: item,
     id: item.id,
     personnel: fullName(item.user),
     costCenter:
-      item?.user?.org_chart_nodes_as_primary[0]?.org_unit?.name ?? '-',
+      item?.user?.org_chart_nodes_as_primary?.[0]?.org_unit?.name ?? '-',
     liaisons: fullName(
-      item?.user?.org_chart_nodes_as_primary[0]?.org_unit?.liaisons[0],
+      item?.user?.org_chart_nodes_as_primary?.[0]?.org_unit?.liaisons?.[0],
     ),
     requestType: item.type.name ?? '-',
     startDate: item.start_date ?? '-',
@@ -56,19 +69,17 @@ const rowData = computed(() =>
     timeRange: fmtTimeRange(item),
     approver: pendingApproverName(item.approvals),
     actions: {
-      approvable: item.kasra_credit_id,
+      approvable: props.userCanManage && item.kasra_credit_id,
       detailsable: true,
     },
-  })),
-)
+  }))
+})
 
 const baseCols = [
   { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'واحد', field: 'costCenter' },
   { headerName: 'رابط اداری', field: 'liaisons' },
-  /*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
-*/
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   /*
@@ -125,6 +136,8 @@ function onSelectionChanged() {
 }
 
 function getContextMenuItems(params) {
+  if (!props.userCanManage) return
+
   const api = params.api
   const node = params.node
   const data = node?.data
