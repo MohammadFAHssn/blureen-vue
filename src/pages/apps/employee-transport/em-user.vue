@@ -9,7 +9,7 @@ definePage({
   },
 })
 
-// states
+/* -------------------- UI STATE -------------------- */
 const uiState = reactive({
   success: false,
   successMessage: '',
@@ -17,122 +17,225 @@ const uiState = reactive({
   errorMessage: '',
   isEmUserStationSelectionDialogVisible: false,
 })
-const pendingState = reactive({
-  fetchingUserEmCommuteService: false,
-  loading: false,
-  choosingEmCommuteStation: false,
-})
+
+function resetMessages() {
+  uiState.success = false
+  uiState.successMessage = ''
+  uiState.hasError = false
+  uiState.errorMessage = ''
+}
+
 function setError(message) {
   uiState.hasError = true
   uiState.errorMessage = message
 }
+
+function setSuccess(message) {
+  uiState.success = true
+  uiState.successMessage = message
+}
+
+/* -------------------- PENDING STATE -------------------- */
+const pendingState = reactive({
+  firstLoad: true,
+  choosingEmCommuteStation: false,
+})
+
+/* -------------------- DATA -------------------- */
+const userStation = ref(null)
 const cities = ref([])
 const emShiftTypes = ref([])
 const emCommuteStations = ref([])
 
-async function onCreateCommuteService(payload) {
-  const formData = new FormData()
-  formData.append('em_shift_type', payload.shiftType?.name ?? payload.shiftType)
-  formData.append('em_fleet_vehicle_id', payload.fleetVehicle)
-  formData.append('service_code', payload.serviceCode)
+const hasService = computed(() => !!userStation.value?.emCommuteServiceStation)
+const service = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteService || null)
+const station = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteStation || null)
 
-  pendingState.creatingEmCommuteService = true
+/* -------------------- API -------------------- */
+async function fetchUserEmCommuteStation() {
+  pendingState.firstLoad = true
+  const res = await $api('/employee-transport/user', { method: 'GET' })
+  const d = res?.data
 
+  userStation.value = (d && d.emCommuteServiceStation) ? d : null
+  pendingState.firstLoad = false
+}
+
+async function fetchEmCities() {
+  const res = await $api('/employee-transport/em-city', { method: 'GET' })
+  cities.value = res?.data?.emCities || []
+}
+
+async function fetchEmShiftTypes() {
+  const res = await $api('/employee-transport/em-shift-type', { method: 'GET' })
+  emShiftTypes.value = res?.data?.emShiftTypes || []
+}
+
+async function fetchEmCommuteStations() {
+  const res = await $api('/employee-transport/commute-station/getUsed', { method: 'GET' })
+  emCommuteStations.value = res?.data?.emCommuteStations || []
+}
+
+/* -------------------- ACTIONS -------------------- */
+async function onChooseStation(inComing) {
+  resetMessages()
+
+  const payload = {
+    user_id: useCookie('userData')?.value?.id,
+    em_shift_type_id: inComing.shiftType,
+    em_commute_station_id: inComing.selectedStation,
+  }
+
+  pendingState.choosingEmCommuteStation = true
   try {
-    await $api('/employee-transport/service', {
+    await $api('/employee-transport/user', {
       method: 'POST',
-      body: formData,
+      body: payload,
       onResponseError({ response }) {
-        uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage = response._data?.message || 'خطا در ایجاد سرویس'
-        }
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در انتخاب')
+        throw new Error(msg)
       },
     })
 
-    uiState.isEmCommuteServiceCreateDialogVisible = false
+    setSuccess('ایستگاه با موفقیت انتخاب شد.')
   }
   catch (err) {
     console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره')
   }
   finally {
-    pendingState.creatingEmCommuteService = false
+    uiState.isEmUserStationSelectionDialogVisible = false
+    pendingState.choosingEmCommuteStation = false
+    await fetchUserEmCommuteStation()
   }
 }
-async function fetchEmCities() {
-  pendingState.loading = true
-  try {
-    const res = await $api('/employee-transport/em-city', { method: 'GET' })
-    cities.value = res?.data.emCities || []
-  }
-  catch (e) {
-    console.error('Error fetching cities:', e)
-    setError(e.message || 'خطا در دریافت شهرها')
-  }
-  finally {
-    pendingState.loading = false
-  }
-}
-async function fetchEmShiftTypes() {
-  pendingState.loading = true
-  try {
-    const res = await $api('/employee-transport/em-shift-type', { method: 'GET' })
-    emShiftTypes.value = res?.data.emShiftTypes || []
-  }
-  catch (e) {
-    console.error('Error fetching emShiftTypes:', e)
-    setError(e.message || 'خطا در دریافت انواع شیفت')
-  }
-  finally {
-    pendingState.loading = false
-  }
-}
-async function fetchEmCommuteStations() {
-  pendingState.loading = true
-  try {
-    const res = await $api('/employee-transport/commute-station/getUsed', { method: 'GET' })
-    emCommuteStations.value = res?.data.emCommuteStations || []
-  }
-  catch (e) {
-    console.error('Error fetching emCommuteStations:', e)
-    setError(e.message || 'خطا در دریافت ایستگاه‌ها')
-  }
-  finally {
-    pendingState.loading = false
-  }
-}
+
+/* -------------------- LIFECYCLE -------------------- */
 onMounted(async () => {
-  await Promise.all([fetchEmCities(), fetchEmShiftTypes(), fetchEmCommuteStations()])
+  resetMessages()
+  pendingState.firstLoad = true
+  try {
+    await Promise.all([
+      fetchUserEmCommuteStation(),
+      fetchEmCities(),
+      fetchEmShiftTypes(),
+      fetchEmCommuteStations(),
+    ])
+  }
+  catch (e) {
+    console.error(e)
+    setError(e?.message || 'خطا در دریافت اطلاعات')
+  }
+  finally {
+    pendingState.firstLoad = false
+  }
 })
 </script>
 
 <template>
-  <VContainer>
+  <VContainer class="py-8">
     <VSnackbar
       v-model="uiState.hasError"
-      :timeout="2000"
+      :timeout="3500"
       location="center"
       variant="flat"
       color="error"
     >
       {{ uiState.errorMessage }}
     </VSnackbar>
-    <VRow dense>
-      <VCol cols="12">
-        <VRow align="center" justify="center" class="gap-4">
-          <div class="text-h6 font-weight-bold text-primary-darken-3">
-            شما هنوز سرویسی انتخاب نکرده‌اید. برای این کار، میتوانید از دکمه زیر استفاده کنید.
+    <VSnackbar
+      v-model="uiState.success"
+      :timeout="2500"
+      location="center"
+      variant="flat"
+      color="success"
+    >
+      {{ uiState.successMessage }}
+    </VSnackbar>
+
+    <VRow justify="center">
+      <VCol>
+        <VSkeletonLoader v-if="pendingState.firstLoad" type="card" />
+
+        <VCard
+          v-else-if="!hasService"
+          class="pa-8 text-center"
+        >
+          <div class="text-h6 font-weight-bold mb-3">
+            شما هنوز ایستگاهی انتخاب نکرده‌اید
           </div>
-        </VRow>
-        <VRow align="center" justify="center" class="gap-4">
-          <VBtn :disabled="pendingState.loading" @click="uiState.isEmUserStationSelectionDialogVisible = true">
-            شروع
+
+          <div class="text-body-2 text-medium-emphasis mb-6">
+            برای شروع، روی دکمه زیر کلیک کنید.
+          </div>
+
+          <VBtn
+            size="large"
+            color="primary"
+            @click="uiState.isEmUserStationSelectionDialogVisible = true"
+          >
+            انتخاب ایستگاه
           </VBtn>
-        </VRow>
+        </VCard>
+
+        <VCard v-else>
+          <VCardTitle class="text-h6 font-weight-bold">
+            سرویس شما
+          </VCardTitle>
+
+          <VDivider />
+
+          <VCardText class="py-6">
+            <VRow>
+              <VCol cols="12" sm="6">
+                <div class="text-caption text-medium-emphasis mb-1">
+                  سرویس
+                </div>
+                <VChip color="deep-orange" variant="tonal" size="large">
+                  {{ `${service?.code || ''} ${service?.emShiftType?.name || ''}` }}
+                </VChip>
+              </VCol>
+
+              <VCol cols="12" sm="6">
+                <div class="text-caption text-medium-emphasis mb-1">
+                  راننده
+                </div>
+                <VChip color="orange-darken-2" variant="tonal" size="large">
+                  {{ service?.emFleetVehicle?.driverName || '-' }}
+                </VChip>
+              </VCol>
+            </VRow>
+
+            <VDivider class="my-4" />
+
+            <VRow>
+              <VCol cols="12" sm="6">
+                <div class="text-caption text-medium-emphasis mb-1">
+                  موبایل راننده
+                </div>
+                <VChip color="primary" variant="tonal" size="large">
+                  {{ service?.emFleetVehicle?.driverMobileNumber || '-' }}
+                </VChip>
+              </VCol>
+
+              <VCol cols="12" sm="6">
+                <div class="text-caption text-medium-emphasis mb-1">
+                  ایستگاه شما
+                </div>
+                <VChip color="primary" variant="tonal" size="large" class="text-wrap">
+                  {{
+                    `${station?.emCity?.name || ''} -
+                    ${station?.mainStreet || ''} -
+                    ${station?.sideStreet || ''} -
+                    ${station?.boardingPlace || ''}`
+                  }}
+                </VChip>
+              </VCol>
+            </VRow>
+          </VCardText>
+        </VCard>
       </VCol>
     </VRow>
   </VContainer>
@@ -144,6 +247,6 @@ onMounted(async () => {
     :cities="cities"
     :shift-types="emShiftTypes"
     :stations="emCommuteStations"
-    @submit="onCreateCommuteService"
+    @submit="onChooseStation"
   />
 </template>
