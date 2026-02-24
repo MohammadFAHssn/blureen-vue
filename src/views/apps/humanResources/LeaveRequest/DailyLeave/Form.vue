@@ -125,7 +125,6 @@ async function onFormSubmit() {
   await submitRequest()
 }
 
-
 async function fetchReplacements() {
   try {
     const { data } = await axiosInstance.get('/base/user/replacements', {
