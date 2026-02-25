@@ -31,7 +31,7 @@ const { smAndUp } = useDisplay()
             :color="scoreColor(result.field_discipline_score, 20)"
             class="mb-2"
           >
-            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ result.field_discipline_score ?? '-' }}</span>
+            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_discipline_score * 100) / 100 ?? '-' }}</span>
           </VProgressCircular>
           <div class="text-caption text-sm-body-2 text-medium-emphasis">
             نظم و انضباط
@@ -57,7 +57,7 @@ const { smAndUp } = useDisplay()
             :color="scoreColor(result.field_ethics_score, 20)"
             class="mb-2"
           >
-            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ result.field_ethics_score ?? '-' }}</span>
+            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_ethics_score * 100) / 100 ?? '-' }}</span>
           </VProgressCircular>
           <div class="text-caption text-sm-body-2 text-medium-emphasis">
             جنبه اخلاقی
@@ -83,7 +83,7 @@ const { smAndUp } = useDisplay()
             :color="scoreColor(result.field_job_competency_score, 20)"
             class="mb-2"
           >
-            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ result.field_job_competency_score ?? '-' }}</span>
+            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_job_competency_score * 100) / 100 ?? '-' }}</span>
           </VProgressCircular>
           <div class="text-caption text-sm-body-2 text-medium-emphasis">
             شایستگی شغلی
@@ -109,7 +109,7 @@ const { smAndUp } = useDisplay()
             :color="scoreColor(result.field_communication_training_score, 20)"
             class="mb-2"
           >
-            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ result.field_communication_training_score ?? '-' }}</span>
+            <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_communication_training_score * 100) / 100 ?? '-' }}</span>
           </VProgressCircular>
           <div class="text-caption text-sm-body-2 text-medium-emphasis">
             مهارت ارتباطی و آموزشی

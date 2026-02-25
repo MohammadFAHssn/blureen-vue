@@ -29,7 +29,7 @@ defineProps({
       >
         <v-avatar color="surface-light" :size="$vuetify.display.smAndUp ? 93 : 78">
           <div class="text-sm-h5 text-h6">
-            <span>{{ result.final_score ?? '-' }}</span>
+            <span>{{ Math.round(result.final_score * 100) / 100 ?? '-' }}</span>
             <br />
             <span class="text-subtitle-2 text-medium-emphasis">از ۱۰۰</span>
           </div>
