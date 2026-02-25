@@ -91,7 +91,7 @@ defineProps({
             :color="scoreColor(result.field_final_score, 20)"
             class="mb-2"
           >
-            <span class="text-body-2 font-weight-medium">{{ result.field_final_score ?? '-' }}</span>
+            <span class="text-body-2 font-weight-medium">{{ Math.round(result.field_final_score * 100) / 100 ?? '-' }}</span>
           </VProgressCircular>
           <span class="font-weight-medium text-body-2">ارزیابی میدانی</span>
           <span class="text-caption text-medium-emphasis">از ۲۰</span>
