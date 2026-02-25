@@ -50,6 +50,7 @@ const emCommuteStations = ref([])
 const hasService = computed(() => !!userStation.value?.emCommuteServiceStation)
 const service = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteService || null)
 const station = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteStation || null)
+const smsSentDriver = computed(() => userStation.value?.smsSentDriver ?? false)
 
 /* -------------------- API -------------------- */
 async function fetchUserEmCommuteStation() {
@@ -233,6 +234,22 @@ onMounted(async () => {
                   }}
                 </VChip>
               </VCol>
+            </VRow>
+
+            <VDivider class="my-4" />
+
+            <VRow align="center" justify="center">
+              <div v-if="smsSentDriver" class="text-success mb-1">
+                پیامک با موفقیت برای راننده ارسال شد!
+              </div>
+              <div v-else>
+                <div class="text-error mb-1">
+                  پیامک برای راننده ارسال نشد!
+                  <!-- <VBtn size="small" color="success" variant="tonal" rounded="lg">
+                    ارسال پیامک
+                  </VBtn> -->
+                </div>
+              </div>
             </VRow>
           </VCardText>
         </VCard>
