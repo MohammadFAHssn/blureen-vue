@@ -51,3 +51,21 @@ export function getJalaliMonthNameByIndex(monthIndex) {
 
   return jalaliMonthNames[monthIndex - 1] ?? null
 }
+
+export function toComparisonKey(str) {
+  return (str ?? '')
+    .toString()
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/\p{M}/gu, '')
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[يى]/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/[ةۀ]/g, 'ه')
+    .replace(/[إأآٱ]/g, 'ا')
+    .replace(/ؤ/g, 'و')
+    .replace(/ئ/g, 'ی')
+    .replace(/ء/g, '')
+    .replace(/ـ/g, '')
+    .replace(/[\s\u200C\u200F\u200E]+/g, '')
+}

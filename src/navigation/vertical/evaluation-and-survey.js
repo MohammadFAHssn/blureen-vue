@@ -23,6 +23,12 @@ export default [
         subject: 'app',
         to: 'apps-evaluation-self-evaluation',
       },
+      {
+        title: 'Evaluation Results',
+        action: 'use',
+        subject: 'app',
+        to: 'apps-evaluation-evaluation-results',
+      },
     ],
   },
   {

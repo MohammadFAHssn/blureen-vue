@@ -22,6 +22,8 @@ declare module 'vue-router/auto-routes' {
     'apps-contractor-contractor': RouteRecordInfo<'apps-contractor-contractor', '/apps/contractor/contractor', Record<never, never>, Record<never, never>>,
     'apps-employee-transport-em-management': RouteRecordInfo<'apps-employee-transport-em-management', '/apps/employee-transport/em-management', Record<never, never>, Record<never, never>>,
     'apps-employee-transport-em-user': RouteRecordInfo<'apps-employee-transport-em-user', '/apps/employee-transport/em-user', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-evaluation-results copy': RouteRecordInfo<'apps-evaluation-evaluation-results copy', '/apps/evaluation/evaluation-results copy', Record<never, never>, Record<never, never>>,
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-food-food-reservation': RouteRecordInfo<'apps-food-food-reservation', '/apps/food/food-reservation', Record<never, never>, Record<never, never>>,
@@ -85,6 +87,14 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/employee-transport/em-user.vue': {
       routes: 'apps-employee-transport-em-user'
+      views: never
+    }
+    'src/pages/apps/evaluation/evaluation-results.vue': {
+      routes: 'apps-evaluation-evaluation-results'
+      views: never
+    }
+    'src/pages/apps/evaluation/evaluation-results copy.vue': {
+      routes: 'apps-evaluation-evaluation-results copy'
       views: never
     }
     'src/pages/apps/evaluation/peer-evaluation.vue': {
