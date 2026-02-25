@@ -1,19 +1,32 @@
+import { can } from '@layouts/plugins/casl.js'
 /* global axiosInstance */
 import { computed, reactive } from 'vue'
 import { STATUSES } from '@/utils/constants.js'
 
 export const REQUEST_TABS = Object.freeze([
+  { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
   { value: STATUSES.PENDING, title: 'در روند' },
-/*  { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
-  { value: STATUSES.REJECTED_BY_HR, title: 'رد شده توسط کارگزینی' },*/
   { value: STATUSES.APPROVED, title: 'آرشیو تایید شده' },
   { value: STATUSES.REJECTED, title: 'آرشیو رد شده' },
 ])
 
+export const userCanManege = computed(() => {
+  return can('manage', 'HR-cartable')
+})
+
+const visibleTabs = computed(() => {
+  return REQUEST_TABS.filter((tab) => {
+    if (tab.value === STATUSES.PENDING_HR_APPROVAL) {
+      return userCanManege.value
+    }
+    return true
+  })
+})
+
 export function useRequestsManagementLogic() {
   const state = reactive({
-    tabs: REQUEST_TABS,
-
+    tabs: visibleTabs,
+    userCanManege,
     ui: {
       hasError: false,
       errorMessage: '',
@@ -22,13 +35,12 @@ export function useRequestsManagementLogic() {
     },
 
     loading: false,
-    activeTab: STATUSES.PENDING,
+    activeTab: STATUSES.PENDING_HR_APPROVAL,
 
     loadedTabs: new Set(),
     requestsByTab: {
-      [STATUSES.PENDING]: [],
       [STATUSES.PENDING_HR_APPROVAL]: [],
-      [STATUSES.REJECTED_BY_HR]: [],
+      [STATUSES.PENDING]: [],
       [STATUSES.APPROVED]: [],
       [STATUSES.REJECTED]: [],
     },
@@ -40,6 +52,7 @@ export function useRequestsManagementLogic() {
       details: false,
       referral: false,
       approvalFlow: false,
+      attendanceLogs: false,
     },
 
     rejectReason: '',
@@ -72,17 +85,13 @@ export function useRequestsManagementLogic() {
     state.pendingIds = item?.id ? [item.id] : []
   }
 
-  function resetRejectDialogState() {
+  function resetConfirmationDialogState() {
     state.dialogs.reject = false
     state.rejectReason = ''
     state.pendingIds = []
     state.pendingItem = null
-  }
-
-  function resetApproveDialogState() {
     state.dialogs.approveConfirm = false
-    state.pendingIds = []
-    state.pendingItem = null
+    state.dialogs.attendanceLogs = false
   }
 
   async function fetchRequestsForActiveTab(force = false) {
@@ -140,6 +149,11 @@ export function useRequestsManagementLogic() {
     state.dialogs.approvalFlow = true
   }
 
+  function onShowAttendancesClick(node) {
+    setPendingFromNode(node)
+    state.dialogs.attendanceLogs = true
+  }
+
   function approveRow(node, approve) {
     setPendingFromNode(node)
 
@@ -165,33 +179,32 @@ export function useRequestsManagementLogic() {
     state.dialogs.reject = true
   }
 
-  async function confirmApproveDialog() {
-    state.loading = true
-    try {
-      resetApproveDialogState()
-      raiseSuccess('با موفقیت تایید شد.')
-      await fetchRequestsForActiveTab(true)
-    }
-    catch (e) {
-      raiseError(e?.message || 'خطا در تایید درخواست')
-    }
-    finally {
-      state.loading = false
-    }
+  async function confirmApproveDialog(ignoreAttendance = false) {
+    await handleApproveOrReject(true, ignoreAttendance)
   }
 
   async function confirmRejectDialog() {
+    await handleApproveOrReject(false)
+  }
+
+  async function handleApproveOrReject(approve, ignoreAttendance = false) {
     state.loading = true
     try {
-      resetRejectDialogState()
-      raiseSuccess('با موفقیت رد شد.')
-      await fetchRequestsForActiveTab(true)
+      await axiosInstance.post('/hr-request/request/hr-confirm', {
+        requestIds: state.pendingIds,
+        description: state.rejectReason,
+        approve,
+        ignoreAttendance,
+      })
+      raiseSuccess('با موفقیت ذخیره شد.')
     }
     catch (e) {
-      raiseError(e?.message || 'خطا در رد درخواست')
+      raiseError(e?.response?.data?.message || 'خطایی رخ داد')
     }
     finally {
       state.loading = false
+      resetConfirmationDialogState()
+      await fetchRequestsForActiveTab(true)
     }
   }
 
@@ -219,6 +232,7 @@ export function useRequestsManagementLogic() {
     onEditClick,
     onReferralClick,
     onShowApprovalFlowClick,
+    onShowAttendancesClick,
 
     approveRow,
     approveMultiRequest,
@@ -226,8 +240,7 @@ export function useRequestsManagementLogic() {
 
     confirmApproveDialog,
     confirmRejectDialog,
-    resetRejectDialogState,
-    resetApproveDialogState,
+    resetConfirmationDialogState,
 
     onSubmittedEdit,
     onSubmittedReferral,

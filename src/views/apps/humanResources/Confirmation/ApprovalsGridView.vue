@@ -29,7 +29,7 @@ onBeforeUnmount(() => {
       :is-mobile="false"
       :selected-count="selectedCount"
       :loading="logic.state.loading"
-      :has-requests="!!logic.state.requests?.length"
+      :show-confirm-btn="true"
       @refresh="logic.fetchRequests"
       @approve-selected="onApproveSelected"
       @reject-selected="onRejectSelected"
@@ -44,6 +44,8 @@ onBeforeUnmount(() => {
         :on-details-click="logic.openDetails"
         :on-edit-click="logic.onEditClick"
         :on-referral-click="logic.onReferralClick"
+        :on-show-approval-flow-click="logic.onShowApprovalFlowClick"
+        :on-show-attendance-logs-click="logic.onShowAttendanceLogsClick"
       />
     </section>
   </div>

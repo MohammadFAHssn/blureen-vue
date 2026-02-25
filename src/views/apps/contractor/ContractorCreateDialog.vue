@@ -92,7 +92,6 @@ function dialogModelValueUpdate(val) {
                 class="mt-2"
                 inline
                 label="هزینه بر عهده:"
-                @change="onChange"
               >
                 <VRadio label="پیمانکار" value="on_contractor" />
                 <VRadio label="شرکت" value="on_company" />

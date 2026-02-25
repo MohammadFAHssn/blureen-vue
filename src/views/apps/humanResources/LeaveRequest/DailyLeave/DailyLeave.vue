@@ -57,8 +57,7 @@ async function onUserSelected(selected) {
       <List :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
+
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

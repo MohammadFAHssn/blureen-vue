@@ -1,8 +1,9 @@
 <script setup>
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
-import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/ApprovalsFlowDialog.vue'
-import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/ReferralToSupervisorDialog.vue'
+import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
+import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
+import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
@@ -81,7 +82,7 @@ function onRejectSelected() {
         :is-mobile="false"
         :selected-count="selectedCount"
         :loading="logic.state.loading"
-        :has-requests="!!logic.items.value?.length"
+        :show-confirm-btn="logic.state.userCanManege"
         @refresh="logic.refreshActiveTab"
         @approve-selected="onApproveSelected"
         @reject-selected="onRejectSelected"
@@ -92,10 +93,12 @@ function onRejectSelected() {
         :tab="logic.state.activeTab"
         :items="logic.items.value"
         :loading="logic.state.loading"
+        :user-can-manage="logic.state.userCanManege"
         @details="logic.openDetails"
         @edit="logic.onEditClick"
         @referral="logic.onReferralClick"
         @approval-flow="logic.onShowApprovalFlowClick"
+        @attendance-log="logic.onShowAttendancesClick"
         @approve-row="logic.approveRow"
       />
     </div>
@@ -106,7 +109,7 @@ function onRejectSelected() {
       :loading="logic.state.loading"
       max-width="520"
       @confirm="logic.confirmRejectDialog"
-      @cancel="logic.resetRejectDialogState"
+      @cancel="logic.resetConfirmationDialogState"
     />
 
     <DetailsDialog
@@ -141,6 +144,14 @@ function onRejectSelected() {
       v-if="logic.state.dialogs.approvalFlow"
       v-model:is-dialog-visible="logic.state.dialogs.approvalFlow"
       :request="logic.pendingRequest.value"
+    />
+
+    <AttendanceDialog
+      v-if="logic.state.dialogs.attendanceLogs"
+      v-model:is-dialog-visible="logic.state.dialogs.attendanceLogs"
+      :loading="logic.state.loading"
+      :request="logic.pendingRequest.value"
+      @submit="logic.confirmApproveDialog(true)"
     />
   </VLayout>
 </template>

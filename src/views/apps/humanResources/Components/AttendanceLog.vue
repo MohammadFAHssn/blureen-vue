@@ -20,29 +20,24 @@ const attendanceLogs = ref([])
 async function getCurrentMonthAttendances() {
   Loading.value = true
   try {
-    const { data } = await axiosInstance.get('/kasra/reports/get-attendance-report', {
-      params: {
-        user_id: props.userId,
-        start_date: props.date,
-        end_date: props.date,
+    const { data } = await axiosInstance.get(
+      '/kasra/reports/get-attendance-report',
+      {
+        params: {
+          user_id: props.userId,
+          start_date: props.date,
+          end_date: props.date,
+        },
       },
-    })
-    Loading.value = false
+    )
     attendanceLogs.value = data.data.attendances
   }
   catch (error) {
-    Loading.value = false
-
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    }
-    else {
-      error_message = error.response.data.message
-    }
-
     uiState.hasError = true
-    uiState.errorMessage = error_message
+    uiState.errorMessage = error.response.data.message ?? 'خطا در دریافت ترددها'
+  }
+  finally {
+    Loading.value = false
   }
 }
 onMounted(() => {
@@ -95,12 +90,14 @@ onMounted(() => {
           </div>
         </VCol>
       </template>
-      <h6 v-if="attendanceLogs.length === 0" class="mb-2 font-weight-medium text-error">
+      <h6
+        v-if="attendanceLogs.length === 0"
+        class="mb-2 font-weight-medium text-error"
+      >
         ترددی یافت نشد
       </h6>
     </VRow>
   </VCard>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -12,12 +12,9 @@ const users = ref([])
 async function fetchUsers() {
   try {
     const loggedInUserId = useCookie('userData').value?.id
-    const { data } = await axiosInstance.get(
-      '/base/user/subordinates',
-      {
-        params: { user_id: loggedInUserId },
-      },
-    )
+    const { data } = await axiosInstance.get('/base/user/subordinates', {
+      params: { user_id: loggedInUserId },
+    })
 
     users.value = data.data.map(u => ({
       ...u,
@@ -30,16 +27,8 @@ async function fetchUsers() {
     }
   }
   catch (error) {
-    let error_message
-    if (!('errors' in error.response.data)) {
-      error_message = error.response.data.message
-    }
-    else {
-      error_message = error.response.data.message
-    }
-
     uiState.hasError = true
-    uiState.errorMessage = error_message
+    uiState.errorMessage = error.response.data.message ?? 'خطا در دریافت کاربران'
   }
 }
 async function onUserSelected(selected) {
@@ -86,6 +75,4 @@ onMounted(() => {
   </VCard>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
