@@ -137,7 +137,23 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
       name="nav-items"
       :update-is-vertical-nav-scrolled="updateIsVerticalNavScrolled"
     >
+      <!-- Use native scroll on mobile (overlay nav) to prevent touch conflicts -->
+      <ul
+        v-if="configStore.isLessThanOverlayNavBreakpoint"
+        :key="configStore.isAppRTL"
+        class="nav-items"
+        style="overflow: hidden auto;"
+        @scroll="handleNavScroll"
+      >
+        <Component
+          :is="resolveNavItemComponent(item)"
+          v-for="(item, index) in navItems"
+          :key="index"
+          :item="item"
+        />
+      </ul>
       <PerfectScrollbar
+        v-else
         :key="configStore.isAppRTL"
         tag="ul"
         class="nav-items"

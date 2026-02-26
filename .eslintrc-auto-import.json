@@ -165,6 +165,7 @@
     "templateRef": true,
     "throttledRef": true,
     "throttledWatch": true,
+    "toComparisonKey": true,
     "toRaw": true,
     "toReactive": true,
     "toRef": true,

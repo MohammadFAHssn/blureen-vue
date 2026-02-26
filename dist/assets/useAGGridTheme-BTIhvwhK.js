@@ -1,1 +1,0 @@
-import{b8 as a,d4 as m,Y as r,d5 as h,d6 as o}from"./index-DYPZYP_u.js";function n(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{n as u};

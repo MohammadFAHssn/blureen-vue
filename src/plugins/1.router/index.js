@@ -32,6 +32,26 @@ const router = createRouter({
   },
 })
 
+// 🔄 Handle chunk load failures after new deployments
+// When a new build is deployed, old chunk files no longer exist on the server.
+// Catch the error and reload the page so the browser fetches the new HTML + chunks.
+router.onError((error, to) => {
+  const dynamicImportErrors = [
+    'Failed to fetch dynamically imported module',
+    'Importing a module script failed',
+    'error loading dynamically imported module', // Firefox
+  ]
+
+  const isDynamicImportError = dynamicImportErrors.some(msg =>
+    error.message?.toLowerCase().includes(msg.toLowerCase()),
+  )
+
+  if (isDynamicImportError) {
+    // Reload the target URL to get fresh assets
+    window.location.assign(to.fullPath)
+  }
+})
+
 setupGuards(router)
 export { router }
 export default function (app) {
