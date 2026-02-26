@@ -87,7 +87,7 @@ async function getCurrentMonthRequests() {
     .get('/hr-request/request/get-user-requests', {
       params: {
         user_id: props.userId,
-        request_type: HR_REQUEST_TYPES.DAILY_LEAVE,
+        request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
       },
     })
     .then(({ data }) => {

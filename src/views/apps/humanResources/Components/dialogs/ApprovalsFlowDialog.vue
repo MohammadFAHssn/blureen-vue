@@ -41,13 +41,11 @@ async function getRequestApprovals() {
       },
     )
     requestApprovals.value = data.data
-  }
-  catch (error) {
+  } catch (error) {
     uiState.hasError = true
     uiState.errorMessage = 'خطا در دریافت رده تاییدیه'
     console.log(error)
-  }
-  finally {
+  } finally {
     uiState.loading = false
   }
 }
@@ -115,6 +113,15 @@ onMounted(() => {
                   </span>
                 </span>
               </VListItemSubtitle>
+              <VListItemSubtitle>
+                <span v-if="a.approver_ip">
+                  آی پی دستگاه:
+                  <span dir="ltr" style="unicode-bidi: isolate">
+                    {{ a.approver_ip }}
+                  </span>
+                </span>
+              </VListItemSubtitle>
+              <VDivider />
 
               <template #append>
                 <VChip
@@ -132,9 +139,7 @@ onMounted(() => {
       </VCardText>
 
       <VCardActions class="justify-end">
-        <VBtn color="secondary" variant="tonal" @click="close">
-          بستن
-        </VBtn>
+        <VBtn color="secondary" variant="tonal" @click="close"> بستن </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>
