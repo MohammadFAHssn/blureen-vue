@@ -1,5 +1,6 @@
 <script setup>
 import { getJalaliMonthNameByIndex } from '@core/utils/helpers'
+import { rankColor, scoreColor } from '@/views/apps/evaluation/evaluationResultHelpers'
 
 defineProps({
   periods: {
@@ -74,6 +75,40 @@ const emit = defineEmits(['select'])
             تا
             {{ getJalaliMonthNameByIndex(period.period_end_month) }} {{ period.period_end_year }}
           </p>
+
+          <div
+            v-if="period.has_result && period.final_score != null"
+            class="d-flex align-center justify-center gap-3"
+          >
+            <VChip
+              :color="scoreColor(period.final_score, 100)"
+              variant="tonal"
+              size="small"
+              label
+            >
+              <VIcon
+                icon="tabler-star"
+                size="14"
+                start
+              />
+              نمره: {{ Math.round(period.final_score * 100) / 100 }}
+            </VChip>
+
+            <VChip
+              v-if="period.final_rank"
+              :color="rankColor(period.final_rank)"
+              variant="tonal"
+              size="small"
+              label
+            >
+              <VIcon
+                icon="tabler-trophy"
+                size="14"
+                start
+              />
+              {{ period.final_rank }}
+            </VChip>
+          </div>
 
           <VChip
             v-if="!period.has_result"
