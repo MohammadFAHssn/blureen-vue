@@ -39,6 +39,7 @@ function setSuccess(message) {
 const pendingState = reactive({
   firstLoad: true,
   choosingEmCommuteStation: false,
+  sendingSMS: false,
 })
 
 /* -------------------- DATA -------------------- */
@@ -109,6 +110,33 @@ async function onChooseStation(inComing) {
   finally {
     uiState.isEmUserStationSelectionDialogVisible = false
     pendingState.choosingEmCommuteStation = false
+    await fetchUserEmCommuteStation()
+  }
+}
+
+async function useSendSms() {
+  resetMessages()
+
+  pendingState.sendingSMS = true
+  try {
+    await $api('/employee-transport/user/sms', {
+      method: 'POST',
+      onResponseError({ response }) {
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در ارسال یامک')
+        throw new Error(msg)
+      },
+    })
+
+    setSuccess('پیامک با موفقیت ارسال شد.')
+  }
+  catch (err) {
+    console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره')
+  }
+  finally {
+    pendingState.sendingSMS = false
     await fetchUserEmCommuteStation()
   }
 }
@@ -245,9 +273,17 @@ onMounted(async () => {
               <div v-else>
                 <div class="text-error mb-1">
                   پیامک برای راننده ارسال نشد!
-                  <!-- <VBtn size="small" color="success" variant="tonal" rounded="lg">
+                  <VBtn
+                    :disabled="pendingState.sendingSMS"
+                    :loading="pendingState.sendingSMS"
+                    size="small"
+                    color="success"
+                    variant="tonal"
+                    rounded="lg"
+                    @click="useSendSms"
+                  >
                     ارسال پیامک
-                  </VBtn> -->
+                  </VBtn>
                 </div>
               </div>
             </VRow>
