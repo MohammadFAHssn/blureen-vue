@@ -36,7 +36,6 @@ const rowData = computed(() =>
     startDate: item.start_date ?? '-',
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
-
     actions: {
       approvable: true,
       detailsable: true,
@@ -56,6 +55,8 @@ const columnDefs = computed(() => [
     headerName: 'عملیات',
     field: 'actions',
     width: 250,
+    sortable: false,
+    filter: false,
     valueFormatter: () => '',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
