@@ -85,7 +85,7 @@ const rowData = computed(() =>
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          ایستگاه‌ها
+          ایستگاه‌ها - {{ service.shiftType }} {{ service.serviceCode }}
         </h4>
 
         <!-- 👉 Form -->
