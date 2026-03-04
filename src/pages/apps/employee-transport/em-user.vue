@@ -100,17 +100,16 @@ async function onChooseStation(inComing) {
         throw new Error(msg)
       },
     })
-
+    uiState.isEmUserStationSelectionDialogVisible = false
     setSuccess('ایستگاه با موفقیت انتخاب شد.')
+    await fetchUserEmCommuteStation()
   }
   catch (err) {
     console.error(err)
     setError(err?.message || 'خطای غیرمنتظره')
   }
   finally {
-    uiState.isEmUserStationSelectionDialogVisible = false
     pendingState.choosingEmCommuteStation = false
-    await fetchUserEmCommuteStation()
   }
 }
 
