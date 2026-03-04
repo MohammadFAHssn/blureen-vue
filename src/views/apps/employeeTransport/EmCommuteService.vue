@@ -54,6 +54,8 @@ const columnDefs = ref([
   { headerName: 'شماره تماس', field: 'driverMobileNumber' },
   { headerName: 'شیفت', field: 'shiftType' },
   { headerName: 'کد', field: 'serviceCode' },
+  { headerName: 'تعداد ایستگاه', field: 'stationsQuantity' },
+  { headerName: 'تعداد مسافر', field: 'passengersQuantity' },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -82,6 +84,8 @@ const rowData = computed(() =>
     driverMobileNumber: emCommuteService.emFleetVehicle.driverMobileNumber ?? '',
     shiftType: emCommuteService.emShiftType.name ?? '',
     serviceCode: emCommuteService.serviceCode,
+    stationsQuantity: emCommuteService.stations.length,
+    passengersQuantity: emCommuteService.stations.reduce((sum, station) => sum + (station.passengersQuantity || 0), 0) || 0,
     fleetVehicle: emCommuteService.emFleetVehicle.id,
     stations: emCommuteService.stations,
     actions: {
