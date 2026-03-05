@@ -39,6 +39,7 @@ function setSuccess(message) {
 const pendingState = reactive({
   firstLoad: true,
   choosingEmCommuteStation: false,
+  sendingSMS: false,
 })
 
 /* -------------------- DATA -------------------- */
@@ -50,6 +51,7 @@ const emCommuteStations = ref([])
 const hasService = computed(() => !!userStation.value?.emCommuteServiceStation)
 const service = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteService || null)
 const station = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteStation || null)
+const smsSentDriver = computed(() => userStation.value?.smsSentDriver ?? false)
 
 /* -------------------- API -------------------- */
 async function fetchUserEmCommuteStation() {
@@ -108,6 +110,33 @@ async function onChooseStation(inComing) {
   finally {
     uiState.isEmUserStationSelectionDialogVisible = false
     pendingState.choosingEmCommuteStation = false
+    await fetchUserEmCommuteStation()
+  }
+}
+
+async function useSendSms() {
+  resetMessages()
+
+  pendingState.sendingSMS = true
+  try {
+    await $api('/employee-transport/user/sms', {
+      method: 'POST',
+      onResponseError({ response }) {
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در ارسال یامک')
+        throw new Error(msg)
+      },
+    })
+
+    setSuccess('پیامک با موفقیت ارسال شد.')
+  }
+  catch (err) {
+    console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره')
+  }
+  finally {
+    pendingState.sendingSMS = false
     await fetchUserEmCommuteStation()
   }
 }
@@ -233,6 +262,30 @@ onMounted(async () => {
                   }}
                 </VChip>
               </VCol>
+            </VRow>
+
+            <VDivider class="my-4" />
+
+            <VRow align="center" justify="center">
+              <div v-if="smsSentDriver" class="text-success mb-1">
+                پیامک با موفقیت برای راننده ارسال شد!
+              </div>
+              <div v-else>
+                <div class="text-error mb-1">
+                  پیامک برای راننده ارسال نشد!
+                  <VBtn
+                    :disabled="pendingState.sendingSMS"
+                    :loading="pendingState.sendingSMS"
+                    size="small"
+                    color="success"
+                    variant="tonal"
+                    rounded="lg"
+                    @click="useSendSms"
+                  >
+                    ارسال پیامک
+                  </VBtn>
+                </div>
+              </div>
             </VRow>
           </VCardText>
         </VCard>

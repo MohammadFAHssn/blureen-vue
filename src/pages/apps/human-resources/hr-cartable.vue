@@ -112,12 +112,12 @@ function onRejectSelected() {
       @cancel="logic.resetConfirmationDialogState"
     />
 
-    <DetailsDialog
+<!--    <DetailsDialog
       v-if="logic.state.dialogs.details"
       v-model:show="logic.state.dialogs.details"
       :request="logic.pendingRequest.value"
       @close="logic.state.dialogs.details = false"
-    />
+    />-->
 
     <ReferralToSupervisorDialog
       v-if="logic.state.dialogs.referral"
