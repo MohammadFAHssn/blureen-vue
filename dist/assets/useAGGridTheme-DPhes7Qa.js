@@ -1,0 +1,1 @@
+import{b8 as a,d5 as m,Y as r,d6 as h,d7 as o}from"./index-CnvKY2or.js";function n(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{n as u};
