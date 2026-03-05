@@ -1,6 +1,9 @@
 <script setup>
 import { getJalaliMonthNameByIndex } from '@core/utils/helpers'
-import { rankColor, scoreColor } from '@/views/apps/evaluation/evaluationResultHelpers'
+import {
+  rankColor,
+  scoreColor,
+} from '@/views/apps/evaluation/evaluationResultHelpers'
 
 defineProps({
   periods: {
@@ -13,14 +16,11 @@ const emit = defineEmits(['select'])
 </script>
 
 <template>
-  <h5 class="text-h5 mb-5">
+  <h3 class="mb-4">
     نتایج ارزیابی
-  </h5>
+  </h3>
 
-  <div
-    v-if="periods.length === 0"
-    class="text-center py-10"
-  >
+  <div v-if="periods.length === 0" class="text-center py-10">
     <VIcon
       icon="tabler-clipboard-off"
       size="64"
@@ -59,10 +59,7 @@ const emit = defineEmits(['select'])
           </VAvatar>
 
           <div class="d-flex align-center gap-2 justify-center mb-2">
-            <VIcon
-              icon="tabler-calendar"
-              color="blue"
-            />
+            <VIcon icon="tabler-calendar" color="blue" />
 
             <h6 class="text-h6">
               دوره
@@ -71,9 +68,11 @@ const emit = defineEmits(['select'])
           </div>
 
           <p class="text-body-2 text-medium-emphasis mb-3">
-            {{ getJalaliMonthNameByIndex(period.period_start_month) }} {{ period.period_start_year }}
+            {{ getJalaliMonthNameByIndex(period.period_start_month) }}
+            {{ period.period_start_year }}
             تا
-            {{ getJalaliMonthNameByIndex(period.period_end_month) }} {{ period.period_end_year }}
+            {{ getJalaliMonthNameByIndex(period.period_end_month) }}
+            {{ period.period_end_year }}
           </p>
 
           <div
@@ -86,11 +85,7 @@ const emit = defineEmits(['select'])
               size="small"
               label
             >
-              <VIcon
-                icon="tabler-star"
-                size="14"
-                start
-              />
+              <VIcon icon="tabler-star" size="14" start />
               نمره: {{ Math.round(period.final_score * 100) / 100 }}
             </VChip>
 
@@ -101,11 +96,7 @@ const emit = defineEmits(['select'])
               size="small"
               label
             >
-              <VIcon
-                icon="tabler-trophy"
-                size="14"
-                start
-              />
+              <VIcon icon="tabler-trophy" size="14" start />
               {{ period.final_rank }}
             </VChip>
           </div>
