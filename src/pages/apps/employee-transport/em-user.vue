@@ -218,21 +218,17 @@ onMounted(async () => {
           <VCardText class="py-6">
             <VRow>
               <VCol cols="12" sm="6">
-                <div class="text-caption text-medium-emphasis mb-1">
-                  سرویس
-                </div>
-                <VChip color="deep-orange" variant="tonal" size="large">
+                <strong>سرویس:</strong>
+                <p style="white-space: normal; overflow-wrap: anywhere;">
                   {{ `${service?.code || ''} ${service?.emShiftType?.name || ''}` }}
-                </VChip>
+                </p>
               </VCol>
 
               <VCol cols="12" sm="6">
-                <div class="text-caption text-medium-emphasis mb-1">
-                  راننده
-                </div>
-                <VChip color="orange-darken-2" variant="tonal" size="large">
+                <strong>راننده:</strong>
+                <p style="white-space: normal; overflow-wrap: anywhere;">
                   {{ service?.emFleetVehicle?.driverName || '-' }}
-                </VChip>
+                </p>
               </VCol>
             </VRow>
 
@@ -240,26 +236,22 @@ onMounted(async () => {
 
             <VRow>
               <VCol cols="12" sm="6">
-                <div class="text-caption text-medium-emphasis mb-1">
-                  موبایل راننده
-                </div>
-                <VChip color="primary" variant="tonal" size="large">
+                <strong>موبایل راننده:</strong>
+                <p style="white-space: normal; overflow-wrap: anywhere;">
                   {{ service?.emFleetVehicle?.driverMobileNumber || '-' }}
-                </VChip>
+                </p>
               </VCol>
 
               <VCol cols="12" sm="6">
-                <div class="text-caption text-medium-emphasis mb-1">
-                  ایستگاه شما
-                </div>
-                <VChip color="primary" variant="tonal" size="large" class="text-wrap">
+                <strong>ایستگاه شما:</strong>
+                <p style="white-space: normal; overflow-wrap: anywhere;">
                   {{
                     `${station?.emCity?.name || ''} -
                     ${station?.mainStreet || ''} -
                     ${station?.sideStreet || ''} -
                     ${station?.boardingPlace || ''}`
                   }}
-                </VChip>
+                </p>
               </VCol>
             </VRow>
 
