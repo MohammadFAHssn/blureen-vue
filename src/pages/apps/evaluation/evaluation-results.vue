@@ -75,6 +75,14 @@ function goBack() {
   result.value = null
 }
 
+onBeforeRouteLeave(() => {
+  if (selectedPeriod.value) {
+    goBack()
+
+    return false
+  }
+})
+
 await fetchPeriods()
 </script>
 

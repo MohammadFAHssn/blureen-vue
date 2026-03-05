@@ -244,6 +244,10 @@ async function onSurveyUpdate(data) {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <h3 class="mb-4">
+      نظرسنجی‌ها
+    </h3>
+
     <section style="block-size: 100%;">
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
@@ -293,8 +297,9 @@ async function onSurveyUpdate(data) {
   @include mixins.elevation(vuetify.$card-elevation);
 
   display: grid;
+  box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
 }
 
 .v-application {

@@ -366,6 +366,10 @@ watch(mode, (newMode) => {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <h3 class="mb-4">
+      رده تأییدیه‌ها
+    </h3>
+
     <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
       <v-card-text class="pa-3">
         <v-chip-group
@@ -442,6 +446,6 @@ watch(mode, (newMode) => {
   display: grid;
   box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 </style>

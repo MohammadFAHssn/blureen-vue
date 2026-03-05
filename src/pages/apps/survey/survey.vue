@@ -86,6 +86,10 @@ function participateInSurvey(porslineId) {
     {{ uiState.errorMessage }}
   </VSnackbar>
 
+  <h3 class="mb-4">
+    نظرسنجی
+  </h3>
+
   <VRow>
     <VCol v-if="surveys.length === 0">
       <VCard variant="text">

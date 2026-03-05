@@ -42,9 +42,7 @@ const rowData = computed(() =>
 
 const columnDefs = computed(() => [
   { headerName: 'پرسنل', field: 'personnel' },
-  /*
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
-*/
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   /*
@@ -54,6 +52,8 @@ const columnDefs = computed(() => [
     headerName: 'عملیات',
     field: 'actions',
     width: 175,
+    sortable: false,
+    filter: false,
     valueFormatter: () => '',
     suppressHeaderMenuButton: true,
     suppressHeaderContextMenu: true,
