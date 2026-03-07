@@ -44,9 +44,7 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
   </VSnackbar>
 
   <div class="mb-6 text-center">
-    <h2 class="text-h5 font-weight-bold text-primary">
-      درخواست مرخصی ساعتی
-    </h2>
+    <h2 class="text-h5 font-weight-bold text-primary">درخواست مرخصی ساعتی</h2>
   </div>
 
   <VRow dense>
@@ -72,13 +70,24 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
     </VCol>
 
     <VCol cols="12" md="8">
-      <AttendanceLog :key="leaveDate" :date="leaveDate" :user-id="selectedUser.id" />
-      <Form :key="uiState.dateKey" :date="leaveDate" :user-id="selectedUser.id" @created="uiState.requestsKey++" />
+      <AttendanceLog
+        :key="leaveDate"
+        :date="leaveDate"
+        :user-id="selectedUser.id"
+      />
+      <Form
+        :key="uiState.dateKey"
+        :date="leaveDate"
+        :user-id="selectedUser.id"
+        @created="uiState.requestsKey++"
+      />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol cols="12">
       <List :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

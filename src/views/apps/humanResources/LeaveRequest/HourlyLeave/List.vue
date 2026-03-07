@@ -28,16 +28,9 @@ const loading = ref(false)
 const selectedRequest = ref(null)
 const currentMonthRequests = ref([])
 const columnDefs = ref([
-  {
-    headerName: 'تاریخ',
-    field: 'startDate',
-    maxWidth: 150,
-    valueFormatter: params =>
-      params.value
-        ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
-        : null,
-  },
+  { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'زمان شروع', field: 'startTime', maxWidth: 180 },
+  { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان پایان', field: 'endTime', maxWidth: 180 },
   { headerName: 'وضعیت', field: 'status', maxWidth: 150 },
   {
@@ -63,6 +56,7 @@ const rowData = computed(() =>
     return {
       currentItem: item,
       startDate: item.start_date,
+      endDate: item.end_date,
       startTime: item.start_time,
       endTime: item.end_time,
       status: item.status.title,
@@ -90,13 +84,11 @@ async function getCurrentMonthRequests() {
       },
     )
     currentMonthRequests.value = data.data
-  }
-  catch (error) {
+  } catch (error) {
     uiState.hasError = true
-    uiState.errorMessage
-      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-  }
-  finally {
+    uiState.errorMessage =
+      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+  } finally {
     uiState.loading = false
   }
 }
@@ -125,13 +117,11 @@ async function onDelete() {
     await getCurrentMonthRequests()
     uiState.successMessage = `درخواست مرخصی با موفقیت حذف شد`
     uiState.success = true
-  }
-  catch (error) {
+  } catch (error) {
     uiState.hasError = true
-    uiState.errorMessage
-      = error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
-  }
-  finally {
+    uiState.errorMessage =
+      error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
+  } finally {
     uiState.deleteLoading = false
     uiState.isDeleteRequestDialogVisible = false
   }
