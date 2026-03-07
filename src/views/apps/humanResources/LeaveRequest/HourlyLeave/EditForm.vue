@@ -11,48 +11,54 @@ const props = defineProps({
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
-// states
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
+  loading: false,
 })
+
+const showDatePicker = ref(false)
 const leaveDate = ref(props.request.start_date)
 const leaveDateRules = [
   () => !!leaveDate.value || 'لطفا تاریخ مرخصی را انتخاب کنید',
 ]
+function selectDate(val) {
+  leaveDate.value = val?.format ? val.format('jYYYY-jMM-jDD') : val
+  showDatePicker.value = false
+}
+
 const startTime = ref(props.request.start_time)
 const startTimeRules = [
   () => !!startTime.value || 'لطفا ساعت شروع را انتخاب کنید',
 ]
 const endTime = ref(props.request.end_time)
-const endTimeRules = [
-  () => !!startTime.value || 'لطفا ساعت پایان را انتخاب کنید',
-]
+const endTimeRules = [() => !!endTime.value || 'لطفا ساعت پایان را انتخاب کنید']
 const refVForm = ref()
 
 function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
+      uiState.loading = true
       try {
-        await axiosInstance.patch(
-          '/hr-request/request/update',
-          {
-            formData: {
-              requestId: props.request.id,
-              leaveDate,
-              startTime,
-              endTime,
-            },
-          },
-        )
-        dialogModelValueUpdate(false)
+        await axiosInstance.patch('/hr-request/request/update', {
+          requestId: props.request.id,
+          start_date: leaveDate.value,
+          end_date: leaveDate.value,
+          start_time: startTime.value,
+          end_time: endTime.value,
+        })
+        emit('submit')
+        emit('update:isDialogVisible', false)
       }
       catch (error) {
         uiState.hasError = true
-        uiState.errorMessage = error.message ?? 'خطا هنگام بروزرسانی درخواست'
+        uiState.errorMessage
+          = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+      }
+      finally {
+        uiState.loading = false
       }
     }
   })
@@ -100,21 +106,36 @@ function dialogModelValueUpdate(val) {
           @submit.prevent="onFormSubmit"
         >
           <VRow>
-            <VCol cols="12" sm="12" md="12">
+            <VCol cols="12" sm="12">
               <VTextField
                 v-model="leaveDate"
                 :rules="leaveDateRules"
                 label="تاریخ مرخصی"
-                variant="outlined"
                 readonly
+                variant="outlined"
+                @click="showDatePicker = true"
               />
+              <VDialog v-model="showDatePicker" max-width="300px">
+                <VCard>
+                  <input id="leaveDate-input" style="display: none" />
+                  <PersianDatetimePicker
+                    v-model="leaveDate"
+                    format="jYYYY-jMM-jDD"
+                    inline
+                    custom-input="#leaveDate-input"
+                    @change="selectDate"
+                  />
+                </VCard>
+              </VDialog>
             </VCol>
+
             <VCol cols="12" sm="6">
               <VTextField
                 v-model="startTime"
                 :rules="startTimeRules"
                 label="ساعت شروع"
                 type="time"
+                format="H:i"
                 density="compact"
                 variant="outlined"
                 step="60"
@@ -126,13 +147,18 @@ function dialogModelValueUpdate(val) {
                 :rules="endTimeRules"
                 label="ساعت پایان"
                 type="time"
+                format="H:i"
                 density="compact"
                 variant="outlined"
                 step="60"
               />
             </VCol>
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
-              <VBtn type="submit" @click="refVForm?.validate()">
+              <VBtn
+                type="submit"
+                :loading="uiState.loading"
+                :disabled="uiState.loading"
+              >
                 ذخیره
               </VBtn>
 

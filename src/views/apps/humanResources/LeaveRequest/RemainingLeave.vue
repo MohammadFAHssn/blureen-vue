@@ -10,9 +10,9 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  loading: false,
 })
 
-const Loading = ref(false)
 const remainingLeave = ref(null)
 
 const leaveClass = computed(() =>
@@ -22,7 +22,7 @@ const leaveClass = computed(() =>
 )
 
 async function getRemainingLeave() {
-  Loading.value = true
+  uiState.loading = true
   try {
     const { data } = await axiosInstance.get(
       '/kasra/reports/get-remaining-leave',
@@ -33,12 +33,14 @@ async function getRemainingLeave() {
       },
     )
     remainingLeave.value = data.data.remaining_leave
-  } catch (error) {
+  }
+  catch (error) {
     uiState.hasError = true
-    uiState.errorMessage =
-      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-  } finally {
-    Loading.value = false
+    uiState.errorMessage
+      = error?.response?.data?.message ?? 'خطای ناشناخته'
+  }
+  finally {
+    uiState.loading = false
   }
 }
 
@@ -71,7 +73,7 @@ onMounted(() => {
           مانده مرخصی تقریبی
         </div>
 
-        <VSkeletonLoader v-if="Loading" type="list-item" />
+        <VSkeletonLoader v-if="uiState.loading" type="list-item" />
 
         <div
           v-else

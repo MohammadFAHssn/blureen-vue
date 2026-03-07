@@ -56,10 +56,12 @@ function goBack() {
             class="pa-4 d-flex flex-column align-center justify-center"
             variant="outlined"
             rounded="xl"
-            @click="() => {
-              if (item.key === 'daily')
-                current = item.key
-            }"
+            @click="
+              () => {
+                if (item.key === 'daily' || item.key === 'hourly')
+                  current = item.key
+              }
+            "
           >
             <!--            @click="current = item.key" -->
 
@@ -76,11 +78,6 @@ function goBack() {
               <VIcon :icon="item.icon" size="32" />
             </VAvatar>
             <span>{{ item.label }}</span>
-            <span
-              v-if="item.key === 'hourly'"
-              class="font-weight-medium"
-              style="color: red"
-            >(به زودی)</span>
           </VCard>
         </VCol>
       </VRow>

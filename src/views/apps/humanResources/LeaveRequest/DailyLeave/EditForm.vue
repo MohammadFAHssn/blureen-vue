@@ -1,6 +1,4 @@
 <script setup>
-import { computed, reactive, ref, watch, onMounted } from 'vue'
-
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
   request: { type: Object, required: true },
@@ -59,8 +57,8 @@ async function fetchReplacements() {
   }
   catch (error) {
     uiState.hasError = true
-    uiState.errorMessage =
-      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+    uiState.errorMessage
+      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
   }
 }
 
@@ -108,8 +106,8 @@ function onFormSubmit() {
     }
     catch (error) {
       uiState.hasError = true
-      uiState.errorMessage =
-        error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+      uiState.errorMessage
+        = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
     }
     finally {
       uiState.loading = false
@@ -132,7 +130,7 @@ watch(
 
 watch(
   () => props.isDialogVisible,
-  v => {
+  (v) => {
     if (v) {
       hydrateFromRequest()
       fetchReplacements()
@@ -175,7 +173,9 @@ onMounted(() => {
 
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">ویرایش درخواست</h4>
+        <h4 class="text-h5 text-center mb-2">
+          ویرایش درخواست
+        </h4>
 
         <VForm
           ref="refVForm"

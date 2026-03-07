@@ -14,6 +14,7 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isEditRequestDialogVisible: false,
+  loading: false,
 })
 const leaveDate = ref(props.date)
 const leaveDateRules = [
@@ -24,37 +25,39 @@ const startTimeRules = [
   () => !!startTime.value || 'لطفا ساعت شروع را انتخاب کنید',
 ]
 const endTime = ref('')
-const endTimeRules = [
-  () => !!startTime.value || 'لطفا ساعت پایان را انتخاب کنید',
-]
+const endTimeRules = [() => !!endTime.value || 'لطفا ساعت پایان را انتخاب کنید']
 const refVForm = ref()
 
-function onFormSubmit() {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
-    if (isValid) {
-      try {
-        const requestData = {
-          request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
-          user_id: props.userId,
-          start_date: leaveDate.value,
-          end_date: leaveDate.value,
-          start_time: startTime.value,
-          end_time: endTime.value,
-        }
-        await axiosInstance.post('/hr-request/request/create', requestData)
+async function onFormSubmit() {
+  const { valid } = await refVForm.value.validate()
+  if (!valid) return
 
-        uiState.success = true
-        uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
-        startTime.value = ''
-        endTime.value = ''
-        emit('created')
-      }
-      catch (error) {
-        uiState.hasError = true
-        uiState.errorMessage = error.response.data.message ?? 'خطا هنگام ثبت درخواست'
-      }
+  try {
+    uiState.loading = true
+    const requestData = {
+      request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
+      user_id: props.userId,
+      start_date: leaveDate.value,
+      end_date: leaveDate.value,
+      start_time: startTime.value,
+      end_time: endTime.value,
     }
-  })
+    await axiosInstance.post('/hr-request/request/create', requestData)
+
+    uiState.success = true
+    uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
+    startTime.value = ''
+    endTime.value = ''
+    emit('created')
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage
+      = error.response.data.message ?? 'خطا هنگام ثبت درخواست'
+  }
+  finally {
+    uiState.loading = false
+  }
 }
 </script>
 
@@ -123,7 +126,12 @@ function onFormSubmit() {
       </VRow>
       <VRow justify="center" class="mt-4">
         <VCol cols="auto">
-          <VBtn type="submit" color="primary" @click="refVForm?.validate()">
+          <VBtn
+            type="submit"
+            color="primary"
+            :loading="uiState.loading"
+            :disabled="uiState.loading"
+          >
             ثبت درخواست
           </VBtn>
         </VCol>

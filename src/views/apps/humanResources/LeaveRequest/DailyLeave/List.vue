@@ -19,10 +19,10 @@ const uiState = reactive({
   isEditRequestDialogVisible: false,
   isDeleteRequestDialogVisible: false,
   isApprovalsFlowDialogVisible: false,
+  loading: false,
   deleteLoading: false,
 })
 const { theme } = useAGGridTheme()
-const loading = ref(false)
 const selectedRequest = ref(null)
 const currentMonthRequests = ref([])
 const columnDefs = ref([
@@ -82,22 +82,27 @@ const rowData = computed(() =>
   }),
 )
 async function getCurrentMonthRequests() {
-  loading.value = true
-  await axiosInstance
-    .get('/hr-request/request/get-user-requests', {
-      params: {
-        user_id: props.userId,
-        request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
+  uiState.loading = true
+  try {
+    const { data } = await axiosInstance.get(
+      '/hr-request/request/get-user-requests',
+      {
+        params: {
+          user_id: props.userId,
+          request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
+        },
       },
-    })
-    .then(({ data }) => {
-      loading.value = false
-      currentMonthRequests.value = data.data
-    })
-    .catch((error) => {
-      uiState.hasError = true
-      uiState.errorMessage = error.message ?? 'خطا در دریافت درخواست ها'
-    })
+    )
+    currentMonthRequests.value = data.data
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage
+      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+  }
+  finally {
+    uiState.loading = false
+  }
 }
 async function onEditClick(request) {
   selectedRequest.value = request.data.currentItem
@@ -127,7 +132,8 @@ async function onDelete() {
   }
   catch (error) {
     uiState.hasError = true
-    uiState.errorMessage = error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
+    uiState.errorMessage
+      = error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
   }
   finally {
     uiState.deleteLoading = false
@@ -282,7 +288,7 @@ onMounted(() => {
         مرخصی‌های روزانه ماه جاری
       </label>
       <section>
-        <VSkeletonLoader v-if="loading" type="card" />
+        <VSkeletonLoader v-if="uiState.loading" type="card" />
         <AgGridVue
           v-else
           style="block-size: 100%; inline-size: 100%"
