@@ -239,6 +239,10 @@ async function fetchReports(month, year) {
       {{ uiState.errorMessage }}
     </VSnackbar>
 
+    <h3 class="mb-4">
+      فیش‌های حقوقی
+    </h3>
+
     <section style="block-size: 100%;">
       <AgGridVue
         style="block-size: 100%; inline-size: 100%;"
@@ -288,8 +292,9 @@ async function fetchReports(month, year) {
   @include mixins.elevation(vuetify.$card-elevation);
 
   display: grid;
+  box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: auto 1fr auto;
 }
 
 .v-application {

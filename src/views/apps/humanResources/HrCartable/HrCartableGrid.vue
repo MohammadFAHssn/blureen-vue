@@ -41,6 +41,10 @@ function fullName(u) {
   return `${u.personnel_code} - ${u.first_name} ${u.last_name}`
 }
 
+function getDetail(item, key) {
+  return item?.details?.find(d => d.key === key)?.value ?? '-'
+}
+
 const rowData = computed(() => {
   const loginUserId = useCookie('userData').value.id
   const items = props.items ?? []
@@ -67,10 +71,16 @@ const rowData = computed(() => {
     startDate: item.start_date ?? '-',
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
+    description: getDetail(item, 'description'),
+    updateDate: item.updated_at
+      ? moment(item.updated_at).format('jYYYY-jMM-jDD')
+      : '-',
+    updatedTime: item.updated_at
+      ? moment(item.updated_at).format('HH:mm')
+      : '-',
     approver: pendingApproverName(item.approvals),
     actions: {
       approvable: props.userCanManage && item.kasra_credit_id,
-      detailsable: true,
     },
   }))
 })
@@ -82,6 +92,9 @@ const baseCols = [
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+  { headerName: 'توضیحات', field: 'description' },
+  { headerName: 'تاریخ بروزرسانی', field: 'updateDate', maxWidth: 170 },
+  { headerName: 'زمان بروزرسانی', field: 'updatedTime', maxWidth: 170 },
   /*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
 */
@@ -97,6 +110,8 @@ const actionsCol = {
   headerName: 'عملیات',
   field: 'actions',
   width: 150,
+  sortable: false,
+  filter: false,
   valueFormatter: () => '',
   suppressHeaderMenuButton: true,
   suppressHeaderContextMenu: true,
