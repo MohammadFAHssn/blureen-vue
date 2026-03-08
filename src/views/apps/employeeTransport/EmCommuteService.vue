@@ -2,6 +2,7 @@
 import EmCommuteServiceCreateDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteServiceCreateDialog.vue'
 import EmCommuteServiceEditDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteServiceEditDialog.vue'
 import EmCommuteServiceStationManagementDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteServiceStationManagementDialog.vue'
+import EmCommuteServiceUsersDialog from '@/views/apps/employeeTransport/emdialog/EmCommuteServiceUsersDialog.vue'
 // emit
 const emit = defineEmits(['back'])
 const current = ref('root')
@@ -22,6 +23,7 @@ const uiState = reactive({
   isEmCommuteServiceCreateDialogVisible: false,
   isEmCommuteServiceEditDialogVisible: false,
   isEmCommuteServicStationManagementDialogVisible: false,
+  isEmCommuteServiceUsersDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingEmCommuteServices: false,
@@ -54,6 +56,8 @@ const columnDefs = ref([
   { headerName: 'شماره تماس', field: 'driverMobileNumber' },
   { headerName: 'شیفت', field: 'shiftType' },
   { headerName: 'کد', field: 'serviceCode' },
+  { headerName: 'تعداد ایستگاه', field: 'stationsQuantity' },
+  { headerName: 'تعداد مسافر', field: 'passengersQuantity' },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -69,6 +73,10 @@ const columnDefs = ref([
             selectedEmCommuteService.value = selectedNode.data
             uiState.isEmCommuteServicStationManagementDialogVisible = true
           },
+          onDetailsClick: (selectedNode) => {
+            selectedEmCommuteService.value = selectedNode.data
+            uiState.isEmCommuteServiceUsersDialogVisible = true
+          },
         },
       }
     },
@@ -82,6 +90,8 @@ const rowData = computed(() =>
     driverMobileNumber: emCommuteService.emFleetVehicle.driverMobileNumber ?? '',
     shiftType: emCommuteService.emShiftType.name ?? '',
     serviceCode: emCommuteService.serviceCode,
+    stationsQuantity: emCommuteService.stations.length,
+    passengersQuantity: emCommuteService.stations.reduce((sum, station) => sum + (station.passengersQuantity || 0), 0) || 0,
     fleetVehicle: emCommuteService.emFleetVehicle.id,
     stations: emCommuteService.stations,
     actions: {
@@ -90,6 +100,7 @@ const rowData = computed(() =>
         mode: 'view',
       },
       addStation: true,
+      detailsable: true,
     },
   })),
 )
@@ -365,6 +376,12 @@ onMounted(async () => {
       :commute-stations="emCommuteStations"
       :service="selectedEmCommuteService"
       @submit="onUpdateServiceStation"
+    />
+
+    <EmCommuteServiceUsersDialog
+      v-if="uiState.isEmCommuteServiceUsersDialogVisible"
+      v-model:is-dialog-visible="uiState.isEmCommuteServiceUsersDialogVisible"
+      :service="selectedEmCommuteService"
     />
 
     <VApp>
