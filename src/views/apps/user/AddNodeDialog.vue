@@ -1,12 +1,17 @@
 <script setup>
-import Fuse from 'fuse.js'
 import { watch } from 'vue'
+import { useUserSearch } from '@/composables/useUserSearch'
 import SelectUserDialog from './SelectUserDialog.vue'
 
 const props = defineProps({
   isDialogVisible: {
     type: Boolean,
     required: true,
+  },
+
+  selectedNodeId: {
+    type: [String, Number, null],
+    default: null,
   },
 
   orgPositions: {
@@ -23,6 +28,11 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+
+  reloading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['add', 'update:isDialogVisible'])
@@ -33,7 +43,12 @@ const storageBaseUrl = import.meta.env.VITE_STORAGE_BASE_URL
 const refVForm = ref()
 
 const uiState = reactive({
+  hasError: false,
   isSelectUserDialogOpen: false,
+})
+
+const pendingState = reactive({
+  createOrgChartNode: false,
 })
 
 const orgUnits = ref(props.orgUnits)
@@ -41,66 +56,34 @@ const orgUnits = ref(props.orgUnits)
 const selectedOrgPosition = ref(null)
 const selectedOrgUnit = ref(null)
 const selectedUsers = ref([])
+const selectedDeputy = ref(null)
+const selectedLiaison = ref(null)
 
-const userSearchQuery = ref('')
+// Use composable for user search
+const usersRef = computed(() => props.users)
+const {
+  searchQuery: userSearchQuery,
+  filteredUsers,
+  guardBackspace,
+  resetSearch,
+} = useUserSearch(usersRef)
 
-// ----- -----
+const {
+  searchQuery: deputySearchQuery,
+  filteredUsers: filteredDeputyUsers,
+  guardBackspace: guardDeputyBackspace,
+  resetSearch: resetDeputySearch,
+} = useUserSearch(usersRef)
 
-const fuse = computed(() => {
-  const usersWithSearchFields = props.users.map(user => ({
-    ...user,
-    full_name: normalizeForFuse([user.first_name, user.last_name]),
-    work_area_cost_center: normalizeForFuse([
-      user.profile?.work_area?.name,
-      user.profile?.cost_center?.name,
-    ]),
-    last_name_work_area_cost_center: normalizeForFuse([
-      user.last_name,
-      user.profile?.work_area?.name,
-      user.profile?.cost_center?.name,
-    ]),
-  }))
-
-  return new Fuse(usersWithSearchFields, {
-    keys: [
-      { name: 'personnel_code', weight: 2.0 },
-      { name: 'full_name', weight: 1.5 },
-      { name: 'work_area_cost_center', weight: 1.5 },
-      { name: 'last_name_work_area_cost_center', weight: 1.5 },
-    ],
-    threshold: 0.4,
-    ignoreLocation: true,
-    useExtendedSearch: true,
-    includeScore: true,
-    findAllMatches: true,
-    minMatchCharLength: 1,
-  })
-})
-
-const filteredUsers = computed(() => {
-  const query = userSearchQuery.value?.trim()
-  if (!query) return props.users
-
-  const results = fuse.value.search(query)
-
-  return results.map(r => r.item)
-})
-
-function normalizeForFuse(parts) {
-  return parts
-    .filter(Boolean)
-    .join(' ')
-    .replace(/[\s\u200C]+/g, '')
-}
+const {
+  searchQuery: liaisonSearchQuery,
+  filteredUsers: filteredLiaisonUsers,
+  guardBackspace: guardLiaisonBackspace,
+  resetSearch: resetLiaisonSearch,
+} = useUserSearch(usersRef)
 
 function toComparisonKey(str) {
   return (str || '').toString().replace(/[\s\u200C]+/g, '')
-}
-
-function guardBackspace(e) {
-  if (e.key === 'Backspace' && !userSearchQuery.value) {
-    e.stopPropagation()
-  }
 }
 
 function onOrgUnitComboboxUpdate(selectedItem) {
@@ -143,14 +126,41 @@ function onFormSubmit() {
         orgUnits.value.push(selectedOrgUnit.value)
       }
 
-      emit('add', {
-        orgPosition: selectedOrgPosition.value,
-        orgUnit: selectedOrgUnit.value,
-        users: selectedUsers.value,
-      })
-      emit('update:isDialogVisible', false)
+      create()
     }
   })
+}
+
+async function create() {
+  const orgChartNode = {
+    id: `${Date.now()}-${Math.random()}`,
+    orgPosition: selectedOrgPosition.value,
+    orgUnit: selectedOrgUnit.value,
+    users: selectedUsers.value,
+    deputy: selectedDeputy.value,
+    liaison: selectedLiaison.value,
+    parentId: props.selectedNodeId,
+  }
+
+  pendingState.createOrgChartNode = true
+
+  await axiosInstance
+    .put('/base/org-chart-node/update', {
+      orgChartNode,
+    })
+    .then((response) => {
+      orgChartNode.id = response?.data?.data?.node.id
+      emit('add', orgChartNode)
+    })
+    .catch((error) => {
+      console.error('Error creating organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در ایجاد گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.createOrgChartNode = false
+    })
 }
 
 function onFormReset() {
@@ -169,7 +179,11 @@ watch(
       selectedOrgPosition.value = null
       selectedOrgUnit.value = null
       selectedUsers.value = []
-      userSearchQuery.value = ''
+      selectedDeputy.value = null
+      selectedLiaison.value = null
+      resetSearch()
+      resetDeputySearch()
+      resetLiaisonSearch()
     }
   },
 )
@@ -237,9 +251,9 @@ watch(
               >
                 <template #selection />
 
-                <template #item="{ props, item }">
+                <template #item="{ props: itemProps, item }">
                   <VListItem
-                    v-bind="props"
+                    v-bind="itemProps"
                     :prepend-avatar="`${storageBaseUrl}/${item?.raw?.avatar?.path}`"
                     :title="`${item?.raw?.first_name} ${item?.raw?.last_name} (${item?.raw?.personnel_code})`"
                     :subtitle="`${item?.raw?.profile?.work_area?.name || ''} ${
@@ -249,6 +263,14 @@ watch(
                 </template>
 
                 <template #append>
+                  <VChip
+                    variant="outlined"
+                    color="secondary"
+                    class="ml-3"
+                  >
+                    {{ selectedUsers.length }}
+                  </VChip>
+
                   <VBtn
                     variant="outlined"
                     color="secondary"
@@ -264,9 +286,8 @@ watch(
 
           <VRow>
             <VCol cols="12" style="max-block-size: 50em;" class="overflow-auto">
-              <v-chip
+              <VChip
                 v-for="selectedUser in selectedUsers"
-                v-bind="props"
                 :key="selectedUser.id"
                 link
                 pill
@@ -282,14 +303,77 @@ watch(
                   :image="`${storageBaseUrl}/${selectedUser.avatar?.path}`"
                 />
                 {{ selectedUser.first_name }} {{ selectedUser.last_name }}
-              </v-chip>
+              </VChip>
+            </VCol>
+          </VRow>
+
+          <!-- 👉 Deputy -->
+          <VRow>
+            <VCol cols="12" md="6">
+              <VAutocomplete
+                v-model="selectedDeputy"
+                v-model:search="deputySearchQuery"
+                :items="filteredDeputyUsers"
+                :item-title="
+                  (item) =>
+                    `${item.first_name} ${item.last_name} (${item.personnel_code})`
+                "
+                clearable
+                item-value="id"
+                label="جانشین"
+                :no-filter="true"
+                return-object
+                @keydown.capture="guardDeputyBackspace"
+              >
+                <template #item="{ props: itemProps, item }">
+                  <VListItem
+                    v-bind="itemProps"
+                    :prepend-avatar="`${storageBaseUrl}/${item?.raw?.avatar?.path}`"
+                    :title="`${item?.raw?.first_name} ${item?.raw?.last_name} (${item?.raw?.personnel_code})`"
+                    :subtitle="`${item?.raw?.profile?.work_area?.name || ''} ${
+                      item?.raw?.profile?.work_area?.name ? '&larr;' : ''
+                    } ${item?.raw?.profile?.cost_center?.name || ''}`"
+                  />
+                </template>
+              </VAutocomplete>
+            </VCol>
+
+            <!-- 👉 Liaison -->
+            <VCol cols="12" md="6">
+              <VAutocomplete
+                v-model="selectedLiaison"
+                v-model:search="liaisonSearchQuery"
+                :items="filteredLiaisonUsers"
+                :item-title="
+                  (item) =>
+                    `${item.first_name} ${item.last_name} (${item.personnel_code})`
+                "
+                clearable
+                item-value="id"
+                label="رابط"
+                :no-filter="true"
+                return-object
+                :rules="[requiredValidator]"
+                @keydown.capture="guardLiaisonBackspace"
+              >
+                <template #item="{ props: itemProps, item }">
+                  <VListItem
+                    v-bind="itemProps"
+                    :prepend-avatar="`${storageBaseUrl}/${item?.raw?.avatar?.path}`"
+                    :title="`${item?.raw?.first_name} ${item?.raw?.last_name} (${item?.raw?.personnel_code})`"
+                    :subtitle="`${item?.raw?.profile?.work_area?.name || ''} ${
+                      item?.raw?.profile?.work_area?.name ? '&larr;' : ''
+                    } ${item?.raw?.profile?.cost_center?.name || ''}`"
+                  />
+                </template>
+              </VAutocomplete>
             </VCol>
           </VRow>
 
           <!-- 👉 Submit and Cancel -->
           <VRow>
             <VCol cols="12" class="d-flex justify-center gap-4">
-              <VBtn type="submit">
+              <VBtn type="submit" :loading="pendingState.createOrgChartNode || props.reloading">
                 افزودن
               </VBtn>
 
@@ -309,4 +393,14 @@ watch(
     :selected-users="selectedUsers"
     @select-user="onSelectUserFromDialog"
   />
+
+  <!-- Error Snackbar -->
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="3000"
+    location="top"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
 </template>

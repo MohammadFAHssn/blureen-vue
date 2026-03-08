@@ -231,6 +231,7 @@
   "Human Resources": "اداری و منابع انسانی",
   "Requests": "درخواست ها",
   "Approval Requests": "تاییدیه درخواست ها",
+  "Human Resource Cartable": "کارتابل کارگزینی",
   "Organization Chart": "چارت سازمانی",
   "Evaluation": "ارزیابی",
   "Evaluation And Survey": "ارزیابی و نظرسنجی",
@@ -245,5 +246,9 @@
   "FOOD Kitchen": "آشپزخانه",
   "FOOD report": "گزارش",
   "CONTRACTOR": "پیمانکار",
-  "CONTRACTOR Management": "مدیریت پیمانکار"
+  "CONTRACTOR Management": "مدیریت پیمانکار",
+  "EMPLOYEE TRANSPORT": "حمل و نقل",
+  "EMPLOYEE TRANSPORT Service": "سرویس",
+  "EMPLOYEE TRANSPORT Management": "مدیریت",
+  "Evaluation Results": "نتایج ارزیابی"
 }

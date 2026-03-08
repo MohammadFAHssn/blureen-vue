@@ -28,6 +28,9 @@ const uiState = reactive({
 
 const pendingState = reactive({
   updateOrganizationChart: false,
+  deleteOrgChartNode: false,
+  organizeOrgChart: false,
+  reloadChart: false,
 })
 
 const orgChartNodes = ref([])
@@ -52,6 +55,9 @@ const isDragStarting = ref(false)
 const expandLevel = ref(1)
 const maxDepth = ref(0)
 
+// Event listener reference for cleanup
+let nodeActionClickHandler = null
+
 const vuetifyTheme = useTheme()
 
 watch(
@@ -66,7 +72,7 @@ watch(
 
 async function fetchOrgChartNodes() {
   await axiosInstance
-    .get('/base/org-chart-node')
+    .get('/base/org-chart-node/by-role')
     .then(({ data: { data } }) => {
       orgChartNodes.value = data.map((orgChartNode) => {
         return {
@@ -75,14 +81,16 @@ async function fetchOrgChartNodes() {
           orgPosition: orgChartNode.org_position,
           orgUnit: orgChartNode.org_unit,
           users: orgChartNode.users,
+          deputy: orgChartNode.deputy_users[0],
+          liaison: orgChartNode.org_unit.liaisons[0],
         }
       })
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org chart nodes:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org chart nodes:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت چارت سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت چارت سازمانی'
     })
 }
 
@@ -92,11 +100,11 @@ async function fetchOrgPositions() {
     .then(({ data: { data } }) => {
       orgPositions.value = data.sort((a, b) => a.level - b.level)
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org positions:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org positions:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت سمت‌های سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت سمت‌های سازمانی'
     })
 }
 
@@ -106,11 +114,11 @@ async function fetchOrgUnits() {
     .then(({ data: { data } }) => {
       orgUnits.value = data
     })
-    .catch(({ response }) => {
-      console.error('Error fetching org units:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching org units:', error)
       uiState.hasError = true
       uiState.errorMessage
-        = response.data.message || 'خطا در دریافت واحدهای سازمانی'
+        = error.response?.data?.message || 'خطا در دریافت واحدهای سازمانی'
     })
 }
 
@@ -120,39 +128,17 @@ async function fetchUsers() {
     .then(({ data: { data } }) => {
       users.value = data
     })
-    .catch(({ response }) => {
-      console.error('Error fetching users:', response.data.message)
+    .catch((error) => {
+      console.error('Error fetching users:', error)
       uiState.hasError = true
-      uiState.errorMessage = response.data.message || 'خطا در دریافت کاربران'
-    })
-}
-
-async function updateOrganizationChart() {
-  pendingState.updateOrganizationChart = true
-
-  const chartState = orgChartInstance.value.getChartState()
-  orgChartNodes.value = chartState.allNodes.map(node => node.data)
-
-  await axiosInstance
-    .put('/base/org-chart-node/update', {
-      orgChartNodes: orgChartNodes.value,
-    })
-    .then(() => {
-      reload()
-    })
-    .catch(({ response }) => {
-      console.error('Error updating organization chart:', response.data.message)
-      uiState.hasError = true
-      uiState.errorMessage
-        = response.data.message || 'خطا در بروزرسانی چارت سازمانی'
-    })
-    .finally(() => {
-      pendingState.updateOrganizationChart = false
+      uiState.errorMessage = error.response?.data?.message || 'خطا در دریافت کاربران'
     })
 }
 
 function drawOrgChart() {
   if (!orgChartRef.value || orgChartNodes.value.length === 0) return
+
+  orgChartRef.value.innerHTML = ''
 
   orgChartInstance.value = new OrgChart()
     .container(orgChartRef.value)
@@ -227,7 +213,12 @@ function calculateMaxDepth() {
 function setupNodeActionButtons() {
   if (!orgChartRef.value) return
 
-  orgChartRef.value.addEventListener('click', (event) => {
+  // Remove previous event listener if exists
+  if (nodeActionClickHandler) {
+    orgChartRef.value.removeEventListener('click', nodeActionClickHandler)
+  }
+
+  nodeActionClickHandler = (event) => {
     const button = event.target.closest('.node-action-btn')
     if (!button) return
 
@@ -247,7 +238,9 @@ function setupNodeActionButtons() {
         onDeleteNode(nodeId)
         break
     }
-  })
+  }
+
+  orgChartRef.value.addEventListener('click', nodeActionClickHandler)
 }
 
 function onEditNode(nodeId) {
@@ -259,14 +252,24 @@ function onEditNode(nodeId) {
   uiState.isEditNodeDialogOpen = true
 }
 
-function handleEditNode({ id, parentId, orgPosition, orgUnit, users }) {
-  orgChartNodes.value = orgChartNodes.value.filter(
-    node => String(node.id) !== String(id),
+async function handleEditNode({ id, parentId, orgPosition, orgUnit, users, deputy, liaison }) {
+  const nodeIndex = orgChartNodes.value.findIndex(
+    node => String(node.id) === String(id),
   )
-  orgChartNodes.value.push({ id, parentId, orgPosition, orgUnit, users })
-  orgChartInstance.value.data(orgChartNodes.value).render()
 
-  orgChartInstance.value.setCentered(id).render()
+  if (nodeIndex !== -1) {
+    orgChartNodes.value[nodeIndex] = { id, parentId, orgPosition, orgUnit, users, deputy, liaison }
+  }
+
+  // Reload and center on the edited node
+  pendingState.reloadChart = true
+  try {
+    await reloadAndCenter(id)
+  }
+  finally {
+    pendingState.reloadChart = false
+    uiState.isEditNodeDialogOpen = false
+  }
 }
 
 function onAddNode(nodeId) {
@@ -274,18 +277,26 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-function handleAddNode({ orgPosition, orgUnit, users }) {
-  const newNodeId = `${Date.now()}-${Math.random()}`
-
-  orgChartInstance.value.addNode({
-    id: newNodeId,
+async function handleAddNode({ id, orgPosition, orgUnit, users, deputy, liaison }) {
+  orgChartNodes.value.push({
+    id,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,
     users,
+    deputy,
+    liaison,
   })
 
-  orgChartInstance.value.setCentered(newNodeId).render()
+  // Reload and center on the new node
+  pendingState.reloadChart = true
+  try {
+    await reloadAndCenter(id)
+  }
+  finally {
+    pendingState.reloadChart = false
+    uiState.isAddNodeDialogOpen = false
+  }
 }
 
 function onDeleteNode(nodeId) {
@@ -293,9 +304,36 @@ function onDeleteNode(nodeId) {
   uiState.isDeleteNodeDialogOpen = true
 }
 
-function handleDeleteNode() {
-  orgChartInstance.value.removeNode(selectedNodeId.value)
-  uiState.isDeleteNodeDialogOpen = false
+async function handleDeleteNode() {
+  pendingState.deleteOrgChartNode = true
+
+  const nodeToDelete = orgChartNodes.value.find(
+    node => String(node.id) === String(selectedNodeId.value),
+  )
+  const parentIdToCenter = nodeToDelete?.parentId
+
+  await axiosInstance
+    .delete('/base/org-chart-node', { params: {
+      id: selectedNodeId.value,
+    } })
+    .then(() => {
+      uiState.isDeleteNodeDialogOpen = false
+
+      orgChartNodes.value = orgChartNodes.value.filter(
+        node => String(node.id) !== String(selectedNodeId.value),
+      )
+
+      reloadAndCenter(parentIdToCenter)
+    })
+    .catch((error) => {
+      console.error('Error deleting organization chart node:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در حذف گره چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.deleteOrgChartNode = false
+    })
 }
 
 // Drag and Drop handlers
@@ -482,9 +520,31 @@ function enableDrag() {
   orgChartRef.value?.classList.add('drag-enabled')
 }
 
-function disableDrag() {
-  dragEnabled.value = false
-  orgChartRef.value?.classList.remove('drag-enabled')
+async function onOrganize() {
+  pendingState.organizeOrgChart = true
+
+  const chartState = orgChartInstance.value.getChartState()
+  orgChartNodes.value = chartState.allNodes.map(node => node.data)
+
+  await axiosInstance
+    .put('/base/org-chart-node/organize', {
+      orgChartNodes: orgChartNodes.value,
+    })
+    .then(() => {
+      dragEnabled.value = false
+      orgChartRef.value?.classList.remove('drag-enabled')
+
+      reload()
+    })
+    .catch((error) => {
+      console.error('Error updating organization chart:', error)
+      uiState.hasError = true
+      uiState.errorMessage
+        = error.response?.data?.message || 'خطا در بروزرسانی چارت سازمانی'
+    })
+    .finally(() => {
+      pendingState.organizeOrgChart = false
+    })
 }
 
 function updateExpandLevel(level) {
@@ -502,10 +562,66 @@ function updateExpandLevel(level) {
   orgChartInstance.value.data(data).render().fit()
 }
 
+async function reloadAndCenter(centerNodeId = null) {
+  // Save expanded state before reload
+  const chartState = orgChartInstance.value?.getChartState()
+  if (!chartState?.allNodes) return
+
+  const expandedNodesMap = {}
+  chartState.allNodes.forEach((node) => {
+    expandedNodesMap[node.data.id] = node.data._expanded
+  })
+
+  // Fetch fresh data from server
+  await fetchOrgChartNodes()
+  await fetchOrgUnits()
+
+  // Restore expanded state to the new data
+  orgChartNodes.value.forEach((node) => {
+    if (expandedNodesMap[node.id] !== undefined) {
+      node._expanded = expandedNodesMap[node.id]
+    }
+  })
+
+  // Ensure the path to centered node is expanded
+  if (centerNodeId) {
+    expandPathToNode(centerNodeId)
+  }
+
+  await nextTick()
+  drawOrgChart()
+
+  // Center on the specified node with animation
+  await nextTick()
+  if (centerNodeId && orgChartInstance.value) {
+    // Use setTimeout to ensure the chart is fully rendered
+    setTimeout(() => {
+      orgChartInstance.value.setCentered(centerNodeId).render()
+    }, 100)
+  }
+}
+
+function expandPathToNode(nodeId) {
+  const nodeMap = new Map(orgChartNodes.value.map(n => [String(n.id), n]))
+  let currentNode = nodeMap.get(String(nodeId))
+
+  while (currentNode) {
+    currentNode._expanded = true
+    if (currentNode.parentId) {
+      currentNode = nodeMap.get(String(currentNode.parentId))
+    }
+    else {
+      break
+    }
+  }
+}
+
 async function reload() {
   // Save current state before reload
   const chartState = orgChartInstance.value?.getChartState()
   const savedTransform = chartState?.lastTransform
+
+  if (!chartState?.allNodes) return
 
   // Save expanded state of each node
   const expandedNodesMap = {}
@@ -542,14 +658,28 @@ function toComparisonKey(str) {
   return (str || '').toString().replace(/[\s\u200C]+/g, '')
 }
 
-fetchOrgChartNodes()
-fetchOrgPositions()
-fetchOrgUnits()
-await fetchUsers()
+await Promise.all([
+  fetchOrgChartNodes(),
+  fetchOrgPositions(),
+  fetchOrgUnits(),
+  fetchUsers(),
+])
 
-onMounted(async () => {
-  await nextTick()
+onMounted(() => {
   drawOrgChart()
+})
+
+onUnmounted(() => {
+  // Cleanup event listener
+  if (orgChartRef.value && nodeActionClickHandler) {
+    orgChartRef.value.removeEventListener('click', nodeActionClickHandler)
+    nodeActionClickHandler = null
+  }
+
+  // Cleanup chart instance
+  if (orgChartInstance.value) {
+    orgChartInstance.value = null
+  }
 })
 </script>
 
@@ -631,37 +761,29 @@ onMounted(async () => {
         سازماندهی
       </VBtn>
 
-      <VBtn v-else color="success" variant="tonal" @click="disableDrag">
+      <VBtn v-else color="success" variant="tonal" :loading="pendingState.organizeOrgChart" @click="onOrganize">
         <VIcon start icon="tabler-check" />
         تایید
       </VBtn>
     </div>
 
     <div ref="orgChartRef" class="org-chart-container" />
-
-    <IconBtn
-      size="x-large"
-      variant="elevated"
-      color="primary"
-      :loading="pendingState.updateOrganizationChart"
-      @click="updateOrganizationChart"
-    >
-      <VIcon icon="tabler-device-floppy" size="35" />
-    </IconBtn>
   </div>
 
   <AreYouSureDialog
     v-model:is-dialog-visible="uiState.isDeleteNodeDialogOpen"
     title="آیا از حذف این مورد اطمینان دارید؟"
-    :loading="false"
+    :loading="pendingState.deleteOrgChartNode"
     @confirm="handleDeleteNode"
   />
 
   <AddNodeDialog
     v-model:is-dialog-visible="uiState.isAddNodeDialogOpen"
+    :selected-node-id="selectedNodeId"
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
+    :reloading="pendingState.reloadChart"
     @add="handleAddNode"
   />
 
@@ -671,6 +793,7 @@ onMounted(async () => {
     :org-units="orgUnits"
     :users="users"
     :node="selectedNode"
+    :reloading="pendingState.reloadChart"
     @edit="handleEditNode"
   />
 </template>

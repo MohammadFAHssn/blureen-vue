@@ -1,0 +1,123 @@
+<script setup>
+import { scoreColor } from '@/views/apps/evaluation/evaluationResultHelpers'
+
+defineProps({
+  result: {
+    type: Object,
+    required: true,
+  },
+})
+</script>
+
+<template>
+  <VRow class="ma-1">
+    <VCol
+      cols="6"
+      sm="6"
+      md="3"
+    >
+      <VCard
+        flat
+        border
+        class="text-center pa-3 pa-sm-4"
+      >
+        <VProgressCircular
+          :model-value="result.field_discipline_score ? (Number.parseFloat(result.field_discipline_score) / 20) * 100 : 0"
+          :size="$vuetify.display.smAndUp ? 64 : 48"
+          :width="$vuetify.display.smAndUp ? 5 : 4"
+          :color="scoreColor(result.field_discipline_score, 20)"
+          class="mb-2"
+        >
+          <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_discipline_score * 100) / 100 ?? '-' }}</span>
+        </VProgressCircular>
+        <div class="text-caption text-sm-body-2 text-medium-emphasis">
+          نظم و انضباط
+        </div>
+        <div class="text-caption">
+          از ۲۰
+        </div>
+      </VCard>
+    </VCol>
+    <VCol
+      cols="6"
+      sm="6"
+      md="3"
+    >
+      <VCard
+        flat
+        border
+        class="text-center pa-3 pa-sm-4"
+      >
+        <VProgressCircular
+          :model-value="result.field_ethics_score ? (Number.parseFloat(result.field_ethics_score) / 20) * 100 : 0"
+          :size="$vuetify.display.smAndUp ? 64 : 48"
+          :width="$vuetify.display.smAndUp ? 5 : 4"
+          :color="scoreColor(result.field_ethics_score, 20)"
+          class="mb-2"
+        >
+          <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_ethics_score * 100) / 100 ?? '-' }}</span>
+        </VProgressCircular>
+        <div class="text-caption text-sm-body-2 text-medium-emphasis">
+          جنبه اخلاقی
+        </div>
+        <div class="text-caption">
+          از ۲۰
+        </div>
+      </VCard>
+    </VCol>
+    <VCol
+      cols="6"
+      sm="6"
+      md="3"
+    >
+      <VCard
+        flat
+        border
+        class="text-center pa-3 pa-sm-4"
+      >
+        <VProgressCircular
+          :model-value="result.field_job_competency_score ? (Number.parseFloat(result.field_job_competency_score) / 20) * 100 : 0"
+          :size="$vuetify.display.smAndUp ? 64 : 48"
+          :width="$vuetify.display.smAndUp ? 5 : 4"
+          :color="scoreColor(result.field_job_competency_score, 20)"
+          class="mb-2"
+        >
+          <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_job_competency_score * 100) / 100 ?? '-' }}</span>
+        </VProgressCircular>
+        <div class="text-caption text-sm-body-2 text-medium-emphasis">
+          شایستگی شغلی
+        </div>
+        <div class="text-caption">
+          از ۲۰
+        </div>
+      </VCard>
+    </VCol>
+    <VCol
+      cols="6"
+      sm="6"
+      md="3"
+    >
+      <VCard
+        flat
+        border
+        class="text-center pa-3 pa-sm-4"
+      >
+        <VProgressCircular
+          :model-value="result.field_communication_training_score ? (Number.parseFloat(result.field_communication_training_score) / 20) * 100 : 0"
+          :size="$vuetify.display.smAndUp ? 64 : 48"
+          :width="$vuetify.display.smAndUp ? 5 : 4"
+          :color="scoreColor(result.field_communication_training_score, 20)"
+          class="mb-2"
+        >
+          <span class="text-body-2 text-sm-body-1 font-weight-bold">{{ Math.round(result.field_communication_training_score * 100) / 100 ?? '-' }}</span>
+        </VProgressCircular>
+        <div class="text-caption text-sm-body-2 text-medium-emphasis">
+          مهارت ارتباطی و آموزشی
+        </div>
+        <div class="text-caption">
+          از ۲۰
+        </div>
+      </VCard>
+    </VCol>
+  </VRow>
+</template>

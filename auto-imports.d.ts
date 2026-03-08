@@ -10,10 +10,12 @@ declare global {
   const COOKIE_MAX_AGE_1_MONTH: typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_MONTH']
   const COOKIE_MAX_AGE_1_YEAR: typeof import('./src/utils/constants.js').COOKIE_MAX_AGE_1_YEAR
   const EffectScope: typeof import('vue').EffectScope
+  const HR_REQUEST_DETAILS_TITLE: typeof import('./src/utils/constants.js').HR_REQUEST_DETAILS_TITLE
   const HR_REQUEST_STATUSES: typeof import('./src/utils/constants.js').HR_REQUEST_STATUSES
   const HR_REQUEST_TYPES: typeof import('./src/utils/constants.js').HR_REQUEST_TYPES
   const MAX_FILE_SIZE: typeof import('./src/utils/constants.js').MAX_FILE_SIZE
   const ORG_POSITION_COLORS: typeof import('./src/utils/constants.js').ORG_POSITION_COLORS
+  const STATUSES: typeof import('./src/utils/constants.js').STATUSES
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const alphaDashValidator: typeof import('./src/@core/utils/validators.js').alphaDashValidator
   const alphaValidator: typeof import('./src/@core/utils/validators.js').alphaValidator
@@ -156,6 +158,7 @@ declare global {
   const templateRef: typeof import('@vueuse/core').templateRef
   const throttledRef: typeof import('@vueuse/core').throttledRef
   const throttledWatch: typeof import('@vueuse/core').throttledWatch
+  const toComparisonKey: typeof import('./src/@core/utils/helpers.js').toComparisonKey
   const toRaw: typeof import('vue').toRaw
   const toReactive: typeof import('@vueuse/core').toReactive
   const toRef: typeof import('vue').toRef
@@ -346,6 +349,7 @@ declare global {
   const useTrunc: typeof import('@vueuse/math').useTrunc
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
+  const useUserSearch: typeof import('./src/composables/useUserSearch.js').useUserSearch
   const useVModel: typeof import('@vueuse/core').useVModel
   const useVModels: typeof import('@vueuse/core').useVModels
   const useVibrate: typeof import('@vueuse/core').useVibrate
@@ -390,10 +394,11 @@ declare module 'vue' {
     readonly $api: UnwrapRef<typeof import('./src/utils/api.js')['$api']>
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
-    readonly HR_REQUEST_STATUSES: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_STATUSES']>
+    readonly HR_REQUEST_DETAILS_TITLE: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_DETAILS_TITLE']>
     readonly HR_REQUEST_TYPES: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_TYPES']>
     readonly MAX_FILE_SIZE: UnwrapRef<typeof import('./src/utils/constants.js')['MAX_FILE_SIZE']>
     readonly ORG_POSITION_COLORS: UnwrapRef<typeof import('./src/utils/constants.js')['ORG_POSITION_COLORS']>
+    readonly STATUSES: UnwrapRef<typeof import('./src/utils/constants.js')['STATUSES']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>
     readonly alphaValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaValidator']>
@@ -534,6 +539,7 @@ declare module 'vue' {
     readonly templateRef: UnwrapRef<typeof import('@vueuse/core')['templateRef']>
     readonly throttledRef: UnwrapRef<typeof import('@vueuse/core')['throttledRef']>
     readonly throttledWatch: UnwrapRef<typeof import('@vueuse/core')['throttledWatch']>
+    readonly toComparisonKey: UnwrapRef<typeof import('./src/@core/utils/helpers.js')['toComparisonKey']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toReactive: UnwrapRef<typeof import('@vueuse/core')['toReactive']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
@@ -724,6 +730,7 @@ declare module 'vue' {
     readonly useTrunc: UnwrapRef<typeof import('@vueuse/math')['useTrunc']>
     readonly useUrlSearchParams: UnwrapRef<typeof import('@vueuse/core')['useUrlSearchParams']>
     readonly useUserMedia: UnwrapRef<typeof import('@vueuse/core')['useUserMedia']>
+    readonly useUserSearch: UnwrapRef<typeof import('./src/composables/useUserSearch.js')['useUserSearch']>
     readonly useVModel: UnwrapRef<typeof import('@vueuse/core')['useVModel']>
     readonly useVModels: UnwrapRef<typeof import('@vueuse/core')['useVModels']>
     readonly useVibrate: UnwrapRef<typeof import('@vueuse/core')['useVibrate']>

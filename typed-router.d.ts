@@ -20,6 +20,9 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'apps-contractor-contractor': RouteRecordInfo<'apps-contractor-contractor', '/apps/contractor/contractor', Record<never, never>, Record<never, never>>,
+    'apps-employee-transport-em-management': RouteRecordInfo<'apps-employee-transport-em-management', '/apps/employee-transport/em-management', Record<never, never>, Record<never, never>>,
+    'apps-employee-transport-em-user': RouteRecordInfo<'apps-employee-transport-em-user', '/apps/employee-transport/em-user', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-food-food-reservation': RouteRecordInfo<'apps-food-food-reservation', '/apps/food/food-reservation', Record<never, never>, Record<never, never>>,
@@ -28,6 +31,7 @@ declare module 'vue-router/auto-routes' {
     'apps-hse-health-certificate': RouteRecordInfo<'apps-hse-health-certificate', '/apps/hse/health-certificate', Record<never, never>, Record<never, never>>,
     'apps-hse-health-certificate-management': RouteRecordInfo<'apps-hse-health-certificate-management', '/apps/hse/health-certificate-management', Record<never, never>, Record<never, never>>,
     'apps-human-resources-approvals-inbox': RouteRecordInfo<'apps-human-resources-approvals-inbox', '/apps/human-resources/approvals-inbox', Record<never, never>, Record<never, never>>,
+    'apps-human-resources-hr-cartable': RouteRecordInfo<'apps-human-resources-hr-cartable', '/apps/human-resources/hr-cartable', Record<never, never>, Record<never, never>>,
     'apps-human-resources-requests': RouteRecordInfo<'apps-human-resources-requests', '/apps/human-resources/requests', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-file': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-file', '/apps/payroll/birthday/birthday-admin-file', Record<never, never>, Record<never, never>>,
     'apps-payroll-birthday-birthday-admin-gift': RouteRecordInfo<'apps-payroll-birthday-birthday-admin-gift', '/apps/payroll/birthday/birthday-admin-gift', Record<never, never>, Record<never, never>>,
@@ -76,6 +80,18 @@ declare module 'vue-router/auto-routes' {
       routes: 'apps-contractor-contractor'
       views: never
     }
+    'src/pages/apps/employee-transport/em-management.vue': {
+      routes: 'apps-employee-transport-em-management'
+      views: never
+    }
+    'src/pages/apps/employee-transport/em-user.vue': {
+      routes: 'apps-employee-transport-em-user'
+      views: never
+    }
+    'src/pages/apps/evaluation/evaluation-results.vue': {
+      routes: 'apps-evaluation-evaluation-results'
+      views: never
+    }
     'src/pages/apps/evaluation/peer-evaluation.vue': {
       routes: 'apps-evaluation-peer-evaluation'
       views: never
@@ -106,6 +122,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/human-resources/approvals-inbox.vue': {
       routes: 'apps-human-resources-approvals-inbox'
+      views: never
+    }
+    'src/pages/apps/human-resources/hr-cartable.vue': {
+      routes: 'apps-human-resources-hr-cartable'
       views: never
     }
     'src/pages/apps/human-resources/requests.vue': {

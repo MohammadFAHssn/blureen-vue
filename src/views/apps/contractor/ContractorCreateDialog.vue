@@ -17,6 +17,7 @@ const emit = defineEmits(['submit', 'update:isDialogVisible'])
 const contractorFirstName = ref(null)
 const contractorLastName = ref(null)
 const description = ref(null)
+const costResponsible = ref('on_contractor')
 const refVForm = ref()
 
 // methods
@@ -26,6 +27,7 @@ function onFormSubmit() {
       emit('submit', {
         contractorFirstName: contractorFirstName.value,
         contractorLastName: contractorLastName.value,
+        costResponsible: costResponsible.value,
         description: description.value,
       })
     }
@@ -81,6 +83,19 @@ function dialogModelValueUpdate(val) {
                 :disabled="loading"
                 label="نام خانوادگی"
               />
+            </VCol>
+
+            <!-- cost -->
+            <VCol cols="12" md="12">
+              <VRadioGroup
+                v-model="costResponsible"
+                class="mt-2"
+                inline
+                label="هزینه بر عهده:"
+              >
+                <VRadio label="پیمانکار" value="on_contractor" />
+                <VRadio label="شرکت" value="on_company" />
+              </VRadioGroup>
             </VCol>
 
             <!-- description -->

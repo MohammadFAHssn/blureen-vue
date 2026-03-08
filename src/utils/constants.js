@@ -13,15 +13,22 @@ export const ORG_POSITION_COLORS = {
   4: '#616161', // کارگر
 }
 
-export const HR_REQUEST_STATUSES = {
-  HR_REQUEST_PENDING_STATUS: 1,
-  HR_REQUEST_Approved_STATUS: 2,
-  HR_REQUEST_REJECTED_STATUS: 3,
+export const STATUSES = {
+  PENDING: 1,
+  APPROVED: 2,
+  REJECTED: 3,
+  REJECTED_BY_SYSTEM: 4,
+  PENDING_HR_APPROVAL: 5,
+  REJECTED_BY_HR: 6,
 }
 
 export const HR_REQUEST_TYPES = {
   DAILY_LEAVE: 1,
   HOURLY_LEAVE: 2,
   OVERTIME: 3,
-  SICK_LEAVE: 4,
+}
+
+export const HR_REQUEST_DETAILS_TITLE = {
+  description: 'توضیحات',
+  replacement_user: 'جایگزین',
 }

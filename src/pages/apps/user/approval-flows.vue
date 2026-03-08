@@ -30,6 +30,14 @@ const selectedNodes = ref([])
 
 const requestTypes = ref([])
 const selectedRequestType_or_Types__index = shallowRef(0)
+
+const maxLevels = computed(() => {
+  const userList = users.value ?? []
+  return userList.reduce((max, user) => {
+    const levelCount = user.org_charts_path[0]?.length ?? 0
+    return Math.max(max, levelCount)
+  }, 0)
+})
 // ----- start ag-grid -----
 
 const { theme } = useAGGridTheme()
@@ -40,58 +48,61 @@ function onGridReady(params) {
   gridApi.value.setGridOption('rowData', rowData())
 }
 
-const columnDefs = ref([
-  { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
-  { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
-  {
-    headerName: 'مرکز هزینه',
-    field: 'costCenter',
-    valueFormatter: params => params.value?.name,
+const columnDefs = computed(() => {
+  const groupCols = Array.from({ length: maxLevels.value }, (_, i) => ({
+    field: `level${i + 1}`,
     rowGroup: true,
     hide: true,
-  },
-  {
-    headerName: 'سمت شغلی',
-    field: 'jobPosition',
-    valueFormatter: params => params.value?.name,
-    rowGroup: true,
-    hide: true,
-  },
-  { headerName: 'کد پرسنلی', field: 'personnelCode' },
-  { headerName: 'نام', field: 'firstName' },
-  { headerName: 'نام خانوادگی', field: 'lastName' },
-  {
-    headerName: 'وضعیت',
-    field: 'active',
-    cellRenderer: 'Active',
-    cellStyle: { 'display': 'flex', 'align-items': 'center' },
-    filterParams: {
-      valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+    keyCreator: p => p.value?.id,
+    valueFormatter: p => p.value?.name ?? '',
+  }))
+
+  return [
+    ...groupCols,
+    { headerName: 'کد پرسنلی', field: 'personnelCode' },
+    { headerName: 'نام', field: 'firstName' },
+    { headerName: 'نام خانوادگی', field: 'lastName' },
+    {
+      headerName: 'وضعیت',
+      field: 'active',
+      cellRenderer: 'Active',
+      cellStyle: { display: 'flex', alignItems: 'center' },
+      filterParams: {
+        valueFormatter: params => (params.value === 1 ? 'فعال' : 'غیرفعال'),
+      },
     },
-  },
-])
+  ]
+})
 
 const rowSelection = ref({
   mode: 'multiRow',
   enableClickSelection: true,
   selectAll: 'filtered',
-
-  isRowSelectable: rowNode =>
-    !(rowNode.group && rowNode.field !== 'jobPosition'),
 })
 
 function rowData() {
-  return users.value?.map((user) => {
+  return (users.value ?? []).map((user) => {
+    const path = user.org_charts_path[0] ?? []
+
+    const levelFields = Object.fromEntries(
+      Array.from({ length: maxLevels.value }, (_, i) => [
+        `level${i + 1}`,
+        path[i]
+          ? {
+              id: path[i].id,
+              name: `${path[i].org_position.name} ${path[i].org_unit.name}`,
+            }
+          : null,
+      ]),
+    )
+
     return {
       id: user.id,
       personnelCode: Number.parseInt(user.personnel_code),
       firstName: user.first_name,
       lastName: user.last_name,
       active: user.active,
-      workplace: user.profile?.workplace?.name,
-      workArea: user.profile?.work_area?.name,
-      costCenter: user.profile?.cost_center,
-      jobPosition: user.profile?.job_position,
+      ...levelFields,
       approvalFlowAsRequester: user.approval_flows_as_requester,
     }
   })
@@ -107,10 +118,9 @@ function getApproverNode(approval) {
     if (
       (approval.approver_user_id
         && node.data?.id == approval.approver_user_id)
-      || (approval.approver_position_id
-        && node.field === 'jobPosition'
-        && node.groupValue?.rayvarz_id == approval.approver_position_id
-        && node.parent.groupValue?.rayvarz_id == approval.approver_center_id)
+      || (approval.approver_org_chart_node_id
+        && node.group
+        && node.groupValue?.id == approval.approver_org_chart_node_id)
     ) {
       approverNode = node
       return 'break loop!'
@@ -120,6 +130,8 @@ function getApproverNode(approval) {
 }
 
 function onSelectionChanged() {
+  if (!gridApi.value) return
+
   selectedNodes.value = gridApi.value.getSelectedNodes()
 
   for (const selectedNode of selectedNodes.value) {
@@ -134,17 +146,16 @@ function onSelectionChanged() {
       return
     }
 
-    if (selectedNodes.value[0].field === 'jobPosition') {
-      const position_id = selectedNodes.value[0].groupValue.rayvarz_id
-      const center_id = selectedNodes.value[0].parent.groupValue.rayvarz_id
+    if (selectedNodes.value[0].group) {
+      const org_chart_node_id = selectedNodes.value[0].groupValue.id
 
       approvalFlow.value = approvalFlows.value
         .filter(
           approval =>
-            approval.requester_position_id === position_id
-            && approval.requester_center_id === center_id,
+            approval.requester_org_chart_node_id === org_chart_node_id,
         )
         .map(approval => getApproverNode(approval))
+        .filter(Boolean)
     }
 
     if (!selectedNodes.value[0].group) {
@@ -157,17 +168,11 @@ function onSelectionChanged() {
   else if (mode.value === 'edit') {
     if (selectedNodes.value.length !== 0) {
       const lastNode = selectedNodes.value[selectedNodes.value.length - 1]
-      if (lastNode.field === 'jobPosition') {
-        if (lastNode.allChildrenCount > 1) {
-          uiState.hasError = true
-          uiState.errorMessage = 'بیش از یک کاربر در سمت شغلی انتخاب شده وجود دارد. لطفاً کاربر مورد نظر خود را در این سمت انتخاب کنید.'
-          lastNode.setSelected(false, false)
-        }
-      }
 
       if (lastNode.data?.active === 0) {
         uiState.hasError = true
-        uiState.errorMessage = 'کاربر غیرفعال را نمی‌توان به عنوان تأییدکننده انتخاب کرد.'
+        uiState.errorMessage
+          = 'کاربر غیرفعال را نمی‌توان به عنوان تأییدکننده انتخاب کرد.'
         lastNode.setSelected(false, false)
       }
     }
@@ -210,12 +215,11 @@ async function fetchApprovalFlows() {
     const { data, error } = await useApi(
       createUrl('/base/approval-flow', {
         query: {
-          'filter[request_type_id]': `\${${
-            requestTypes.value[
-              Array.isArray(selectedRequestType_or_Types__index.value)
-                ? selectedRequestType_or_Types__index.value[0]
-                : selectedRequestType_or_Types__index.value
-            ].id
+          'filter[request_type_id]': `\${${requestTypes.value[
+            Array.isArray(selectedRequestType_or_Types__index.value)
+              ? selectedRequestType_or_Types__index.value[0]
+              : selectedRequestType_or_Types__index.value
+          ].id
           }}`,
         },
       }),
@@ -262,29 +266,19 @@ async function onSave() {
       (approvalDeleted ? [null] : approvalFlow.value).forEach(
         (approver, approverIndex) => {
           payload.push({
-            requester_user_id: !requester.group
-              ? requester.data.id
-              : null,
-            requester_position_id: requester.group
-              ? requester.groupValue.rayvarz_id
-              : null,
-            requester_center_id: requester.group
-              ? requester.parent.groupValue.rayvarz_id
+            requester_user_id: !requester.group ? requester.data.id : null,
+            requester_org_chart_node_id: requester.group
+              ? requester.groupValue.id
               : null,
             approver_user_id: approvalDeleted
               ? null
               : !approver.group
                   ? approver.data.id
                   : null,
-            approver_position_id: approvalDeleted
+            approver_org_chart_node_id: approvalDeleted
               ? null
               : approver.group
-                ? approver.groupValue.rayvarz_id
-                : null,
-            approver_center_id: approvalDeleted
-              ? null
-              : approver.group
-                ? approver.parent.groupValue.rayvarz_id
+                ? approver.groupValue.id
                 : null,
             priority: approverIndex + 1,
             request_type_id: requestTypes.value[selectedRequestTypeIndex].id,
@@ -321,6 +315,8 @@ async function onSave() {
 }
 
 async function onSelectedRequestTypeChange() {
+  if (!gridApi.value) return
+
   if (mode.value === 'view') {
     pendingState.changeRequestType = true
     fetchUsers()
@@ -346,7 +342,9 @@ watch(mode, (newMode) => {
   if (newMode === 'view') {
     gridApi.value.deselectAll()
     gridApi.value.setNodesSelected({
-      nodes: requesters.value.map(requester => gridApi.value.getRowNode(requester.id)),
+      nodes: requesters.value.map(requester =>
+        gridApi.value.getRowNode(requester.id),
+      ),
       newValue: true,
     })
   }
@@ -364,15 +362,13 @@ watch(mode, (newMode) => {
 
 <template>
   <VLayout class="app-layout">
-    <VSnackbar
-      v-model="uiState.hasError"
-      :timeout="2000"
-      location="center"
-      variant="flat"
-      color="error"
-    >
+    <VSnackbar v-model="uiState.hasError" :timeout="2000" location="center" variant="flat" color="error">
       {{ uiState.errorMessage }}
     </VSnackbar>
+
+    <h3 class="mb-4">
+      رده تأییدیه‌ها
+    </h3>
 
     <VCard class="mb-3" :color="mode === 'edit' ? 'yellow-lighten-4' : ''">
       <v-card-text class="pa-3">
@@ -428,7 +424,7 @@ watch(mode, (newMode) => {
         enable-rtl
         row-numbers
         pagination
-        group-display-type="multipleColumns"
+        :group-allow-unbalanced="true"
         :auto-group-column-def="autoGroupColumnDef"
         cell-selection
         :row-selection="rowSelection"
@@ -450,6 +446,6 @@ watch(mode, (newMode) => {
   display: grid;
   box-shadow: none;
   grid-template-columns: auto;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 </style>

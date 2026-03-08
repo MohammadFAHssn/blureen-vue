@@ -41,7 +41,7 @@ function onFormSubmit() {
           start_time: startTime.value,
           end_time: endTime.value,
         }
-        await axiosInstance.post('/hr-request/requests/create', requestData)
+        await axiosInstance.post('/hr-request/request/create', requestData)
 
         uiState.success = true
         uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
@@ -50,16 +50,8 @@ function onFormSubmit() {
         emit('created')
       }
       catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
         uiState.hasError = true
-        uiState.errorMessage = error_message
+        uiState.errorMessage = error.response.data.message ?? 'خطا هنگام ثبت درخواست'
       }
     }
   })

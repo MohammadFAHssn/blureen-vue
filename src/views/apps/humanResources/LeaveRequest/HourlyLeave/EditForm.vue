@@ -38,7 +38,7 @@ function onFormSubmit() {
     if (isValid) {
       try {
         await axiosInstance.patch(
-          '/hr-request/requests/update',
+          '/hr-request/request/update',
           {
             formData: {
               requestId: props.request.id,

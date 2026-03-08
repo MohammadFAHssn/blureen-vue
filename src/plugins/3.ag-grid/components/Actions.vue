@@ -48,7 +48,17 @@ function onCancelClick() {
       <VIcon icon="tabler-photo-plus" />
     </IconBtn>
 
-    <IconBtn v-if="params.value.status" @click="params.onStatusClick(params.node)">
+    <IconBtn
+      v-if="params.value.addStation"
+      @click="params.onAddStationClick(params.node)"
+    >
+      <VIcon icon="tabler-location-plus" />
+    </IconBtn>
+
+    <IconBtn
+      v-if="params.value.status"
+      @click="params.onStatusClick(params.node)"
+    >
       <VIcon icon="tabler-power" />
     </IconBtn>
 
@@ -106,6 +116,18 @@ function onCancelClick() {
       @click="params.onApproveClick(params.node, false)"
     >
       <VIcon icon="tabler-ban" />
+    </IconBtn>
+    <IconBtn
+      v-if="params.value.referrable"
+      @click="params.onReferralClick(params.node)"
+    >
+      <VIcon icon="tabler-user-share" />
+    </IconBtn>
+    <IconBtn
+      v-if="params.value.approvalFlow"
+      @click="params.onShowApprovalFlowClick(params.node, false)"
+    >
+      <VIcon icon="tabler-git-branch" />
     </IconBtn>
 
     <v-switch

@@ -4,6 +4,38 @@
 
 Vue 3 admin template (Vuexy-based) with Vuetify 3, RTL/Persian support, CASL authorization, and AG-Grid Enterprise. Uses file-based routing and auto-imports.
 
+## Code Style Guidelines
+
+### Component-Based Architecture (Default)
+
+**Always prefer component-based architecture.** When implementing features:
+
+- **Split large components** into smaller, reusable sub-components
+- **Extract repeated UI patterns** into dedicated components
+- **Keep page components thin** — delegate UI logic to child components
+- **Place feature-specific components** in folders like `src/views/apps/{feature}/components/`
+- **Place shared/reusable components** in `src/components/`
+
+Example structure for a feature:
+
+```
+src/views/apps/users/
+├── components/
+│   ├── UserCard.vue
+│   ├── UserFilters.vue
+│   ├── UserTable.vue
+│   └── UserFormDialog.vue
+└── list/
+    └── index.vue  ← Main page (thin, composes components)
+```
+
+This approach improves:
+
+- **Readability** — smaller files, clear responsibilities
+- **Reusability** — components can be used elsewhere
+- **Testability** — isolated units are easier to test
+- **Maintainability** — changes are localized
+
 ## Architecture
 
 ### Key Path Aliases

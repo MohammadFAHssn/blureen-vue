@@ -1,5 +1,6 @@
 <script setup>
 import ContractorCreateDialog from '@/views/apps/contractor/ContractorCreateDialog.vue'
+import ContractorEditDialog from '@/views/apps/contractor/ContractorEditDialog.vue'
 
 definePage({
   meta: {
@@ -14,17 +15,19 @@ const uiState = reactive({
   hasError: false,
   errorMessage: '',
   isContractorCreateDialogVisible: false,
+  isContractorEditDialogVisible: false,
 })
 
 const pendingState = reactive({
   fetchingsContractors: false,
   createContractor: false,
+  editContractor: false,
   changeStatus: false,
 })
 
 const contractors = ref([])
 
-const selectedNodes = ref([])
+const selectedContractor = ref(null)
 const gridApi = ref(null)
 
 // ----- start ag-grid -----
@@ -37,6 +40,7 @@ function onGridReady(params) {
 
 const columnDefs = ref([
   { headerName: 'نام', field: 'fullName' },
+  { headerName: 'مسئول هزینه', field: 'costResponsible' },
   { headerName: 'توضیحات', field: 'description' },
   {
     headerName: 'وضعیت',
@@ -73,8 +77,12 @@ const columnDefs = ref([
         component: 'Actions',
         params: {
           onStatusClick: (selectedNode) => {
-            selectedNodes.value = [selectedNode]
+            selectedContractor.value = selectedNode.data
             onChangeStatusClick()
+          },
+          onEditClick: (selectedNode) => {
+            selectedContractor.value = selectedNode.data
+            uiState.isContractorEditDialogVisible = true
           },
         },
       }
@@ -87,6 +95,7 @@ const rowData = computed(() =>
     return {
       id: contractor.id,
       fullName: contractor.fullName,
+      costResponsible: contractor.costResponsible === 'on_company' ? 'شرکت' : 'پیمانکار',
       description: contractor.description,
       status: contractor.status,
       createdBy: contractor.createdBy?.fullName || '--',
@@ -95,6 +104,10 @@ const rowData = computed(() =>
       updatedAt: moment(contractor.updatedAt).format('jYYYY-jMM-jDD HH:mm:ss'),
       actions: {
         status: true,
+        editable: {
+          status: true,
+          mode: 'view',
+        },
       },
     }
   }),
@@ -127,6 +140,7 @@ async function onCreateContractor(payload) {
 
   formData.append('first_name', payload.contractorFirstName)
   formData.append('last_name', payload.contractorLastName)
+  formData.append('cost_responsible', payload.costResponsible)
   if (payload.description) {
     formData.append('description', payload.description)
   }
@@ -160,8 +174,41 @@ async function onCreateContractor(payload) {
   }
 }
 
+async function onEditContractor(payload) {
+  const id = selectedContractor.value.id
+  const formData = new FormData()
+  formData.append('cost_responsible', payload.costResponsible)
+  pendingState.editContractor = true
+
+  try {
+    await $api(`/contractor/${id}`, {
+      method: 'POST',
+      body: formData,
+      onResponseError({ response }) {
+        uiState.hasError = true
+        if (response._data?.errors) {
+          const errors = Object.values(response._data.errors).flat().join(' | ')
+          uiState.errorMessage = errors
+        }
+        else {
+          uiState.errorMessage = response._data?.message || 'خطا در ویرایش پیمانکار'
+        }
+      },
+    })
+
+    uiState.isContractorEditDialogVisible = false
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.editContractor = false
+    fetchContractors()
+  }
+}
+
 async function onChangeStatusClick() {
-  const id = selectedNodes.value[0].data.id
+  const id = selectedContractor.value.id
   pendingState.changeStatus = true
   try {
     await $api(`/contractor/status/${id}`, {
@@ -212,6 +259,14 @@ async function onChangeStatusClick() {
       v-model:is-dialog-visible="uiState.isContractorCreateDialogVisible"
       :loading="pendingState.createContractor"
       @submit="onCreateContractor"
+    />
+
+    <ContractorEditDialog
+      v-if="uiState.isContractorEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isContractorEditDialogVisible"
+      :loading="pendingState.editContractor"
+      :file="selectedContractor"
+      @submit="onEditContractor"
     />
 
     <VApp>

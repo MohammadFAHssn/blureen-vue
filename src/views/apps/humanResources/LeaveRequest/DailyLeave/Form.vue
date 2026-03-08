@@ -4,71 +4,159 @@ const props = defineProps({
     required: true,
   },
 })
+
 const emit = defineEmits(['created'])
+
 const uiState = reactive({
   success: false,
   successMessage: '',
   hasError: false,
   errorMessage: '',
-  isEditRequestDialogVisible: false,
+  loading: false,
+  isConfirmDialogVisible: false,
 })
+
 const startDate = ref('')
 const endDate = ref('')
+const description = ref('')
+const replacementUser = ref(null)
+const replacements = ref([])
+const attendanceLogs = ref([])
+const refVForm = ref()
+
 const startDateRules = [
   () => !!startDate.value || 'لطفا تاریخ شروع را انتخاب کنید',
 ]
+
 const endDateRules = [
   () => !!endDate.value || 'لطفا تاریخ پایان را انتخاب کنید',
   () =>
     !(endDate.value < startDate.value)
     || 'تاریخ پایان نمیتواند قبل از تاریخ شروع باشد.',
 ]
+
 const showStartPicker = ref(false)
 const showEndPicker = ref(false)
-const refVForm = ref()
 
 function selectStart(val) {
   startDate.value = val.format ? val.format('jYYYY-jMM-jDD') : val
   showStartPicker.value = false
 }
+
 function selectEnd(val) {
   endDate.value = val.format ? val.format('jYYYY-jMM-jDD') : val
   showEndPicker.value = false
 }
 
-function onFormSubmit() {
-  refVForm.value?.validate().then(async ({ valid: isValid }) => {
-    if (isValid) {
-      try {
-        const requestData = {
-          request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
-          user_id: props.userId,
-          start_date: startDate.value,
-          end_date: endDate.value,
-        }
-        await axiosInstance.post('/hr-request/requests/create', requestData)
-
-        uiState.success = true
-        uiState.successMessage = `درخواست مرخصی با موفقیت ثبت شد`
-        startDate.value = ''
-        endDate.value = ''
-        emit('created')
-      }
-      catch (error) {
-        let error_message
-        if (!('errors' in error.response.data)) {
-          error_message = error.response.data.message
-        }
-        else {
-          error_message = error.response.data.message
-        }
-
-        uiState.hasError = true
-        uiState.errorMessage = error_message
-      }
-    }
-  })
+async function getCurrentMonthAttendances() {
+  const { data } = await axiosInstance.get(
+    '/kasra/reports/get-attendance-report',
+    {
+      params: {
+        user_id: props.userId,
+        start_date: startDate.value,
+        end_date: endDate.value,
+      },
+    },
+  )
+  attendanceLogs.value = data.data.attendances ?? []
 }
+
+async function submitRequest() {
+  uiState.loading = true
+  try {
+    const requestData = {
+      request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
+      user_id: props.userId,
+      start_date: startDate.value,
+      end_date: endDate.value,
+      details: {
+        replacement_user: replacementUser.value,
+        description: description.value,
+      },
+    }
+
+    await axiosInstance.post('/hr-request/request/create', requestData)
+
+    uiState.success = true
+    uiState.successMessage = 'درخواست مرخصی با موفقیت ثبت شد'
+
+    startDate.value = ''
+    endDate.value = ''
+    description.value = ''
+    replacementUser.value = null
+
+    emit('created')
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage
+      = error?.response?.data?.message ?? 'خطا در ثبت درخواست'
+  }
+  finally {
+    uiState.loading = false
+    uiState.isConfirmDialogVisible = false
+  }
+}
+
+async function onFormSubmit() {
+  const { valid } = await refVForm.value.validate()
+  if (!valid) return
+
+  try {
+    uiState.loading = true
+    await getCurrentMonthAttendances()
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage
+      = error?.response?.data?.message ?? 'خطا در دریافت ترددها'
+    uiState.loading = false
+    return
+  }
+
+  uiState.loading = false
+
+  if (attendanceLogs.value.length > 0) {
+    uiState.isConfirmDialogVisible = true
+    return
+  }
+
+  await submitRequest()
+}
+
+async function fetchReplacements() {
+  try {
+    const { data } = await axiosInstance.get('/base/user/replacements', {
+      params: {
+        user_id: props.userId,
+      },
+    })
+
+    replacements.value = data.data.map(u => ({
+      ...u,
+      fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+    }))
+  }
+  catch (error) {
+    uiState.hasError = true
+    uiState.errorMessage = error?.response?.data?.message
+  }
+}
+
+onMounted(() => {
+  fetchReplacements()
+})
+
+watch(
+  () => props.userId,
+  (newVal) => {
+    if (newVal) {
+      replacementUser.value = null
+      fetchReplacements()
+    }
+  },
+)
 </script>
 
 <template>
@@ -81,6 +169,7 @@ function onFormSubmit() {
   >
     {{ uiState.errorMessage }}
   </VSnackbar>
+
   <VSnackbar
     v-model="uiState.success"
     :timeout="2000"
@@ -90,6 +179,15 @@ function onFormSubmit() {
   >
     {{ uiState.successMessage }}
   </VSnackbar>
+
+  <AreYouSureDialog
+    v-if="uiState.isConfirmDialogVisible"
+    v-model:is-dialog-visible="uiState.isConfirmDialogVisible"
+    :title="`در تاریخ های ${attendanceLogs.map((a) => a.date).join(' , ')} تردد ثبت شده است. آیا ادامه میدهید؟`"
+    :loading="uiState.loading"
+    @confirm="submitRequest"
+  />
+
   <VCard class="mb-4 pa-4">
     <label class="font-weight-medium mb-2 d-block text-center">
       انتخاب تاریخ
@@ -147,10 +245,40 @@ function onFormSubmit() {
             </VCard>
           </VDialog>
         </VCol>
+
+        <VCol cols="12" sm="6">
+          <VSelect
+            v-model="replacementUser"
+            :items="replacements"
+            item-title="fullName"
+            item-value="fullName"
+            label="انتخاب جانشین(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            clearable
+          />
+        </VCol>
+
+        <VCol cols="12" sm="6">
+          <VTextarea
+            v-model="description"
+            label="توضیحات(اختیاری)"
+            variant="outlined"
+            :disabled="uiState.loading"
+            auto-grow
+            rows="2"
+          />
+        </VCol>
       </VRow>
+
       <VRow justify="center" class="mt-4">
         <VCol cols="auto">
-          <VBtn type="submit" color="primary" @click="refVForm?.validate()">
+          <VBtn
+            type="submit"
+            color="primary"
+            :loading="uiState.loading"
+            :disabled="uiState.loading"
+          >
             ثبت درخواست
           </VBtn>
         </VCol>
