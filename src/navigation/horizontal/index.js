@@ -6,6 +6,7 @@ import home from './home'
 import hse from './hse'
 import humanResources from './humanResources.js'
 import payroll from './payroll'
+import security from './security.js'
 import suppliers from './suppliers'
 import userManagement from './userManagement'
 
@@ -14,6 +15,7 @@ export default [
   ...payroll,
   ...humanResources,
   ...food,
+  ...security,
   ...evaluationAndSurvey,
   ...employeeTransport,
   ...hse,

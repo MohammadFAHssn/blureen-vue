@@ -1,32 +1,15 @@
-import { can } from '@layouts/plugins/casl.js'
 /* global axiosInstance */
 import { computed, reactive } from 'vue'
 import { STATUSES } from '@/utils/constants.js'
 
-export const REQUEST_TABS = Object.freeze([
-  { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
-  { value: STATUSES.PENDING, title: 'در روند' },
-  { value: STATUSES.APPROVED, title: 'آرشیو تایید شده' },
-  { value: STATUSES.REJECTED, title: 'آرشیو رد شده' },
+export const TABS = Object.freeze([
+  { value: 1, title: 'درخواست ها' },
+  { value: 2, title: 'ترددها' },
 ])
-
-export const userCanManege = computed(() => {
-  return can('manage', 'HR-cartable')
-})
-
-const visibleTabs = computed(() => {
-  return REQUEST_TABS.filter((tab) => {
-    if (tab.value === STATUSES.PENDING_HR_APPROVAL) {
-      return userCanManege.value
-    }
-    return true
-  })
-})
 
 export function useRequestsManagementLogic() {
   const state = reactive({
-    tabs: visibleTabs,
-    userCanManege,
+    tabs: TABS,
     ui: {
       hasError: false,
       errorMessage: '',
@@ -39,10 +22,8 @@ export function useRequestsManagementLogic() {
 
     loadedTabs: new Set(),
     requestsByTab: {
-      [STATUSES.PENDING_HR_APPROVAL]: [],
-      [STATUSES.PENDING]: [],
-      [STATUSES.APPROVED]: [],
-      [STATUSES.REJECTED]: [],
+      1: [],
+      2: [],
     },
 
     dialogs: {
