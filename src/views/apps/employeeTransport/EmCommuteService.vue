@@ -234,6 +234,10 @@ async function onUpdateServiceStation(payload) {
   }
 }
 
+async function onDeleteServiceStation() {
+  fetchEmCommuteServices()
+}
+
 async function fetchEmShiftTypes() {
   pendingState.fetchingShiftTypes = true
   try {
@@ -376,6 +380,7 @@ onMounted(async () => {
       :commute-stations="emCommuteStations"
       :service="selectedEmCommuteService"
       @submit="onUpdateServiceStation"
+      @delete-service-station="onDeleteServiceStation"
     />
 
     <EmCommuteServiceUsersDialog
