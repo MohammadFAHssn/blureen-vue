@@ -302,7 +302,7 @@ watch(
                   size="40"
                   :image="`${storageBaseUrl}/${selectedUser.avatar?.path}`"
                 />
-                {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+                {{ selectedUser.first_name }} {{ selectedUser.last_name }} ({{ selectedUser.personnel_code }})
               </VChip>
             </VCol>
           </VRow>

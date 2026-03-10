@@ -188,6 +188,7 @@ async function onDelete() {
   }
 }
 
+// TODO: ?
 async function fetchReports(month, year) {
   pendingState.fetchReports = true
   try {
