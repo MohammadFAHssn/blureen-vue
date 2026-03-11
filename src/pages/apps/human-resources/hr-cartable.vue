@@ -4,10 +4,9 @@ import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
-import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
-import { useRequestsManagementLogic } from '@/views/apps/humanResources/HrCartable/requestsManagementLogic.js'
+import { useHrCartableLogic } from '@/views/apps/humanResources/HrCartable/hrCartableLogic.js'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 
 definePage({
@@ -18,7 +17,7 @@ definePage({
   },
 })
 
-const logic = useRequestsManagementLogic()
+const logic = useHrCartableLogic()
 
 const selectedIds = ref([])
 const selectedCount = computed(() => selectedIds.value.length)
@@ -112,12 +111,12 @@ function onRejectSelected() {
       @cancel="logic.resetConfirmationDialogState"
     />
 
-<!--    <DetailsDialog
+    <!--    <DetailsDialog
       v-if="logic.state.dialogs.details"
       v-model:show="logic.state.dialogs.details"
       :request="logic.pendingRequest.value"
       @close="logic.state.dialogs.details = false"
-    />-->
+    /> -->
 
     <ReferralToSupervisorDialog
       v-if="logic.state.dialogs.referral"
