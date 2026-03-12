@@ -25,4 +25,11 @@ export default [
     action: 'see',
     subject: 'HR-cartable',
   },
+  {
+    title: 'Supervisor Cartable',
+    to: 'apps-human-resources-supervisor-cartable',
+    icon: { icon: 'tabler-clipboard-list' },
+    action: 'use',
+    subject: 'app',
+  },
 ]
