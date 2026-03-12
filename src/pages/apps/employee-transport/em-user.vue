@@ -113,12 +113,12 @@ async function onChooseStation(inComing) {
   }
 }
 
-async function useSendSms() {
+async function userSendSms() {
   resetMessages()
 
   pendingState.sendingSMS = true
   try {
-    await $api('/employee-transport/user/sms', {
+    const res = await $api('/employee-transport/user/sms', {
       method: 'POST',
       onResponseError({ response }) {
         const msg = response?._data?.errors
@@ -127,8 +127,12 @@ async function useSendSms() {
         throw new Error(msg)
       },
     })
-
-    setSuccess('پیامک با موفقیت ارسال شد.')
+    if (res?.data?.smsSentDriver) {
+      setSuccess('پیامک با موفقیت ارسال شد.')
+    }
+    else {
+      setError('پیامک ارسال نشد')
+    }
   }
   catch (err) {
     console.error(err)
@@ -271,7 +275,7 @@ onMounted(async () => {
                     color="success"
                     variant="tonal"
                     rounded="lg"
-                    @click="useSendSms"
+                    @click="userSendSms"
                   >
                     ارسال پیامک
                   </VBtn>
