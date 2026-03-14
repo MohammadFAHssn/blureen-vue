@@ -46,7 +46,6 @@ const pendingState = reactive({
 const userStation = ref(null)
 const cities = ref([])
 const emShiftTypes = ref([])
-const emCommuteStations = ref([])
 
 const hasService = computed(() => !!userStation.value?.emCommuteServiceStation)
 const service = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteService || null)
@@ -71,11 +70,6 @@ async function fetchEmCities() {
 async function fetchEmShiftTypes() {
   const res = await $api('/employee-transport/em-shift-type', { method: 'GET' })
   emShiftTypes.value = res?.data?.emShiftTypes || []
-}
-
-async function fetchEmCommuteStations() {
-  const res = await $api('/employee-transport/commute-station/getUsed', { method: 'GET' })
-  emCommuteStations.value = res?.data?.emCommuteStations || []
 }
 
 /* -------------------- ACTIONS -------------------- */
@@ -153,7 +147,6 @@ onMounted(async () => {
       fetchUserEmCommuteStation(),
       fetchEmCities(),
       fetchEmShiftTypes(),
-      fetchEmCommuteStations(),
     ])
   }
   catch (e) {
@@ -294,7 +287,6 @@ onMounted(async () => {
     :loading="pendingState.choosingEmCommuteStation"
     :cities="cities"
     :shift-types="emShiftTypes"
-    :stations="emCommuteStations"
     @submit="onChooseStation"
   />
 </template>
