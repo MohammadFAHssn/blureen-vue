@@ -18,6 +18,12 @@ export default [
         to: 'apps-evaluation-peer-evaluation',
       },
       {
+        title: 'Manager Evaluation',
+        action: 'manage',
+        subject: 'Subordinates-Evaluation',
+        to: 'apps-evaluation-manager-evaluation',
+      },
+      {
         title: 'Self Evaluation',
         action: 'use',
         subject: 'app',

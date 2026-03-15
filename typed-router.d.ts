@@ -23,6 +23,7 @@ declare module 'vue-router/auto-routes' {
     'apps-employee-transport-em-management': RouteRecordInfo<'apps-employee-transport-em-management', '/apps/employee-transport/em-management', Record<never, never>, Record<never, never>>,
     'apps-employee-transport-em-user': RouteRecordInfo<'apps-employee-transport-em-user', '/apps/employee-transport/em-user', Record<never, never>, Record<never, never>>,
     'apps-evaluation-evaluation-results': RouteRecordInfo<'apps-evaluation-evaluation-results', '/apps/evaluation/evaluation-results', Record<never, never>, Record<never, never>>,
+    'apps-evaluation-manager-evaluation': RouteRecordInfo<'apps-evaluation-manager-evaluation', '/apps/evaluation/manager-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-peer-evaluation': RouteRecordInfo<'apps-evaluation-peer-evaluation', '/apps/evaluation/peer-evaluation', Record<never, never>, Record<never, never>>,
     'apps-evaluation-self-evaluation': RouteRecordInfo<'apps-evaluation-self-evaluation', '/apps/evaluation/self-evaluation', Record<never, never>, Record<never, never>>,
     'apps-food-food-reservation': RouteRecordInfo<'apps-food-food-reservation', '/apps/food/food-reservation', Record<never, never>, Record<never, never>>,
@@ -90,6 +91,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/apps/evaluation/evaluation-results.vue': {
       routes: 'apps-evaluation-evaluation-results'
+      views: never
+    }
+    'src/pages/apps/evaluation/manager-evaluation.vue': {
+      routes: 'apps-evaluation-manager-evaluation'
       views: never
     }
     'src/pages/apps/evaluation/peer-evaluation.vue': {
