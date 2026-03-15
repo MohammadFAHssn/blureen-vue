@@ -93,7 +93,7 @@ async function evaluate(results) {
   pendingState.evaluate = true
   try {
     let hadError = false
-    await $api('/evaluation/evaluation-score/create', {
+    await $api('/evaluation/field-evaluation-score/create', {
       method: 'POST',
       body: {
         results,
