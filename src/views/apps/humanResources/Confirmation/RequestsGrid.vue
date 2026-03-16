@@ -45,9 +45,7 @@ const columnDefs = computed(() => [
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
-  /*
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
-*/
   {
     headerName: 'عملیات',
     field: 'actions',
