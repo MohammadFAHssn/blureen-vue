@@ -10,6 +10,11 @@ const props = defineProps({
     required: true,
   },
 
+  users: {
+    type: Array,
+    required: true,
+  },
+
   cities: {
     type: Array,
     required: true,
@@ -19,20 +24,19 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-
-  stations: {
-    type: Array,
-    required: true,
-  },
 })
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
 
+const pendingState = reactive({
+  fetchingEmCommuteStations: false,
+})
+
 // states
 const refVForm = ref()
 
-const shiftTypes = ref(props.shiftTypes)
-const cities = ref(props.cities)
+const emCommuteStations = ref([])
+const selectedPersonnel = ref(null)
 const selectedEmShiftType = ref(null)
 const selectedEmCity = ref(null)
 const selectedMainStreet = ref(null)
@@ -42,7 +46,7 @@ const selectedStation = ref(null)
 const stationTree = computed(() => {
   const tree = {}
 
-  props.stations.forEach((s) => {
+  emCommuteStations.value.forEach((s) => {
     const city = s.emCity.id
     const main = s.mainStreet
     const side = s.sideStreet
@@ -83,11 +87,38 @@ function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
       emit('submit', {
+        selectedPersonnel: selectedPersonnel.value,
         shiftType: selectedEmShiftType.value,
         selectedStation: selectedStation.value,
       })
     }
   })
+}
+
+async function fetchEmCommuteStations() {
+  pendingState.fetchingEmCommuteStations = true
+  try {
+    const res = await $api('/employee-transport/commute-station/getUsed', {
+      method: 'GET',
+      params: {
+        shiftTypeId: selectedEmShiftType.value,
+      },
+      onResponseError({ response }) {
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در دریافت ایستگاه‌ها')
+        throw new Error(msg)
+      },
+    })
+    emCommuteStations.value = res?.data?.emCommuteStations || []
+  }
+  catch (err) {
+    console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره در دریافت ایستگاه‌ها')
+  }
+  finally {
+    pendingState.fetchingEmCommuteStations = false
+  }
 }
 
 function onFormReset() {
@@ -97,6 +128,14 @@ function onFormReset() {
 function dialogModelValueUpdate(val) {
   emit('update:isDialogVisible', val)
 }
+
+watch(selectedEmShiftType, () => {
+  fetchEmCommuteStations()
+  selectedEmCity.value = null
+  selectedMainStreet.value = null
+  selectedSideStreet.value = null
+  selectedStation.value = null
+})
 
 watch(selectedEmCity, () => {
   selectedMainStreet.value = null
@@ -123,7 +162,7 @@ watch(selectedSideStreet, () => {
     <VCard>
       <VCardText>
         <h4 class="text-h5 text-center mb-2">
-          انتخاب ایستگاه
+          انتخاب ایستگاه برای پرسنل
         </h4>
 
         <!-- 👉 Form -->
@@ -134,8 +173,24 @@ watch(selectedSideStreet, () => {
           @submit.prevent="onFormSubmit"
         >
           <VRow>
+            <!-- user -->
+            <VCol cols="12" md="6">
+              <VAutocomplete
+                v-model="selectedPersonnel"
+                :items="users"
+                item-title="fullName"
+                item-value="id"
+                label="شخص"
+                chips
+                clearable
+                variant="outlined"
+                :rules="[requiredValidator]"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
+              />
+            </VCol>
+
             <!-- shift type -->
-            <VCol cols="12" md="3">
+            <VCol cols="12" md="6">
               <VAutocomplete
                 v-model="selectedEmShiftType"
                 label="نوع شیفت"
@@ -143,12 +198,12 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
             <!-- city -->
-            <VCol cols="12" md="4">
+            <VCol cols="12" md="6">
               <VAutocomplete
                 v-model="selectedEmCity"
                 label="شهر"
@@ -156,12 +211,12 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
             <!-- main street -->
-            <VCol cols="12" md="5">
+            <VCol cols="12" md="6">
               <VAutocomplete
                 v-model="selectedMainStreet"
                 label="خیابان اصلی"
@@ -169,7 +224,7 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="name"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
@@ -182,7 +237,7 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="name"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
@@ -195,7 +250,7 @@ watch(selectedSideStreet, () => {
                 item-title="boardingPlace"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
