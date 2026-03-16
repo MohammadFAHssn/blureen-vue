@@ -10,6 +10,8 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  remainingLeaveKey: 0,
+  attendanceKey: 0,
   requestsKey: 0,
   dateKey: 0,
 })
@@ -17,6 +19,9 @@ const uiState = reactive({
 const selectedUser = ref(useCookie('userData').value)
 async function onUserSelected(selected) {
   selectedUser.value = selected
+  uiState.requestsKey++
+  uiState.attendanceKey++
+  uiState.remainingLeaveKey++
   uiState.requestsKey++
 }
 
@@ -44,7 +49,9 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
   </VSnackbar>
 
   <div class="mb-6 text-center">
-    <h2 class="text-h5 font-weight-bold text-primary">درخواست مرخصی ساعتی</h2>
+    <h2 class="text-h5 font-weight-bold text-primary">
+      درخواست مرخصی ساعتی
+    </h2>
   </div>
 
   <VRow dense>
@@ -54,7 +61,7 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
   </VRow>
   <VRow dense>
     <VCol cols="12" md="12" sm="12">
-      <RemainingLeave :user-id="selectedUser.id" />
+      <RemainingLeave :key="selectedUser.id" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
   <VRow dense>
@@ -65,13 +72,17 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
         format="jYYYY/jMM/jDD"
         inline
         custom-input="#custom-input"
-        @click="uiState.dateKey++"
+        @click="() => {
+          uiState.dateKey++
+          uiState.attendanceKey++
+
+        }"
       />
     </VCol>
 
     <VCol cols="12" md="8">
       <AttendanceLog
-        :key="leaveDate"
+        :key="uiState.attendanceKey"
         :date="leaveDate"
         :user-id="selectedUser.id"
       />

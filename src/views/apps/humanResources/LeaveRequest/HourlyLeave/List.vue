@@ -32,7 +32,7 @@ const columnDefs = ref([
   { headerName: 'زمان شروع', field: 'startTime', maxWidth: 180 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان پایان', field: 'endTime', maxWidth: 180 },
-  { headerName: 'وضعیت', field: 'status', maxWidth: 150 },
+  { headerName: 'وضعیت', field: 'status', maxWidth: 200 },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -84,11 +84,13 @@ async function getCurrentMonthRequests() {
       },
     )
     currentMonthRequests.value = data.data
-  } catch (error) {
+  }
+  catch (error) {
     uiState.hasError = true
-    uiState.errorMessage =
-      error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-  } finally {
+    uiState.errorMessage
+      = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+  }
+  finally {
     uiState.loading = false
   }
 }
@@ -117,11 +119,13 @@ async function onDelete() {
     await getCurrentMonthRequests()
     uiState.successMessage = `درخواست مرخصی با موفقیت حذف شد`
     uiState.success = true
-  } catch (error) {
+  }
+  catch (error) {
     uiState.hasError = true
-    uiState.errorMessage =
-      error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
-  } finally {
+    uiState.errorMessage
+      = error?.response?.data?.message ?? 'خطا هنگام حذف درخواست'
+  }
+  finally {
     uiState.deleteLoading = false
     uiState.isDeleteRequestDialogVisible = false
   }
