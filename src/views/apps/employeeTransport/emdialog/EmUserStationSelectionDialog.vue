@@ -19,11 +19,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-
-  stations: {
-    type: Array,
-    required: true,
-  },
 })
 
 const emit = defineEmits(['submit', 'update:isDialogVisible'])
@@ -182,12 +177,12 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
             <!-- city -->
-            <VCol cols="12" md="4">
+            <VCol cols="12" md="3">
               <VAutocomplete
                 v-model="selectedEmCity"
                 label="شهر"
@@ -195,12 +190,12 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="loading"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
             <!-- main street -->
-            <VCol cols="12" md="5">
+            <VCol cols="12" md="6">
               <VAutocomplete
                 v-model="selectedMainStreet"
                 label="خیابان اصلی"
@@ -208,7 +203,7 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="name"
                 :rules="[requiredValidator]"
-                :disabled="pendingState.fetchingEmCommuteStations"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
@@ -221,7 +216,7 @@ watch(selectedSideStreet, () => {
                 item-title="name"
                 item-value="name"
                 :rules="[requiredValidator]"
-                :disabled="pendingState.fetchingEmCommuteStations"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
@@ -234,7 +229,7 @@ watch(selectedSideStreet, () => {
                 item-title="boardingPlace"
                 item-value="id"
                 :rules="[requiredValidator]"
-                :disabled="pendingState.fetchingEmCommuteStations"
+                :disabled="loading || pendingState.fetchingEmCommuteStations"
               />
             </VCol>
 
