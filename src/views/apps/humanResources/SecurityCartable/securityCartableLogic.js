@@ -4,12 +4,8 @@ import { STATUSES } from '@/utils/constants.js'
 
 export const REQUEST_TABS = Object.freeze([
   {
-    value: STATUSES.PENDING_SECURITY_APPROVAL,
-    title: 'در انتظار تایید نگهبانی',
-  },
-  {
     value: STATUSES.PENDING_LIAISON_APPROVAL,
-    title: 'تاییدانتظامات',
+    title: 'تایید شده',
   },
   {
     value: STATUSES.PENDING_SUPERVISOR_APPROVAL,
@@ -95,7 +91,7 @@ export function useSecurityCartableLogic() {
     state.loading = true
     try {
       const { data } = await axiosInstance.get(
-        '/hr-request/request/get-by-status',
+        '/hr-request/request/get-hourly-requests',
         {
           params: { status: state.activeTab },
         },
