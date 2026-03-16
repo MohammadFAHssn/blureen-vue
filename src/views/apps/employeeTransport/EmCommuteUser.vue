@@ -1,6 +1,6 @@
 <script setup>
-import EmFleetVehicleCreateDialog from '@/views/apps/employeeTransport/emdialog/EmFleetVehicleCreateDialog.vue'
-import EmFleetVehicleEditDialog from '@/views/apps/employeeTransport/emdialog/EmFleetVehicleEditDialog.vue'
+import EmStationForUserEditDialog from '@/views/apps/employeeTransport/emdialog/EmStationForUserEditDialog.vue'
+import EmStationForUserSelectDialog from '@/views/apps/employeeTransport/emdialog/EmStationForUserSelectDialog.vue'
 // emit
 const emit = defineEmits(['back'])
 const current = ref('root')
@@ -16,21 +16,35 @@ function goBack() {
 const uiState = reactive({
   hasError: false,
   errorMessage: '',
-  isEmFleetVehicleCreateDialogVisible: false,
-  isEmFleetVehicleEditDialogVisible: false,
+  isEmCommuteUserStationCreateDialogVisible: false,
+  isEmCommuteUserStationEditDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingEmCommuteUserStations: false,
   creatingEmCommuteUserStation: false,
   editingEmCommuteUserStation: false,
 })
+function resetMessages() {
+  uiState.success = false
+  uiState.successMessage = ''
+  uiState.hasError = false
+  uiState.errorMessage = ''
+}
+
 function setError(message) {
   uiState.hasError = true
   uiState.errorMessage = message
 }
-const vehicleTypes = ref([])
+
+function setSuccess(message) {
+  uiState.success = true
+  uiState.successMessage = message
+}
+const users = ref([])
+const cities = ref([])
+const emShiftTypes = ref([])
 const emCommuteUserStations = ref([])
-const selectedEmFleetVehicle = ref(null)
+const selectedEmCommuteUserStation = ref(null)
 // ----- start ag-grid -----
 const gridApi = ref(null)
 const { theme } = useAGGridTheme()
@@ -54,8 +68,8 @@ const columnDefs = ref([
         component: 'Actions',
         params: {
           onEditClick: (selectedNode) => {
-            selectedEmFleetVehicle.value = selectedNode.data
-            uiState.isEmFleetVehicleEditDialogVisible = true
+            selectedEmCommuteUserStation.value = selectedNode.data
+            uiState.isEmCommuteUserStationEditDialogVisible = true
           },
         },
       }
@@ -65,6 +79,8 @@ const columnDefs = ref([
 
 const rowData = computed(() =>
   (emCommuteUserStations.value).map(emCommuteUserStation => ({
+    id: emCommuteUserStation.id,
+    emCommuteServiceStation: emCommuteUserStation.emCommuteServiceStation,
     fullName: emCommuteUserStation.user.fullName,
     personnelCode: emCommuteUserStation.user.username,
     shiftType: emCommuteUserStation.emCommuteServiceStation?.emCommuteService.emShiftType.name ?? 'خطا',
@@ -80,80 +96,73 @@ const rowData = computed(() =>
 )
 
 // ----- end ag-grid -----
-async function onCreateEmFleetVehicle(payload) {
-  const formData = new FormData()
-  formData.append('vehicle_type', payload.vehicleType?.name ?? payload.vehicleType)
-  formData.append('driver_name', payload.driverName)
-  formData.append('driver_mobile_number', payload.driverMobileNumber)
-  formData.append('owner_name', payload.ownerName)
-  formData.append('plate', payload.plate)
-  formData.append('seats_count', payload.seatsCount)
+
+async function onChooseStation(inComing) {
+  resetMessages()
+
+  const payload = {
+    user_id: inComing.selectedPersonnel,
+    em_shift_type_id: inComing.shiftType,
+    em_commute_station_id: inComing.selectedStation,
+  }
 
   pendingState.creatingEmCommuteUserStation = true
-
   try {
-    await $api('/employee-transport/fleet-vehicle', {
+    await $api('/employee-transport/user', {
       method: 'POST',
-      body: formData,
+      body: payload,
       onResponseError({ response }) {
-        uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage = response._data?.message || 'خطا در ایجاد ایستگاه'
-        }
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در انتخاب')
+        throw new Error(msg)
       },
     })
-
-    uiState.isEmFleetVehicleCreateDialogVisible = false
+    uiState.isEmCommuteUserStationCreateDialogVisible = false
+    setSuccess('ایستگاه با موفقیت انتخاب شد.')
+    await fetchEmCommuteUsers()
   }
   catch (err) {
     console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره')
   }
   finally {
     pendingState.creatingEmCommuteUserStation = false
-    fetchEmCommuteUsers()
   }
 }
 
-async function onUpdateEmFleetVehicle(payload) {
-  const formData = new FormData()
-  const id = selectedEmFleetVehicle.value.id
-  formData.append('vehicle_type', payload.vehicleType?.name ?? payload.vehicleType)
-  formData.append('driver_name', payload.driverName)
-  formData.append('driver_mobile_number', payload.driverMobileNumber)
-  formData.append('owner_name', payload.ownerName)
-  formData.append('plate', payload.plate)
-  formData.append('seats_count', payload.seatsCount)
+async function onUpdateChoosedStation(inComing) {
+  resetMessages()
+
+  const id = selectedEmCommuteUserStation.value.id
+
+  const payload = {
+    em_shift_type_id: inComing.shiftType,
+    em_commute_station_id: inComing.selectedStation,
+  }
 
   pendingState.editingEmCommuteUserStation = true
-
   try {
-    await $api(`/employee-transport/fleet-vehicle/update/${id}`, {
+    await $api(`/employee-transport/user/update/${id}`, {
       method: 'POST',
-      body: formData,
+      body: payload,
       onResponseError({ response }) {
-        uiState.hasError = true
-        if (response._data?.errors) {
-          const errors = Object.values(response._data.errors).flat().join(' | ')
-          uiState.errorMessage = errors
-        }
-        else {
-          uiState.errorMessage = response._data?.message || 'خطا در ویرایش ایستگاه'
-        }
+        const msg = response?._data?.errors
+          ? Object.values(response._data.errors).flat().join(' | ')
+          : (response?._data?.message || 'خطا در ویرایش')
+        throw new Error(msg)
       },
     })
-
-    uiState.isEmFleetVehicleEditDialogVisible = false
+    uiState.isEmCommuteUserStationEditDialogVisible = false
+    setSuccess('ایستگاه انتخاب شده با موفقیت ویرایش شد.')
+    await fetchEmCommuteUsers()
   }
   catch (err) {
     console.error(err)
+    setError(err?.message || 'خطای غیرمنتظره')
   }
   finally {
     pendingState.editingEmCommuteUserStation = false
-    fetchEmCommuteUsers()
   }
 }
 
@@ -174,8 +183,39 @@ async function fetchEmCommuteUsers() {
   }
 }
 
+async function fetchUsers() {
+  try {
+    const { data, error } = await useApi(createUrl('/base/user/details'))
+    if (error.value) {
+      setError('خطا در دریافت کاربران')
+      throw error.value
+    }
+
+    if (data.value?.data) {
+      users.value = data.value.data.map(u => ({
+        ...u,
+        fullName: `${u.first_name} ${u.last_name} - ${u.personnel_code}`,
+      }))
+    }
+  }
+  catch (e) {
+    console.error('Unexpected error fetching users:', e)
+    setError('خطای غیرمنتظره در دریافت کاربران')
+  }
+}
+
+async function fetchEmCities() {
+  const res = await $api('/employee-transport/em-city', { method: 'GET' })
+  cities.value = res?.data?.emCities || []
+}
+
+async function fetchEmShiftTypes() {
+  const res = await $api('/employee-transport/em-shift-type', { method: 'GET' })
+  emShiftTypes.value = res?.data?.emShiftTypes || []
+}
+
 onMounted(async () => {
-  await Promise.all([fetchEmCommuteUsers()])
+  await Promise.all([fetchEmCommuteUsers(), fetchUsers(), fetchEmCities(), fetchEmShiftTypes()])
 })
 </script>
 
@@ -215,21 +255,24 @@ onMounted(async () => {
       />
     </section>
 
-    <EmFleetVehicleCreateDialog
-      v-if="uiState.isEmFleetVehicleCreateDialogVisible"
-      v-model:is-dialog-visible="uiState.isEmFleetVehicleCreateDialogVisible"
+    <EmStationForUserSelectDialog
+      v-if="uiState.isEmCommuteUserStationCreateDialogVisible"
+      v-model:is-dialog-visible="uiState.isEmCommuteUserStationCreateDialogVisible"
       :loading="pendingState.creatingEmCommuteUserStation"
-      :vehicle-types="vehicleTypes"
-      @submit="onCreateEmFleetVehicle"
+      :users="users"
+      :cities="cities"
+      :shift-types="emShiftTypes"
+      @submit="onChooseStation"
     />
 
-    <EmFleetVehicleEditDialog
-      v-if="uiState.isEmFleetVehicleEditDialogVisible"
-      v-model:is-dialog-visible="uiState.isEmFleetVehicleEditDialogVisible"
+    <EmStationForUserEditDialog
+      v-if="uiState.isEmCommuteUserStationEditDialogVisible"
+      v-model:is-dialog-visible="uiState.isEmCommuteUserStationEditDialogVisible"
       :loading="pendingState.editingEmCommuteUserStation"
-      :vehicle-types="vehicleTypes"
-      :em-vehicle-type="selectedEmFleetVehicle"
-      @submit="onUpdateEmFleetVehicle"
+      :user="selectedEmCommuteUserStation"
+      :cities="cities"
+      :shift-types="emShiftTypes"
+      @submit="onUpdateChoosedStation"
     />
 
     <VApp>
@@ -237,7 +280,7 @@ onMounted(async () => {
         app
         icon="tabler-plus"
         size="x-large"
-        @click="uiState.isEmFleetVehicleCreateDialogVisible = true"
+        @click="uiState.isEmCommuteUserStationCreateDialogVisible = true"
       />
     </VApp>
   </VLayout>
