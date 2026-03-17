@@ -1,232 +1,114 @@
 <script setup>
-import EvaluationDialog from '@/components/dialogs/EvaluationDialog.vue'
-
 definePage({
   meta: {
-    action: 'use',
-    subject: 'app',
+    layoutWrapperClasses: 'layout-content-height-fixed',
+    action: 'manage',
+    subject: 'Subordinates-Evaluation',
   },
 })
 
-// states
-const uiState = reactive({
-  hasError: false,
-  errorMessage: '',
-  dialog: false,
+const errorStates = reactive({
+  active: false,
+  message: '',
 })
 
-const pendingState = reactive({
-  fetchEvaluatees: false,
-  fetchQuestions: false,
-  evaluate: false,
+const users = ref([])
+
+// ----- start ag-grid -----
+
+const agGridStates = reactive({
+  gridApi: null,
+  initialState: null,
 })
 
-const evaluatees = ref([])
-const questions = ref([])
+const { theme } = useAGGridTheme()
 
-// Track evaluated evaluatees by ID
-const evaluatedMap = reactive({})
+function onGridReady(params) {
+  agGridStates.gridApi = params.api
 
-// Store submitted evaluations: { [evaluateeId]: { [questionId]: score } }
-const evaluationsByEvaluatee = reactive({})
-
-// Dialog state
-const evaluationDialog = reactive({
-  isOpen: false,
-  selectedEvaluatee: null,
-})
-
-// ----- -----
-
-async function fetchEvaluatees() {
-  pendingState.fetchEvaluatees = true
-  try {
-    const { data, error } = await useApi(
-      createUrl('/evaluation/manager-evaluation-relation/subordinates'),
-    )
-
-    pendingState.fetchEvaluatees = false
-
-    if (error.value) throw error.value
-
-    evaluatees.value = data.value.data
-    // Optional: initialize evaluated flags if backend provides any indicator
-    // Fallback to preserving previously evaluated ones in evaluatedMap
-    evaluatees.value.forEach((ev) => {
-      if (ev && typeof ev.id !== 'undefined') {
-        // If server provided a flag like ev.is_evaluated, sync it; otherwise keep existing value
-        if (Object.prototype.hasOwnProperty.call(ev, 'is_evaluated'))
-          evaluatedMap[ev.id] = !!ev.is_evaluated
-        else if (evaluatedMap[ev.id] === undefined)
-          evaluatedMap[ev.id] = false
-      }
-    })
-  }
-  catch (e) {
-    console.error('Error fetching evaluatees:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت ارزیابی‌شونده‌ها'
-  }
+  agGridStates.gridApi.setGridOption('rowData', rowData())
 }
 
-async function fetchQuestions() {
-  pendingState.fetchQuestions = true
-  try {
-    const { data, error } = await useApi(
-      createUrl('/evaluation/evaluation-question/manager-evaluation'),
-    )
+const columnDefs = [
+  { headerName: 'محل کار', field: 'workplace', rowGroup: true, hide: true },
+  { headerName: 'منطقه کاری', field: 'workArea', rowGroup: true, hide: true },
+  { headerName: 'مرکز هزینه', field: 'costCenter', rowGroup: true, hide: true },
+  { headerName: 'کد پرسنلی', field: 'personnelCode' },
+  { headerName: 'نام', field: 'firstName' },
+  { headerName: 'نام خانوادگی', field: 'lastName' },
+]
 
-    pendingState.fetchQuestions = false
-
-    if (error.value) throw error.value
-
-    questions.value = data.value.data
-  }
-  catch (e) {
-    console.error('Error fetching questions:', e)
-    uiState.hasError = true
-    uiState.errorMessage = e.message || 'خطا در دریافت سوالات ارزیابی'
-  }
-}
-
-async function evaluate(results) {
-  pendingState.evaluate = true
-  try {
-    let hadError = false
-    await $api('/evaluation/manager-evaluation-score/create', {
-      method: 'POST',
-      body: {
-        results,
-      },
-      onResponseError({ response }) {
-        uiState.hasError = true
-        uiState.errorMessage = response._data.message || 'خطا در ارزیابی'
-        hadError = true
-      },
-    })
-
-    // Close dialog and refresh evaluatees only on success
-    if (!hadError) {
-      // Mark this evaluatee as evaluated in UI
-      if (evaluationDialog.selectedEvaluatee?.id !== undefined)
-        evaluatedMap[evaluationDialog.selectedEvaluatee.id] = true
-
-      // Persist the submitted results locally for editing later
-      if (evaluationDialog.selectedEvaluatee?.id !== undefined) {
-        const evalId = evaluationDialog.selectedEvaluatee.id
-        const map = {}
-        results.forEach((r) => {
-          map[r.question_id] = r.score
-        })
-        evaluationsByEvaluatee[evalId] = map
-      }
-
-      evaluationDialog.isOpen = false
-      evaluationDialog.selectedEvaluatee = null
-
-      // await fetchEvaluatees()
+function rowData() {
+  return users.value.map((user) => {
+    return {
+      id: user.id,
+      personnelCode: Number.parseInt(user.personnel_code),
+      firstName: user.first_name,
+      lastName: user.last_name,
+      workplace: user.profile?.workplace?.name,
+      workArea: user.profile?.work_area?.name,
+      costCenter: user.profile?.cost_center?.name,
     }
-  }
-  catch (err) {
-    console.error(err)
-    uiState.hasError = true
-    uiState.errorMessage = err?.message || 'خطا در ارزیابی'
-  }
-  finally {
-    pendingState.evaluate = false
-  }
+  })
 }
 
-function openEvaluationDialog(evaluatee) {
-  evaluationDialog.selectedEvaluatee = evaluatee
-  evaluationDialog.isOpen = true
-}
-
-await fetchEvaluatees()
-fetchQuestions()
-
-// ----- -----
-onMounted(() => {
-  uiState.dialog = true
+const autoGroupColumnDef = ref({
+  filter: 'agGroupColumnFilter',
 })
+
+async function fetchSubordinates() {
+  await axiosInstance
+    .get('/evaluation/manager-evaluation-relation/subordinates')
+    .then(({ data }) => {
+      users.value = data.data
+    })
+    .catch((error) => {
+      errorStates.active = true
+      errorStates.message = error.response.data.message || 'هنگام دریافت پرسنل زیرمجموعه خطایی رخ داده‌است!'
+    })
+}
+
+await fetchSubordinates()
 </script>
 
 <template>
   <VSnackbar
-    v-model="uiState.hasError"
+    v-model="errorStates.active"
     :timeout="2000"
     location="center"
     variant="flat"
     color="error"
   >
-    {{ uiState.errorMessage }}
+    {{ errorStates.message }}
   </VSnackbar>
 
-  <v-dialog
-    v-if="evaluatees.length !== 0"
-    v-model="uiState.dialog"
-    max-width="400"
-    persistent
-  >
-    <v-card
-      prepend-icon="mdi-map-marker"
-      text="در صورت خروج از صفحه، موارد ارزیابی‌شده ثبت نهایی شده و از لیست حذف می‌شوند!"
-      title="توجه"
-    >
-      <template #actions>
-        <v-spacer />
-        <v-btn @click="uiState.dialog = false">
-          باشه
-        </v-btn>
-      </template>
-    </v-card>
-  </v-dialog>
+  <VLayout class="app-layout">
+    <h3 class="mb-4">
+      ارزیابی مدیر
+    </h3>
 
-  <!-- Evaluation Dialog -->
-  <EvaluationDialog
-    v-if="evaluationDialog.selectedEvaluatee"
-    v-model="evaluationDialog.isOpen"
-    :evaluatee="evaluationDialog.selectedEvaluatee"
-    :questions="questions"
-    :initial-ratings="evaluationsByEvaluatee[evaluationDialog.selectedEvaluatee?.id] || null"
-    :loading="pendingState.evaluate"
-    @save="evaluate"
-  />
-
-  <VRow>
-    <VCol v-if="evaluatees.length === 0">
-      <VCard variant="text">
-        ارزیابی فعالی وجود ندارد.
-      </VCard>
-    </VCol>
-
-    <VCol
-      v-for="evaluatee in evaluatees"
-      v-else
-      :key="evaluatee.id"
-      cols="12"
-      sm="12"
-      md="6"
-      lg="4"
-      xl="3"
-      xxl="3"
-    >
-      <VCard :class="{ 'border-success': !!evaluationsByEvaluatee[evaluatee.id] }">
-        <VCardTitle class="text-center mb-5 text-wrap">
-          {{ evaluatee.personnel_code }} -
-          {{ evaluatee.first_name }} {{ evaluatee.last_name }} ({{ evaluatee?.profile?.cost_center?.name }})
-        </VCardTitle>
-
-        <VCardActions class="justify-center">
-          <VBtn
-            variant="elevated"
-            :color="evaluationsByEvaluatee[evaluatee.id] ? 'warning' : 'success'"
-            @click="openEvaluationDialog(evaluatee)"
-          >
-            {{ evaluationsByEvaluatee[evaluatee.id] ? 'ویرایش ارزیابی' : 'شروع ارزیابی' }}
-          </VBtn>
-        </VCardActions>
-      </VCard>
-    </VCol>
-  </VRow>
+    <section style="block-size: 100%;">
+      <AgGridVue
+        style="block-size: 100%; inline-size: 100%;"
+        :column-defs="columnDefs"
+        :get-row-id="(params) => String(params.data.id)"
+        enable-rtl
+        pagination
+        group-display-type="multipleColumns"
+        :auto-group-column-def="autoGroupColumnDef"
+        :theme="theme"
+        :initial-state="agGridStates.initialState"
+        @grid-ready="onGridReady"
+      />
+    </section>
+  </VLayout>
 </template>
+
+<style lang="scss" scoped>
+.app-layout {
+  display: grid;
+  box-shadow: none;
+  grid-template-columns: auto;
+  grid-template-rows: auto 1fr;
+}
+</style>
