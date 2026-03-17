@@ -50,8 +50,8 @@ function createShared() {
       )
       state.requests = data.data || []
     }
-    catch (e) {
-      raiseError(e?.message || 'خطا در دریافت درخواست‌ها')
+    catch (err) {
+      raiseError(err?.response?.data?.message || 'خطا در دریافت درخواست‌ها')
     }
     finally {
       state.loading = false

@@ -1,11 +1,13 @@
 <script setup>
+import { useDisplay } from 'vuetify'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
-import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
-import SupervisorCartableGrid from '@/views/apps/humanResources/SupervisorCartable/SupervisorCartableGrid.vue'
+import ApprovalsCardsView from '@/views/apps/humanResources/SupervisorCartable/ApprovalsCardsView.vue'
+import ApprovalsGridView from '@/views/apps/humanResources/SupervisorCartable/ApprovalsGridView.vue'
+import DetailsDialog from '@/views/apps/humanResources/SupervisorCartable/DetailsDialog.vue'
 import { useSupervisorCartableLogic } from '@/views/apps/humanResources/SupervisorCartable/supervisorCartableLogic.js'
 
 definePage({
@@ -16,29 +18,14 @@ definePage({
   },
 })
 
-const logic = useSupervisorCartableLogic()
+const { mdAndUp } = useDisplay()
+const isMobile = computed(() => !mdAndUp.value)
 
-const selectedIds = ref([])
-const selectedCount = computed(() => selectedIds.value.length)
+const logic = useSupervisorCartableLogic({ isMobile })
 
 onMounted(() => {
-  logic.fetchRequestsForActiveTab()
+  logic.fetchRequests()
 })
-
-watch(
-  () => logic.state.activeTab,
-  () => {
-    selectedIds.value = []
-  },
-)
-
-function onApproveSelected() {
-  logic.approveMultiRequest(selectedIds.value)
-}
-
-function onRejectSelected() {
-  logic.openRejectSelectedDialog(selectedIds.value)
-}
 </script>
 
 <template>
@@ -63,40 +50,23 @@ function onRejectSelected() {
       {{ logic.state.ui.successMessage }}
     </VSnackbar>
 
-    <div class="wrap">
-      <VCard class="tabs-card" rounded="xl">
-        <VTabs
-          :model-value="logic.state.activeTab"
-          class="px-2"
-          @update:model-value="logic.setActiveTab"
-        >
-          <VTab v-for="t in logic.state.tabs" :key="t.value" :value="t.value">
-            {{ t.title }}
-          </VTab>
-        </VTabs>
-      </VCard>
+    <ApprovalsGridView v-if="!isMobile" />
+    <ApprovalsCardsView v-else />
 
-      <RequestsToolbar
-        :is-mobile="false"
-        :selected-count="selectedCount"
-        :loading="logic.state.loading"
-        :show-confirm-btn="false"
-        @refresh="logic.fetchRequestsForActiveTab"
-        @approve-selected="onApproveSelected"
-        @reject-selected="onRejectSelected"
-      />
+    <RejectDialog
+      v-model:show="logic.state.dialogs.reject"
+      v-model:reason="logic.state.rejectReason"
+      max-width="520"
+      @confirm="logic.confirmRejectDialog"
+      @cancel="logic.resetConfirmationDialogState"
+    />
 
-      <SupervisorCartableGrid
-        v-model:selected-ids="selectedIds"
-        :tab="logic.state.activeTab"
-        :items="logic.items.value"
-        :loading="logic.state.loading"
-        @edit="logic.onEditClick"
-        @approve-row="logic.approveRow"
-        @approval-flow="logic.onShowApprovalFlowClick"
-        @attendance-log="logic.onShowAttendancesClick"
-      />
-    </div>
+    <DetailsDialog
+      v-if="logic.state.dialogs.details"
+      v-model:show="logic.state.dialogs.details"
+      :request="logic.pendingRequest.value"
+      @close="logic.state.dialogs.details = false"
+    />
 
     <EditForm
       v-if="logic.state.dialogs.edit"
@@ -118,21 +88,13 @@ function onRejectSelected() {
       :request="logic.pendingRequest.value"
       @submit="logic.confirmApproveDialog(true)"
     />
+
     <AreYouSureDialog
       v-if="logic.state.dialogs.approveConfirm"
       v-model:is-dialog-visible="logic.state.dialogs.approveConfirm"
       :title="logic.approveConfirmTitle.value"
       :loading="logic.state.loading"
       @confirm="logic.confirmApproveDialog"
-    />
-
-    <RejectDialog
-      v-model:show="logic.state.dialogs.reject"
-      v-model:reason="logic.state.rejectReason"
-      :loading="logic.state.loading"
-      max-width="520"
-      @confirm="logic.confirmRejectDialog"
-      @cancel="logic.resetConfirmationDialogState"
     />
   </VLayout>
 </template>
@@ -143,23 +105,6 @@ function onRejectSelected() {
   grid-template-rows: 1fr;
   inline-size: 100%;
   block-size: 100%;
-  overflow: hidden;
-}
-
-.wrap {
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 0.75rem;
-  inline-size: 100%;
-  block-size: 100%;
-  min-height: 0;
-}
-
-.tabs-card {
-  overflow: hidden;
-}
-
-:deep(.v-tabs) {
-  min-height: 48px;
+  overflow-x: hidden;
 }
 </style>
