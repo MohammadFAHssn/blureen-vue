@@ -1,14 +1,17 @@
 export default [
   {
-    heading: 'CONTRACTOR',
+    title: 'CONTRACTOR',
+    icon: { icon: 'tabler-user-dollar' },
     action: 'see',
     subject: 'Contractor',
-  },
-  {
-    title: 'CONTRACTOR Management',
-    to: 'apps-contractor-contractor',
-    icon: { icon: 'tabler-user-dollar' },
-    action: 'read',
-    subject: 'Contractor',
+    children: [
+      {
+        title: 'CONTRACTOR Management',
+        to: 'apps-contractor-contractor',
+        icon: { icon: 'tabler-adjustments' },
+        action: 'read',
+        subject: 'Contractor',
+      },
+    ],
   },
 ]
