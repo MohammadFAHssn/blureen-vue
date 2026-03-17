@@ -75,7 +75,7 @@ const rowData = computed(() => {
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
     actions: {
-      approvable: true,
+      approvable: false,
     },
   }))
 })

@@ -7,8 +7,8 @@ import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/Att
 import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
 import ApprovalsCardsView from '@/views/apps/humanResources/SupervisorCartable/ApprovalsCardsView.vue'
 import ApprovalsGridView from '@/views/apps/humanResources/SupervisorCartable/ApprovalsGridView.vue'
+import { useSupervisorCartableLogic } from '@/views/apps/humanResources/SupervisorCartable/approvalsLogic.js'
 import DetailsDialog from '@/views/apps/humanResources/SupervisorCartable/DetailsDialog.vue'
-import { useSupervisorCartableLogic } from '@/views/apps/humanResources/SupervisorCartable/supervisorCartableLogic.js'
 
 definePage({
   meta: {
@@ -24,7 +24,7 @@ const isMobile = computed(() => !mdAndUp.value)
 const logic = useSupervisorCartableLogic({ isMobile })
 
 onMounted(() => {
-  logic.fetchRequests()
+  logic.fetchRequestsForActiveTab()
 })
 </script>
 
