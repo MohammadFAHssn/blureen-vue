@@ -20,7 +20,7 @@ const { theme } = useAGGridTheme()
 const gridApi = ref(null)
 
 function fmtTimeRange(r) {
-  return r.start_time && r.end_time ? `${r.start_time} - ${r.end_time}` : '-'
+  return r.start_time && r.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
 }
 
 const rowData = computed(() =>

@@ -33,7 +33,7 @@ watch(
 )
 
 function fmtTimeRange(r) {
-  return r?.start_time && r?.end_time ? `${r.start_time} - ${r.end_time}` : '-'
+  return r?.start_time && r?.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
 }
 
 function fullName(u) {
@@ -92,12 +92,10 @@ const baseCols = [
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
+  { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
   { headerName: 'توضیحات', field: 'description' },
   { headerName: 'تاریخ بروزرسانی', field: 'updateDate', maxWidth: 170 },
   { headerName: 'زمان بروزرسانی', field: 'updatedTime', maxWidth: 170 },
-  /*
-  { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
-*/
 ]
 
 const approverCol = {

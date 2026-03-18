@@ -31,7 +31,7 @@ watch(
 )
 
 function fmtTimeRange(r) {
-  return r?.start_time && r?.end_time ? `${r.start_time} - ${r.end_time}` : '-'
+  return r?.start_time && r?.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
 }
 
 function fullName(u) {
