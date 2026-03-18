@@ -684,7 +684,16 @@ onMounted(async () => {
                   </VChip>
                 </td>
 
-                <td><VChip>{{ reserveTypeLabel[item.reserve_type] || '' }}</VChip></td>
+                <td>
+                  <VChip>
+                    {{ reserveTypeLabel[item.reserve_type] || '' }}
+                    <div v-if="item?.details[0].contractor">
+                      {{
+                        ` - ${item?.details[0]?.contractor?.first_name} ${item?.details[0]?.contractor?.last_name}`
+                      }}
+                    </div>
+                  </VChip>
+                </td>
 
                 <td>
                   <VChip :color="statusColor(item.status)" size="small">
@@ -802,7 +811,13 @@ onMounted(async () => {
                         <VChip color="success">
                           {{ item.delivery_code }}
                         </VChip>
-                        <VChip>{{ reserveTypeLabel[item.reserve_type] || '' }}</VChip>
+                        <VChip>
+                          {{ reserveTypeLabel[item.reserve_type] || '' }}<div v-if="item?.details[0].contractor">
+                            {{
+                              ` - ${item?.details[0]?.contractor?.first_name} ${item?.details[0]?.contractor?.last_name}`
+                            }}
+                          </div>
+                        </VChip>
                       </div>
                       <div class="d-flex justify-space-between align-center">
                         <VChip>
