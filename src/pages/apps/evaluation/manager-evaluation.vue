@@ -14,7 +14,12 @@ const errorStates = reactive({
   message: '',
 })
 
+const pendingStates = reactive({
+  fetchQuestions: false,
+})
+
 const users = ref([])
+const questions = ref([])
 
 // ----- start ag-grid -----
 
@@ -83,10 +88,32 @@ async function fetchSubordinates() {
     })
     .catch((error) => {
       errorStates.active = true
-      errorStates.message = error.response.data.message || 'هنگام دریافت پرسنل زیرمجموعه خطایی رخ داده‌است!'
+      errorStates.message
+        = error.response.data.message
+          || 'هنگام دریافت پرسنل زیرمجموعه خطایی رخ داده‌است!'
     })
 }
 
+async function fetchQuestions() {
+  pendingStates.fetchQuestions = true
+
+  await axiosInstance
+    .get('/evaluation/evaluation-question/manager-evaluation')
+    .then(({ data }) => {
+      questions.value = data.data
+    })
+    .catch((error) => {
+      errorStates.active = true
+      errorStates.message
+        = error.response.data.message
+          || 'هنگام دریافت سوالات ارزیابی خطایی رخ داده‌است!'
+    })
+    .finally(() => {
+      pendingStates.fetchQuestions = false
+    })
+}
+
+fetchQuestions()
 await fetchSubordinates()
 </script>
 
