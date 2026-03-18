@@ -132,9 +132,9 @@ function createShared() {
 
     state.loading = true
     try {
-      await axiosInstance.post('/hr-request/request/approve', {
+      await axiosInstance.post('/hr-request/request/supervisor-confirm', {
         approve,
-        approvalRequestsIds: ids,
+        requestIds: ids,
         ...(approve === false
           ? { description: state.rejectReason.trim() }
           : {}),

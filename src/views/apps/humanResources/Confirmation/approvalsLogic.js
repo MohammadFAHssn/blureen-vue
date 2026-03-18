@@ -70,6 +70,11 @@ function createShared() {
     try {
       const { data } = await axiosInstance(
         '/hr-request/request/get-by-approver',
+        {
+          params: {
+            status: state.activeTab,
+          },
+        },
       )
       state.requests = data.data || []
     }
