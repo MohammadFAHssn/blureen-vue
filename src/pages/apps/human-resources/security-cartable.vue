@@ -64,23 +64,14 @@ function onRejectSelected() {
     </VSnackbar>
 
     <div class="wrap">
-      <VCard class="tabs-card" rounded="xl">
-        <VTabs
-          :model-value="logic.state.activeTab"
-          class="px-2"
-          @update:model-value="logic.setActiveTab"
-        >
-          <VTab v-for="t in logic.state.tabs" :key="t.value" :value="t.value">
-            {{ t.title }}
-          </VTab>
-        </VTabs>
-      </VCard>
-
       <RequestsToolbar
+        :tabs="logic.state.tabs"
+        :active-tab="logic.state.activeTab"
         :is-mobile="false"
         :selected-count="selectedCount"
         :loading="logic.state.loading"
         :show-confirm-btn="false"
+        @select-tab="logic.setActiveTab"
         @refresh="logic.fetchRequestsForActiveTab"
         @approve-selected="onApproveSelected"
         @reject-selected="onRejectSelected"
@@ -148,7 +139,7 @@ function onRejectSelected() {
 
 .wrap {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto 1fr;
   gap: 0.75rem;
   inline-size: 100%;
   block-size: 100%;

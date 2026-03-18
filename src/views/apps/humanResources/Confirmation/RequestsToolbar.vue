@@ -1,5 +1,7 @@
 <script setup>
 defineProps({
+  tabs: { type: Array, required: true },
+  activeTab: { type: Number, required: true },
   isMobile: { type: Boolean, required: true },
   selectedCount: { type: Number, required: true },
   loading: { type: Boolean, required: true },
@@ -8,6 +10,7 @@ defineProps({
 
 const emit = defineEmits([
   'refresh',
+  'selectTab',
   'approveSelected',
   'rejectSelected',
   'selectAllMobile',
@@ -17,6 +20,34 @@ const emit = defineEmits([
 
 <template>
   <section class="toolbar">
+    <VCard v-if="isMobile" class="tabs-card" rounded="xl">
+      <VTabs
+        :model-value="activeTab"
+        class="px-2"
+        @update:model-value="(val) => emit('selectTab', val)"
+      >
+        <VTab :value="STATUSES.PENDING">
+          <VIcon icon="tabler-loader-2" class="me-1" />
+        </VTab>
+        <VTab :value="STATUSES.APPROVED">
+          <VIcon icon="tabler-circle-check" class="me-1" />
+        </VTab>
+        <VTab :value="STATUSES.REJECTED">
+          <VIcon icon="tabler-ban" class="me-1" />
+        </VTab>
+      </VTabs>
+    </VCard>
+    <VCard v-else class="tabs-card" rounded="xl">
+      <VTabs
+        :model-value="activeTab"
+        class="px-2"
+        @update:model-value="(val) => emit('selectTab', val)"
+      >
+        <VTab v-for="t in tabs" :key="t.value" :value="t.value">
+          {{ t.title }}
+        </VTab>
+      </VTabs>
+    </VCard>
     <div v-if="showConfirmBtn" class="left-actions">
       <VBtn
         v-if="selectedCount > 0"

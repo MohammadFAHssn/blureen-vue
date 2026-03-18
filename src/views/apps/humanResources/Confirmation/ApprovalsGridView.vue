@@ -26,11 +26,14 @@ onBeforeUnmount(() => {
 <template>
   <div class="wrap">
     <RequestsToolbar
+      :tabs="logic.state.tabs"
+      :active-tab="logic.state.activeTab"
       :is-mobile="false"
       :selected-count="selectedCount"
       :loading="logic.state.loading"
       :show-confirm-btn="true"
-      @refresh="logic.fetchRequests"
+      @select-tab="logic.setActiveTab"
+      @refresh="logic.fetchRequestsForActiveTab"
       @approve-selected="onApproveSelected"
       @reject-selected="onRejectSelected"
     />

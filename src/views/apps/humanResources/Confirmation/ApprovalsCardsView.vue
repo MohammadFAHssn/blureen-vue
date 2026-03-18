@@ -13,13 +13,13 @@ const selectedCount = computed(() => cardSelectedIds.value.length)
 
 function toggleCardSelection(id) {
   cardSelectedIds.value = cardSelectedIds.value.includes(id)
-    ? cardSelectedIds.value.filter(x => x !== id)
+    ? cardSelectedIds.value.filter((x) => x !== id)
     : [...cardSelectedIds.value, id]
 }
 
 function selectAllMobile() {
   cardSelectedIds.value = (logic.state.requests ?? [])
-    .map(r => r.id)
+    .map((r) => r.id)
     .filter(Boolean)
 }
 
@@ -51,11 +51,14 @@ onBeforeUnmount(() => {
 <template>
   <div class="wrap">
     <RequestsToolbar
+      :tabs="logic.state.tabs"
+      :active-tab="logic.state.activeTab"
       :is-mobile="true"
       :selected-count="selectedCount"
       :loading="logic.state.loading"
       :show-confirm-btn="true"
-      @refresh="logic.fetchRequests"
+      @select-tab="logic.setActiveTab"
+      @refresh="logic.fetchRequestsForActiveTab"
       @approve-selected="onApproveSelected"
       @reject-selected="onRejectSelected"
       @select-all-mobile="selectAllMobile"

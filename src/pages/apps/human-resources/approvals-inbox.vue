@@ -26,7 +26,7 @@ const isMobile = computed(() => !mdAndUp.value)
 const logic = useApprovalsLogic({ isMobile })
 
 onMounted(() => {
-  logic.fetchRequests()
+  logic.fetchRequestsForActiveTab()
 })
 </script>
 

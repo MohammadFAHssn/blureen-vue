@@ -1,8 +1,27 @@
 /* global axiosInstance */
 import { computed, reactive } from 'vue'
+import { STATUSES } from '@/utils/constants.js'
 
 let _state
 let _fns
+
+export const REQUEST_TABS = Object.freeze([
+  {
+    value: STATUSES.PENDING,
+    title: 'در انتظار تایید',
+    icon: 'tabler-clock',
+  },
+  {
+    value: STATUSES.APPROVED,
+    title: 'تایید شده',
+    icon: 'tabler-check',
+  },
+  {
+    value: STATUSES.REJECTED,
+    title: 'رد شده',
+    icon: 'tabler-ban',
+  },
+])
 
 function createShared() {
   const state = reactive({
@@ -12,6 +31,10 @@ function createShared() {
       success: false,
       successMessage: '',
     },
+
+    tabs: REQUEST_TABS,
+    activeTab: STATUSES.PENDING_SUPERVISOR_APPROVAL,
+
     loading: false,
     requests: [],
 
@@ -42,7 +65,7 @@ function createShared() {
     state.ui.successMessage = msg
   }
 
-  async function fetchRequests() {
+  async function fetchRequestsForActiveTab() {
     state.loading = true
     try {
       const { data } = await axiosInstance(
@@ -56,6 +79,11 @@ function createShared() {
     finally {
       state.loading = false
     }
+  }
+
+  function setActiveTab(status) {
+    state.activeTab = status
+    fetchRequestsForActiveTab()
   }
 
   function openDetails(request) {
@@ -123,7 +151,7 @@ function createShared() {
     finally {
       state.loading = false
       resetConfirmationDialogState()
-      await fetchRequests()
+      await fetchRequestsForActiveTab()
     }
   }
 
@@ -163,12 +191,12 @@ function createShared() {
 
   async function onSubmittedEdit() {
     raiseSuccess('ویرایش درخواست با موفقیت انجام شد.')
-    await fetchRequests()
+    await fetchRequestsForActiveTab()
   }
 
   async function onSubmittedReferral() {
     raiseSuccess('ارجاع درخواست با موفقیت انجام شد.')
-    await fetchRequests()
+    await fetchRequestsForActiveTab()
   }
 
   const approveConfirmTitle = computed(() => {
@@ -180,7 +208,8 @@ function createShared() {
 
   return {
     state,
-    fetchRequests,
+    setActiveTab,
+    fetchRequestsForActiveTab,
     openDetails,
     onEditClick,
     onReferralClick,
