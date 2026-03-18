@@ -34,30 +34,32 @@ export default [
       },
       {
         title: 'Organization Chart',
+        icon: { icon: 'tabler-sitemap' },
         to: 'apps-user-organization-chart',
         action: 'read',
         subject: 'Organization-Chart',
       },
       {
-        title: 'Approval Levels',
+        title: 'Approval Flows',
+        icon: { icon: 'tabler-git-branch' },
         to: 'apps-user-approval-flows',
         action: 'read',
         subject: 'Approval-Levels',
       },
-      {
-        title: 'Roles & Permissions',
-        icon: { icon: 'tabler-lock' },
-        children: [
-          {
-            title: 'Roles',
-            to: 'apps-roles',
-          },
-          {
-            title: 'Permissions',
-            to: 'apps-permissions',
-          },
-        ],
-      },
+      // {
+      //   title: 'Roles & Permissions',
+      //   icon: { icon: 'tabler-lock' },
+      //   children: [
+      //     {
+      //       title: 'Roles',
+      //       to: 'apps-roles',
+      //     },
+      //     {
+      //       title: 'Permissions',
+      //       to: 'apps-permissions',
+      //     },
+      //   ],
+      // },
     ],
   },
 ]

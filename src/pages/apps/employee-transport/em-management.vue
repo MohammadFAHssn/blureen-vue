@@ -1,6 +1,7 @@
 <script setup>
 import EmCommuteService from '@/views/apps/employeeTransport/EmCommuteService.vue'
 import EmCommuteStation from '@/views/apps/employeeTransport/EmCommuteStation.vue'
+import EmCommuteUser from '@/views/apps/employeeTransport/EmCommuteUser.vue'
 import EmFleetVehicle from '@/views/apps/employeeTransport/EmFleetVehicle.vue'
 
 definePage({
@@ -17,6 +18,7 @@ const componentsIcons = [
   { key: 'stations', label: 'ایستگاه‌ها', icon: 'tabler-bus-stop' },
   { key: 'vehicles', label: 'وسایل نقلیه', icon: 'tabler-bus' },
   { key: 'services', label: 'سرویس‌ها', icon: 'tabler-route' },
+  { key: 'users', label: 'کاربران', icon: 'tabler-users' },
 ]
 
 const visibleComponentsIcons = computed(() =>
@@ -27,6 +29,7 @@ const pages = {
   stations: EmCommuteStation,
   vehicles: EmFleetVehicle,
   services: EmCommuteService,
+  users: EmCommuteUser,
 }
 
 function goBack() {

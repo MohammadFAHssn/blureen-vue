@@ -46,7 +46,6 @@ const pendingState = reactive({
 const userStation = ref(null)
 const cities = ref([])
 const emShiftTypes = ref([])
-const emCommuteStations = ref([])
 
 const hasService = computed(() => !!userStation.value?.emCommuteServiceStation)
 const service = computed(() => userStation.value?.emCommuteServiceStation?.emCommuteService || null)
@@ -71,11 +70,6 @@ async function fetchEmCities() {
 async function fetchEmShiftTypes() {
   const res = await $api('/employee-transport/em-shift-type', { method: 'GET' })
   emShiftTypes.value = res?.data?.emShiftTypes || []
-}
-
-async function fetchEmCommuteStations() {
-  const res = await $api('/employee-transport/commute-station/getUsed', { method: 'GET' })
-  emCommuteStations.value = res?.data?.emCommuteStations || []
 }
 
 /* -------------------- ACTIONS -------------------- */
@@ -113,12 +107,12 @@ async function onChooseStation(inComing) {
   }
 }
 
-async function useSendSms() {
+async function userSendSms() {
   resetMessages()
 
   pendingState.sendingSMS = true
   try {
-    await $api('/employee-transport/user/sms', {
+    const res = await $api('/employee-transport/user/sms', {
       method: 'POST',
       onResponseError({ response }) {
         const msg = response?._data?.errors
@@ -127,8 +121,12 @@ async function useSendSms() {
         throw new Error(msg)
       },
     })
-
-    setSuccess('پیامک با موفقیت ارسال شد.')
+    if (res?.data?.smsSentDriver) {
+      setSuccess('پیامک با موفقیت ارسال شد.')
+    }
+    else {
+      setError('پیامک ارسال نشد')
+    }
   }
   catch (err) {
     console.error(err)
@@ -149,7 +147,6 @@ onMounted(async () => {
       fetchUserEmCommuteStation(),
       fetchEmCities(),
       fetchEmShiftTypes(),
-      fetchEmCommuteStations(),
     ])
   }
   catch (e) {
@@ -271,7 +268,7 @@ onMounted(async () => {
                     color="success"
                     variant="tonal"
                     rounded="lg"
-                    @click="useSendSms"
+                    @click="userSendSms"
                   >
                     ارسال پیامک
                   </VBtn>
@@ -290,7 +287,6 @@ onMounted(async () => {
     :loading="pendingState.choosingEmCommuteStation"
     :cities="cities"
     :shift-types="emShiftTypes"
-    :stations="emCommuteStations"
     @submit="onChooseStation"
   />
 </template>
