@@ -1,4 +1,6 @@
 <script setup>
+import EvaluateBtn from '@/views/apps/evaluation/components/EvaluateBtn.vue'
+
 definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
@@ -36,6 +38,22 @@ const columnDefs = [
   { headerName: 'کد پرسنلی', field: 'personnelCode' },
   { headerName: 'نام', field: 'firstName' },
   { headerName: 'نام خانوادگی', field: 'lastName' },
+  {
+    headerName: 'ارزیابی',
+    field: 'scores',
+    cellRendererSelector: (params) => {
+      if (!params.node.group) {
+        return {
+          component: 'EvaluateBtn',
+          params: {
+            onEvaluateBtnClick: (node) => {
+              console.log(node)
+            },
+          },
+        }
+      }
+    },
+  },
 ]
 
 function rowData() {
@@ -48,6 +66,7 @@ function rowData() {
       workplace: user.profile?.workplace?.name,
       workArea: user.profile?.work_area?.name,
       costCenter: user.profile?.cost_center?.name,
+      scores: user.manager_evaluation_scores,
     }
   })
 }
@@ -98,6 +117,7 @@ await fetchSubordinates()
         :auto-group-column-def="autoGroupColumnDef"
         :theme="theme"
         :initial-state="agGridStates.initialState"
+        :components="{ EvaluateBtn }"
         @grid-ready="onGridReady"
       />
     </section>
