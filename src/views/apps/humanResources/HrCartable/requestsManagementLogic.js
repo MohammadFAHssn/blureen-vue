@@ -195,6 +195,7 @@ export function useRequestsManagementLogic() {
         description: state.rejectReason,
         approve,
         ignoreAttendance,
+        approverPosition: userCanManege.value ? 'HR_manager' : 'liaison',
       })
       raiseSuccess('با موفقیت ذخیره شد.')
     }

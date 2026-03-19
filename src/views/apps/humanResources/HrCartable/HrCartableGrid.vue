@@ -80,7 +80,7 @@ const rowData = computed(() => {
       : '-',
     approver: pendingApproverName(item.approvals),
     actions: {
-      approvable: props.userCanManage && item.kasra_credit_id,
+      approvable: item.kasra_credit_id,
     },
   }))
 })
@@ -151,8 +151,6 @@ function onSelectionChanged() {
 }
 
 function getContextMenuItems(params) {
-  if (!props.userCanManage) return
-
   const api = params.api
   const node = params.node
   const data = node?.data
