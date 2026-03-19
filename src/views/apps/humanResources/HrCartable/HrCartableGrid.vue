@@ -82,7 +82,9 @@ const rowData = computed(() => {
       : '-',
     approver: pendingApproverName(item.approvals),
     actions: {
-      approvable: item.kasra_credit_id && (props.userCanManage || item.status_id === STATUSES.PENDING),
+      approvable:
+        item.kasra_credit_id
+        && (props.userCanManage || item.status_id === STATUSES.PENDING),
     },
   }))
 })
@@ -224,6 +226,8 @@ function pendingApproverName(approvals) {
         enableClickSelection: true,
         checkboxes: true,
         headerCheckbox: true,
+        selectAll: 'filtered',
+        groupSelects: 'filteredDescendants',
       }"
       :theme="theme"
       :get-context-menu-items="getContextMenuItems"
