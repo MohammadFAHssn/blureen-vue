@@ -1,4 +1,6 @@
 <script setup>
+import { STATUSES } from '@/utils/constants.js'
+
 const props = defineProps({
   tab: { type: Number, required: true },
   items: { type: Array, required: true },
@@ -80,7 +82,7 @@ const rowData = computed(() => {
       : '-',
     approver: pendingApproverName(item.approvals),
     actions: {
-      approvable: item.kasra_credit_id,
+      approvable: item.kasra_credit_id && (props.userCanManage || item.status_id === STATUSES.PENDING),
     },
   }))
 })
