@@ -7,7 +7,7 @@ import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/d
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
 import { useHrCartableLogic } from '@/views/apps/humanResources/HrCartable/hrCartableLogic.js'
-import EditDialog from '@/views/apps/humanResources/LeaveRequest/EditDialog.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 
 definePage({
   meta: {

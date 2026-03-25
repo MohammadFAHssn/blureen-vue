@@ -10,7 +10,7 @@ import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/Approva
 import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
 import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
-import EditDialog from '@/views/apps/humanResources/LeaveRequest/EditDialog.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 
 definePage({
   meta: {

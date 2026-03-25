@@ -4,7 +4,7 @@ import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
-import EditDialog from '@/views/apps/humanResources/LeaveRequest/EditDialog.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 import SecurityCartableGrid from '@/views/apps/humanResources/SecurityCartable/SecurityCartableGrid.vue'
 import { useSecurityCartableLogic } from '@/views/apps/humanResources/SecurityCartable/securityCartableLogic.js'
 
