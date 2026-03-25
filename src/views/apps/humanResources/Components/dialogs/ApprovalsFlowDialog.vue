@@ -3,7 +3,7 @@ import { useDisplay } from 'vuetify/framework'
 
 const props = defineProps({
   isDialogVisible: { type: Boolean, required: true },
-  request: { type: Object, default: null },
+  request: { type: Object, required: true },
 })
 const emit = defineEmits(['update:isDialogVisible'])
 
@@ -41,11 +41,13 @@ async function getRequestApprovals() {
       },
     )
     requestApprovals.value = data.data
-  } catch (error) {
+  }
+  catch (error) {
     uiState.hasError = true
-    uiState.errorMessage = 'خطا در دریافت رده تاییدیه'
-    console.log(error)
-  } finally {
+    uiState.errorMessage
+      = error?.response?.data?.message || 'خطا در دریافت رده تاییدیه'
+  }
+  finally {
     uiState.loading = false
   }
 }
@@ -139,7 +141,9 @@ onMounted(() => {
       </VCardText>
 
       <VCardActions class="justify-end">
-        <VBtn color="secondary" variant="tonal" @click="close"> بستن </VBtn>
+        <VBtn color="secondary" variant="tonal" @click="close">
+          بستن
+        </VBtn>
       </VCardActions>
     </VCard>
   </VDialog>
