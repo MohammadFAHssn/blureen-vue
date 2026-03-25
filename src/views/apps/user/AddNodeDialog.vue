@@ -29,6 +29,11 @@ const props = defineProps({
     required: true,
   },
 
+  requestTypes: {
+    type: Array,
+    default: () => [],
+  },
+
   reloading: {
     type: Boolean,
     default: false,
@@ -56,8 +61,12 @@ const orgUnits = ref(props.orgUnits)
 const selectedOrgPosition = ref(null)
 const selectedOrgUnit = ref(null)
 const selectedUsers = ref([])
-const selectedDeputy = ref(null)
 const selectedLiaison = ref(null)
+
+// Deputies: array of { user, deputyTypes }
+const deputies = ref([])
+const pendingDeputyUser = ref(null)
+const pendingDeputyTypes = ref([])
 
 // Use composable for user search
 const usersRef = computed(() => props.users)
@@ -81,6 +90,13 @@ const {
   guardBackspace: guardLiaisonBackspace,
   resetSearch: resetLiaisonSearch,
 } = useUserSearch(usersRef)
+
+// Filter out already-added deputies from the deputy autocomplete
+const availableDeputyUsers = computed(() => {
+  const addedIds = new Set(deputies.value.map(d => d.user.id))
+
+  return filteredDeputyUsers.value.filter(u => !addedIds.has(u.id))
+})
 
 function toComparisonKey(str) {
   return (str || '').toString().replace(/[\s\u200C]+/g, '')
@@ -112,6 +128,30 @@ function onSelectUserFromDialog(userIds) {
   )
 }
 
+// Deputy management
+function addDeputy() {
+  if (!pendingDeputyUser.value) return
+
+  deputies.value.push({
+    user: { ...pendingDeputyUser.value },
+    deputyTypes: [...pendingDeputyTypes.value],
+  })
+
+  pendingDeputyUser.value = null
+  pendingDeputyTypes.value = []
+  resetDeputySearch()
+}
+
+function removeDeputy(index) {
+  deputies.value.splice(index, 1)
+}
+
+function getDeputyTypeNames(typeIds) {
+  return typeIds
+    .map(id => props.requestTypes.find(rt => rt.id === id)?.name)
+    .filter(Boolean)
+}
+
 function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
@@ -137,7 +177,10 @@ async function create() {
     orgPosition: selectedOrgPosition.value,
     orgUnit: selectedOrgUnit.value,
     users: selectedUsers.value,
-    deputy: selectedDeputy.value,
+    deputies: deputies.value.map(d => ({
+      ...d.user,
+      deputyTypes: d.deputyTypes,
+    })),
     liaison: selectedLiaison.value,
     parentId: props.selectedNodeId,
   }
@@ -179,7 +222,9 @@ watch(
       selectedOrgPosition.value = null
       selectedOrgUnit.value = null
       selectedUsers.value = []
-      selectedDeputy.value = null
+      deputies.value = []
+      pendingDeputyUser.value = null
+      pendingDeputyTypes.value = []
       selectedLiaison.value = null
       resetSearch()
       resetDeputySearch()
@@ -307,20 +352,31 @@ watch(
             </VCol>
           </VRow>
 
-          <!-- 👉 Deputy -->
+          <VDivider class="my-6" />
+
+          <!-- 👉 Deputies Section -->
           <VRow>
-            <VCol cols="12" md="6">
+            <VCol cols="12">
+              <div class="text-subtitle-1 font-weight-medium">
+                جانشین‌ها
+              </div>
+            </VCol>
+          </VRow>
+
+          <!-- Deputy input row -->
+          <VRow align="end">
+            <VCol cols="12" md="5">
               <VAutocomplete
-                v-model="selectedDeputy"
+                v-model="pendingDeputyUser"
                 v-model:search="deputySearchQuery"
-                :items="filteredDeputyUsers"
+                :items="availableDeputyUsers"
                 :item-title="
                   (item) =>
                     `${item.first_name} ${item.last_name} (${item.personnel_code})`
                 "
                 clearable
                 item-value="id"
-                label="جانشین"
+                label="انتخاب جانشین"
                 :no-filter="true"
                 return-object
                 @keydown.capture="guardDeputyBackspace"
@@ -337,8 +393,87 @@ watch(
                 </template>
               </VAutocomplete>
             </VCol>
+            <VCol cols="12" md="5">
+              <VAutocomplete
+                v-model="pendingDeputyTypes"
+                :items="props.requestTypes"
+                item-title="name"
+                item-value="id"
+                label="نوع جانشینی"
+                multiple
+                chips
+                closable-chips
+                :disabled="!pendingDeputyUser"
+              />
+            </VCol>
+            <VCol cols="12" md="2">
+              <VBtn
+                color="success"
+                variant="tonal"
+                block
+                :disabled="!pendingDeputyUser"
+                @click="addDeputy"
+              >
+                <VIcon icon="tabler-plus" class="me-1" />
+                افزودن
+              </VBtn>
+            </VCol>
+          </VRow>
 
-            <!-- 👉 Liaison -->
+          <!-- Added deputies list -->
+          <VRow v-if="deputies.length">
+            <VCol cols="12">
+              <div class="d-flex flex-column gap-3 mt-1">
+                <VCard
+                  v-for="(deputy, index) in deputies"
+                  :key="deputy.user.id"
+                  variant="outlined"
+                  class="pa-3"
+                >
+                  <div class="d-flex align-center gap-3">
+                    <VAvatar
+                      size="42"
+                      :image="`${storageBaseUrl}/${deputy.user.avatar?.path}`"
+                    />
+
+                    <div class="flex-grow-1">
+                      <div class="text-body-1 font-weight-medium">
+                        {{ deputy.user.first_name }} {{ deputy.user.last_name }}
+                        <span class="text-medium-emphasis text-body-2">({{ deputy.user.personnel_code }})</span>
+                      </div>
+                      <div v-if="deputy.deputyTypes.length" class="d-flex flex-wrap gap-1 mt-1">
+                        <VChip
+                          v-for="typeName in getDeputyTypeNames(deputy.deputyTypes)"
+                          :key="typeName"
+                          size="small"
+                          color="info"
+                          variant="tonal"
+                        >
+                          {{ typeName }}
+                        </VChip>
+                      </div>
+                      <span v-else class="text-caption text-disabled">بدون نوع جانشینی</span>
+                    </div>
+
+                    <VBtn
+                      icon
+                      size="small"
+                      variant="text"
+                      color="error"
+                      @click="removeDeputy(index)"
+                    >
+                      <VIcon icon="tabler-trash" size="20" />
+                    </VBtn>
+                  </div>
+                </VCard>
+              </div>
+            </VCol>
+          </VRow>
+
+          <VDivider class="my-8" />
+
+          <!-- 👉 Liaison -->
+          <VRow>
             <VCol cols="12" md="6">
               <VAutocomplete
                 v-model="selectedLiaison"

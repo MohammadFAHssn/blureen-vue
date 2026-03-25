@@ -36,7 +36,7 @@ function onFormSubmit() {
     if (isValid) {
       try {
         const requestData = {
-          request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
+          request_type_id: REQUEST_TYPES.HOURLY_LEAVE,
           user_id: props.userId,
           start_date: overtimeDate.value,
           end_date: overtimeDate.value,
