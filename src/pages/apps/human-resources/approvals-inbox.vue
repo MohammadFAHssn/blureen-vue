@@ -5,12 +5,12 @@ import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/ApprovalsCardsView.vue'
 import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
 import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
-import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 
 definePage({
   meta: {

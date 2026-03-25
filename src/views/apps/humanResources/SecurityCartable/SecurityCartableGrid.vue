@@ -1,18 +1,18 @@
 <script setup>
+import TimeReset from '@/views/apps/humanResources/Components/TimeReset.vue'
+
 const props = defineProps({
   tab: { type: Number, required: true },
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(
-  [
-    'edit',
-    'approveRow',
-    'approvalFlow',
-    'update:selectedIds',
-  ],
-)
+const emit = defineEmits([
+  'edit',
+  'approveRow',
+  'approvalFlow',
+  'update:selectedIds',
+])
 
 const selectedIds = defineModel('selectedIds', {
   type: Array,
@@ -31,7 +31,9 @@ watch(
 )
 
 function fmtTimeRange(r) {
-  return r?.start_time && r?.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
+  return r?.start_time && r?.end_time
+    ? `${r.start_time} الی ${r.end_time}`
+    : '-'
 }
 
 function fullName(u) {
@@ -73,6 +75,8 @@ const rowData = computed(() => {
     requestType: item.type.name ?? '-',
     startDate: item.start_date ?? '-',
     endDate: item.end_date ?? '-',
+    startTime: item.start_time ?? '-',
+    endTime: item.end_time ?? '-',
     timeRange: fmtTimeRange(item),
     actions: {
       approvable: false,
@@ -84,9 +88,20 @@ const columnDefs = [
   { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'واحد', field: 'orgUnit' },
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
-  { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
+  { headerName: 'تاریخ', field: 'startDate', maxWidth: 150 },
+  /*
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
-  { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+*/
+  {
+    headerName: 'زمان شروع',
+    field: 'startTime',
+    cellRenderer: 'TimeReset',
+  },
+  {
+    headerName: 'زمان پایان',
+    field: 'endTime',
+    cellRenderer: 'TimeReset',
+  },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -142,6 +157,7 @@ function onSelectionChanged() {
       }"
       :theme="theme"
       :get-context-menu-items="getContextMenuItems"
+      :components="{ TimeReset }"
       @grid-ready="onGridReady"
       @selection-changed="onSelectionChanged"
     />
