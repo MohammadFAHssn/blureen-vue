@@ -31,7 +31,7 @@ const rowData = computed(() =>
     endDate: item.end_date,
     timeRange: fmtTimeRange(item),
     actions: {
-      approvable: true,
+      approvable: item.status_id === STATUSES.PENDING_SUPERVISOR_APPROVAL || item.status_id === STATUSES.PENDING,
     },
   })),
 )
@@ -40,7 +40,6 @@ const columnDefs = computed(() => [
   { headerName: 'پرسنل', field: 'personnel' },
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
-  { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
   {
     headerName: 'عملیات',

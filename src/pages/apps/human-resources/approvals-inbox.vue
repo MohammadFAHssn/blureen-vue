@@ -10,7 +10,7 @@ import ApprovalsCardsView from '@/views/apps/humanResources/Confirmation/Approva
 import ApprovalsGridView from '@/views/apps/humanResources/Confirmation/ApprovalsGridView.vue'
 import { useApprovalsLogic } from '@/views/apps/humanResources/Confirmation/approvalsLogic.js'
 import DetailsDialog from '@/views/apps/humanResources/Confirmation/DetailsDialog.vue'
-import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
+import EditDialog from '@/views/apps/humanResources/LeaveRequest/EditDialog.vue'
 
 definePage({
   meta: {
@@ -77,7 +77,7 @@ onMounted(() => {
       @submit="logic.onSubmittedReferral"
     />
 
-    <EditForm
+    <EditDialog
       v-if="logic.state.dialogs.edit"
       v-model:is-dialog-visible="logic.state.dialogs.edit"
       :request="logic.pendingRequest.value"

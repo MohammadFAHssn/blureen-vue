@@ -201,7 +201,7 @@ function createShared() {
     return `آیا از تایید ${count === 1 ? 'این مورد' : `${count} مورد`} اطمینان دارید؟`
   })
 
-  const pendingRequest = computed(() => state.pendingItem?.request)
+  const pendingRequest = computed(() => state.pendingItem)
 
   return {
     state,

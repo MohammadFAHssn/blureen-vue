@@ -97,13 +97,20 @@ export function useHrCartableLogic() {
   async function fetchRequestsForActiveTab(force = false) {
     if (!force && state.loadedTabs.has(state.activeTab))
       return
-
+    let statuses = [state.activeTab]
+    if (state.activeTab === STATUSES.PENDING) {
+      statuses = [
+        STATUSES.PENDING,
+        STATUSES.PENDING_LIAISON_APPROVAL,
+        STATUSES.PENDING_SUPERVISOR_APPROVAL,
+      ]
+    }
     state.loading = true
     try {
       const { data } = await axiosInstance.get(
         '/hr-request/request/get-by-status',
         {
-          params: { status: state.activeTab },
+          params: { statuses },
         },
       )
 

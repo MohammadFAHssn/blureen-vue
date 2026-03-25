@@ -2,7 +2,7 @@
 import { useDisplay } from 'vuetify/framework'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
-import EditForm from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/EditForm.vue'
+import EditHourlyLeave from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/EditHourlyLeave.vue'
 
 const props = defineProps({
   userId: {
@@ -277,7 +277,7 @@ onMounted(() => {
     v-model:is-dialog-visible="uiState.isApprovalsFlowDialogVisible"
     :request="selectedRequest"
   />
-  <EditForm
+  <EditHourlyLeave
     v-if="uiState.isEditRequestDialogVisible"
     v-model:is-dialog-visible="uiState.isEditRequestDialogVisible"
     :request="selectedRequest"

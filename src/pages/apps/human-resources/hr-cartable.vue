@@ -7,7 +7,7 @@ import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/d
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
 import { useHrCartableLogic } from '@/views/apps/humanResources/HrCartable/hrCartableLogic.js'
-import EditForm from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditForm.vue'
+import EditDialog from '@/views/apps/humanResources/LeaveRequest/EditDialog.vue'
 
 definePage({
   meta: {
@@ -116,7 +116,7 @@ function onRejectSelected() {
       @submit="logic.onSubmittedReferral"
     />
 
-    <EditForm
+    <EditDialog
       v-if="logic.state.dialogs.edit"
       v-model:is-dialog-visible="logic.state.dialogs.edit"
       :request="logic.pendingRequest.value"
