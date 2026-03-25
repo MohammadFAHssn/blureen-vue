@@ -119,8 +119,11 @@ function handleCancel() {
         >
           <VIcon>mdi-close</VIcon>
         </VBtn>
-        <VToolbarTitle>
+        <VToolbarTitle v-if="evaluatee.user">
           {{ evaluatee.user.personnel_code }} - {{ evaluatee.user.first_name }} {{ evaluatee.user.last_name }} ({{ evaluatee.user?.profile?.cost_center?.name }})
+        </VToolbarTitle>
+        <VToolbarTitle v-else>
+          {{ evaluatee.personnel_code }} - {{ evaluatee.first_name }} {{ evaluatee.last_name }} ({{ evaluatee.profile?.cost_center?.name }})
         </VToolbarTitle>
       </VToolbar>
 
@@ -152,6 +155,10 @@ function handleCancel() {
                       class="pa-4"
                       :class="{ 'border-success': ratings[question.id] > 0 }"
                     >
+                      <VChip v-if="question.index" class="mb-2" color="info">
+                        {{ question.index }}
+                      </VChip>
+
                       <!-- Question Text -->
                       <div class="text-body-1 mb-3">
                         {{ question.question_text }}

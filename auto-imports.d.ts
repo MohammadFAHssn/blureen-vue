@@ -12,9 +12,9 @@ declare global {
   const EffectScope: typeof import('vue').EffectScope
   const HR_REQUEST_DETAILS_TITLE: typeof import('./src/utils/constants.js').HR_REQUEST_DETAILS_TITLE
   const HR_REQUEST_STATUSES: typeof import('./src/utils/constants.js').HR_REQUEST_STATUSES
-  const HR_REQUEST_TYPES: typeof import('./src/utils/constants.js').HR_REQUEST_TYPES
   const MAX_FILE_SIZE: typeof import('./src/utils/constants.js').MAX_FILE_SIZE
   const ORG_POSITION_COLORS: typeof import('./src/utils/constants.js').ORG_POSITION_COLORS
+  const REQUEST_TYPES: typeof import('./src/utils/constants.js').REQUEST_TYPES
   const STATUSES: typeof import('./src/utils/constants.js').STATUSES
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const alphaDashValidator: typeof import('./src/@core/utils/validators.js').alphaDashValidator
@@ -395,9 +395,9 @@ declare module 'vue' {
     readonly COOKIE_MAX_AGE_1_YEAR: UnwrapRef<typeof import('./src/utils/constants.js')['COOKIE_MAX_AGE_1_YEAR']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly HR_REQUEST_DETAILS_TITLE: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_DETAILS_TITLE']>
-    readonly HR_REQUEST_TYPES: UnwrapRef<typeof import('./src/utils/constants.js')['HR_REQUEST_TYPES']>
     readonly MAX_FILE_SIZE: UnwrapRef<typeof import('./src/utils/constants.js')['MAX_FILE_SIZE']>
     readonly ORG_POSITION_COLORS: UnwrapRef<typeof import('./src/utils/constants.js')['ORG_POSITION_COLORS']>
+    readonly REQUEST_TYPES: UnwrapRef<typeof import('./src/utils/constants.js')['REQUEST_TYPES']>
     readonly STATUSES: UnwrapRef<typeof import('./src/utils/constants.js')['STATUSES']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly alphaDashValidator: UnwrapRef<typeof import('./src/@core/utils/validators.js')['alphaDashValidator']>

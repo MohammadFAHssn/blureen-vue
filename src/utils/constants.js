@@ -24,10 +24,11 @@ export const STATUSES = {
   PENDING_LIAISON_APPROVAL: 8,
 }
 
-export const HR_REQUEST_TYPES = {
+export const REQUEST_TYPES = {
   DAILY_LEAVE: 1,
   HOURLY_LEAVE: 2,
   OVERTIME: 3,
+  FOOD_RESERVATION: 4,
 }
 
 export const HR_REQUEST_DETAILS_TITLE = {

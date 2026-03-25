@@ -66,7 +66,7 @@ async function submitRequest() {
   uiState.loading = true
   try {
     const requestData = {
-      request_type_id: HR_REQUEST_TYPES.DAILY_LEAVE,
+      request_type_id: REQUEST_TYPES.DAILY_LEAVE,
       user_id: props.userId,
       start_date: startDate.value,
       end_date: endDate.value,
@@ -211,7 +211,7 @@ watch(
           />
           <VDialog v-model="showStartPicker" max-width="300px">
             <VCard>
-              <input id="startDate-input" style="display: none" />
+              <input id="startDate-input" style="display: none;" />
               <PersianDatetimePicker
                 v-model="startDate"
                 format="jYYYY/jMM/jDD"
@@ -234,7 +234,7 @@ watch(
           />
           <VDialog v-model="showEndPicker" max-width="300px">
             <VCard>
-              <input id="endDate-input" style="display: none" />
+              <input id="endDate-input" style="display: none;" />
               <PersianDatetimePicker
                 v-model="endDate"
                 format="jYYYY/jMM/jDD"

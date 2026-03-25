@@ -328,7 +328,7 @@ async function fetchUsers() {
   try {
     const { data } = await $api('/base/user/subordinates', {
       method: 'GET',
-      params: { user_id: useCookie('userData')?.value?.id },
+      params: { user_id: useCookie('userData')?.value?.id, deputy_type: REQUEST_TYPES.FOOD_RESERVATION },
     })
     users.value = (data || []).flat()
   }
@@ -504,7 +504,7 @@ onMounted(async () => {
 
   <VRow dense>
     <VCol cols="12" md="4" class="d-flex justify-center mb-4 mb-md-0">
-      <input id="custom-input" style="display: none" />
+      <input id="custom-input" style="display: none;" />
       <PersianDatetimePicker
         v-model="reserveDates"
         format="jYYYY/jMM/jDD"
@@ -1024,7 +1024,7 @@ onMounted(async () => {
 
         <VRow>
           <VCol v-if="selectedReservedMeal.description" cols="12" sm="12">
-            <p style="white-space: normal; overflow-wrap: anywhere;">
+            <p style=" overflow-wrap: anywhere;white-space: normal;">
               <strong>توضیحات:</strong> {{ selectedReservedMeal.description }}
             </p>
           </VCol>

@@ -70,7 +70,7 @@ async function getCurrentMonthRequests() {
     .get('/hr-request/request/get-user-requests', {
       params: {
         user_id: props.userId,
-        request_type: HR_REQUEST_TYPES.OVERTIME,
+        request_type: REQUEST_TYPES.OVERTIME,
       },
     })
     .then(({ data }) => {
@@ -130,7 +130,7 @@ onMounted(() => {
         <VSkeletonLoader v-if="loading" type="card" />
         <AgGridVue
           v-else
-          style="block-size: 100%; inline-size: 100%"
+          style="block-size: 100%; inline-size: 100%;"
           :column-defs="columnDefs"
           :row-data="rowData"
           enable-rtl
@@ -195,8 +195,8 @@ onMounted(() => {
 
 <style scoped>
 .desktop-view {
-  height: 500px;
   display: grid;
+  block-size: 500px;
   grid-template-rows: auto 1fr;
 }
 </style>

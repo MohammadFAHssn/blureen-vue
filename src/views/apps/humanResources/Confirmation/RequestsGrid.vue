@@ -24,7 +24,7 @@ function fmtTimeRange(r) {
 }
 
 const rowData = computed(() =>
-  (props.items ?? []).map(item => ({
+  (props.items ?? []).map((item) => ({
     currentItem: item,
     id: item.id,
     personnelCode: item.request.user.personnel_code,
@@ -68,7 +68,7 @@ const columnDefs = computed(() => [
 function syncSelectedIds() {
   const rows = gridApi.value?.getSelectedRows?.() ?? []
   selectedIds.value = rows
-    .map(r => r?.id ?? r?.currentItem?.id)
+    .map((r) => r?.id ?? r?.currentItem?.id)
     .filter(Boolean)
 }
 
@@ -148,6 +148,8 @@ defineExpose({
       enableClickSelection: true,
       checkboxes: true,
       headerCheckbox: true,
+      selectAll: 'filtered',
+      groupSelects: 'filteredDescendants',
     }"
     :theme="theme"
     :get-context-menu-items="getContextMenuItems"
