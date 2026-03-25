@@ -1,4 +1,6 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+
 const props = defineProps({
   isDialogVisible: {
     type: Boolean,
@@ -21,17 +23,32 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['submit', 'update:isDialogVisible'])
+const emit = defineEmits(['submit', 'deleteServiceStation', 'update:isDialogVisible'])
 
 // states
+const uiState = reactive({
+  hasError: false,
+  errorMessage: '',
+  isServiceStationDeleteDialogVisible: false,
+})
+const pendingState = reactive({
+  deleteServiceStation: false,
+})
 const refVForm = ref()
 
 const commuteStations = ref(props.commuteStations)
 const service = ref(props.service)
 
 const selectedStations = ref([])
+const gridSelectedStations = ref([])
+const selectedCount = computed(() => gridSelectedStations.value.length)
 
 // methods
+function setError(message) {
+  uiState.hasError = true
+  uiState.errorMessage = message
+}
+
 function onFormSubmit() {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
@@ -40,6 +57,35 @@ function onFormSubmit() {
       })
     }
   })
+}
+
+async function onDelete() {
+  pendingState.deleteServiceStation = true
+  try {
+    const res = await $api('/employee-transport/service/station/delete', {
+      method: 'DELETE',
+      body: {
+        gridSelectedStations: gridSelectedStations.value,
+      },
+      onResponseError({ response }) {
+        setError(response._data?.message || 'خطا در حذف')
+      },
+    })
+
+    if (res?.data) {
+      service.value.stations = service.value.stations.filter(
+        station => !gridSelectedStations.value.includes(station.serviceStationId),
+      )
+      emit('deleteServiceStation')
+      uiState.isServiceStationDeleteDialogVisible = false
+    }
+  }
+  catch (err) {
+    console.error(err)
+  }
+  finally {
+    pendingState.deleteServiceStation = false
+  }
 }
 
 function onFormReset() {
@@ -52,6 +98,7 @@ function dialogModelValueUpdate(val) {
 
 // ----- start ag-grid -----
 const { theme } = useAGGridTheme()
+const gridApi = ref(null)
 const columnDefs = ref([
   { headerName: 'شهر', field: 'city', sort: 'desc' },
   { headerName: 'خیابان اصلی', field: 'mainStreet' },
@@ -63,6 +110,7 @@ const columnDefs = ref([
 const rowData = computed(() =>
   service.value.stations?.map((station) => {
     return {
+      id: station.serviceStationId,
       city: station.city,
       mainStreet: station.mainStreet,
       sideStreet: station.sideStreet,
@@ -71,10 +119,36 @@ const rowData = computed(() =>
     }
   }),
 )
+// checkbox selection
+function syncSelectedIds() {
+  const rows = gridApi.value?.getSelectedRows?.() ?? []
+  gridSelectedStations.value = rows
+    .map(r => r?.id ?? r?.currentItem?.id)
+    .filter(Boolean)
+}
+
+function onGridReady(params) {
+  gridApi.value = params.api
+  syncSelectedIds()
+}
+
+function onSelectionChanged() {
+  syncSelectedIds()
+  gridApi.value?.refreshCells?.({ force: true })
+}
 // ----- end ag-grid -----
 </script>
 
 <template>
+  <VSnackbar
+    v-model="uiState.hasError"
+    :timeout="2000"
+    location="center"
+    variant="flat"
+    color="error"
+  >
+    {{ uiState.errorMessage }}
+  </VSnackbar>
   <VDialog
     :width="$vuetify.display.smAndDown ? 'auto' : 1000"
     :model-value="props.isDialogVisible"
@@ -112,6 +186,12 @@ const rowData = computed(() =>
               />
             </VCol>
 
+            <VCol cols="12" md="12">
+              <VBtn :disabled="selectedCount < 1" color="error" @click="uiState.isServiceStationDeleteDialogVisible = true">
+                حذف ({{ selectedCount }})
+              </VBtn>
+            </VCol>
+
             <!-- existing Stations -->
             <div class="ma-3 overflow-auto">
               <VCard style="height: 450px; width: 900px;">
@@ -120,10 +200,16 @@ const rowData = computed(() =>
                     style="block-size: 100%; inline-size: 100%"
                     :column-defs="columnDefs"
                     :row-data="rowData"
+                    :row-selection="{
+                      mode: 'multiRow',
+                      enableClickSelection: true,
+                    }"
                     enable-rtl
                     row-numbers
                     pagination
                     :theme="theme"
+                    @grid-ready="onGridReady"
+                    @selection-changed="onSelectionChanged"
                   />
                 </section>
               </VCard>
@@ -149,4 +235,12 @@ const rowData = computed(() =>
       </VCardText>
     </VCard>
   </VDialog>
+
+  <AreYouSureDialog
+    v-if="uiState.isServiceStationDeleteDialogVisible"
+    v-model:is-dialog-visible="uiState.isServiceStationDeleteDialogVisible"
+    title="با حذف ایستگاه/های انتخاب شده از سرویس، انتخاب کاربران این ایستگاه/ها از بین می‌رود. آیا ادامه می‌دهید؟"
+    :loading="pendingState.deleteServiceStation"
+    @confirm="onDelete"
+  />
 </template>
