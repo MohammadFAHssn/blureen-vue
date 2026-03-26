@@ -13,7 +13,7 @@ async function fetchUsers() {
   try {
     const loggedInUserId = useCookie('userData').value?.id
     const { data } = await axiosInstance.get('/base/user/subordinates', {
-      params: { user_id: loggedInUserId },
+      params: { user_id: loggedInUserId, deputy_type: REQUEST_TYPES.DAILY_LEAVE },
     })
 
     users.value = data.data.map(u => ({

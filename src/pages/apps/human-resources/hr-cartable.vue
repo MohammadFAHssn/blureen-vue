@@ -82,7 +82,7 @@ function onRejectSelected() {
         :is-mobile="false"
         :selected-count="selectedCount"
         :loading="logic.state.loading"
-        :show-confirm-btn="logic.state.userCanManege"
+        :show-confirm-btn="true"
         @refresh="logic.refreshActiveTab"
         @approve-selected="onApproveSelected"
         @reject-selected="onRejectSelected"

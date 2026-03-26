@@ -22,10 +22,11 @@ export const STATUSES = {
   REJECTED_BY_HR: 6,
 }
 
-export const HR_REQUEST_TYPES = {
+export const REQUEST_TYPES = {
   DAILY_LEAVE: 1,
   HOURLY_LEAVE: 2,
   OVERTIME: 3,
+  FOOD_RESERVATION: 4,
 }
 
 export const HR_REQUEST_DETAILS_TITLE = {

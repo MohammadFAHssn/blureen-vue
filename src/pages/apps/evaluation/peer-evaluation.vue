@@ -73,7 +73,7 @@ async function fetchQuestions() {
   pendingState.fetchQuestions = true
   try {
     const { data, error } = await useApi(
-      createUrl('/evaluation/evaluation-question/actives'),
+      createUrl('/evaluation/evaluation-question/field-evaluation'),
     )
 
     pendingState.fetchQuestions = false
@@ -93,7 +93,7 @@ async function evaluate(results) {
   pendingState.evaluate = true
   try {
     let hadError = false
-    await $api('/evaluation/evaluation-score/create', {
+    await $api('/evaluation/field-evaluation-score/create', {
       method: 'POST',
       body: {
         results,

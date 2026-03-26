@@ -39,6 +39,7 @@ const orgChartInstance = ref(null)
 const orgPositions = ref([])
 const orgUnits = ref([])
 const users = ref([])
+const requestTypes = ref([])
 
 const selectedNodeId = ref(null)
 const selectedNode = ref(null)
@@ -75,13 +76,25 @@ async function fetchOrgChartNodes() {
     .get('/base/org-chart-node/by-role')
     .then(({ data: { data } }) => {
       orgChartNodes.value = data.map((orgChartNode) => {
+        // Group deputy_users by user id, collecting their deputy_types
+        const deputiesMap = new Map()
+
+        for (const deputyUser of orgChartNode.deputy_users || []) {
+          if (!deputiesMap.has(deputyUser.id)) {
+            deputiesMap.set(deputyUser.id, { ...deputyUser, deputyTypes: [] })
+          }
+          if (deputyUser.pivot?.deputy_type) {
+            deputiesMap.get(deputyUser.id).deputyTypes.push(deputyUser.pivot.deputy_type)
+          }
+        }
+
         return {
           id: orgChartNode.id,
           parentId: orgChartNode.parent_id,
           orgPosition: orgChartNode.org_position,
           orgUnit: orgChartNode.org_unit,
           users: orgChartNode.users,
-          deputy: orgChartNode.deputy_users[0],
+          deputies: [...deputiesMap.values()],
           liaison: orgChartNode.org_unit.liaisons[0],
         }
       })
@@ -252,13 +265,13 @@ function onEditNode(nodeId) {
   uiState.isEditNodeDialogOpen = true
 }
 
-async function handleEditNode({ id, parentId, orgPosition, orgUnit, users, deputy, liaison }) {
+async function handleEditNode({ id, parentId, orgPosition, orgUnit, users, deputies, liaison }) {
   const nodeIndex = orgChartNodes.value.findIndex(
     node => String(node.id) === String(id),
   )
 
   if (nodeIndex !== -1) {
-    orgChartNodes.value[nodeIndex] = { id, parentId, orgPosition, orgUnit, users, deputy, liaison }
+    orgChartNodes.value[nodeIndex] = { id, parentId, orgPosition, orgUnit, users, deputies, liaison }
   }
 
   // Reload and center on the edited node
@@ -277,14 +290,14 @@ function onAddNode(nodeId) {
   uiState.isAddNodeDialogOpen = true
 }
 
-async function handleAddNode({ id, orgPosition, orgUnit, users, deputy, liaison }) {
+async function handleAddNode({ id, orgPosition, orgUnit, users, deputies, liaison }) {
   orgChartNodes.value.push({
     id,
     parentId: selectedNodeId.value,
     orgPosition,
     orgUnit,
     users,
-    deputy,
+    deputies,
     liaison,
   })
 
@@ -658,11 +671,23 @@ function toComparisonKey(str) {
   return (str || '').toString().replace(/[\s\u200C]+/g, '')
 }
 
+async function fetchRequestTypes() {
+  await axiosInstance
+    .get('/base/request-type')
+    .then(({ data: { data } }) => {
+      requestTypes.value = data
+    })
+    .catch((error) => {
+      console.error('Error fetching request types:', error)
+    })
+}
+
 await Promise.all([
   fetchOrgChartNodes(),
   fetchOrgPositions(),
   fetchOrgUnits(),
   fetchUsers(),
+  fetchRequestTypes(),
 ])
 
 onMounted(() => {
@@ -783,6 +808,7 @@ onUnmounted(() => {
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
+    :request-types="requestTypes"
     :reloading="pendingState.reloadChart"
     @add="handleAddNode"
   />
@@ -792,6 +818,7 @@ onUnmounted(() => {
     :org-positions="orgPositions"
     :org-units="orgUnits"
     :users="users"
+    :request-types="requestTypes"
     :node="selectedNode"
     :reloading="pendingState.reloadChart"
     @edit="handleEditNode"
