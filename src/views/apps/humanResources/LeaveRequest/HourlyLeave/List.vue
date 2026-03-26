@@ -77,7 +77,7 @@ async function getCurrentMonthRequests() {
       {
         params: {
           user_id: props.userId,
-          request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
+          request_type_id: REQUEST_TYPES.HOURLY_LEAVE,
         },
       },
     )

@@ -26,11 +26,11 @@ watch(
     uiState.isEditHourlyRequestDialogVisible = false
 
     switch (newRequest.request_type_id) {
-      case HR_REQUEST_TYPES.DAILY_LEAVE:
+      case REQUEST_TYPES.DAILY_LEAVE:
         uiState.isEditDailyRequestDialogVisible = true
         break
 
-      case HR_REQUEST_TYPES.HOURLY_LEAVE:
+      case REQUEST_TYPES.HOURLY_LEAVE:
         uiState.isEditHourlyRequestDialogVisible = true
         break
     }

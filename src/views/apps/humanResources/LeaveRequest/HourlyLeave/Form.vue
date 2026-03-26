@@ -35,7 +35,7 @@ async function onFormSubmit() {
   try {
     uiState.loading = true
     const requestData = {
-      request_type_id: HR_REQUEST_TYPES.HOURLY_LEAVE,
+      request_type_id: REQUEST_TYPES.HOURLY_LEAVE,
       user_id: props.userId,
       start_date: leaveDate.value,
       end_date: leaveDate.value,
