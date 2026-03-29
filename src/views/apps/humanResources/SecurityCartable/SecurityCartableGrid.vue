@@ -1,4 +1,5 @@
 <script setup>
+import AttendanceCheck from '@/views/apps/humanResources/Components/AttendanceCheck.vue'
 import EndTimeReset from '@/views/apps/humanResources/Components/EndTimeReset.vue'
 import StartTimeReset from '@/views/apps/humanResources/Components/StartTimeReset.vue'
 
@@ -81,9 +82,10 @@ const rowData = computed(() => {
     startTime: item.start_time ?? '-',
     endTime: item.end_time ?? '-',
     timeRange: fmtTimeRange(item),
+    attendancePermissions: item.attendance_permissions ?? [],
     actions: {
       approvable: false,
-      attendanceLog: true,
+      attendanceLog: item.status_id !== STATUSES.REJECTED,
       editable: {
         status: false,
         mode: 'view',
@@ -97,10 +99,16 @@ const columnDefs = [
   { headerName: 'واحد', field: 'orgUnit' },
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 160 },
   { headerName: 'تاریخ', field: 'startDate', maxWidth: 150 },
+  { headerName: 'زمان', field: 'timeRange', maxWidth: 175 },
+  {
+    headerName: 'تاییدیه ورود/خروج',
+    field: 'attendancePermissions',
+    cellRenderer: 'AttendanceCheck',
+  },
   /*
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
 */
-  {
+  /* {
     headerName: 'زمان شروع',
     field: 'startTime',
     cellRenderer: 'StartTimeReset',
@@ -115,7 +123,8 @@ const columnDefs = [
     cellRendererParams: {
       onUpdateTimeClick,
     },
-  },
+  }, */
+
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -178,7 +187,7 @@ function onUpdateTimeClick(leaveTimeBoundary, node) {
       }"
       :theme="theme"
       :get-context-menu-items="getContextMenuItems"
-      :components="{ StartTimeReset, EndTimeReset }"
+      :components="{ StartTimeReset, EndTimeReset, AttendanceCheck }"
       @grid-ready="onGridReady"
       @selection-changed="onSelectionChanged"
     />

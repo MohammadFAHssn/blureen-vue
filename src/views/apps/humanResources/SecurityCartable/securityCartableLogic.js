@@ -198,9 +198,22 @@ export function useSecurityCartableLogic() {
     state.dialogs.reject = true
   }
 
-  async function confirmApproveDialog(ignoreAttendance = false) {
-    resetConfirmationDialogState()
-    //await handleApproveOrReject(true, ignoreAttendance)
+  async function confirmApproveDialog() {
+    state.loading = true
+    try {
+      await axiosInstance.post('hr-request/request/create-attendance-permit', {
+        requestIds: state.pendingIds,
+      })
+      raiseSuccess('مجوز تردد با موفقیت ثبت شد.')
+    }
+    catch (e) {
+      raiseError(e?.response?.data?.message || 'خطایی رخ داد')
+    }
+    finally {
+      state.loading = false
+      resetConfirmationDialogState()
+      await fetchRequestsForActiveTab(true)
+    }
   }
 
   async function confirmRejectDialog() {

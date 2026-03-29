@@ -17,7 +17,7 @@
     "MaybeRefOrGetter": true,
     "ORG_POSITION_COLORS": true,
     "PropType": true,
-    "": true,
+    "REQUEST_TYPES": true,
     "Ref": true,
     "STATUSES": true,
     "ShallowRef": true,

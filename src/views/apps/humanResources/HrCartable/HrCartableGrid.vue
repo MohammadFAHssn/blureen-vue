@@ -35,7 +35,9 @@ watch(
 )
 
 function fmtTimeRange(r) {
-  return r?.start_time && r?.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
+  return r?.start_time && r?.end_time
+    ? `${r.start_time} الی ${r.end_time}`
+    : '-'
 }
 
 function fullName(u) {
@@ -73,8 +75,9 @@ const rowData = computed(() => {
     startDate: item.start_date ?? '-',
     endDate: item.end_date ?? '-',
     timeRange: fmtTimeRange(item),
-    status:item.status.title,
+    status: item.status.title,
     description: getDetail(item, 'description'),
+    attendancePermission: item.attendance_permissions.length ? 'بله' : 'خیر',
     updateDate: item.updated_at
       ? moment(item.updated_at).format('jYYYY-jMM-jDD')
       : '-',
@@ -99,6 +102,7 @@ const baseCols = [
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
   { headerName: 'وضعیت', field: 'status', maxWidth: 200 },
+  { headerName: 'تاییدیه نگهبانی', field: 'attendancePermission' },
   { headerName: 'توضیحات', field: 'description' },
   { headerName: 'تاریخ بروزرسانی', field: 'updateDate', maxWidth: 170 },
   { headerName: 'زمان بروزرسانی', field: 'updatedTime', maxWidth: 170 },
