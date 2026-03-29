@@ -2,7 +2,7 @@
 const props = defineProps({
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
-
+  canBeChanged: { type: Boolean, required: true },
   onApproveClick: { type: Function, required: true },
   onDetailsClick: { type: Function, required: true },
   onEditClick: { type: Function, required: true },
@@ -24,7 +24,7 @@ function fmtTimeRange(r) {
 }
 
 const rowData = computed(() =>
-  (props.items ?? []).map((item) => ({
+  (props.items ?? []).map(item => ({
     currentItem: item,
     id: item.id,
     personnelCode: item.request.user.personnel_code,
@@ -33,8 +33,9 @@ const rowData = computed(() =>
     startDate: item.request.start_date,
     endDate: item.request.end_date,
     timeRange: fmtTimeRange(item.request),
+    status: item.request.status.title,
     actions: {
-      approvable: true,
+      approvable: props.canBeChanged,
       detailsable: true,
     },
   })),
@@ -46,6 +47,7 @@ const columnDefs = computed(() => [
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+  { headerName: 'وضعیت', field: 'status', maxWidth: 200 },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -68,7 +70,7 @@ const columnDefs = computed(() => [
 function syncSelectedIds() {
   const rows = gridApi.value?.getSelectedRows?.() ?? []
   selectedIds.value = rows
-    .map((r) => r?.id ?? r?.currentItem?.id)
+    .map(r => r?.id ?? r?.currentItem?.id)
     .filter(Boolean)
 }
 
@@ -96,28 +98,28 @@ function getContextMenuItems(params) {
 
   const items = []
 
-  items.push({
-    name: 'ویرایش',
-    icon: '<i class="tabler-edit" style="font-size: 18px;"></i>',
-    action: () => props.onEditClick(node),
-  })
-
-  items.push({
-    name: 'نمایش ترددها',
-    icon: '<i class="tabler-arrows-left-right" style="font-size: 18px;"></i>',
-    action: () => props.onShowAttendanceLogsClick(node),
-  })
+  if (props.canBeChanged) {
+    items.push({
+      name: 'ویرایش',
+      icon: '<i class="tabler-edit" style="font-size: 18px;"></i>',
+      action: () => props.onEditClick(node),
+    })
+    items.push({
+      name: 'نمایش ترددها',
+      icon: '<i class="tabler-arrows-left-right" style="font-size: 18px;"></i>',
+      action: () => props.onShowAttendanceLogsClick(node),
+    })
+    items.push({
+      name: 'ارجاع جهت تایید',
+      icon: '<i class="tabler-user-share" style="font-size: 18px;"></i>',
+      action: () => props.onReferralClick(node),
+    })
+  }
 
   items.push({
     name: 'نمایش تاییدیه ها',
     icon: '<i class="tabler-git-branch" style="font-size: 18px;"></i>',
     action: () => props.onShowApprovalFlowClick(node),
-  })
-
-  items.push({
-    name: 'ارجاع جهت تایید',
-    icon: '<i class="tabler-user-share" style="font-size: 18px;"></i>',
-    action: () => props.onReferralClick(node),
   })
 
   if (!items.length) return params.defaultItems ?? []

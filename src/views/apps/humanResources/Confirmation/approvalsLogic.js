@@ -34,6 +34,7 @@ function createShared() {
 
     tabs: REQUEST_TABS,
     activeTab: STATUSES.PENDING_SUPERVISOR_APPROVAL,
+    requestCanBeManaged: true,
 
     loading: false,
     requests: [],
@@ -88,6 +89,7 @@ function createShared() {
 
   function setActiveTab(status) {
     state.activeTab = status
+    state.requestCanBeManaged = (status === STATUSES.PENDING)
     fetchRequestsForActiveTab()
   }
 

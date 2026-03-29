@@ -16,6 +16,11 @@ const emit = defineEmits([
   'selectAllMobile',
   'clearMobileSelection',
 ])
+
+function handleTabChange(val) {
+  emit('selectTab', val)
+  emit('clearMobileSelection')
+}
 </script>
 
 <template>
@@ -24,7 +29,7 @@ const emit = defineEmits([
       <VTabs
         :model-value="activeTab"
         class="px-2"
-        @update:model-value="(val) => emit('selectTab', val)"
+        @update:model-value="handleTabChange"
       >
         <VTab :value="STATUSES.PENDING_SUPERVISOR_APPROVAL">
           <VIcon icon="tabler-clock" class="me-1" />

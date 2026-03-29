@@ -26,6 +26,7 @@ export function useSecurityCartableLogic() {
       errorMessage: '',
       success: false,
       successMessage: '',
+      editLoading: false,
     },
 
     loading: false,
@@ -42,7 +43,7 @@ export function useSecurityCartableLogic() {
 
     dialogs: {
       reject: false,
-      approveConfirm: false,
+      approveUpdateTime: false,
       edit: false,
       approvalFlow: false,
       attendanceLogs: false,
@@ -83,7 +84,7 @@ export function useSecurityCartableLogic() {
     state.rejectReason = ''
     state.pendingIds = []
     state.pendingItem = null
-    state.dialogs.approveConfirm = false
+    state.dialogs.approveUpdateTime = false
     state.dialogs.attendanceLogs = false
   }
 
@@ -124,6 +125,44 @@ export function useSecurityCartableLogic() {
     state.dialogs.edit = true
   }
 
+  let updatedNode = reactive({})
+  function onUpdateTimeClick(node) {
+    updatedNode = {
+      requestId: node.id,
+      start_date: node.start_date,
+      end_date: node.end_date,
+      start_time: node.start_time,
+      end_time: node.end_time,
+    }
+    if (node.leaveTimeBoundary === 'start') {
+      // eslint-disable-next-line no-undef
+      updatedNode.start_time = moment().format('HH:mm')
+    }
+    else if (node.leaveTimeBoundary === 'end') {
+      // eslint-disable-next-line no-undef
+      updatedNode.end_time = moment().format('HH:mm')
+    }
+    state.dialogs.approveUpdateTime = true
+  }
+
+  async function updateTime() {
+    state.ui.editLoading = true
+    try {
+      await axiosInstance.patch('/hr-request/request/update', updatedNode)
+      await onSubmittedEdit()
+    }
+    catch (error) {
+      state.ui.hasError = true
+      state.ui.errorMessage
+        = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+    }
+    finally {
+      state.ui.editLoading = false
+      resetConfirmationDialogState()
+      await fetchRequestsForActiveTab()
+    }
+  }
+
   function onShowApprovalFlowClick(node) {
     setPendingFromNode(node)
     state.dialogs.approvalFlow = true
@@ -149,7 +188,7 @@ export function useSecurityCartableLogic() {
   function approveMultiRequest(ids) {
     state.pendingIds = (ids ?? []).filter(Boolean)
     state.pendingItem = null
-    state.dialogs.approveConfirm = true
+    state.dialogs.approveUpdateTime = true
   }
 
   function openRejectSelectedDialog(ids) {
@@ -160,7 +199,8 @@ export function useSecurityCartableLogic() {
   }
 
   async function confirmApproveDialog(ignoreAttendance = false) {
-    await handleApproveOrReject(true, ignoreAttendance)
+    resetConfirmationDialogState()
+    //await handleApproveOrReject(true, ignoreAttendance)
   }
 
   async function confirmRejectDialog() {
@@ -209,6 +249,8 @@ export function useSecurityCartableLogic() {
 
     openDetails,
     onEditClick,
+    onUpdateTimeClick,
+    updateTime,
     onShowApprovalFlowClick,
     onShowAttendancesClick,
 

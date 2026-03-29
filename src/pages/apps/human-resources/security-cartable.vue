@@ -3,8 +3,8 @@ import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
-import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
+import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import SecurityCartableGrid from '@/views/apps/humanResources/SecurityCartable/SecurityCartableGrid.vue'
 import { useSecurityCartableLogic } from '@/views/apps/humanResources/SecurityCartable/securityCartableLogic.js'
 
@@ -31,10 +31,6 @@ watch(
     selectedIds.value = []
   },
 )
-
-function onApproveSelected() {
-  logic.approveMultiRequest(selectedIds.value)
-}
 
 function onRejectSelected() {
   logic.openRejectSelectedDialog(selectedIds.value)
@@ -73,7 +69,6 @@ function onRejectSelected() {
         :show-confirm-btn="false"
         @select-tab="logic.setActiveTab"
         @refresh="logic.fetchRequestsForActiveTab"
-        @approve-selected="onApproveSelected"
         @reject-selected="onRejectSelected"
       />
 
@@ -86,6 +81,8 @@ function onRejectSelected() {
         @approve-row="logic.approveRow"
         @approval-flow="logic.onShowApprovalFlowClick"
         @attendance-log="logic.onShowAttendancesClick"
+        @update-time="logic.onUpdateTimeClick"
+        @show-attendance="logic.onShowAttendancesClick"
       />
     </div>
 
@@ -110,11 +107,11 @@ function onRejectSelected() {
       @submit="logic.confirmApproveDialog(true)"
     />
     <AreYouSureDialog
-      v-if="logic.state.dialogs.approveConfirm"
-      v-model:is-dialog-visible="logic.state.dialogs.approveConfirm"
-      :title="logic.approveConfirmTitle.value"
-      :loading="logic.state.loading"
-      @confirm="logic.confirmApproveDialog"
+      v-if="logic.state.dialogs.approveUpdateTime"
+      v-model:is-dialog-visible="logic.state.dialogs.approveUpdateTime"
+      title="زمان درخواست بروزرسانی گردد؟"
+      :loading="logic.state.ui.editLoading"
+      @confirm="logic.updateTime"
     />
 
     <RejectDialog

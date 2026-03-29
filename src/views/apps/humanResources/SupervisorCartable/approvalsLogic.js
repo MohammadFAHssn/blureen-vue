@@ -60,7 +60,7 @@ function createShared() {
     state.loading = true
     try {
       const { data } = await axiosInstance.get(
-        '/hr-request/request/get-hourly-requests',
+        '/hr-request/request/get-requests-for-supervisor',
         {
           params: { status: state.activeTab },
         },

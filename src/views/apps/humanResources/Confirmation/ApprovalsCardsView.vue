@@ -13,13 +13,13 @@ const selectedCount = computed(() => cardSelectedIds.value.length)
 
 function toggleCardSelection(id) {
   cardSelectedIds.value = cardSelectedIds.value.includes(id)
-    ? cardSelectedIds.value.filter((x) => x !== id)
+    ? cardSelectedIds.value.filter(x => x !== id)
     : [...cardSelectedIds.value, id]
 }
 
 function selectAllMobile() {
   cardSelectedIds.value = (logic.state.requests ?? [])
-    .map((r) => r.id)
+    .map(r => r.id)
     .filter(Boolean)
 }
 
@@ -70,6 +70,7 @@ onBeforeUnmount(() => {
         :items="logic.state.requests"
         :loading="logic.state.loading"
         :selected-ids="cardSelectedIds"
+        :can-be-changed="logic.state.requestCanBeManaged"
         @toggle-select="toggleCardSelection"
         @approve="onApprove"
         @reject="onReject"

@@ -28,7 +28,7 @@ export default [
   {
     title: 'Supervisor Cartable',
     to: 'apps-human-resources-supervisor-cartable',
-    icon: { icon: 'tabler-clipboard-list' },
+    icon: { icon: 'tabler-user-star' },
     action: 'use',
     subject: 'app',
   },

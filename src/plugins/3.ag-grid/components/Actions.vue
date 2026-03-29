@@ -129,6 +129,12 @@ function onCancelClick() {
     >
       <VIcon icon="tabler-git-branch" />
     </IconBtn>
+    <IconBtn
+      v-if="params.value.attendanceLog"
+      @click="params.onShowAttendanceLog(params.node, false)"
+    >
+      <VIcon icon="tabler-arrows-left-right" />
+    </IconBtn>
 
     <v-switch
       v-if="params.value.activable"

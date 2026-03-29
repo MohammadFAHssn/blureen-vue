@@ -3,6 +3,7 @@ const props = defineProps({
   items: { type: Array, required: true },
   loading: { type: Boolean, default: false },
   selectedIds: { type: Array, required: true },
+  canBeChanged: { type: Boolean, required: true },
 })
 
 const emit = defineEmits([
@@ -87,6 +88,7 @@ function fmtTimeRange(r) {
 
           <VCardActions class="pa-2 actions">
             <VBtn
+              v-if="props.canBeChanged"
               size="small"
               color="success"
               variant="tonal"
@@ -96,6 +98,7 @@ function fmtTimeRange(r) {
             </VBtn>
 
             <VBtn
+              v-if="props.canBeChanged"
               size="small"
               color="error"
               variant="tonal"
@@ -117,6 +120,7 @@ function fmtTimeRange(r) {
               <VIcon icon="tabler-file-description" />
             </VBtn>
             <VBtn
+              v-if="props.canBeChanged"
               size="small"
               color="warning"
               variant="tonal"
@@ -126,6 +130,7 @@ function fmtTimeRange(r) {
             </VBtn>
 
             <VBtn
+              v-if="props.canBeChanged"
               size="small"
               color="info"
               variant="tonal"

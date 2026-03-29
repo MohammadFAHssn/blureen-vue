@@ -1,5 +1,6 @@
 <script setup>
-import TimeReset from '@/views/apps/humanResources/Components/TimeReset.vue'
+import EndTimeReset from '@/views/apps/humanResources/Components/EndTimeReset.vue'
+import StartTimeReset from '@/views/apps/humanResources/Components/StartTimeReset.vue'
 
 const props = defineProps({
   tab: { type: Number, required: true },
@@ -9,9 +10,11 @@ const props = defineProps({
 
 const emit = defineEmits([
   'edit',
+  'updateTime',
   'approveRow',
   'approvalFlow',
   'update:selectedIds',
+  'showAttendance',
 ])
 
 const selectedIds = defineModel('selectedIds', {
@@ -80,6 +83,11 @@ const rowData = computed(() => {
     timeRange: fmtTimeRange(item),
     actions: {
       approvable: false,
+      attendanceLog: true,
+      editable: {
+        status: false,
+        mode: 'view',
+      },
     },
   }))
 })
@@ -95,12 +103,18 @@ const columnDefs = [
   {
     headerName: 'زمان شروع',
     field: 'startTime',
-    cellRenderer: 'TimeReset',
+    cellRenderer: 'StartTimeReset',
+    cellRendererParams: {
+      onUpdateTimeClick,
+    },
   },
   {
     headerName: 'زمان پایان',
     field: 'endTime',
-    cellRenderer: 'TimeReset',
+    cellRenderer: 'EndTimeReset',
+    cellRendererParams: {
+      onUpdateTimeClick,
+    },
   },
   {
     headerName: 'عملیات',
@@ -115,6 +129,8 @@ const columnDefs = [
       component: 'Actions',
       params: {
         onApproveClick: (node, approve) => emit('approveRow', node, approve),
+        onEditClick: node => emit('edit', node),
+        onShowAttendanceLog: node => emit('showAttendance', node),
       },
     }),
   },
@@ -135,6 +151,11 @@ function onGridReady(params) {
 function onSelectionChanged() {
   syncSelectedIds()
   gridApi.value?.refreshCells?.({ force: true })
+}
+
+function onUpdateTimeClick(leaveTimeBoundary, node) {
+  node.leaveTimeBoundary = leaveTimeBoundary
+  emit('updateTime', node)
 }
 </script>
 
@@ -157,7 +178,7 @@ function onSelectionChanged() {
       }"
       :theme="theme"
       :get-context-menu-items="getContextMenuItems"
-      :components="{ TimeReset }"
+      :components="{ StartTimeReset, EndTimeReset }"
       @grid-ready="onGridReady"
       @selection-changed="onSelectionChanged"
     />

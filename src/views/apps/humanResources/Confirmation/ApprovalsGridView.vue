@@ -43,6 +43,7 @@ onBeforeUnmount(() => {
         v-model:selected-ids="gridSelectedIds"
         :items="logic.state.requests"
         :loading="logic.state.loading"
+        :can-be-changed="logic.state.requestCanBeManaged"
         :on-approve-click="logic.approveSingleRequest"
         :on-details-click="logic.openDetails"
         :on-edit-click="logic.onEditClick"
