@@ -531,6 +531,19 @@ onMounted(async () => {
             />
           </VCol>
           <VCol cols="12" md="12">
+            <VRadioGroup
+              v-model="reservationType"
+              class="mt-2"
+              inline
+              @change="resetForm"
+            >
+              <VRadio label="پرسنل" value="personnel" />
+              <VRadio label="پیمانکار" value="contractor" />
+              <VRadio label="میهمان" value="guest" />
+              <VRadio label="تعمیرکار" value="repairman" />
+            </VRadioGroup>
+          </VCol>
+          <VCol cols="12" md="12">
             <VSelect
               v-model="selectedMeal"
               :items="meals"
@@ -541,90 +554,67 @@ onMounted(async () => {
               clearable
             />
           </VCol>
-          <VRadioGroup
-            v-model="reservationType"
-            class="mt-2"
-            inline
-            @change="resetForm"
-          >
-            <VRadio label="پرسنل" value="personnel" />
-            <VRadio label="پیمانکار" value="contractor" />
-            <VRadio label="میهمان" value="guest" />
-            <VRadio label="تعمیرکار" value="repairman" />
-          </VRadioGroup>
-          <VCol v-if="reservationType === 'personnel'" cols="12" class="mb-3">
-            <VAutocomplete
-              v-model="selectedPersonnel"
-              :items="users"
-              :item-title="item => `${item.first_name} ${item.last_name} - ${item.personnel_code}`"
-              item-value="id"
-              label="افراد"
-              multiple
-              chips
-              clearable
-              variant="outlined"
-            />
-          </VCol>
-          <VCol v-else-if="reservationType === 'guest'" cols="12" class="mb-3">
-            <VTextField
-              v-model="quantity"
-              label="تعداد"
-              type="number"
-              variant="outlined"
-            />
-            <VTextField
-              v-model="description"
-              label="توضیحات"
-              variant="outlined"
-            />
-            <VRadioGroup
-              v-model="serveType"
-              class="mt-2"
-              inline
-              @change="attendanceHour = null"
-            >
-              <VRadio label="سرو در رستوران" value="serve_in_kitchen" />
-              <VRadio label="تحویل(بیرون‌بر)" value="deliver" />
-            </VRadioGroup>
-            <VCol v-if="serveType === 'serve_in_kitchen'" cols="12" md="12">
-              <PersianDatetimePicker
-                v-model="attendanceHour"
-                type="time"
-                label="حضور"
-                append-to="body"
+          <VCol cols="12" class="mb-3">
+            <div v-if="reservationType === 'personnel'">
+              <VAutocomplete
+                v-model="selectedPersonnel"
+                :items="users"
+                :item-title="item => `${item.first_name} ${item.last_name} - ${item.personnel_code}`"
+                item-value="id"
+                label="افراد"
+                multiple
+                chips
+                clearable
+                variant="outlined"
               />
-            </VCol>
-          </VCol>
-          <VCol v-else-if="reservationType === 'contractor'" cols="12" sm="12" md="12">
-            <VAutocomplete
-              v-model="selectedContractor"
-              :items="contractors"
-              item-title="fullName"
-              item-value="id"
-              label="پیمانکار"
-              chips
-              clearable
-              variant="outlined"
-            />
-            <VTextField
-              v-model="quantity"
-              label="تعداد"
-              type="number"
-              variant="outlined"
-            />
-          </VCol>
-          <VCol v-else-if="reservationType === 'repairman'" cols="12" class="mb-3">
-            <VTextField
-              v-model="quantity"
-              label="تعداد"
-              type="number"
-              variant="outlined"
-            />
-            <VTextField
-              v-model="description"
-              label="توضیحات"
-              variant="outlined"
-            />
+            </div>
+            <div v-else-if="reservationType === 'contractor'">
+              <VAutocomplete
+                v-model="selectedContractor"
+                :items="contractors"
+                item-title="fullName"
+                item-value="id"
+                label="پیمانکار"
+                chips
+                clearable
+                variant="outlined"
+                class="mb-6"
+              />
+            </div>
+            <div v-if="reservationType !== 'personnel'">
+              <VTextField
+                v-model="quantity"
+                label="تعداد"
+                type="number"
+                variant="outlined"
+                class="mb-6"
+              />
+              <VTextField
+                v-if="reservationType === 'guest' || reservationType === 'repairman'"
+                v-model="description"
+                label="توضیحات"
+                variant="outlined"
+              />
+            </div>
+            <div v-if="reservationType === 'guest'">
+              <VRadioGroup
+                v-model="serveType"
+                class="mt-2"
+                inline
+                @change="attendanceHour = null"
+              >
+                <VRadio label="سرو در رستوران" value="serve_in_kitchen" />
+                <VRadio label="تحویل(بیرون‌بر)" value="deliver" />
+              </VRadioGroup>
+              <div v-if="serveType === 'serve_in_kitchen'">
+                <PersianDatetimePicker
+                  v-model="attendanceHour"
+                  type="time"
+                  label="حضور"
+                  append-to="body"
+                />
+              </div>
+            </div>
           </VCol>
         </VRow>
         <VRow justify="center" class="mb-4">
