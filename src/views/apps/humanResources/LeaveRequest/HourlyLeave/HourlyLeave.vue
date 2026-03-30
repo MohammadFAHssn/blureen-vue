@@ -2,8 +2,8 @@
 import AttendanceLog from '@/views/apps/humanResources/Components/AttendanceLog.vue'
 import SelectUserSubOrdinate from '@/views/apps/humanResources/Components/SelectUserSubOrdinate.vue'
 import Form from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/Form.vue'
-import List from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/List.vue'
 import RemainingLeave from '@/views/apps/humanResources/LeaveRequest/RemainingLeave.vue'
+import UserRequestsList from '@/views/apps/humanResources/UserRequestsList.vue'
 
 const uiState = reactive({
   success: false,
@@ -96,7 +96,7 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
   </VRow>
   <VRow>
     <VCol cols="12">
-      <List :key="uiState.requestsKey" :user-id="selectedUser.id" />
+      <UserRequestsList :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
 </template>

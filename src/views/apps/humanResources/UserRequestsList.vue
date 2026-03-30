@@ -26,6 +26,7 @@ const { theme } = useAGGridTheme()
 const selectedRequest = ref(null)
 const currentMonthRequests = ref([])
 const columnDefs = ref([
+  { headerName: 'نوع درخواست', field: 'requestType' },
   {
     headerName: 'تاریخ شروع',
     field: 'startDate',
@@ -42,10 +43,8 @@ const columnDefs = ref([
         ? moment(params.value, 'jYYYY-jMM-jDD').format('jYYYY/jMM/jD')
         : null,
   },
-  {
-    headerName: 'وضعیت',
-    field: 'status',
-  },
+  { headerName: 'زمان', field: 'timeRange' },
+  { headerName: 'وضعیت', field: 'status' },
   {
     headerName: 'عملیات',
     field: 'actions',
@@ -67,8 +66,10 @@ const rowData = computed(() =>
   currentMonthRequests.value?.map((item) => {
     return {
       currentItem: item,
+      requestType: item.type.name,
       startDate: item.start_date,
       endDate: item.end_date,
+      timeRange: fmtTimeRange(item),
       status: item.status.title ?? '-',
       actions: {
         editable: {
@@ -89,7 +90,6 @@ async function getCurrentMonthRequests() {
       {
         params: {
           user_id: props.userId,
-          request_type_id: REQUEST_TYPES.DAILY_LEAVE,
         },
       },
     )
@@ -139,6 +139,10 @@ async function onDelete() {
     uiState.deleteLoading = false
     uiState.isDeleteRequestDialogVisible = false
   }
+}
+
+function fmtTimeRange(r) {
+  return r.start_time && r.end_time ? `${r.start_time} الی ${r.end_time}` : '-'
 }
 onMounted(() => {
   getCurrentMonthRequests()
@@ -193,7 +197,7 @@ onMounted(() => {
     <VExpansionPanels variant="accordion">
       <VExpansionPanel>
         <VExpansionPanelTitle>
-          <span class="font-weight-medium"> مرخصی‌های روزانه ماه جاری </span>
+          <span class="font-weight-medium"> درخواست های ماه جاری </span>
         </VExpansionPanelTitle>
 
         <VExpansionPanelText>
@@ -204,17 +208,29 @@ onMounted(() => {
               cols="12"
             >
               <VCard outlined class="pa-3 mb-3">
-                <div>
-                  <strong>تاریخ شروع:</strong>
-                  <span dir="rtl">{{ item.start_date }}</span>
+                <div class="chips">
+                  <VChip size="small" color="primary" variant="flat" class="mb-1">
+                    {{ item.type.name }}
+                  </VChip>
                 </div>
-                <div>
-                  <strong>تاریخ پایان:</strong>
-                  <span dir="rtl">{{ item.end_date }}</span>
+
+                <div class="rows">
+                  <div class="row">
+                    <span class="label">تاریخ شروع: </span>
+                    <span class="value">{{ item.start_date }}</span>
+                  </div>
+                  <div class="row">
+                    <span class="label">تاریخ پایان: </span>
+                    <span class="value">{{ item.end_date }}</span>
+                  </div>
+                  <div class="row">
+                    <span class="label">زمان: </span>
+                    <span class="value">{{ fmtTimeRange(item) }}</span>
+                  </div>
                 </div>
 
                 <div class="d-flex align-center mt-1">
-                  <strong class="mr-1">وضعیت:</strong>
+                  <strong class="mr-1">وضعیت: </strong>
                   <VChip
                     :color="item.status.color"
                     size="small"
@@ -285,13 +301,13 @@ onMounted(() => {
   <div v-else class="ma-3 overflow-auto">
     <VCard class="desktop-view">
       <label class="font-weight-medium mb-4 d-block text-center pt-3">
-        مرخصی‌های روزانه ماه جاری
+        درخواست های ماه جاری
       </label>
       <section>
         <VSkeletonLoader v-if="uiState.loading" type="card" />
         <AgGridVue
           v-else
-          style="block-size: 100%; inline-size: 100%;"
+          style="block-size: 100%; inline-size: 100%"
           :column-defs="columnDefs"
           :row-data="rowData"
           enable-rtl
@@ -309,5 +325,8 @@ onMounted(() => {
   display: grid;
   block-size: 500px;
   grid-template-rows: auto 1fr;
+}
+.label {
+  font-weight: bold;
 }
 </style>

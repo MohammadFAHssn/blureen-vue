@@ -1,8 +1,8 @@
 <script setup>
 import SelectUserSubOrdinate from '@/views/apps/humanResources/Components/SelectUserSubOrdinate.vue'
 import Form from '@/views/apps/humanResources/LeaveRequest/DailyLeave/Form.vue'
-import List from '@/views/apps/humanResources/LeaveRequest/DailyLeave/List.vue'
 import RemainingLeave from '@/views/apps/humanResources/LeaveRequest/RemainingLeave.vue'
+import UserRequestsList from '@/views/apps/humanResources/UserRequestsList.vue'
 
 const uiState = reactive({
   success: false,
@@ -54,10 +54,9 @@ async function onUserSelected(selected) {
     <VCol cols="12" md="12" class="mx-auto">
       <RemainingLeave :key="selectedUser.id" :user-id="selectedUser.id" />
       <Form :user-id="selectedUser.id" @created="uiState.requestsKey++" />
-      <List :key="uiState.requestsKey" :user-id="selectedUser.id" />
+      <UserRequestsList :key="uiState.requestsKey" :user-id="selectedUser.id" />
     </VCol>
   </VRow>
-
 </template>
 
 <style scoped></style>

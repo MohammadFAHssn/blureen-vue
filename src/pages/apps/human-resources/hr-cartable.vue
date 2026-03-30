@@ -3,11 +3,11 @@ import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import RejectDialog from '@/components/dialogs/RejectDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
 import AttendanceDialog from '@/views/apps/humanResources/Components/dialogs/AttendanceDialog.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 import ReferralToSupervisorDialog from '@/views/apps/humanResources/Components/dialogs/ReferralToSupervisorDialog.vue'
 import RequestsToolbar from '@/views/apps/humanResources/Confirmation/RequestsToolbar.vue'
 import HrCartableGrid from '@/views/apps/humanResources/HrCartable/HrCartableGrid.vue'
 import { useHrCartableLogic } from '@/views/apps/humanResources/HrCartable/hrCartableLogic.js'
-import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 
 definePage({
   meta: {
@@ -71,7 +71,10 @@ function onRejectSelected() {
         :is-mobile="false"
         :selected-count="selectedCount"
         :loading="logic.state.loading"
-        :show-confirm-btn="logic.state.userCanManege"
+        :show-confirm-btn="
+          logic.state.userCanManege
+            || logic.state.activeTab === STATUSES.PENDING
+        "
         @select-tab="logic.setActiveTab"
         @refresh="logic.refreshActiveTab"
         @approve-selected="onApproveSelected"

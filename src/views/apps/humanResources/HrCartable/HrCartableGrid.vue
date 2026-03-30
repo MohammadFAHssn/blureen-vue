@@ -88,7 +88,7 @@ const rowData = computed(() => {
     actions: {
       approvable:
         item.kasra_credit_id
-        && (props.userCanManage || item.status_id === STATUSES.PENDING),
+        && (props.userCanManage || props.tab === STATUSES.PENDING),
     },
   }))
 })
@@ -102,7 +102,7 @@ const baseCols = [
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
   { headerName: 'وضعیت', field: 'status', maxWidth: 200 },
-  { headerName: 'تاییدیه نگهبانی', field: 'attendancePermission' },
+  { headerName: 'تاییدیه نگهبانی', field: 'attendancePermission', maxWidth: 175 },
   { headerName: 'توضیحات', field: 'description' },
   { headerName: 'تاریخ بروزرسانی', field: 'updateDate', maxWidth: 170 },
   { headerName: 'زمان بروزرسانی', field: 'updatedTime', maxWidth: 170 },
