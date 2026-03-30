@@ -13,7 +13,7 @@ const props = defineProps({
       variant="outlined"
       color="success"
     >
-      {{ moment(item.created_at, 'jYYYY-jMM-jDD HH:mm:ss').format('HH:mm') }}
+      {{ moment(item.created_at).local().format('HH:mm') }}
     </VBtn>
   </div>
 </template>
