@@ -2,7 +2,7 @@
 import { useDisplay } from 'vuetify/framework'
 import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import ApprovalsFlowDialog from '@/views/apps/humanResources/Components/dialogs/ApprovalsFlowDialog.vue'
-import EditDailyLeave from '@/views/apps/humanResources/LeaveRequest/DailyLeave/EditDailyLeave.vue'
+import EditDialog from '@/views/apps/humanResources/Components/dialogs/EditDialog.vue'
 
 const props = defineProps({
   userId: {
@@ -168,7 +168,7 @@ onMounted(() => {
   >
     {{ uiState.successMessage }}
   </VSnackbar>
-  <EditDailyLeave
+  <EditDialog
     v-if="uiState.isEditRequestDialogVisible"
     v-model:is-dialog-visible="uiState.isEditRequestDialogVisible"
     :request="selectedRequest"
