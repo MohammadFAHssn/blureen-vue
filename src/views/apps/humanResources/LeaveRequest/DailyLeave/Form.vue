@@ -1,4 +1,6 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
+
 const props = defineProps({
   userId: {
     required: true,
