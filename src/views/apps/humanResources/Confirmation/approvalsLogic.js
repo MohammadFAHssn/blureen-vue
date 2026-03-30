@@ -33,7 +33,7 @@ function createShared() {
     },
 
     tabs: REQUEST_TABS,
-    activeTab: STATUSES.PENDING_SUPERVISOR_APPROVAL,
+    activeTab: STATUSES.PENDING,
     requestCanBeManaged: true,
 
     loading: false,
