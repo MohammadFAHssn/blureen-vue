@@ -1,4 +1,9 @@
 <script setup>
+const props = defineProps({
+  requestType: {
+    required: true,
+  },
+})
 const emit = defineEmits(['select'])
 const uiState = reactive({
   success: false,
@@ -13,7 +18,10 @@ async function fetchUsers() {
   try {
     const loggedInUserId = useCookie('userData').value?.id
     const { data } = await axiosInstance.get('/base/user/subordinates', {
-      params: { user_id: loggedInUserId, deputy_type: REQUEST_TYPES.DAILY_LEAVE },
+      params: {
+        user_id: loggedInUserId,
+        deputy_type: props.requestType,
+      },
     })
 
     users.value = data.data.map(u => ({
@@ -28,7 +36,8 @@ async function fetchUsers() {
   }
   catch (error) {
     uiState.hasError = true
-    uiState.errorMessage = error.response.data.message ?? 'خطا در دریافت کاربران'
+    uiState.errorMessage
+      = error.response.data.message ?? 'خطا در دریافت کاربران'
   }
 }
 async function onUserSelected(selected) {

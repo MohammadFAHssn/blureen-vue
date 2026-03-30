@@ -13,6 +13,7 @@ const uiState = reactive({
   requestsKey: 0,
 })
 const selectedUser = ref(useCookie('userData').value)
+// TODO:change select user
 async function onUserSelected(selected) {
   selectedUser.value = selected
   uiState.requestsKey++
@@ -39,14 +40,15 @@ async function onUserSelected(selected) {
     {{ uiState.successMessage }}
   </VSnackbar>
   <div class="mb-6 text-center">
-    <h2 class="text-h5 font-weight-bold text-primary">
-      درخواست مرخصی روزانه
-    </h2>
+    <h2 class="text-h5 font-weight-bold text-primary">درخواست مرخصی روزانه</h2>
   </div>
   <VRow justify="center" align="center">
     <VCol cols="12" sm="12" md="12" lg="10" xl="10">
       <VCard>
-        <SelectUserSubOrdinate @select="onUserSelected" />
+        <SelectUserSubOrdinate
+          :request-type="REQUEST_TYPES.DAILY_LEAVE"
+          @select="onUserSelected"
+        />
       </VCard>
     </VCol>
   </VRow>

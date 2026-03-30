@@ -56,7 +56,7 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
 
   <VRow dense>
     <VCol cols="12" md="12" sm="12">
-      <SelectUserSubOrdinate @select="onUserSelected" />
+      <SelectUserSubOrdinate :request-type="REQUEST_TYPES.HOURLY_LEAVE" @select="onUserSelected" />
     </VCol>
   </VRow>
   <VRow dense>
@@ -72,11 +72,12 @@ const leaveDate = ref(moment().locale('fa').format('jYYYY/jMM/jDD'))
         format="jYYYY/jMM/jDD"
         inline
         custom-input="#custom-input"
-        @click="() => {
-          uiState.dateKey++
-          uiState.attendanceKey++
-
-        }"
+        @click="
+          () => {
+            uiState.dateKey++
+            uiState.attendanceKey++
+          }
+        "
       />
     </VCol>
 
