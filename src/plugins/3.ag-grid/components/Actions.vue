@@ -109,13 +109,13 @@ function onCancelClick() {
       v-if="params.value.approvable"
       @click="params.onApproveClick(params.node, true)"
     >
-      <VIcon icon="tabler-check" />
+      <VIcon color="success" icon="tabler-check" />
     </IconBtn>
     <IconBtn
       v-if="params.value.approvable"
       @click="params.onApproveClick(params.node, false)"
     >
-      <VIcon icon="tabler-ban" />
+      <VIcon color="error" icon="tabler-x" />
     </IconBtn>
     <IconBtn
       v-if="params.value.referrable"

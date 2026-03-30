@@ -101,7 +101,7 @@ const columnDefs = [
   { headerName: 'تاریخ', field: 'startDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 175 },
   {
-    headerName: 'تاییدیه ورود/خروج',
+    headerName: 'ورود/خروج',
     field: 'attendancePermissions',
     cellRenderer: 'AttendanceCheck',
   },

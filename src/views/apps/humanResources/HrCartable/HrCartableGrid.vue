@@ -172,7 +172,10 @@ function getContextMenuItems(params) {
 
   const items = []
 
-  if (props.tab === STATUSES.PENDING_HR_APPROVAL) {
+  if (
+    props.tab === STATUSES.PENDING_HR_APPROVAL
+    || props.tab === STATUSES.PENDING
+  ) {
     items.push({
       name: 'ویرایش',
       icon: '<i class="tabler tabler-edit" style="font-size: 18px;"></i>',
