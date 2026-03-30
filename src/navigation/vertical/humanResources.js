@@ -23,13 +23,13 @@ export default [
     to: 'apps-human-resources-hr-cartable',
     icon: { icon: 'tabler-clipboard-list' },
     action: 'see',
-    subject: 'HR-cartable',
+    subject: 'HR-Cartable',
   },
   {
     title: 'Supervisor Cartable',
     to: 'apps-human-resources-supervisor-cartable',
     icon: { icon: 'tabler-user-star' },
-    action: 'use',
-    subject: 'app',
+    action: 'see',
+    subject: 'Supervisor-Cartable',
   },
 ]

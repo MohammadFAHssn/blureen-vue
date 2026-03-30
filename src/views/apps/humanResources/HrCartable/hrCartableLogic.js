@@ -11,7 +11,7 @@ export const REQUEST_TABS = Object.freeze([
 ])
 
 export const userCanManege = computed(() => {
-  return can('manage', 'HR-cartable')
+  return can('manage', 'HR-Cartable')
 })
 
 const visibleTabs = computed(() => {

@@ -13,7 +13,7 @@ definePage({
   meta: {
     layoutWrapperClasses: 'layout-content-height-fixed',
     action: 'see',
-    subject: 'HR-cartable',
+    subject: 'HR-Cartable',
   },
 })
 
