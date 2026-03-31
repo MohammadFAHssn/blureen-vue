@@ -5,6 +5,7 @@ import { STATUSES } from '@/utils/constants.js'
 
 export const REQUEST_TABS = Object.freeze([
   { value: STATUSES.PENDING_HR_APPROVAL, title: 'در انتظار تایید کارگزینی' },
+  { value: STATUSES.PENDING_LIAISON_APPROVAL, title: 'در انتظار تایید رابط' },
   { value: STATUSES.PENDING, title: 'در روند' },
   { value: STATUSES.APPROVED, title: 'آرشیو تایید شده' },
   { value: STATUSES.REJECTED, title: 'آرشیو رد شده' },
@@ -101,7 +102,6 @@ export function useHrCartableLogic() {
     if (state.activeTab === STATUSES.PENDING) {
       statuses = [
         STATUSES.PENDING,
-        STATUSES.PENDING_LIAISON_APPROVAL,
         STATUSES.PENDING_SUPERVISOR_APPROVAL,
       ]
     }
