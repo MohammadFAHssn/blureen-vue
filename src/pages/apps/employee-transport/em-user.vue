@@ -296,7 +296,7 @@ onMounted(async () => {
   <AreYouSureDialog
     v-if="uiState.isAreYouSureDialogVisible"
     v-model:is-dialog-visible="uiState.isAreYouSureDialogVisible"
-    title="لطفاً ایستگاه موردنظر را با دقت انتخاب کنید. پس از ثبت انتخاب، امکان ویرایش وجود نخواهد داشت!"
+    title="لطفاً ایستگاه موردنظر را با دقت انتخاب کنید. پس از انتخاب، نام شما به همراه آدرس به راننده پیامک خواهد شد و امکان ویرایش وجود نخواهد داشت!"
     :loading="pendingState.choosingEmCommuteStation"
     confirm-label="ادامه"
     reject-label="انصراف"
