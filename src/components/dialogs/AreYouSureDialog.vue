@@ -14,6 +14,16 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+
+  confirmLabel: {
+    type: String,
+    required: false,
+  },
+
+  rejectLabel: {
+    type: String,
+    required: false,
+  },
 })
 
 const emit = defineEmits(['update:isDialogVisible', 'confirm'])
@@ -46,7 +56,12 @@ function dialogVisibleUpdate(val) {
           variant="text"
           @click="emit('confirm')"
         >
-          بله
+          <div v-if="!props.confirmLabel">
+            بله
+          </div>
+          <div v-else>
+            {{ props.confirmLabel }}
+          </div>
         </VBtn>
 
         <VBtn
@@ -54,7 +69,12 @@ function dialogVisibleUpdate(val) {
           variant="text"
           @click="$emit('update:isDialogVisible', false)"
         >
-          خیر
+          <div v-if="!props.rejectLabel">
+            خیر
+          </div>
+          <div v-else>
+            {{ props.rejectLabel }}
+          </div>
         </VBtn>
       </VCardActions>
     </VCard>
