@@ -1,4 +1,5 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import EmStationForUserEditDialog from '@/views/apps/employeeTransport/emdialog/EmStationForUserEditDialog.vue'
 import EmStationForUserSelectDialog from '@/views/apps/employeeTransport/emdialog/EmStationForUserSelectDialog.vue'
 // emit
@@ -18,11 +19,13 @@ const uiState = reactive({
   errorMessage: '',
   isEmCommuteUserStationCreateDialogVisible: false,
   isEmCommuteUserStationEditDialogVisible: false,
+  isAreYouSureDialogVisible: false,
 })
 const pendingState = reactive({
   fetchingEmCommuteUserStations: false,
   creatingEmCommuteUserStation: false,
   editingEmCommuteUserStation: false,
+  deletingEmCommuteUserStation: false,
 })
 function resetMessages() {
   uiState.success = false
@@ -71,6 +74,10 @@ const columnDefs = ref([
             selectedEmCommuteUserStation.value = selectedNode.data
             uiState.isEmCommuteUserStationEditDialogVisible = true
           },
+          onDeleteClick: (selectedNode) => {
+            selectedEmCommuteUserStation.value = selectedNode.data
+            uiState.isAreYouSureDialogVisible = true
+          },
         },
       }
     },
@@ -91,6 +98,7 @@ const rowData = computed(() =>
         status: true,
         mode: 'view',
       },
+      deletable: true,
     },
   })),
 )
@@ -163,6 +171,28 @@ async function onUpdateChoosedStation(inComing) {
   }
   finally {
     pendingState.editingEmCommuteUserStation = false
+  }
+}
+
+async function onDelete() {
+  const id = selectedEmCommuteUserStation.value.id
+  pendingState.deletingEmCommuteUserStation = true
+  try {
+    await $api(`/employee-transport/user/${id}`, {
+      method: 'DELETE',
+      onResponseError({ response }) {
+        pendingState.deletingEmCommuteUserStation = false
+        uiState.hasError = true
+        uiState.errorMessage = response._data.message || 'خطا در حذف'
+      },
+    })
+
+    pendingState.deletingEmCommuteUserStation = false
+    uiState.isAreYouSureDialogVisible = false
+    fetchEmCommuteUsers()
+  }
+  catch (err) {
+    console.error(err)
   }
 }
 
@@ -273,6 +303,14 @@ onMounted(async () => {
       :cities="cities"
       :shift-types="emShiftTypes"
       @submit="onUpdateChoosedStation"
+    />
+
+    <AreYouSureDialog
+      v-if="uiState.isAreYouSureDialogVisible"
+      v-model:is-dialog-visible="uiState.isAreYouSureDialogVisible"
+      title="آیا از حذف این کاربر اطمینان دارید؟"
+      :loading="pendingState.deletingEmCommuteUserStation"
+      @confirm="onDelete"
     />
 
     <VApp>
