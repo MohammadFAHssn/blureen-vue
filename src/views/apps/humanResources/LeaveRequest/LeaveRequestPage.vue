@@ -26,7 +26,8 @@ const currentComponent = computed(() => pages[current.value] || null)
 function goBack() {
   if (current.value !== 'root') {
     current.value = 'root'
-  } else {
+  }
+  else {
     emit('back')
   }
 }
@@ -55,12 +56,26 @@ function goBack() {
             class="pa-4 d-flex flex-column align-center justify-center"
             variant="outlined"
             rounded="xl"
-            @click="current = item.key"
+            @click="
+              () => {
+                if (item.key === 'daily' || item.key === 'hourly')
+                  current = item.key
+              }
+            "
           >
+            <!--            @click="current = item.key" -->
+
             <VAvatar color="primary" variant="tonal" size="56" class="mb-2">
               <VIcon :icon="item.icon" size="32" />
             </VAvatar>
-            <span>{{ item.label }}</span>
+            <span>
+              {{ item.label }}
+              <span
+                v-if="item.key === 'marriage' || item.key === 'bereavement'"
+                class="font-weight-medium"
+                style="color: red"
+              >(به زودی)</span>
+            </span>
           </VCard>
         </VCol>
       </VRow>

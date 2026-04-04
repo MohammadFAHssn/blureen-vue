@@ -48,6 +48,10 @@ function fmtTimeRange(r) {
                 <div class="meta">
                   کد پرسنلی: {{ item.user.personnel_code }}
                 </div>
+                <div class="meta">
+                  واحد:
+                  {{ item?.user?.org_chart_nodes_as_primary?.[0]?.org_unit?.name ?? '-' }}
+                </div>
               </div>
 
               <VCheckbox
@@ -59,12 +63,6 @@ function fmtTimeRange(r) {
                 hide-details
                 @update:model-value="emit('toggleSelect', item.id)"
               />
-            </div>
-
-            <div class="chips">
-              <VChip size="small" color="primary" variant="flat">
-                {{ item.type.name }}
-              </VChip>
             </div>
 
             <div class="rows">

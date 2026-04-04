@@ -16,9 +16,9 @@ const current = ref('root')
 
 const requests = [
   { key: 'leave', label: 'مرخصی', icon: 'tabler-calendar-event' },
+  { key: 'medical', label: 'استعلاجی', icon: 'tabler-stethoscope' },
   { key: 'overtime', label: 'اضافه‌کار', icon: 'tabler-clock-plus' },
   { key: 'mission', label: 'ماموریت', icon: 'tabler-briefcase' },
-  { key: 'sick', label: 'استعلاجی', icon: 'tabler-stethoscope' },
   { key: 'attendance', label: 'ثبت تردد', icon: 'tabler-fingerprint' },
 ]
 
@@ -26,7 +26,7 @@ const pages = {
   leave: LeaveRequestPage,
   mission: MissionRequest,
   overtime: OvertimeRequestPage,
-  sick: SickRequest,
+  medical: SickRequest,
   attendance: AttendanceRequest,
 }
 
@@ -35,8 +35,8 @@ function goBack() {
 }
 
 function open(key) {
-  if (key !== 'leave') return
-  current.value = key
+  if (key === 'leave')
+    current.value = key
 }
 </script>
 
@@ -59,13 +59,20 @@ function open(key) {
         >
           <VAvatar
             variant="tonal"
-            :color="req.key === 'leave' ? 'primary' : 'secondary'"
+            :color="
+              req.key === 'leave' || req.key === 'medical'
+                ? 'primary'
+                : 'secondary'
+            "
             size="56"
             class="mb-2"
           >
             <VIcon :icon="req.icon" size="32" />
           </VAvatar>
-          <span class="font-weight-medium">{{ req.label }}</span>
+          <span class="font-weight-medium">
+            {{ req.label }}
+            <span v-if="req.key === 'medical'" style="color:red"> (به زودی)</span>
+          </span>
         </VCard>
       </VCol>
     </VRow>
