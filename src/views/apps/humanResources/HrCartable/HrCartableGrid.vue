@@ -77,6 +77,7 @@ const rowData = computed(() => {
     timeRange: fmtTimeRange(item),
     status: item.status.title,
     description: getDetail(item, 'description'),
+    duration: getDetail(item, 'duration'),
     attendancePermission: item.attendance_permissions.length ? 'بله' : 'خیر',
     updateDate: item.updated_at
       ? moment(item.updated_at).format('jYYYY-jMM-jDD')
@@ -101,6 +102,7 @@ const baseCols = [
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'تاریخ پایان', field: 'endDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },
+  { headerName: 'مدت', field: 'duration', maxWidth: 150 },
   { headerName: 'وضعیت', field: 'status', maxWidth: 200 },
   { headerName: 'تاییدیه نگهبانی', field: 'attendancePermission', maxWidth: 175 },
   { headerName: 'توضیحات', field: 'description' },

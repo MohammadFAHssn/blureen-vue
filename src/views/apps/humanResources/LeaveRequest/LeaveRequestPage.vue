@@ -63,8 +63,6 @@ function goBack() {
               }
             "
           >
-            <!--            @click="current = item.key" -->
-
             <VAvatar color="primary" variant="tonal" size="56" class="mb-2">
               <VIcon :icon="item.icon" size="32" />
             </VAvatar>
