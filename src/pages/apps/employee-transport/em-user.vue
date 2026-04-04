@@ -1,4 +1,5 @@
 <script setup>
+import AreYouSureDialog from '@/components/dialogs/AreYouSureDialog.vue'
 import EmUserStationSelectionDialog from '@/views/apps/employeeTransport/emdialog/EmUserStationSelectionDialog.vue'
 
 definePage({
@@ -15,6 +16,7 @@ const uiState = reactive({
   successMessage: '',
   hasError: false,
   errorMessage: '',
+  isAreYouSureDialogVisible: false,
   isEmUserStationSelectionDialogVisible: false,
 })
 
@@ -73,6 +75,11 @@ async function fetchEmShiftTypes() {
 }
 
 /* -------------------- ACTIONS -------------------- */
+function beforeChoose() {
+  uiState.isAreYouSureDialogVisible = false
+  uiState.isEmUserStationSelectionDialogVisible = true
+}
+
 async function onChooseStation(inComing) {
   resetMessages()
 
@@ -199,7 +206,7 @@ onMounted(async () => {
           <VBtn
             size="large"
             color="primary"
-            @click="uiState.isEmUserStationSelectionDialogVisible = true"
+            @click="uiState.isAreYouSureDialogVisible = true"
           >
             انتخاب ایستگاه
           </VBtn>
@@ -255,10 +262,15 @@ onMounted(async () => {
             <VDivider class="my-4" />
 
             <VRow align="center" justify="center">
-              <div v-if="smsSentDriver" class="text-success mb-1">
-                پیامک با موفقیت برای راننده ارسال شد!
+              <div class="text-blue mb-1">
+                در صورت تغییر آدرس و تغییر ایستگاه، میتوانید با آقای محمودزاده با شماره GSM: 5829 5187 و یا آقای شاکر با شماره GSM: 5829 5065 تماس بگیرید.
               </div>
-              <div v-else>
+            </VRow>
+
+            <VDivider class="my-4" />
+
+            <VRow align="center" justify="center">
+              <div v-if="!smsSentDriver">
                 <div class="text-error mb-1">
                   پیامک برای راننده ارسال نشد!
                   <VBtn
@@ -280,6 +292,16 @@ onMounted(async () => {
       </VCol>
     </VRow>
   </VContainer>
+
+  <AreYouSureDialog
+    v-if="uiState.isAreYouSureDialogVisible"
+    v-model:is-dialog-visible="uiState.isAreYouSureDialogVisible"
+    title="لطفاً ایستگاه موردنظر را با دقت انتخاب کنید. پس از ثبت انتخاب، امکان ویرایش وجود نخواهد داشت!"
+    :loading="pendingState.choosingEmCommuteStation"
+    confirm-label="ادامه"
+    reject-label="انصراف"
+    @confirm="beforeChoose"
+  />
 
   <EmUserStationSelectionDialog
     v-if="uiState.isEmUserStationSelectionDialogVisible"
