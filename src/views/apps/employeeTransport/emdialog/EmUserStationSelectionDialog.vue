@@ -241,7 +241,7 @@ watch(selectedSideStreet, () => {
                 :loading="loading"
                 @click="refVForm?.validate()"
               >
-                ذخیره
+                ثبت
               </VBtn>
 
               <VBtn color="secondary" variant="tonal" @click="onFormReset">
