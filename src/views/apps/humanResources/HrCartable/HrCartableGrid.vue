@@ -88,7 +88,7 @@ const rowData = computed(() => {
     actions: {
       approvable:
         item.kasra_credit_id
-        && (props.userCanManage || props.tab === STATUSES.PENDING),
+        && (props.userCanManage || props.tab === STATUSES.PENDING || props.tab === STATUSES.PENDING_LIAISON_APPROVAL),
     },
   }))
 })

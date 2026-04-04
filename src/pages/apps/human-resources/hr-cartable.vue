@@ -74,6 +74,7 @@ function onRejectSelected() {
         :show-confirm-btn="
           logic.state.userCanManege
             || logic.state.activeTab === STATUSES.PENDING
+            || logic.state.activeTab === STATUSES.PENDING_LIAISON_APPROVAL
         "
         @select-tab="logic.setActiveTab"
         @refresh="logic.refreshActiveTab"

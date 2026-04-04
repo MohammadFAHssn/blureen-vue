@@ -26,18 +26,23 @@ const rowData = computed(() =>
     id: item.id,
     personnelCode: item.user.personnel_code,
     personnel: `${item.user.personnel_code} - ${item.user.first_name} ${item.user.last_name}`,
+    costCenter:
+      item?.user?.org_chart_nodes_as_primary?.[0]?.org_unit?.name ?? '-',
     requestType: item.type.name,
     startDate: item.start_date,
     endDate: item.end_date,
     timeRange: fmtTimeRange(item),
     actions: {
-      approvable: item.status_id === STATUSES.PENDING_SUPERVISOR_APPROVAL || item.status_id === STATUSES.PENDING,
+      approvable:
+        item.status_id === STATUSES.PENDING_SUPERVISOR_APPROVAL
+        || item.status_id === STATUSES.PENDING,
     },
   })),
 )
 
 const columnDefs = computed(() => [
   { headerName: 'پرسنل', field: 'personnel' },
+  { headerName: 'واحد', field: 'costCenter' },
   { headerName: 'نوع درخواست', field: 'requestType', maxWidth: 150 },
   { headerName: 'تاریخ شروع', field: 'startDate', maxWidth: 150 },
   { headerName: 'زمان', field: 'timeRange', maxWidth: 150 },

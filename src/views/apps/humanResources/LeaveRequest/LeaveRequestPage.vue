@@ -1,5 +1,5 @@
 <script setup>
-import BereavementLeaveRequest from '@/views/apps/humanResources/LeaveRequest/BereavementLeave/BereavementLeaveRequest.vue'
+import BereavementLeave from '@/views/apps/humanResources/LeaveRequest/BereavementLeave/BereavementLeave.vue'
 import DailyLeave from '@/views/apps/humanResources/LeaveRequest/DailyLeave/DailyLeave.vue'
 import HourlyLeave from '@/views/apps/humanResources/LeaveRequest/HourlyLeave/HourlyLeave.vue'
 import MarriageLeaveRequest from '@/views/apps/humanResources/MarriageLeaveRequest/MarriageLeaveRequest.vue'
@@ -11,14 +11,14 @@ const leaveTypes = [
   { key: 'daily', label: 'روزانه', icon: 'tabler-calendar' },
   { key: 'hourly', label: 'ساعتی', icon: 'tabler-clock-hour-4' },
   { key: 'marriage', label: 'ازدواج', icon: 'tabler-hearts' },
-  { key: 'funeral', label: 'فوت بستگان', icon: 'tabler-mood-sad' },
+  { key: 'bereavement', label: 'فوت بستگان', icon: 'tabler-mood-sad' },
 ]
 
 const pages = {
   daily: DailyLeave,
   hourly: HourlyLeave,
   marriage: MarriageLeaveRequest,
-  funeral: BereavementLeaveRequest,
+  bereavement: BereavementLeave,
 }
 
 const currentComponent = computed(() => pages[current.value] || null)
@@ -65,19 +65,17 @@ function goBack() {
           >
             <!--            @click="current = item.key" -->
 
-            <VAvatar
-              :color="
-                item.key === 'daily' || item.key === 'hourly'
-                  ? 'primary'
-                  : 'secondary'
-              "
-              variant="tonal"
-              size="56"
-              class="mb-2"
-            >
+            <VAvatar color="primary" variant="tonal" size="56" class="mb-2">
               <VIcon :icon="item.icon" size="32" />
             </VAvatar>
-            <span>{{ item.label }}</span>
+            <span>
+              {{ item.label }}
+              <span
+                v-if="item.key === 'marriage' || item.key === 'bereavement'"
+                class="font-weight-medium"
+                style="color: red"
+              >(به زودی)</span>
+            </span>
           </VCard>
         </VCol>
       </VRow>
