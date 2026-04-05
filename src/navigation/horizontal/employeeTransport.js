@@ -2,15 +2,15 @@ export default [
   {
     title: 'EMPLOYEE TRANSPORT',
     icon: { icon: 'tabler-car' },
-    action: 'read',
-    subject: 'Em-Management',
+    action: 'use',
+    subject: 'app',
     children: [
       {
         title: 'EMPLOYEE TRANSPORT Service',
         to: 'apps-employee-transport-em-user',
         icon: { icon: 'tabler-bus' },
-        action: 'read',
-        subject: 'em-user',
+        action: 'use',
+        subject: 'app',
       },
       {
         title: 'EMPLOYEE TRANSPORT Management',

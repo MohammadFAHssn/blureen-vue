@@ -1,15 +1,15 @@
 export default [
   {
     heading: 'EMPLOYEE TRANSPORT',
-    action: 'read',
-    subject: 'Em-Management',
+    action: 'use',
+    subject: 'app',
   },
   {
     title: 'EMPLOYEE TRANSPORT Service',
     to: 'apps-employee-transport-em-user',
     icon: { icon: 'tabler-bus' },
-    action: 'read',
-    subject: 'em-user',
+    action: 'use',
+    subject: 'app',
   },
   {
     title: 'EMPLOYEE TRANSPORT Management',
