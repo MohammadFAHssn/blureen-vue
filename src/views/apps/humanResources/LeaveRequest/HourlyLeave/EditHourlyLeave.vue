@@ -37,6 +37,9 @@ const endTime = ref(props.request.end_time)
 const endTimeRules = [() => !!endTime.value || 'لطفا ساعت پایان را انتخاب کنید']
 const refVForm = ref()
 
+const startTimeDialog = ref(false)
+const endTimeDialog = ref(false)
+
 function onFormSubmit() {
   refVForm.value?.validate().then(async ({ valid: isValid }) => {
     if (isValid) {
@@ -51,13 +54,11 @@ function onFormSubmit() {
         })
         emit('submit')
         emit('update:isDialogVisible', false)
-      }
-      catch (error) {
+      } catch (error) {
         uiState.hasError = true
-        uiState.errorMessage
-          = error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
-      }
-      finally {
+        uiState.errorMessage =
+          error?.response?.data?.message ?? error.message ?? 'خطای ناشناخته'
+      } finally {
         uiState.loading = false
       }
     }
@@ -94,11 +95,61 @@ function dialogModelValueUpdate(val) {
   >
     <DialogCloseBtn @click="dialogModelValueUpdate(false)" />
 
+    <VDialog v-model="startTimeDialog" max-width="360">
+      <VCard rounded="xl" elevation="8" class="pa-2">
+        <VCardTitle class="text-center text-h6 font-weight-bold pt-4">
+          ساعت شروع
+        </VCardTitle>
+
+        <VCardText class="px-4 pb-2">
+          <div class="time-picker-wrapper">
+            <VTimePicker
+              v-model="startTime"
+              format="24hr"
+              elevation="0"
+              class="mx-auto"
+            />
+          </div>
+        </VCardText>
+
+        <VCardActions class="px-4 pb-4">
+          <VSpacer />
+          <VBtn color="primary" rounded="lg" @click="startTimeDialog = false">
+            تایید
+          </VBtn>
+        </VCardActions>
+      </VCard>
+    </VDialog>
+
+    <VDialog v-model="endTimeDialog" max-width="360">
+      <VCard rounded="xl" elevation="8" class="pa-2">
+        <VCardTitle class="text-center text-h6 font-weight-bold pt-4">
+          ساعت پایان
+        </VCardTitle>
+
+        <VCardText class="px-4 pb-2">
+          <div class="time-picker-wrapper">
+            <VTimePicker
+              v-model="endTime"
+              format="24hr"
+              elevation="0"
+              class="mx-auto"
+            />
+          </div>
+        </VCardText>
+
+        <VCardActions class="px-4 pb-4">
+          <VSpacer />
+          <VBtn color="primary" rounded="lg" @click="endTimeDialog = false">
+            تایید
+          </VBtn>
+        </VCardActions>
+      </VCard>
+    </VDialog>
+
     <VCard>
       <VCardText>
-        <h4 class="text-h5 text-center mb-2">
-          ویرایش درخواست
-        </h4>
+        <h4 class="text-h5 text-center mb-2">ویرایش درخواست</h4>
         <VForm
           ref="refVForm"
           class="mt-6"
@@ -134,11 +185,11 @@ function dialogModelValueUpdate(val) {
                 v-model="startTime"
                 :rules="startTimeRules"
                 label="ساعت شروع"
-                type="time"
-                format="H:i"
                 density="compact"
                 variant="outlined"
-                step="60"
+                readonly
+                prepend-inner-icon="tabler-clock"
+                @click="startTimeDialog = true"
               />
             </VCol>
             <VCol cols="12" sm="6">
@@ -146,11 +197,11 @@ function dialogModelValueUpdate(val) {
                 v-model="endTime"
                 :rules="endTimeRules"
                 label="ساعت پایان"
-                type="time"
-                format="H:i"
                 density="compact"
                 variant="outlined"
-                step="60"
+                readonly
+                prepend-inner-icon="tabler-clock"
+                @click="endTimeDialog = true"
               />
             </VCol>
             <VCol cols="12" class="d-flex flex-wrap justify-center gap-4">
@@ -176,3 +227,45 @@ function dialogModelValueUpdate(val) {
     </VCard>
   </VDialog>
 </template>
+
+<style scoped>
+.time-picker-wrapper {
+  display: flex;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 8px;
+}
+
+:deep(.v-picker-title) {
+  display: none !important;
+}
+
+:deep(.v-time-picker-controls) {
+  direction: ltr !important;
+  justify-content: center !important;
+}
+
+:deep(.v-time-picker-controls__time) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  column-gap: 0 !important;
+}
+
+:deep(.v-time-picker-controls__time > div) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+:deep(.v-time-picker-controls__time__separator) {
+  margin: 0 6px !important;
+  padding: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+
+:deep(.v-time-picker-controls__field-label) {
+  display: none !important;
+}
+</style>
