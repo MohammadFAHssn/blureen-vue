@@ -4,7 +4,7 @@ import { STATUSES } from '@/utils/constants.js'
 
 export const REQUEST_TABS = Object.freeze([
   {
-    value: STATUSES.PENDING_LIAISON_APPROVAL,
+    value: STATUSES.APPROVED,
     title: 'تایید شده',
   },
   {
@@ -34,10 +34,9 @@ export function useSecurityCartableLogic() {
 
     loadedTabs: new Set(),
     requestsByTab: {
-      [STATUSES.PENDING_SECURITY_APPROVAL]: [],
+      [STATUSES.APPROVED]: [],
       [STATUSES.PENDING_SUPERVISOR_APPROVAL]: [],
       [STATUSES.PENDING]: [],
-      [STATUSES.PENDING_HR_APPROVAL]: [],
       [STATUSES.REJECTED]: [],
     },
 
@@ -90,11 +89,19 @@ export function useSecurityCartableLogic() {
 
   async function fetchRequestsForActiveTab() {
     state.loading = true
+    let statuses = [state.activeTab]
+    if (state.activeTab === STATUSES.APPROVED) {
+      statuses = [
+        STATUSES.APPROVED,
+        STATUSES.PENDING_SUPERVISOR_APPROVAL,
+        STATUSES.PENDING_HR_APPROVAL,
+      ]
+    }
     try {
       const { data } = await axiosInstance.get(
         '/hr-request/request/get-hourly-requests',
         {
-          params: { status: state.activeTab },
+          params: { statuses },
         },
       )
 
