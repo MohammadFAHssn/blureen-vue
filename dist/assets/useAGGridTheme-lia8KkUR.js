@@ -1,0 +1,1 @@
+import{b2 as a,cY as m,Y as r,cZ as h,c_ as o}from"./index-CzVHoTEM.js";function i(){const{global:t}=a(),e=m.withParams({fontFamily:"Shabnam"});return{theme:r(()=>t.name.value==="light"?e.withPart(h):e.withPart(o))}}export{i as u};
