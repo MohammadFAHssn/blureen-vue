@@ -148,10 +148,6 @@ watch(selectedSideStreet, () => {
   selectedStation.value = null
 })
 
-function testMethod() {
-  console.log(props.user)
-}
-
 onMounted(async () => {
   try {
     await Promise.all([
@@ -261,10 +257,6 @@ onMounted(async () => {
                 @click="refVForm?.validate()"
               >
                 ذخیره
-              </VBtn>
-
-              <VBtn @click="testMethod()">
-                دیاگ
               </VBtn>
 
               <VBtn color="secondary" variant="tonal" @click="onFormReset">
