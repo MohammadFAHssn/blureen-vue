@@ -93,7 +93,7 @@ export function useSecurityCartableLogic() {
     if (state.activeTab === STATUSES.APPROVED) {
       statuses = [
         STATUSES.APPROVED,
-        STATUSES.PENDING_SUPERVISOR_APPROVAL,
+        STATUSES.PENDING_LIAISON_APPROVAL,
         STATUSES.PENDING_HR_APPROVAL,
       ]
     }
