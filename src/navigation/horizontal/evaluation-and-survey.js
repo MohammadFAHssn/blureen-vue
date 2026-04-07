@@ -1,6 +1,7 @@
 export default [
   {
     title: 'Evaluation And Survey',
+    icon: { icon: 'tabler-message-dots' },
     action: 'use',
     subject: 'app',
     children: [

@@ -1,55 +1,56 @@
 export default [
   {
-    heading: 'Evaluation And Survey',
-    action: 'use',
-    subject: 'app',
-  },
-  {
-
-    title: 'Evaluation',
-    icon: { icon: 'tabler-user-star' },
+    title: 'Evaluation And Survey',
+    icon: { icon: 'tabler-message-dots' },
     action: 'use',
     subject: 'app',
     children: [
       {
-        title: 'Peer Evaluation',
+        title: 'Evaluation',
+        icon: { icon: 'tabler-user-star' },
         action: 'use',
         subject: 'app',
-        to: 'apps-evaluation-peer-evaluation',
+        children: [
+          {
+            title: 'Peer Evaluation',
+            action: 'use',
+            subject: 'app',
+            to: 'apps-evaluation-peer-evaluation',
+          },
+          {
+            title: 'Manager Evaluation',
+            action: 'manage',
+            subject: 'Subordinates-Evaluation',
+            to: 'apps-evaluation-manager-evaluation',
+          },
+          {
+            title: 'Self Evaluation',
+            action: 'use',
+            subject: 'app',
+            to: 'apps-evaluation-self-evaluation',
+          },
+          {
+            title: 'Evaluation Results',
+            action: 'use',
+            subject: 'app',
+            to: 'apps-evaluation-evaluation-results',
+          },
+        ],
       },
       {
-        title: 'Manager Evaluation',
-        action: 'manage',
-        subject: 'Subordinates-Evaluation',
-        to: 'apps-evaluation-manager-evaluation',
-      },
-      {
-        title: 'Self Evaluation',
+        title: 'Survey',
+        icon: { icon: 'tabler-message-2-question' },
         action: 'use',
         subject: 'app',
-        to: 'apps-evaluation-self-evaluation',
+        to: 'apps-survey-survey',
       },
       {
-        title: 'Evaluation Results',
-        action: 'use',
-        subject: 'app',
-        to: 'apps-evaluation-evaluation-results',
+        title: 'Survey Management',
+        icon: { icon: 'tabler-message-cog' },
+        action: 'read',
+        subject: 'Surveys',
+        to: 'apps-survey-survey-management',
       },
     ],
   },
-  {
-    title: 'Survey',
-    icon: { icon: 'tabler-message-2-question' },
-    action: 'use',
-    subject: 'app',
-    to: 'apps-survey-survey',
-  },
-  {
-    title: 'Survey Management',
-    icon: { icon: 'tabler-message-cog' },
-    action: 'read',
-    subject: 'Surveys',
-    to: 'apps-survey-survey-management',
-  },
-
 ]

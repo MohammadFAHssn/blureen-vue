@@ -1,7 +1,7 @@
 export default [
   {
     title: 'Security',
-    icon: { icon: 'tabler-users' },
+    icon: { icon: 'tabler-shield' },
     action: 'see',
     subject: 'Security-Cartable',
     children: [

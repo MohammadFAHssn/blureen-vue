@@ -1,63 +1,64 @@
 export default [
   {
-    heading: 'User Management',
+    title: 'User Management',
+    icon: { icon: 'tabler-user-cog' },
     action: 'see',
     subject: 'User-Management-Navbar',
-  },
-  {
-    title: 'Users',
-    icon: { icon: 'tabler-users' },
-    action: 'see',
-    subject: 'User',
     children: [
       {
-        title: 'List',
-        to: 'apps-user-list',
-        action: 'read',
-        subject: 'User-Details',
+        title: 'Users',
+        icon: { icon: 'tabler-users' },
+        action: 'see',
+        subject: 'User',
+        children: [
+          {
+            title: 'List',
+            to: 'apps-user-list',
+            action: 'read',
+            subject: 'User-Details',
+          },
+          {
+            title: 'Access',
+            to: 'apps-user-access',
+            action: 'read',
+            subject: 'User-Access',
+          },
+          {
+            title: 'Personnel Records',
+            to: 'apps-user-personnel-records',
+            action: 'read',
+            subject: 'Personnel-Records',
+          },
+        ],
       },
       {
-        title: 'Access',
-        to: 'apps-user-access',
+        title: 'Organization Chart',
+        icon: { icon: 'tabler-sitemap' },
+        to: 'apps-user-organization-chart',
         action: 'read',
-        subject: 'User-Access',
+        subject: 'Organization-Chart',
       },
       {
-        title: 'Personnel Records',
-        to: 'apps-user-personnel-records',
+        title: 'Approval Flows',
+        icon: { icon: 'tabler-git-branch' },
+        to: 'apps-user-approval-flows',
         action: 'read',
-        subject: 'Personnel-Records',
+        subject: 'Approval-Flows',
       },
+      // {
+      //   title: 'Roles & Permissions',
+      //   icon: { icon: 'tabler-lock' },
+      //   children: [
+      //     {
+      //       title: 'Roles',
+      //       to: 'apps-roles',
+      //     },
+      //     {
+      //       title: 'Permissions',
+      //       to: 'apps-permissions',
+      //     },
+      //   ],
+      // },
     ],
   },
-  {
-    title: 'Organization Chart',
-    icon: { icon: 'tabler-sitemap' },
-    to: 'apps-user-organization-chart',
-    action: 'read',
-    subject: 'Organization-Chart',
-  },
-  {
-    title: 'Approval Flows',
-    icon: { icon: 'tabler-git-branch' },
-    to: 'apps-user-approval-flows',
-    action: 'read',
-    subject: 'Approval-Flows',
-  },
-  // {
-  //   title: 'Roles & Permissions',
-  //   icon: { icon: 'tabler-lock' },
-
-  //   // TODO: Add actions and subjects for roles and permissions
-  //   children: [
-  //     {
-  //       title: 'Roles',
-  //       to: 'apps-roles',
-  //     },
-  //     {
-  //       title: 'Permissions',
-  //       to: 'apps-permissions',
-  //     },
-  //   ],
-  // },
 ]

@@ -1,7 +1,7 @@
 export default [
   {
     title: 'Payroll',
-    icon: { icon: 'tabler-currency-dollar' },
+    icon: { icon: 'tabler-cash' },
     action: 'use',
     subject: 'app',
     children: [
@@ -48,5 +48,4 @@ export default [
       },
     ],
   },
-
 ]

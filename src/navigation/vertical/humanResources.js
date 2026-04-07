@@ -1,35 +1,38 @@
 export default [
   {
-    heading: 'Human Resources',
+    title: 'Human Resources',
+    icon: { icon: 'tabler-users' },
     action: 'use',
     subject: 'app',
-  },
-  {
-    title: 'Requests',
-    to: 'apps-human-resources-requests',
-    icon: { icon: 'tabler-file-text' },
-    action: 'use',
-    subject: 'app',
-  },
-  {
-    title: 'Approval Requests',
-    to: 'apps-human-resources-approvals-inbox',
-    icon: { icon: 'tabler-inbox' },
-    action: 'use',
-    subject: 'app',
-  },
-  {
-    title: 'Human Resource Cartable',
-    to: 'apps-human-resources-hr-cartable',
-    icon: { icon: 'tabler-clipboard-list' },
-    action: 'see',
-    subject: 'HR-Cartable',
-  },
-  {
-    title: 'Supervisor Cartable',
-    to: 'apps-human-resources-supervisor-cartable',
-    icon: { icon: 'tabler-user-star' },
-    action: 'see',
-    subject: 'Supervisor-Cartable',
+    children: [
+      {
+        title: 'Requests',
+        to: 'apps-human-resources-requests',
+        icon: { icon: 'tabler-file-text' },
+        action: 'use',
+        subject: 'app',
+      },
+      {
+        title: 'Approval Requests',
+        to: 'apps-human-resources-approvals-inbox',
+        icon: { icon: 'tabler-inbox' },
+        action: 'use',
+        subject: 'app',
+      },
+      {
+        title: 'Human Resource Cartable',
+        to: 'apps-human-resources-hr-cartable',
+        icon: { icon: 'tabler-clipboard-list' },
+        action: 'see',
+        subject: 'HR-Cartable',
+      },
+      {
+        title: 'Supervisor Cartable',
+        to: 'apps-human-resources-supervisor-cartable',
+        icon: { icon: 'tabler-user-star' },
+        action: 'see',
+        subject: 'Supervisor-Cartable',
+      },
+    ],
   },
 ]

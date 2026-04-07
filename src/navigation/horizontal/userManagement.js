@@ -1,7 +1,7 @@
 export default [
   {
     title: 'User Management',
-    icon: { icon: 'tabler-users' },
+    icon: { icon: 'tabler-user-cog' },
     action: 'see',
     subject: 'User-Management-Navbar',
     children: [
@@ -29,7 +29,6 @@ export default [
             action: 'read',
             subject: 'Personnel-Records',
           },
-
         ],
       },
       {
